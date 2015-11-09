@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>images/videomorph.svg</file>
+    <file>images/videomorph.png</file>
+  </qresource>
+</RCC>
