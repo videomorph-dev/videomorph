@@ -4,4 +4,5 @@ python:
 branches:
   only:
     - master
-script: nosetests tests/ 
+script: 
+    - python setup.py test
