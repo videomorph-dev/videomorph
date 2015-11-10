@@ -74,7 +74,7 @@ class MMWindow(QMainWindow):
         self.setWindowTitle(u'VideoMorph' + ' ' + __version__)
         icon = QIcon()
         icon.addPixmap(
-            QPixmap("/usr/share/icons/videomorph.svg"))
+            QPixmap("/usr/share/icons/videomorph.png"))
         self.setWindowIcon(icon)
         self.centralwidget = QWidget(self)
         self.vl = QVBoxLayout(self.centralwidget)

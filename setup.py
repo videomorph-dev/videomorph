@@ -12,14 +12,13 @@ setup(
     license='Apache License, Version 2.0',
     packages=['videomorph', 'videomorph/converter'],
     data_files=[('/usr/share/applications',['share/videomorph.desktop']),
-            ('/usr/share/icons',['share/videomorph.svg']),
+            ('/usr/share/icons',['share/videomorph.png']),
             ('/usr/share/videomorph',[
                 'videomorph/translations/videomorph_es.qm',
                 'videomorph/translations/videomorph_es.ts',
                 ]),
             ('/usr/share/videomorph/images',[
-                'videomorph/images/videomorph.png',
-                'videomorph/images/videomorph.svg']),
+                'videomorph/images/videomorph.png']),
             ('/usr/share/doc/videomorph', ['README.md','LICENSE','AUTHORS'])],
         scripts = ["bin/videomorph"]
         )
