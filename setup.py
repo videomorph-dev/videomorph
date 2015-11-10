@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 from distutils.core import setup
 
@@ -10,7 +10,7 @@ setup(
     author_email='codeshard@openmailbox.org',
     url='https://github.com/codeshard/videomorph',
     license='Apache License, Version 2.0',
-    packages=['videomorph'],
+    packages=['videomorph', 'videomorph/converter'],
     data_files=[('/usr/share/applications',['share/videomorph.desktop']),
             ('/usr/share/icons',['share/videomorph.svg']),
             ('/usr/share/videomorph',[

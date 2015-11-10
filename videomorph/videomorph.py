@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
 #   MediaMorph - A PyQt5 frontend to ffmpeg
@@ -57,12 +57,10 @@ from PyQt5.QtCore import (QSize,
                           QLibraryInfo)
 from PyQt5.QtGui import QPixmap, QIcon
 
-import videomorph_qrc
-
-from converter.presets import presets_list
-from converter.ffmpeg import FFMpeg
-from converter.utils import write_time
-from converter.tasks import Task, STATUS
+from videomorph.converter.presets import presets_list
+from videomorph.converter.ffmpeg import FFMpeg
+from videomorph.converter.utils import write_time
+from videomorph.converter.tasks import Task, STATUS
 
 
 class MMWindow(QMainWindow):
@@ -76,7 +74,7 @@ class MMWindow(QMainWindow):
         self.setWindowTitle(u'VideoMorph' + ' ' + __version__)
         icon = QIcon()
         icon.addPixmap(
-            QPixmap(":/icons/images/videomorph.png"))
+            QPixmap("/usr/share/icons/videomorph.svg"))
         self.setWindowIcon(icon)
         self.centralwidget = QWidget(self)
         self.vl = QVBoxLayout(self.centralwidget)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
 #   MediaMorph - A PyQt5 frontend to ffmpeg
@@ -15,7 +15,7 @@ from subprocess import Popen, PIPE
 import logging
 import locale
 
-from converter.media import MediaInfo
+from videomorph.converter.media import MediaInfo
 
 logger = logging.getLogger(__name__)
 
