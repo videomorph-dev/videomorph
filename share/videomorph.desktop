@@ -1,2 +1,12 @@
 [Desktop Entry]
-Icon=/home/ozkar/Work/Qt/git/videomorph/share/videomorph.svg
+Type=Application
+Name=VideoMorph
+GenericName=Video Converter
+GenericName[es]=Conversor de formatos de video
+Comment=Video Converter focused on usability.
+Comment[es]=Conversor de video enfocado en la usabilidad.
+Exec=videomorph
+Icon=videomorph
+Terminal=false
+StartupNotify=false
+Categories=Qt;Multimedia;
