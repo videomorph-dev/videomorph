@@ -16,7 +16,7 @@ Unlike other video converters, VideoMorph focuses on a single task,
 convert video, making simple, easy to use and allowing the user choose outputting
 between the most popular video formats.
 
-VideoMorph UI is simple and clean, eliminating annoying options rarely used. 
+VideoMorph UI is simple and clean focused on usability, eliminating annoying options rarely used. 
 Videomorph is a video converter, just that. If you want a video editor, 
 VideoMorph isn't for you.
 
