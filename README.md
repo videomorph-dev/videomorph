@@ -58,5 +58,5 @@ Code & Artwork by:
  
 Contributors:
 
- - [Maikel LLamaret Heredia](swlx.cubava.cu)
- - [Ludwig Causilla](desdeabreus.cubava.cu)
+ - [Maikel LLamaret Heredia](http://swlx.cubava.cu)
+ - [Ludwig Causilla](http://desdeabreus.cubava.cu)
