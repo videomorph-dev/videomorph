@@ -21,5 +21,5 @@ setup(
                 'videomorph/images/videomorph.png',
                 'videomorph/images/videomorph.svg']),
             ('/usr/share/doc/videomorph', ['README.md','LICENSE','AUTHORS'])],
-        scripts = ["bin/videomorp"]
+        scripts = ["bin/videomorph"]
         )
