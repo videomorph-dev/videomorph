@@ -9,4 +9,4 @@ Exec=videomorph
 Icon=videomorph
 Terminal=false
 StartupNotify=false
-Categories=Qt;Video;
+Categories=Qt;KDE;AudioVideo;Video;
