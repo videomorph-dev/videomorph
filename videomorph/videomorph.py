@@ -270,24 +270,25 @@ class MMWindow(QMainWindow):
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.info_action)
         self.toolBar.addAction(self.quit_action)
-        
+
     def about(self):
         """ Function doc """
         QMessageBox.about(
             self,
             'VideoMorph',
-                '<p><b>VideoMorph version {v}</b>'
-                '<p><b>VideoMorph</b> is a small GUI wrapper for <a href="http://ffmpeg.org/ffmpeg.html">'
-                ' ffmpeg</a>.'
-                '<p>Website: <a href=http://codeshard.github.io/videomorph>http://codeshard.github.io/videomorph</a>'
-                '<p><b>VideoMorph</b> features a sleek, intuitive, and clean UI,'
-                ' with commonly used set of presets, making the video conversion'
-                ' task as simple as possible.'
-                '<p> <b>Code & Artwork by:</b> <a href=mailto:codeshard@openmailbox.org>Ozkar L. Garcell</a>'
-                '<p> <b>Contributors:</b><br>'
-                '<b>*</b> Maikel Llamaret Heredia (tester, naming suggestion and a few insults(mostly of them deserved)).<br>'
-                '<b>*</b> Ludwig Causilla (tester, and thanks for helping me with your GIMP skills).<br>'.format(v=__version__)
-            )
+            '<p><b>VideoMorph version {v}</b>'
+            '<p><b>VideoMorph</b> is a small GUI wrapper for <a href="http://ffmpeg.org/ffmpeg.html">'
+            ' ffmpeg</a>.'
+            '<p>Website: <a href=http://codeshard.github.io/videomorph>http://codeshard.github.io/videomorph</a>'
+            '<p><b>VideoMorph</b> features a sleek, intuitive, and clean UI,'
+            ' with commonly used set of presets, making the video conversion'
+            ' task as simple as possible.'
+            '<p> <b>Code & Artwork by:</b> <a href=mailto:codeshard@openmailbox.org>Ozkar L. Garcell</a>'
+            '<p> <b>Contributors:</b><br>'
+            '<b>*</b> Maikel Llamaret Heredia (tester, naming suggestion and a few insults(mostly of them deserved)).<br>'
+            '<b>*</b> Ludwig Causilla (tester, and thanks for helping me with your GIMP skills).<br>'.format(
+                v=__version__)
+        )
 
     def populate_profiles(self):
         """ Function doc """
@@ -311,22 +312,23 @@ class MMWindow(QMainWindow):
             if profile == str(presets_list[k].profile_name):
                 self.cb_presets.addItem(str(presets_list[k].profile_label))
         self.cb_presets.setCurrentIndex(0)
-                
+
     def output_folder(self):
         """ Function doc """
         options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
         directory = QFileDialog.getExistingDirectory(
             self,
-                self.tr('Choose output directory'),
-                QDir.homePath(),
-                options=options)
+            self.tr('Choose output directory'),
+            QDir.homePath(),
+            options=options)
         if directory:
             self.le_output.setText(directory)
 
     def add_media(self):
         """ Function doc """
         title = self.tr(u'Select Files')
-        vFilter = self.tr(u'Video files') + u'(*.mkv *.ogg *.mp4 *.mpg *.f4v *.flv *.wv *.3gp *.avi *.wmv *.mov *.vob);;' + self.tr(u'All files') + u'(*.*)'
+        vFilter = self.tr(
+            u'Video files') + u'(*.mkv *.ogg *.mp4 *.mpg *.f4v *.flv *.wv *.3gp *.avi *.wmv *.mov *.vob);;' + self.tr(u'All files') + u'(*.*)'
         medias, _ = QFileDialog.getOpenFileNames(
             self,
             title,
@@ -357,7 +359,7 @@ class MMWindow(QMainWindow):
             i += 1
 
             self.medialist.append({'media': m, 'info': self.info})
-            
+
     def delete_media(self):
         """ Function doc """
         if self.tb_tasks.rowCount() > 0:
@@ -424,7 +426,7 @@ class MMWindow(QMainWindow):
             self.proc.start(self.ffmpeg.ffmpeg_path, cmds)
         else:
             msgBox = QMessageBox(
-            QMessageBox.Critical,
+                QMessageBox.Critical,
                 self.tr(u'Error!'),
                 self.tr(u'No video files added!'),
                 QMessageBox.Ok,
@@ -439,10 +441,10 @@ class MMWindow(QMainWindow):
             self.proc.kill()
         msgBox = QMessageBox(
             QMessageBox.Information,
-                self.tr(u'Stopped!'),
-                self.tr(u'Encoding tasks succesfully stopped!'),
-                QMessageBox.Ok,
-                self)
+            self.tr(u'Stopped!'),
+            self.tr(u'Encoding tasks succesfully stopped!'),
+            QMessageBox.Ok,
+            self)
         msgBox.show()
         self.convert_action.setEnabled(True)
         self.clear_tasks_action.setEnabled(True)
@@ -464,16 +466,18 @@ class MMWindow(QMainWindow):
             if self.proc.state() == QProcess.NotRunning:
                 msgBox = QMessageBox(
                     QMessageBox.Information,
-                        self.tr(u'Finished!'),
-                        self.tr(u'Encoding tasks succesfully finished!'),
-                        QMessageBox.Ok,
-                        self)
+                    self.tr(u'Finished!'),
+                    self.tr(u'Encoding tasks succesfully finished!'),
+                    QMessageBox.Ok,
+                    self)
                 msgBox.show()
             self.convert_action.setEnabled(True)
             self.clear_tasks_action.setEnabled(True)
             self.stop_action.setEnabled(False)
 
-if __name__ == '__main__':
+
+def main():
+    """ Function doc """
     import sys
     from os.path import dirname, realpath, exists
     app = QApplication(sys.argv)
@@ -483,7 +487,8 @@ if __name__ == '__main__':
     if exists(filePath + '/translations/'):
         appTranslator.load(filePath + "/translations/videomorph_" + locale)
     else:
-        appTranslator.load("/usr/share/videomorph/translations/videomorph_" + locale)
+        appTranslator.load(
+            "/usr/share/videomorph/translations/videomorph_" + locale)
     app.installTranslator(appTranslator)
     qtTranslator = QTranslator()
     qtTranslator.load("qt_" + locale,
@@ -492,3 +497,7 @@ if __name__ == '__main__':
     mainWin = MMWindow()
     mainWin.show()
     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()
