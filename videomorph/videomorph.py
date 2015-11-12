@@ -481,6 +481,8 @@ def main():
     app = QApplication(sys.argv)
     filePath = dirname(realpath(__file__))
     locale = QLocale.system().name()
+    if locale == 'es_CU':
+        locale = 'es_ES'
     appTranslator = QTranslator()
     if exists(filePath + '/translations/'):
         appTranslator.load(filePath + "/translations/videomorph_" + locale)
