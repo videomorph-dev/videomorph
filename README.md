@@ -26,7 +26,7 @@ To install the package:
 
     python3 setup.py install
 
-This only installs VideMorph. The [ffmpeg](http://ffmpeg.org) package should be installed
+This only installs VideoMorph. The [ffmpeg](http://ffmpeg.org) package should be installed
 or compiled in your distribution.
 
 ## Acknowledgements
