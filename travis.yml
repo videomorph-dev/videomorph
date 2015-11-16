@@ -1,8 +1,40 @@
 language: python
 python:
-  - "2.7"
-branches:
-  only:
-    - master
-script: 
-    - python setup.py test
+  - "3.4"
+env:
+  - QT_API=pyqt5
+  - PEP8=1
+  - COV=1
+matrix:
+    allow_failures:
+        - env: COV=1
+        - env: PEP8=1
+        - env: QT_API=pyqt5
+virtualenv:
+  system_site_packages: true
+before_install:
+ - "export DISPLAY=:99.0"
+ - "sh -e /etc/init.d/xvfb start"
+install:
+  # PyQ4
+  - sudo apt-get install -qq python3-pyqt5 --fix-missing
+  # PyQt5 (won't be available untill travis upgrade to ubuntu 14.04
+  - pip install --quiet git+https://github.com/codeshard/videomorph.git
+script:
+  - pip install --quiet .
+  - if [ $QT_API ]; then
+    python3 runtests.py;
+    fi
+  - if [ $PEP8 ]; then
+    pip install --quiet pytest-pep8;
+    python3 runtests.py --pep8 -m pep8;
+    fi
+  - if [ $COV ]; then
+    pip install --quiet pytest-cov;
+    python3 runtests.py --cov pyqode;
+    fi
+after_script:
+  - if [ $COV ]; then
+    sudo pip install --quiet coveralls;
+    coveralls;
+    fi
