@@ -19,7 +19,7 @@ from videomorph.converter.media import MediaInfo
 
 logger = logging.getLogger(__name__)
 
-console_encoding = locale.getdefaultlocale()[1] or 'UTF-8'
+console_encoding = 'UTF-8'
 
 
 class FFMpegError(Exception):
