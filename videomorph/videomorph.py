@@ -92,8 +92,7 @@ class MMWindow(QMainWindow):
         self.hl.addLayout(self.vl2)
         self.vl.addLayout(self.hl)
         self.setCentralWidget(self.centralwidget)
-
-        self.read_settings()
+        
         self.setup_actions()
 
         self.populate_profiles()
@@ -107,6 +106,8 @@ class MMWindow(QMainWindow):
         self.proc.setProcessChannelMode(QProcess.MergedChannels)
         self.proc.readyRead.connect(self.read_encoding)
         self.proc.finished.connect(self.finish_encoding)
+        
+        self.read_settings()
 
     def group_settings(self):
         """ Function doc """
@@ -214,12 +215,19 @@ class MMWindow(QMainWindow):
         size = settings.value("size", QSize(1096, 510), type=QSize)
         self.resize(size)
         self.move(pos)
+        if 'profile' and 'preset' in settings.allKeys():
+            prof = settings.value('profile')
+            pres = settings.value('preset')
+            self.cb_profiles.setCurrentIndex(int(prof))
+            self.cb_presets.setCurrentIndex(int(pres))
 
     def write_settings(self):
         settings = QSettings(
             QDir.homePath() + '/.videomorph/config.ini', QSettings.IniFormat)
         settings.setValue("pos", self.pos())
         settings.setValue("size", self.size())
+        settings.setValue("profile", self.cb_profiles.currentIndex())
+        settings.setValue("preset", self.cb_presets.currentIndex())
 
     def closeEvent(self, event):
         self.write_settings()
@@ -300,7 +308,6 @@ class MMWindow(QMainWindow):
             'WMV'
         ]
         self.cb_profiles.addItems(profiles)
-        self.cb_profiles.setCurrentIndex(0)
 
     def populate_presets(self):
         """ Function doc """
@@ -309,7 +316,6 @@ class MMWindow(QMainWindow):
         for k, j in enumerate(presets_list):
             if profile == str(presets_list[k].profile_name):
                 self.cb_presets.addItem(str(presets_list[k].profile_label))
-        self.cb_presets.setCurrentIndex(0)
 
     def output_folder(self):
         """ Function doc """
