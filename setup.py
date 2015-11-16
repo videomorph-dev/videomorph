@@ -13,7 +13,7 @@ setup(
     packages=['videomorph', 'videomorph/converter'],
     data_files=[('/usr/share/applications',['share/videomorph.desktop']),
             ('/usr/share/icons',['share/videomorph.png']),
-            ('/usr/share/videomorph',[
+            ('/usr/share/videomorph/translations',[
                 'videomorph/translations/videomorph_es.qm',
                 'videomorph/translations/videomorph_es.ts',
                 ]),
