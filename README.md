@@ -47,7 +47,7 @@ Just clone the repo and make a pull request!
 
 VideoMorph is licenced under Apache License Version 2.0, more info at [http://www.apache.org/licenses/](http://www.apache.org/licenses/)
 Following the idea of [python-video-converter](https://github.com/senko/python-video-converter)
-VideoMorph only uses the [ffmpeg](http://ffmpeg.org) binary, so, VideMorph doesn't need to be licensed
+VideoMorph only uses the [ffmpeg](http://ffmpeg.org) binary, so, VideoMorph doesn't need to be licensed
 under LGPL/GPL
 
 ## Authors and Copyright
