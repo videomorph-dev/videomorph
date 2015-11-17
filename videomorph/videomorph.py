@@ -31,20 +31,19 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QLabel,
                              QSpacerItem,
                              QComboBox,
-                             QCheckBox,
                              QProgressBar,
                              QToolBar,
                              QTableWidget,
                              QTableWidgetItem,
                              QLineEdit,
-                             QPushButton,
                              QAction,
                              QStyle,
                              QAbstractItemView,
                              QFileDialog,
                              QMessageBox,
                              QHeaderView,
-                             QToolButton)
+                             QToolButton,
+                             qApp)
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -92,12 +91,11 @@ class MMWindow(QMainWindow):
         self.hl.addLayout(self.vl2)
         self.vl.addLayout(self.hl)
         self.setCentralWidget(self.centralwidget)
-        
+
         self.setup_actions()
 
         self.populate_profiles()
 
-        self.ffmpeg = FFMpeg()
         self.medialist = []
         self.tasks = []
         self.stopped = False
@@ -106,7 +104,6 @@ class MMWindow(QMainWindow):
         self.proc.setProcessChannelMode(QProcess.MergedChannels)
         self.proc.readyRead.connect(self.read_encoding)
         self.proc.finished.connect(self.finish_encoding)
-        
         self.read_settings()
 
     def group_settings(self):
@@ -172,7 +169,10 @@ class MMWindow(QMainWindow):
             0, QHeaderView.Stretch)
         self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tb_tasks.setHorizontalHeaderLabels(
-            [self.tr(u'Name'), self.tr(u'Duration'), self.tr(u'Target'), self.tr(u'Progress')])
+            [self.tr(u'Name'),
+             self.tr(u'Duration'),
+             self.tr(u'Target'),
+             self.tr(u'Progress')])
         hl.addWidget(self.tb_tasks)
         self.vl2.addWidget(gb_tasks)
 
@@ -233,6 +233,19 @@ class MMWindow(QMainWindow):
         self.write_settings()
         event.accept()
 
+    def check_ffmpeg(self):
+        """ Function doc """
+        try:
+            self.ffmpeg = FFMpeg()
+            return True
+        except Exception as ex:
+            msgBox = QMessageBox(QMessageBox.Critical, self.tr(u'Error!'),
+                                 self.tr(str(ex)), QMessageBox.NoButton, self)
+            msgBox.addButton("&Ok", QMessageBox.AcceptRole)
+            if msgBox.exec_() == QMessageBox.AcceptRole:
+                qApp.closeAllWindows()
+                return False
+
     def setup_actions(self):
         self.open_action = QAction(
             self.style().standardIcon(QStyle.SP_DialogOpenButton),
@@ -283,16 +296,21 @@ class MMWindow(QMainWindow):
             self,
             'VideoMorph',
             '<p><b>VideoMorph version {v}</b>'
-            '<p><b>VideoMorph</b> is a small GUI wrapper for <a href="http://ffmpeg.org/ffmpeg.html">'
+            '<p><b>VideoMorph</b> is a small GUI wrapper for'
+            ' <a href="http://ffmpeg.org/ffmpeg.html">'
             ' ffmpeg</a>.'
-            '<p>Website: <a href=http://codeshard.github.io/videomorph>http://codeshard.github.io/videomorph</a>'
+            '<p>Website: <a href=http://codeshard.github.io/videomorph>'
+            'http://codeshard.github.io/videomorph</a>'
             '<p><b>VideoMorph</b> features a sleek, intuitive, and clean UI,'
             ' with commonly used set of presets, making the video conversion'
             ' task as simple as possible.'
-            '<p> <b>Code & Artwork by:</b> <a href=mailto:codeshard@openmailbox.org>Ozkar L. Garcell</a>'
+            '<p> <b>Code & Artwork by:</b>'
+            ' <a href=mailto:codeshard@openmailbox.org>Ozkar L. Garcell</a>'
             '<p> <b>Contributors:</b><br>'
-            '<b>*</b> Maikel Llamaret Heredia (tester, naming suggestion and a few insults(mostly of them deserved)).<br>'
-            '<b>*</b> Ludwig Causilla (tester, and thanks for helping me with your GIMP skills).<br>'.format(
+            '<b>*</b> Maikel Llamaret Heredia (tester, naming suggestion'
+            ' and a few insults(mostly of them deserved)).<br>'
+            '<b>*</b> Ludwig Causilla (tester, and thanks for'
+            ' helping me with your GIMP skills).<br>'.format(
                 v=__version__)
         )
 
@@ -331,8 +349,9 @@ class MMWindow(QMainWindow):
     def add_media(self):
         """ Function doc """
         title = self.tr(u'Select Files')
-        vFilter = self.tr(
-            u'Video files') + u'(*.mkv *.ogg *.mp4 *.mpg *.f4v *.flv *.wv *.3gp *.avi *.wmv *.mov *.vob);;' + self.tr(u'All files') + u'(*.*)'
+        vFilter = self.tr(u'Video files') + u'(*.mkv *.ogg *.mp4 *.mpg *.f4v'
+        ' *.flv *.wv *.3gp *.avi *.wmv *.mov *.vob'
+        ' *.ogv);;' + self.tr(u'All files') + u'(*.*)'
         medias, _ = QFileDialog.getOpenFileNames(
             self,
             title,
@@ -367,8 +386,10 @@ class MMWindow(QMainWindow):
     def delete_media(self):
         """ Function doc """
         if self.tb_tasks.rowCount() > 0:
-            msgBox = QMessageBox(QMessageBox.Warning, self.tr(u'Warning!'),
-                                 self.tr(u'Clear all tasks?'), QMessageBox.NoButton, self)
+            msgBox = QMessageBox(
+                QMessageBox.Warning,
+                self.tr(u'Warning!'),
+                self.tr(u'Clear all tasks?'), QMessageBox.NoButton, self)
             msgBox.addButton("&Clear", QMessageBox.AcceptRole)
             msgBox.addButton("C&ancel", QMessageBox.RejectRole)
             if msgBox.exec_() == QMessageBox.AcceptRole:
@@ -400,7 +421,8 @@ class MMWindow(QMainWindow):
             for i in self.tasks:
                 if i.task_status == 'RUNNING':
                     value = int(
-                        (100.0 * timecode) / self.medialist[i.number]['info'].format.duration)
+                        (100.0 * timecode) /
+                        self.medialist[i.number]['info'].format.duration)
                     self.pb_progress.setProperty("value", value)
                     self.tb_tasks.item(i.number, 3).setText(str(value) + " %")
                     self.convert_action.setEnabled(False)
@@ -412,7 +434,6 @@ class MMWindow(QMainWindow):
         self.tasks = []
         if self.tb_tasks.rowCount() > 0:
             for k in range(self.tb_tasks.rowCount()):
-                input_file = self.medialist[k]
                 preset = self.tb_tasks.item(k, 2).text()
                 for i, j in enumerate(presets_list):
                     if preset == str(presets_list[i].profile_label):
@@ -421,7 +442,11 @@ class MMWindow(QMainWindow):
                 output_file = self.le_output.text() + '/' + \
                     splitext(self.tb_tasks.item(k, 0).text())[0] + extension
                 t = Task(
-                    k, self.medialist[k]['media'], output_file, STATUS[0], params)
+                    k,
+                    self.medialist[k]['media'],
+                    output_file,
+                    STATUS[0],
+                    params)
                 self.tasks.append(t)
             cmds = ['-i', self.tasks[0].input_file]
             cmds.extend(self.tasks[0].params)
@@ -501,8 +526,9 @@ def main():
                       QLibraryInfo.location(QLibraryInfo.TranslationsPath))
     app.installTranslator(qtTranslator)
     mainWin = MMWindow()
-    mainWin.show()
-    sys.exit(app.exec_())
+    if mainWin.check_ffmpeg():
+        mainWin.show()
+        sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
