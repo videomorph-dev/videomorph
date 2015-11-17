@@ -220,6 +220,8 @@ class MMWindow(QMainWindow):
             pres = settings.value('preset')
             self.cb_profiles.setCurrentIndex(int(prof))
             self.cb_presets.setCurrentIndex(int(pres))
+        if 'output_dir' in settings.allKeys():
+            self.le_output.setText(str(settings.value('output_dir')))
 
     def write_settings(self):
         settings = QSettings(
@@ -228,6 +230,7 @@ class MMWindow(QMainWindow):
         settings.setValue("size", self.size())
         settings.setValue("profile", self.cb_profiles.currentIndex())
         settings.setValue("preset", self.cb_presets.currentIndex())
+        settings.setValue("output_dir", self.le_output.text())
 
     def closeEvent(self, event):
         self.write_settings()
