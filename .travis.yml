@@ -11,7 +11,7 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 install:
   - pip install flake8 pep8-naming flake8-debugger flake8-docstrings
-script: nosetests
+script:
   - flake8
   - flake8 --select=D1 videomorph/*.py
 after_success:
