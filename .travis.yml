@@ -12,6 +12,6 @@ before_install:
 install:
   - pip install flake8 pep8-naming flake8-debugger flake8-docstrings
 script:
-  - flake8 --select=D1 videomorph/*.py
+  - flake8 --select=D1 codeshard/videomorph/*.py
 after_success:
   - codecov
