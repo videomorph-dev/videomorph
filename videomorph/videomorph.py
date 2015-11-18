@@ -314,7 +314,8 @@ class MMWindow(QMainWindow):
             ' and a few insults(mostly of them deserved)).<br>'
             '<b>*</b> Ludwig Causilla (tester, and thanks for'
             ' helping me with your GIMP skills).<br>'
-            '<b>*</b> Carlos Parra Zaldivar (great tester and bug hunter).<br>'.format(
+            '<b>*</b> Carlos Parra Zaldivar (great tester and '
+            'bug hunter).<br>'.format(
                 v=__version__)
         )
 
