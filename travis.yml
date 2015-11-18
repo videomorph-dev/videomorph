@@ -12,7 +12,7 @@ before_install:
 install:
   - sudo apt-get install -y python3-pyqt5
   - pip install flake8 pep8-naming flake8-debugger flake8-docstrings
-script:
+script: nosetests
   - flake8
   - flake8 --select=D1 videomorph/*.py
 after_success:
