@@ -200,7 +200,7 @@ class MMWindow(QMainWindow):
         gb_progress.setTitle(self.tr(u'Progress'))
         vl = QVBoxLayout(gb_progress)
         self.pb_progress = QProgressBar(gb_progress)
-        self.pb_progress.setProperty("value", 24)
+        self.pb_progress.setProperty("value", 0)
         vl.addWidget(self.pb_progress)
         self.vl2.addWidget(gb_progress)
 
@@ -313,7 +313,8 @@ class MMWindow(QMainWindow):
             '<b>*</b> Maikel Llamaret Heredia (tester, naming suggestion'
             ' and a few insults(mostly of them deserved)).<br>'
             '<b>*</b> Ludwig Causilla (tester, and thanks for'
-            ' helping me with your GIMP skills).<br>'.format(
+            ' helping me with your GIMP skills).<br>'
+            '<b>*</b> Carlos Parra Zaldivar (great tester and bug hunter).<br>'.format(
                 v=__version__)
         )
 
