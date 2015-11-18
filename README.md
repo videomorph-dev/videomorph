@@ -61,3 +61,4 @@ Contributors:
 
  - [Maikel LLamaret Heredia](http://swlx.cubava.cu)
  - [Ludwig Causilla](http://desdeabreus.cubava.cu)
+ - [Carlos Parra Zaldivar](http://carlosp.cubava.cu)
