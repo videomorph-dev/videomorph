@@ -1,6 +1,7 @@
 # VideoMorph
 
 [![Build Status](https://travis-ci.org/codeshard/videomorph.png?branch=master)](https://travis-ci.org/codeshard/videomorph)
+[![codecov.io](https://codecov.io/github/codeshard/videomorph/coverage.svg?branch=master)](https://codecov.io/github/codeshard/videomorph?branch=master)
 
 VideoMorph is a small GUI wrapper for [ffmpeg](http://ffmpeg.org) 
 based on code from [python-video-converter](https://github.com/senko/python-video-converter)
