@@ -50,6 +50,9 @@ coverage.xml
 # Django stuff:
 *.log
 
+# Geany 
+*.geany
+
 # Sphinx documentation
 docs/_build/
 
