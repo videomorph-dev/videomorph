@@ -22,6 +22,16 @@ import re
 import shlex
 from functools import partial
 
+from PyQt5.QtCore import (QSize,
+                          Qt,
+                          QSettings,
+                          QDir,
+                          QPoint,
+                          QProcess,
+                          QLocale,
+                          QTranslator,
+                          QLibraryInfo)
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import (QMainWindow,
                              QApplication,
                              QWidget,
@@ -46,26 +56,15 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QToolButton,
                              QItemDelegate,
                              qApp)
-from PyQt5.QtCore import (QSize,
-                          Qt,
-                          QSettings,
-                          QDir,
-                          QPoint,
-                          QProcess,
-                          QLocale,
-                          QTranslator,
-                          QLibraryInfo)
-from PyQt5.QtGui import QPixmap, QIcon
 
-from videomorph.converter.presets import PRESETS
-from videomorph.converter.presets import PROFILES
-from videomorph.converter.media import STATUS
-
+from videomorph import VERSION
+from videomorph.about import AboutVM
 from videomorph.converter import converter
 from videomorph.converter import media
 from videomorph.converter import utils
-from videomorph.about import AboutVM
-from videomorph import VERSION
+from videomorph.converter.media import STATUS
+from videomorph.converter.presets import PRESETS
+from videomorph.converter.presets import PROFILES
 
 # Table columns
 NAME, DURATION, QUALITY, PROGRESS = range(4)
@@ -188,9 +187,9 @@ class MMWindow(QMainWindow):
     def fix_layout(self):
         """Fix widgets layout."""
         spacer_item = QSpacerItem(20,
-                                 40,
-                                 QSizePolicy.Minimum,
-                                 QSizePolicy.Expanding)
+                                  40,
+                                  QSizePolicy.Minimum,
+                                  QSizePolicy.Expanding)
         self.vl1.addItem(spacer_item)
         self.hl.addLayout(self.vl1)
 
@@ -226,7 +225,7 @@ class MMWindow(QMainWindow):
 
     def update_edit_triggers(self):
         if (int(self.tb_tasks.currentColumn()) == QUALITY and not
-                self.converter.is_running()):
+        self.converter.is_running()):
             self.tb_tasks.setEditTriggers(
                 QAbstractItemView.AllEditTriggers)
         else:
@@ -579,7 +578,7 @@ class MMWindow(QMainWindow):
         profile = PRESETS[running_media.target_quality]
 
         if (not running_media.status == STATUS.done and not
-                running_media.status == STATUS.stopped):
+            running_media.status == STATUS.stopped):
             output_file = (self.le_output.text() +
                            '/' +
                            profile.profile_tag +
@@ -724,7 +723,7 @@ class MMWindow(QMainWindow):
                 self.cb_presets.currentText())
             # Update table Progress field if file is: Done or Stopped
             if (self.media_list.get_status(item.row()) == STATUS.done or
-                    self.media_list.get_status(item.row()) == STATUS.stopped):
+                        self.media_list.get_status(item.row()) == STATUS.stopped):
                 self.tb_tasks.item(item.row(), PROGRESS).setText(
                     self.tr(STATUS.todo))
             # Update file Done or Stopped status
@@ -741,7 +740,7 @@ class MMWindow(QMainWindow):
                         str(self.cb_presets.currentText()))
 
                     if (self.media_list.get_status(i) == STATUS.done or
-                            self.media_list.get_status(i) == STATUS.stopped):
+                                self.media_list.get_status(i) == STATUS.stopped):
                         self.tb_tasks.item(i, PROGRESS).setText(
                             self.tr(STATUS.todo))
 
@@ -813,7 +812,7 @@ class TargetQualityDelegate(QItemDelegate):
         selected_file.target_quality = editor.currentText()
         # Update table Progress field if file is: Done or Stopped
         if (self.parent.media_list.get_status(index.row()) == STATUS.done or
-             self.parent.media_list.get_status(index.row()) == STATUS.stopped):
+                    self.parent.media_list.get_status(index.row()) == STATUS.stopped):
             self.parent.tb_tasks.item(index.row(), PROGRESS).setText(
                 self.tr(STATUS.todo))
         # Update file status

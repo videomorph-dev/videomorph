@@ -19,6 +19,9 @@
 #   limitations under the License. 
 
 
+from PyQt5.QtCore import (QSize,
+                          Qt)
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (QDialog,
                              QDialogButtonBox,
                              QTabWidget,
@@ -28,35 +31,10 @@ from PyQt5.QtWidgets import (QDialog,
                              QTextEdit,
                              QPlainTextEdit,
                              QSizePolicy,
-                             QGroupBox,
                              QLabel,
-                             QSpacerItem,
-                             QComboBox,
-                             QProgressBar,
-                             QToolBar,
-                             QTableWidget,
-                             QTableWidgetItem,
-                             QLineEdit,
-                             QAction,
-                             QStyle,
-                             QAbstractItemView,
-                             QFileDialog,
-                             QMessageBox,
-                             QHeaderView,
-                             QToolButton,
-                             qApp)
-from PyQt5.QtCore import (QSize,
-                          Qt,
-                          QSettings,
-                          QDir,
-                          QPoint,
-                          QProcess,
-                          QLocale,
-                          QTranslator,
-                          QLibraryInfo)
-from PyQt5.QtGui import QPixmap
+                             QSpacerItem)
 
-from videomorph import VERSION, CODENAME
+from videomorph import VERSION
 
 
 class AboutVM(QDialog):
@@ -75,7 +53,9 @@ class AboutVM(QDialog):
         self.label.setPixmap(QPixmap('/usr/share/icons/videomorph.png'))
         self.label.setScaledContents(True)
         self.horizontalLayout_2.addWidget(self.label)
-        self.label_2 = QLabel("<p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">VideoMorph</span></p><p align=\"center\"><span style=\" font-size:9pt; font-weight:600;\">version {v}</span></p>".format(v=VERSION))
+        self.label_2 = QLabel(
+            "<p align=\"center\"><span style=\" font-size:24pt; font-weight:600;\">VideoMorph</span></p><p align=\"center\"><span style=\" font-size:9pt; font-weight:600;\">version {v}</span></p>".format(
+                v=VERSION))
         self.label_2.setMinimumSize(QSize(0, 64))
         self.label_2.setMaximumSize(QSize(16777215, 64))
         self.horizontalLayout_2.addWidget(self.label_2)

@@ -35,6 +35,7 @@ def which(app):
 
 def write_time(_time):
     """Return time in 00h:00m:00s format."""
+
     def fix(string):
         """Fix a number so it always contain two characters."""
         string = str(string)
@@ -56,4 +57,4 @@ def write_time(_time):
         return ':'.join(['{0}m'.format(fix(minutes)),
                          '{0}s'.format(fix(secs))])
     else:  # @return the time in 0s format
-        return str(secs)+'s'
+        return str(secs) + 's'

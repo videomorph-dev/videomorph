@@ -19,6 +19,7 @@
 #   limitations under the License.
 
 from PyQt5.QtCore import QProcess
+
 from videomorph.converter import utils
 
 

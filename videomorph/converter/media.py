@@ -36,6 +36,7 @@ class MediaFileStatus:
     done = 'Done!'
     stopped = 'Stopped!'
 
+
 STATUS = MediaFileStatus()
 
 
@@ -124,7 +125,6 @@ class MediaFile:
 
 
 class MediaInfo(object):
-
     def __init__(self, media_path):
         self.media_path = media_path
         # Video stream info
