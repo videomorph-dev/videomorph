@@ -28,6 +28,7 @@ var/
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+MANIFEST
 
 # Installer logs
 pip-log.txt
@@ -55,6 +56,9 @@ coverage.xml
 
 #PyCharm
 .idea/
+
+#KDE
+.directory
 
 # Sphinx documentation
 docs/_build/
