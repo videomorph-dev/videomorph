@@ -56,9 +56,9 @@ under LGPL/GPL
 Code & Artwork by: 
     
  - [Ozkar L. Garcell](mailto:codeshard@openmailbox.org)
+ - Leodanis Pozo Ramos
  
 Contributors:
 
  - [Maikel LLamaret Heredia](http://swlx.cubava.cu)
- - [Ludwig Causilla](http://desdeabreus.cubava.cu)
  - [Carlos Parra Zaldivar](http://carlosp.cubava.cu)
