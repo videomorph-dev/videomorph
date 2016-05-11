@@ -1,217 +1,239 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-#   MediaMorph - A PyQt5 frontend to ffmpeg
+# File name: media.py
+#
+#   VideoMorph - A PyQt5 frontend to ffmpeg
 #   Copyright 2015-2016 VideoMorph Development Team
 
-#   This file is part of python-video-converter (https://github.com/senko/python-video-converter)
-#   and has been modified to fit the VideoMorph requirements
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+
+#       http://www.apache.org/licenses/LICENSE-2.0
+
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
+import subprocess
+
+from videomorph.converter.utils import which
 
 
-class MediaFormatInfo(object):
+class MediaError(Exception):
+    pass
 
+
+class FileAddedError(MediaError):
+    pass
+
+
+class MediaFileStatus:
+    todo = 'To do'
+    done = 'Done!'
+    stopped = 'Stopped!'
+
+STATUS = MediaFileStatus()
+
+
+class MediaList:
     def __init__(self):
-        self.format = None
-        self.fullname = None
-        self.bitrate = None
-        self.duration = None
-        self.filesize = None
+        self.medias = []
+        # -1 represent no item running, 0, the first item, 1, second...
+        self.running_index = -1
 
-    def parse_ffprobe(self, key, val):
-        if key == 'format_name':
-            self.format = val
-        elif key == 'format_long_name':
-            self.fullname = val
-        elif key == 'bit_rate':
-            self.bitrate = MediaStreamInfo.parse_float(val, None)
-        elif key == 'duration':
-            self.duration = MediaStreamInfo.parse_float(val, None)
-        elif key == 'size':
-            self.size = MediaStreamInfo.parse_float(val, None)
+    def __iter__(self):
+        """Set up an iterator for MediaList."""
+        for media in self.medias:
+            yield media
 
-    def __repr__(self):
-        if self.duration is None:
-            return 'MediaFormatInfo(format=%s)' % self.format
-        return 'MediaFormatInfo(format=%s, duration=%.2f)' % (self.format,
-                                                              self.duration)
+    def clear(self):
+        self.medias.clear()
+        self.running_index = -1
 
+    def _is_added(self, media_file):
+        for media in self.medias:
+            if media.path == media_file.path:
+                return True
+        return False
 
-class MediaStreamInfo(object):
-
-    def __init__(self):
-        self.index = None
-        self.type = None
-        self.codec = None
-        self.codec_desc = None
-        self.duration = None
-        self.bitrate = None
-        self.video_width = None
-        self.video_height = None
-        self.video_fps = None
-        self.audio_channels = None
-        self.audio_samplerate = None
-        self.attached_pic = None
-        self.sub_forced = None
-        self.sub_default = None
-        self.metadata = {}
-
-    @staticmethod
-    def parse_float(val, default=0.0):
-        try:
-            return float(val)
-        except:
-            return default
-
-    @staticmethod
-    def parse_int(val, default=0):
-        try:
-            return int(val)
-        except:
-            return default
-
-    def parse_ffprobe(self, key, val):
-
-        if key == 'index':
-            self.index = self.parse_int(val)
-        elif key == 'codec_type':
-            self.type = val
-        elif key == 'codec_name':
-            self.codec = val
-        elif key == 'codec_long_name':
-            self.codec_desc = val
-        elif key == 'duration':
-            self.duration = self.parse_float(val)
-        elif key == 'bit_rate':
-            self.bitrate = self.parse_int(val, None)
-        elif key == 'width':
-            self.video_width = self.parse_int(val)
-        elif key == 'height':
-            self.video_height = self.parse_int(val)
-        elif key == 'channels':
-            self.audio_channels = self.parse_int(val)
-        elif key == 'sample_rate':
-            self.audio_samplerate = self.parse_float(val)
-        elif key == 'DISPOSITION:attached_pic':
-            self.attached_pic = self.parse_int(val)
-
-        if key.startswith('TAG:'):
-            key = key.split('TAG:')[1]
-            value = val
-            self.metadata[key] = value
-
-        if self.type == 'audio':
-            if key == 'avg_frame_rate':
-                if '/' in val:
-                    n, d = val.split('/')
-                    n = self.parse_float(n)
-                    d = self.parse_float(d)
-                    if n > 0.0 and d > 0.0:
-                        self.video_fps = float(n) / float(d)
-                elif '.' in val:
-                    self.video_fps = self.parse_float(val)
-
-        if self.type == 'video':
-            if key == 'r_frame_rate':
-                if '/' in val:
-                    n, d = val.split('/')
-                    n = self.parse_float(n)
-                    d = self.parse_float(d)
-                    if n > 0.0 and d > 0.0:
-                        self.video_fps = float(n) / float(d)
-                elif '.' in val:
-                    self.video_fps = self.parse_float(val)
-
-        if self.type == 'subtitle':
-            if key == 'disposition:forced':
-                self.sub_forced = self.parse_int(val)
-            if key == 'disposition:default':
-                self.sub_default = self.parse_int(val)
-
-    def __repr__(self):
-        d = ''
-        metadata_str = ['%s=%s' % (key, value) for key, value
-                        in self.metadata.items()]
-        metadata_str = ', '.join(metadata_str)
-
-        if self.type == 'audio':
-            d = 'type=%s, codec=%s, channels=%d, rate=%.0f' % (self.type,
-                                                               self.codec, self.audio_channels, self.audio_samplerate)
-        elif self.type == 'video':
-            d = 'type=%s, codec=%s, width=%d, height=%d, fps=%.1f' % (
-                self.type, self.codec, self.video_width, self.video_height,
-                self.video_fps)
-        elif self.type == 'subtitle':
-            d = 'type=%s, codec=%s' % (self.type, self.codec)
-        if self.bitrate is not None:
-            d += ', bitrate=%d' % self.bitrate
-
-        if self.metadata:
-            value = 'MediaStreamInfo(%s, %s)' % (d, metadata_str)
+    def add(self, media_file):
+        """Add a media file to the media list."""
+        if not isinstance(media_file, MediaFile):
+            raise MediaError('Not valid MediaFile object')
+        elif self._is_added(media_file):
+            raise FileAddedError('File is already added')
         else:
-            value = 'MediaStreamInfo(%s)' % d
+            self.medias.append(media_file)
 
-        return value
+    def delete_file(self, file_index):
+        """Delete a media file from the media list."""
+        del self.medias[file_index]
+
+    def get_file(self, file_index):
+        return self.medias[file_index]
+
+    def get_running_file(self):
+        return self.medias[self.running_index]
+
+    def get_status(self, file_index):
+        return self.medias[file_index].status
+
+    def set_status(self, file_index, status):
+        self.medias[file_index].status = status
+
+    def get_file_info(self, file_index, info_param):
+        return self.medias[file_index].get_info(info_param)
+
+    @property
+    def length(self):
+        """Return the number of elements in the list."""
+        return len(self.medias)
+
+    @property
+    def duration(self):
+        """Return the duration time of MediaList counting undone files only."""
+        return sum(float(media.info.format_duration) for
+                   media in
+                   self.medias if not
+                   media.status == STATUS.done and not
+                   media.status == STATUS.stopped)
+
+
+class MediaFile:
+    def __init__(self, file_path=None):
+        self.path = file_path
+        self.status = STATUS.todo
+        self.target_quality = None
+        self.info = MediaInfo(file_path)
+
+    def get_file_name(self, with_extension=False):
+        full_file_name = self.path.split('/')[-1]
+        file_name = '.'.join(full_file_name.split('.')[:-1])
+
+        if with_extension:
+            return full_file_name
+        return file_name
+
+    def get_info(self, info_param):
+        """Return an info attribute from a given file: media_file."""
+        return self.info.__dict__.get(info_param)
 
 
 class MediaInfo(object):
 
-    def __init__(self, posters_as_video=True):
-        self.format = MediaFormatInfo()
-        self.posters_as_video = posters_as_video
-        self.streams = []
+    def __init__(self, media_path):
+        self.media_path = media_path
+        # Video stream info
+        self.v_codec_name = None
+        self.v_codec_long_name = None
+        self.v_width = None
+        self.v_height = None
+        self.v_duration = None
+        self.v_bit_rate = None
+        # Audio stream info
+        self.a_codec_name = None
+        self.a_codec_long_name = None
+        self.a_channels = None
+        self.a_channel_layout = None
+        self.a_duration = None
+        self.a_bit_rate = None
+        # Subtitle stream info
+        self.s_codec_name = None
+        self.s_codec_long_name = None
+        # Format info
+        self.format_name = None
+        self.format_long_name = None
+        self.format_bit_rate = None
+        self.format_duration = None
+        self.file_size = None
 
-    def parse_ffprobe(self, raw):
-        in_format = False
-        current_stream = None
+        self._parse_ffprobe()
 
-        for line in raw.split('\n'):
-            line = line.strip()
-            if line == '':
-                continue
-            elif line == '[STREAM]':
-                current_stream = MediaStreamInfo()
-            elif line == '[/STREAM]':
-                if current_stream.type:
-                    self.streams.append(current_stream)
-                current_stream = None
-            elif line == '[FORMAT]':
-                in_format = True
-            elif line == '[/FORMAT]':
-                in_format = False
-            elif '=' in line:
-                k, v = line.split('=', 1)
-                k = k.strip()
-                v = v.strip()
-                if current_stream:
-                    current_stream.parse_ffprobe(k, v)
-                elif in_format:
-                    self.format.parse_ffprobe(k, v)
+    @staticmethod
+    def _spawn(cmd):
+        return subprocess.Popen(cmd,
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                universal_newlines=True)
 
-    def __repr__(self):
-        return 'MediaInfo(format=%s, streams=%s)' % (repr(self.format),
-                                                     repr(self.streams))
+    def _probe(self):
+        ffprober = self._spawn([which('ffprobe'),
+                                '-show_format',
+                                '-show_streams',
+                                self.media_path])
 
-    @property
-    def video(self):
-        """
-        First video stream, or None if there are no video streams.
-        """
-        for s in self.streams:
-            if s.type == 'video' and (self.posters_as_video
-                                      or not s.attached_pic):
-                return s
-        return None
+        return ffprober.stdout
 
-    @property
-    def posters(self):
-        return [s for s in self.streams if s.attached_pic]
+    def _parse_ffprobe(self):
+        def _get_value(line_):
+            return line_.split('=')[-1].strip()
 
-    @property
-    def audio(self):
-        """
-        First audio stream, or None if there are no audio streams.
-        """
-        for s in self.streams:
-            if s.type == 'audio':
-                return s
-        return None
+        def get_format(f):
+            for format_line in f:
+                format_line = format_line.strip()
+                if format_line.startswith('format_name'):
+                    self.format_name = _get_value(format_line)
+                elif format_line.startswith('format_long_name'):
+                    self.format_long_name = _get_value(format_line)
+                elif format_line.startswith('duration'):
+                    self.format_duration = _get_value(format_line)
+                elif format_line.startswith('bit_rate'):
+                    self.f_bit_rate = _get_value(format_line)
+                elif format_line.startswith('size'):
+                    self.file_size = _get_value(format_line)
+                elif format_line == '[/FORMAT]':
+                    break
+
+        with self._probe() as f:
+            for video_line in f:
+                if video_line.startswith('codec_name'):
+                    self.v_codec_name = _get_value(video_line)
+                elif video_line.startswith('codec_long_name'):
+                    self.v_codec_long_name = _get_value(video_line)
+                elif video_line.startswith('codec_type'):
+                    self.v_codec_type = _get_value(video_line)
+                elif video_line.startswith('width'):
+                    self.v_width = _get_value(video_line)
+                elif video_line.startswith('height'):
+                    self.v_height = _get_value(video_line)
+                elif video_line.startswith('duration'):
+                    self.v_duration = _get_value(video_line)
+                elif video_line.startswith('bit_rate'):
+                    self.v_bit_rate = _get_value(video_line)
+                elif video_line == '[/STREAM]\n':
+                    break
+
+            for audio_line in f:
+                if audio_line == '[FORMAT]\n':
+                    get_format(f)
+                    break
+                if audio_line.startswith('codec_name'):
+                    self.a_codec_name = _get_value(audio_line)
+                elif audio_line.startswith('codec_long_name'):
+                    self.a_codec_long_name = _get_value(audio_line)
+                elif audio_line.startswith('codec_type'):
+                    self.a_codec_type = _get_value(audio_line)
+                elif audio_line.startswith('channels'):
+                    self.a_channels = _get_value(audio_line)
+                elif audio_line.startswith('duration'):
+                    self.a_duration = _get_value(audio_line)
+                elif audio_line.startswith('bit_rate'):
+                    self.a_bit_rate = _get_value(audio_line)
+                elif audio_line == '[/STREAM]\n':
+                    break
+
+            for subtitle_line in f:
+                if subtitle_line == '[FORMAT]\n':
+                    get_format(f)
+                    break
+                if subtitle_line.startswith('codec_name'):
+                    self.s_codec_name = _get_value(subtitle_line)
+                elif subtitle_line.startswith('codec_long_name'):
+                    self.s_codec_long_name = _get_value(subtitle_line)
+                elif subtitle_line == '[/STREAM]\n':
+                    break

@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-#   MediaMorph - A PyQt5 frontend to ffmpeg
+# File name: utils.py
+#
+#   VideoMorph - A PyQt5 frontend to ffmpeg
 #   Copyright 2015-2016 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,149 +18,204 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+"""This module contains the PRESETS for encoding diferent vidieo formats."""
+
+import os
+
+from collections import OrderedDict
+
+CPU_CORES = (os.cpu_count() - 1 if
+             os.cpu_count() is not None
+             else 0)
+
 
 class BaseProfile(object):
-    """ Class doc """
-    profile_name = None
-    profile_extension = None
-    profile_label = None
-    profile_params = None
-    
+    """Base class for a profile."""
 
-class MP4HQProfile(BaseProfile):
-    profile_name = u'MP4'
-    profile_extension = u'.mp4'
-    profile_label = u'MP4 High Quality'
-    profile_params = u'-crf 35.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 128k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2 -threads 0'
-
-
-class MP4VHQProfile(BaseProfile):
-    profile_name = u'MP4'
-    profile_extension = u'.mp4'
-    profile_label = u'MP4 Very High Quality'
-    profile_params = u'-crf 25.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 160k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2 -threads 0'
-    
-
-class MP4SHQProfile(BaseProfile):
-    profile_name = u'MP4'
-    profile_extension = u'.mp4'
-    profile_label = u'MP4 Super High Quality'
-    profile_params = u'-crf 15.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2 -threads 0'
-    
-    
-class MP4FSProfile(BaseProfile):
-    profile_name = u'MP4'
-    profile_extension = u'.mp4'
-    profile_label = u'MP4 Fullscreen'
-    profile_params = u'-f mp4 -r 29.97 -vcodec libx264 -s 640x480 -b:v 1000k -aspect 4:3 -flags +loop -cmp +chroma -deblockalpha 0 -deblockbeta 0 -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2 -threads 0'
-    
-
-class MP4WSProfile(BaseProfile):
-    profile_name = u'MP4'
-    profile_extension = u'.mp4'
-    profile_label = u'MP4 Widescreen'
-    profile_params = u'-f mp4 -r 29.97 -vcodec libx264 -s 704x384 -b:v 1000k -aspect 16:9 -flags +loop -cmp +chroma -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -trellis 2 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2 -threads 0'
-    
-    
-class DVDFSProfile(BaseProfile):
-    profile_name = u'DVD'
-    profile_extension = u'.mpg'
-    profile_label = u'DVD Fullscreen'
-    profile_params = u'-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 4:3 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2 -threads 0'
-    
-
-class DVDWSProfile(BaseProfile):
-    profile_name = u'DVD'
-    profile_extension = u'.mpg'
-    profile_label = u'DVD Widescreen'
-    profile_params = u'-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 16:9 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2 -threads 0'
+    def __init__(self,
+                 profile_name=None,
+                 profile_tag=None,
+                 profile_extension=None,
+                 profile_quality=None,
+                 profile_params=None):
+        """Class initializer."""
+        self.profile_name = profile_name
+        self.profile_tag = profile_tag
+        self.profile_extension = profile_extension
+        self.profile_label = profile_quality
+        self.profile_params = profile_params
 
 
-class DVDFSHQProfile(BaseProfile):
-    profile_name = u'DVD'
-    profile_extension = u'.mpg'
-    profile_label = u'DVD Fullscreen High Quality'
-    profile_params = u'-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 4:3 -b:v 8000k -mbd rd -cmp 0 -subcmp 2 -threads 0'
-    
-    
-class DVDWSHQProfile(BaseProfile):
-    profile_name = u'DVD'
-    profile_extension = u'.mpg'
-    profile_label = u'DVD Widescreen High Quality'
-    profile_params = u'-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 16:9 -b:v 8000k -g 12 -mbd rd -cmp 0 -subcmp 2 -threads 0'
+class VoidProfile(BaseProfile):
+    """Base class for a Void profile."""
+    def __init__(self):
+        """Class initializer."""
+        super(VoidProfile, self).__init__(profile_name='---')
 
 
-class DVDLQProfile(BaseProfile):
-    profile_name = u'DVD'
-    profile_extension = u'.mpg'
-    profile_label = u'DVD Low Quality'
-    profile_params = u'-f dvd -target ntsc-dvd -b:v 5000k -r 29.97 -s 720x480 -ar 48000 -b:a 384k -threads 0'
-    
-    
-class VCDHQProfile(BaseProfile):
-    profile_name = u'VCD'
-    profile_extension = u'.mpg'
-    profile_label = u'VCD High Quality'
-    profile_params = u'-f vcd -target ntsc-vcd -mbd rd -cmp 0 -subcmp 2 -threads 0'
-    
-    
-class MSAVIProfile(BaseProfile):
-    profile_name = u'AVI'
-    profile_extension = u'.avi'
-    profile_label = u'MS Compatible AVI'
-    profile_params = u'-acodec libmp3lame -vcodec msmpeg4 -b:a 192k -b:v 1000k -s 640x480 -ar 44100 -threads 0'
-    
-    
-class XVIDFSProfile(BaseProfile):
-    profile_name = u'AVI'
-    profile_extension = u'.avi'
-    profile_label = u'XVID Fullscreen'
-    profile_params = u'-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 640x480 -aspect 4:3 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2 -threads 0'
-    
-    
-class XVIDWSProfile(BaseProfile):
-    profile_name = u'AVI'
-    profile_extension = u'.avi'
-    profile_label = u'XVID Widescreen'
-    profile_params = u'-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 704x384 -aspect 16:9 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2 -threads 0'
+class MP4Profile(BaseProfile):
+    """Base class for the MP4 profile."""
+
+    def __init__(self, **kwargs):
+        """Class initializer."""
+        super(MP4Profile, self).__init__(profile_name='MP4',
+                                         profile_extension='.mp4',
+                                         **kwargs)
 
 
-class FLVFSProfile(BaseProfile):
-    profile_name = u'FLV'
-    profile_extension = u'.flv'
-    profile_label = u'FLV Fullscreen'
-    profile_params = u'-vcodec flv -f flv -r 29.97 -s 320x240 -aspect 4:3 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k -threads 0'
+MP4HQProfile = MP4Profile(profile_quality='MP4 High Quality',
+                          profile_params='-crf 35.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 128k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2 -threads {0}'.format(CPU_CORES),
+                          profile_tag='[MP4HQ]')
 
 
-class FLVWSProfile(BaseProfile):
-    profile_name = u'FLV'
-    profile_extension = u'.flv'
-    profile_label = u'FLV Widescreen'
-    profile_params = u'-vcodec flv -f flv -r 29.97 -s 320x180 -aspect 16:9 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k -threads 0'
+MP4VHQProfile = MP4Profile(profile_quality='MP4 Very High Quality',
+                           profile_params='-crf 25.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 160k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2 -threads {0}'.format(CPU_CORES),
+                           profile_tag='[MP4VHQ]')
     
+
+MP4SHQProfile = MP4Profile(profile_quality='MP4 Super High Quality',
+                           profile_params='-crf 15.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2 -threads {0}'.format(CPU_CORES),
+                           profile_tag='[MP4SHQ]')
+
+
+MP4FSProfile = MP4Profile(profile_quality='MP4 Fullscreen',
+                          profile_params='-f mp4 -r 29.97 -vcodec libx264 -s 640x480 -b:v 1000k -aspect 4:3 -flags +loop -cmp +chroma -deblockalpha 0 -deblockbeta 0 -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2 -threads {0}'.format(CPU_CORES),
+                          profile_tag='[MP4FS]')
     
+
+MP4WSProfile = MP4Profile(profile_quality='MP4 Widescreen',
+                          profile_params='-f mp4 -r 29.97 -vcodec libx264 -s 704x384 -b:v 1000k -aspect 16:9 -flags +loop -cmp +chroma -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -trellis 2 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2 -threads {0}'.format(CPU_CORES),
+                          profile_tag='[MP4WS]')
+
+
+class DVDProfile(BaseProfile):
+    """Base class for the DVD profile."""
+    def __init__(self, **kwargs):
+        """Class initializer."""
+        super(DVDProfile, self).__init__(profile_name='DVD',
+                                         profile_extension='.mpg',
+                                         **kwargs)
+
+
+DVDFSProfile = DVDProfile(profile_quality='DVD Fullscreen',
+                          profile_params='-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 4:3 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2 -threads {0}'.format(CPU_CORES),
+                          profile_tag='[DVDFS]')
+
+
+DVDWSProfile = DVDProfile(profile_quality='DVD Widescreen',
+                          profile_params='-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 16:9 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2 -threads {0}'.format(CPU_CORES),
+                          profile_tag='[DVDWS]')
+
+
+DVDFSHQProfile = DVDProfile(profile_quality='DVD Fullscreen High Quality',
+                            profile_params='-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 4:3 -b:v 8000k -mbd rd -cmp 0 -subcmp 2 -threads {0}'.format(CPU_CORES),
+                            profile_tag='[DVDFSHQ]')
+
+
+DVDWSHQProfile = DVDProfile(profile_quality='DVD Widescreen High Quality',
+                            profile_params='-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 16:9 -b:v 8000k -g 12 -mbd rd -cmp 0 -subcmp 2 -threads {0}'.format(CPU_CORES),
+                            profile_tag='[DVDWSHQ]')
+
+
+DVDLQProfile = DVDProfile(profile_quality='DVD Low Quality',
+                          profile_params='-f dvd -target ntsc-dvd -b:v 5000k -r 29.97 -s 720x480 -ar 48000 -b:a 384k -threads {0}'.format(CPU_CORES),
+                          profile_tag='[DVDLQ]')
+
+
+class VCDProfile(BaseProfile):
+    """Base class for the VCD profile."""
+    def __init__(self, **kwargs):
+        """Class initializer."""
+        super(VCDProfile, self).__init__(profile_name='VCD',
+                                         profile_extension='.mpg',
+                                         **kwargs)
+
+
+VCDHQProfile = VCDProfile(profile_quality='VCD High Quality',
+                          profile_params='-f vcd -target ntsc-vcd -mbd rd -cmp 0 -subcmp 2 -threads {0}'.format(CPU_CORES),
+                          profile_tag='[VCDHQ]')
+
+
+class AVIProfile(BaseProfile):
+    """Base class for the AVI profile."""
+    def __init__(self, **kwargs):
+        """Class initializer."""
+        super(AVIProfile, self).__init__(profile_name='AVI',
+                                         profile_extension='.avi',
+                                         **kwargs)
+
+
+MSAVIProfile = AVIProfile(profile_quality='MS Compatible AVI',
+                          profile_params='-acodec libmp3lame -vcodec msmpeg4 -b:a 192k -b:v 1000k -s 640x480 -ar 44100 -threads {0}'.format(CPU_CORES),
+                          profile_tag='[MSAVI]')
+
+    
+XVIDFSProfile = AVIProfile(profile_quality='XVID Fullscreen',
+                           profile_params='-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 640x480 -aspect 4:3 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2 -threads {0}'.format(CPU_CORES),
+                           profile_tag='[XVIDFS]')
+
+    
+XVIDWSProfile = AVIProfile(profile_quality='XVID Widescreen',
+                           profile_params='-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 704x384 -aspect 16:9 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2 -threads {0}'.format(CPU_CORES),
+                           profile_tag='[XVIDWS]')
+
+
+class FLVProfile(BaseProfile):
+    """Base class for the FLV profile."""
+    def __init__(self, **kwargs):
+        """Class initializer."""
+        super(FLVProfile, self).__init__(profile_name='FLV',
+                                         profile_extension='.flv',
+                                         **kwargs)
+
+
+FLVFSProfile = FLVProfile(profile_quality='FLV Fullscreen',
+                          profile_params='-vcodec flv -f flv -r 29.97 -s 320x240 -aspect 4:3 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k -threads {0}'.format(CPU_CORES),
+                          profile_tag='[FLVFS]')
+
+
+FLVWSProfile = FLVProfile(profile_quality='FLV Widescreen',
+                          profile_params='-vcodec flv -f flv -r 29.97 -s 320x180 -aspect 16:9 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k -threads {0}'.format(CPU_CORES),
+                          profile_tag='[FLVWS]')
+
+
 class WMVProfile(BaseProfile):
-    profile_name = u'WMV'
-    profile_extension = u'.wmv'
-    profile_label = u'WMV Generic'
-    profile_params = u'-vcodec wmv2 -acodec wmav2 -b:v 1000k -b:a 160k -r 25 -threads 0'
+    """Base class for the WMV profile."""
+    def __init__(self, **kwargs):
+        """Class initializer."""
+        super(WMVProfile, self).__init__(profile_name='WMV',
+                                         profile_extension='.wmv',
+                                         **kwargs)
 
-presets_list = [
-    MP4HQProfile,
-    MP4VHQProfile,
-    MP4SHQProfile,
-    MP4FSProfile,
-    MP4WSProfile,
-    DVDFSProfile,
-    DVDWSProfile,
-    DVDFSHQProfile,
-    DVDWSHQProfile,
-    DVDLQProfile,
-    VCDHQProfile,
-    MSAVIProfile,
-    XVIDFSProfile,
-    XVIDWSProfile,
-    FLVFSProfile,
-    FLVWSProfile,
-    WMVProfile,
-]
+
+WMVGProfile = WMVProfile(profile_quality='WMV Generic',
+                         profile_params='-vcodec wmv2 -acodec wmav2 -b:v 1000k -b:a 160k -r 25 -threads {0}'.format(CPU_CORES),
+                         profile_tag='[WMVG]')
+
+# Encoding PRESETS
+PRESETS = OrderedDict([('MP4 High Quality', MP4HQProfile),
+                       ('MP4 Very High Quality', MP4VHQProfile),
+                       ('MP4 Super High Quality', MP4SHQProfile),
+                       ('MP4 Fullscreen', MP4FSProfile),
+                       ('MP4 Widescreen', MP4WSProfile),
+                       ('DVD Fullscreen', DVDFSProfile),
+                       ('DVD Widescreen', DVDWSProfile),
+                       ('DVD Fullscreen High Quality', DVDFSHQProfile),
+                       ('DVD Widescreen High Quality', DVDWSHQProfile),
+                       ('DVD Low Quality', DVDLQProfile),
+                       ('VCD High Quality', VCDHQProfile),
+                       ('MS Compatible AVI', MSAVIProfile),
+                       ('XVID Fullscreen', XVIDFSProfile),
+                       ('XVID Widescreen', XVIDWSProfile),
+                       ('FLV Fullscreen', FLVFSProfile),
+                       ('FLV Widescreen', FLVWSProfile),
+                       ('WMV Generic', WMVGProfile)])
+
+# Encoding PROFILES
+PROFILES = (VoidProfile().profile_name,
+            MP4Profile().profile_name,
+            DVDProfile().profile_name,
+            VCDProfile().profile_name,
+            AVIProfile().profile_name,
+            FLVProfile().profile_name,
+            WMVProfile().profile_name)
