@@ -53,6 +53,9 @@ coverage.xml
 # Geany 
 *.geany
 
+#PyCharm
+.idea/
+
 # Sphinx documentation
 docs/_build/
 
