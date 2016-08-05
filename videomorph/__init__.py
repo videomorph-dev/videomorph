@@ -1,3 +1,4 @@
-VERSION = '0.5a'
-CODENAME = 'Scout'
 from .converter import *
+
+VERSION = '0.6'
+CODENAME = ''

@@ -1,4 +1,4 @@
-from .converter import FFmpegConverter
+from .converter import Converter
 from .media import STATUS
-from .presets import PRESETS, PROFILES
+from .profiles import PROFILES
 from .utils import *

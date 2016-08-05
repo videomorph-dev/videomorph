@@ -1,9 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # File name: utils.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg
+#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2015-2016 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,22 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module contains some utility functions."""
+"""This module contains some utilities and functions."""
 
 import os
+
+
+class ConversionLib:
+    ffmpeg = 'ffmpeg'
+    avconv = 'avconv'
+
+
+CONV_LIB = ConversionLib()
+
+
+CPU_CORES = (os.cpu_count() - 1 if
+             os.cpu_count() is not None
+             else 0)
 
 
 def which(app):
