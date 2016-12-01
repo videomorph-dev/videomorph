@@ -1,4 +1,2 @@
-from .converter import *
-
-VERSION = '0.6'
-CODENAME = ''
+VERSION = '0.7'
+CODENAME = 'sailor'
