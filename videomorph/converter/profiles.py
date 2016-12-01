@@ -20,9 +20,14 @@
 
 """This module contains the PRESETS for encoding different video formats."""
 
+from os import cpu_count
+from re import compile
 from collections import OrderedDict
 
-from videomorph.converter.utils import CPU_CORES
+
+CPU_CORES = (cpu_count() - 1 if
+             cpu_count() is not None
+             else 0)
 
 
 class BaseProfile:
@@ -42,10 +47,9 @@ class BaseProfile:
     @property
     def quality_tag(self):
         """Generate a tag from profile quality string."""
-        tag = ''
-        for letter in self.profile_quality:
-            if letter.isupper() or letter.isdigit():
-                tag += letter
+        tag_regex = compile(r'[A-Z0-9]')
+        tag = ''.join(tag_regex.findall(self.profile_quality))
+
         return '[' + tag + ']'
 
 

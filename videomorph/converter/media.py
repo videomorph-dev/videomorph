@@ -20,110 +20,137 @@
 
 """This module provides the definition of MediaList and MediaFile classes."""
 
-import subprocess
+import shlex
+from subprocess import Popen
+from subprocess import PIPE
 
-from videomorph.converter.utils import which
+from collections import namedtuple
+
+from .utils import which
+from .profiles import PROFILES
 
 
 class MediaError(Exception):
+    """General exception class."""
     pass
 
 
 class FileAddedError(MediaError):
+    """Exception to raise when a file is already added."""
     pass
 
 
-class MediaFileStatus:
-    todo = 'To do'
-    done = 'Done!'
-    stopped = 'Stopped!'
+MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
 
 
-STATUS = MediaFileStatus()
+STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
 
 
-class MediaList:
+class MediaList(list):
+    """Class to store the list of video files to convert."""
+
     def __init__(self):
         """Class initializer."""
-        self.medias = []
+        super(MediaList, self).__init__()
         # -1 represent no item running, 0, the first item, 1, second...
         self.running_index = -1
 
-    def __getitem__(self, file_index):
-        return self.medias[file_index]
-
     def clear(self):
-        self.medias.clear()
+        """Clear the list of videos."""
+        super(MediaList, self).clear()
         self.running_index = -1
 
     def _file_is_added(self, media_file):
-        for media in self.medias:
+        """Determine if a video file is in the list already."""
+        for media in self:
             if media.path == media_file.path:
                 return True
         return False
 
     def add_file(self, media_file):
-        """Add a media file to the media list."""
+        """Add a video file to the list."""
         if not isinstance(media_file, MediaFile):
             raise MediaError('Not valid MediaFile object')
         elif self._file_is_added(media_file):
             raise FileAddedError('File is already added')
+        elif not media_file.get_info('format_duration'):
+            # 0 duration video file not added
+            return None
         else:
-            self.medias.append(media_file)
+            self.append(media_file)
 
     def delete_file(self, file_index):
-        """Delete a media file from the media list."""
-        del self.medias[file_index]
+        """Delete a video file from the list."""
+        del self[file_index]
 
     def get_file(self, file_index):
-        return self.medias[file_index]
+        """Return a file object."""
+        return self[file_index]
 
     def get_file_name(self, file_index, with_extension=False):
-        return self.medias[file_index].get_name(with_extension)
+        """Return the name of a video file."""
+        return self[file_index].get_name(with_extension)
 
     def get_file_path(self, file_index):
-        return self.medias[file_index].path
+        """Return the path to a video file."""
+        return self[file_index].path
 
     def get_target_quality(self, file_index):
-        return self.medias[file_index].target_quality
+        """Return the target quality of a file."""
+        return self[file_index].target_quality
 
     def get_running_file(self):
+        """Return the file that is currently running."""
         return self.get_file(file_index=self.running_index)
 
     def get_file_status(self, file_index):
-        return self.medias[file_index].status
+        """Return the video file status."""
+        return self[file_index].status
 
-    def set_file_status(self, file_index, status):
-        self.medias[file_index].status = status
+    def set_file_status(self, file_index, status=STATUS.todo):
+        """Set the video file status."""
+        self[file_index].status = status
 
     def get_file_info(self, file_index, info_param):
-        return self.medias[file_index].get_info(info_param)
+        """Return general streaming info from a video file."""
+        return self[file_index].get_info(info_param)
 
     @property
     def length(self):
         """Return the number of elements in the list."""
-        return len(self.medias)
+        return len(self)
 
     @property
     def duration(self):
         """Return the duration time of MediaList counting undone files only."""
         return sum(float(media.info.format_duration) for
                    media in
-                   self.medias if not
+                   self if not
                    media.status == STATUS.done and not
                    media.status == STATUS.stopped)
 
 
 class MediaFile:
-    def __init__(self, file_path, prober):
+    """Class representing a video file."""
+
+    __slots__ = ('path',
+                 'prober',
+                 'status',
+                 'target_quality',
+                 'profile',
+                 'info')
+
+    def __init__(self, file_path, target_quality, prober='ffprobe'):
         """Class initializer."""
         self.path = file_path
         self.prober = prober
         self.status = STATUS.todo
-        self.target_quality = None
+        self.target_quality = target_quality
+        self.profile = self._get_profile(target_quality)
         self.info = MediaInfo(self.path, self.prober)
 
     def get_name(self, with_extension=False):
+        """Return the file name."""
         full_file_name = self.path.split('/')[-1]
         file_name = '.'.join(full_file_name.split('.')[:-1])
 
@@ -135,8 +162,46 @@ class MediaFile:
         """Return an info attribute from a given file: media_file."""
         return self.info.__dict__.get(info_param)
 
+    def get_conversion_cmd(self, output_dir):
+        """Return the conversion command."""
+        # Update the profile
+        self.profile = self._get_profile(self.target_quality)
+
+        output_file_path = self._get_output_file_path(output_dir)
+
+        cmd = ['-i', self.path] + \
+              shlex.split(self.profile.profile_params) + \
+              ['-y', output_file_path]
+
+        return cmd
+
+    @staticmethod
+    def _get_profile(target_quality):
+        """Return a profile object."""
+        for profile, profile_class in PROFILES.items():
+            if target_quality in profile_class.presets:
+                profile_name = profile
+
+        profile = PROFILES[profile_name](
+            profile_quality=target_quality,
+            profile_params=PROFILES[profile_name].presets[target_quality])
+
+        return profile
+
+    def _get_output_file_path(self, output_dir):
+        """Return the the output file path."""
+        output_file_path = (output_dir +
+                            '/' +
+                            self.profile.quality_tag +
+                            ' ' +
+                            self.get_name() +
+                            self.profile.profile_extension)
+        return output_file_path
+
 
 class MediaInfo:
+    """Represent the streaming info of a video file."""
+
     def __init__(self, media_path, prober):
         self.media_path = media_path
         self.prober = prober
@@ -151,11 +216,11 @@ class MediaInfo:
 
     @staticmethod
     def _spawn(cmd):
-        return subprocess.Popen(cmd,
-                                stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                universal_newlines=True)
+        return Popen(cmd,
+                     stdin=PIPE,
+                     stdout=PIPE,
+                     stderr=PIPE,
+                     universal_newlines=True)
 
     def _probe(self):
         prober = self._spawn([which(self.prober),

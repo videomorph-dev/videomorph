@@ -18,11 +18,12 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module defines the VideoMorph main windows that holds the UI."""
+"""This module defines the VideoMorph main window that holds the UI."""
 
 import re
-from . import videomorph_qrc
+from time import time
 from functools import partial
+from threading import Thread
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -59,17 +60,21 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QItemDelegate,
                              qApp)
 
-from videomorph import VERSION
-from videomorph.about import AboutVM
-from videomorph.converter import converter
-from videomorph.converter import media
-from videomorph.converter import utils
-from videomorph.converter.media import STATUS
-from videomorph.converter.profiles import PROFILES
-from videomorph.settings import SettingsDialog
-from videomorph.converter.utils import CONV_LIB
+from . import VERSION
+from . import videomorph_qrc
+from .about import AboutVM
+from .converter import Converter
+from .converter import CONV_LIB
+from .converter import STATUS
+from .converter import FileAddedError
+from .converter import MediaFile
+from .converter import MediaList
+from .converter import which
+from .converter import write_time
+from .converter import PROFILES
+from .settings import SettingsDialog
 
-# Table columns
+# Conversion tasks list table columns
 NAME, DURATION, QUALITY, PROGRESS = range(4)
 
 
@@ -81,7 +86,7 @@ class MMWindow(QMainWindow):
         super(MMWindow, self).__init__()
         # App data structures
         # Create the Media list object
-        self.media_list = media.MediaList()
+        self.media_list = MediaList()
         # Variables for calculating total progress
         self.time_jump = 0.0
         self.partial_time = 0.0
@@ -129,13 +134,12 @@ class MMWindow(QMainWindow):
         # Create the converter according to the user selection of
         # conversion library
 
-        self.converter = converter.Converter(
-            media_list=self.media_list,
-            conversion_lib=self.conversion_lib)
+        self.converter = Converter(media_list=self.media_list,
+                                   conversion_lib=self.conversion_lib)
 
-        self.converter.setProcessChannelMode(QProcess.MergedChannels)
-        self.converter.readyRead.connect(self._read_encoding_output)
-        self.converter.finished.connect(self.finish_file_encoding)
+        self.converter.process.setProcessChannelMode(QProcess.MergedChannels)
+        self.converter.process.readyRead.connect(self._read_encoding_output)
+        self.converter.process.finished.connect(self.finish_file_encoding)
 
         # Disable presets and profiles combo boxes
         self.cb_presets.setEnabled(False)
@@ -173,7 +177,7 @@ class MMWindow(QMainWindow):
         vl.addLayout(hl1)
         self.cb_profiles = QComboBox(
             gb_settings,
-            statusTip=self.tr('Select desired video format'))
+            statusTip=self.tr('Select the desired video format'))
         self.cb_profiles.setMinimumSize(QSize(200, 0))
         vl.addWidget(self.cb_profiles)
         hl2 = QHBoxLayout()
@@ -187,7 +191,7 @@ class MMWindow(QMainWindow):
         vl.addLayout(hl2)
         self.cb_presets = QComboBox(
             gb_settings,
-            statusTip=self.tr('Select desired video quality'))
+            statusTip=self.tr('Select the desired video quality'))
         self.cb_presets.setMinimumSize(QSize(200, 0))
 
         self.cb_profiles.currentIndexChanged.connect(partial(
@@ -226,7 +230,7 @@ class MMWindow(QMainWindow):
         self.tb_tasks.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.Stretch)
         self.tb_tasks.setHorizontalHeaderLabels(
-            [self.tr('Name'),
+            [self.tr('File Name'),
              self.tr('Duration'),
              self.tr('Target Quality'),
              self.tr('Progress')])
@@ -239,12 +243,10 @@ class MMWindow(QMainWindow):
 
     def update_edit_triggers(self):
         if (int(self.tb_tasks.currentColumn()) == QUALITY and not
-        self.converter.is_running):
-            self.tb_tasks.setEditTriggers(
-                QAbstractItemView.AllEditTriggers)
+                self.converter.is_running):
+            self.tb_tasks.setEditTriggers(QAbstractItemView.AllEditTriggers)
         else:
-            self.tb_tasks.setEditTriggers(
-                QAbstractItemView.NoEditTriggers)
+            self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def group_output_directory(self):
         """Define the output directory Group arrangement."""
@@ -255,12 +257,12 @@ class MMWindow(QMainWindow):
         hl = QHBoxLayout()
         self.le_output = QLineEdit(
             str(QDir.homePath()),
-            statusTip=self.tr('Select output directory'))
+            statusTip=self.tr('Choose Output Directory'))
         self.le_output.setReadOnly(True)
         hl.addWidget(self.le_output)
         self.tb_output = QToolButton(
             gb_output,
-            statusTip=self.tr('Select output directory'))
+            statusTip=self.tr('Choose Output Directory'))
         self.tb_output.setText('...')
         self.tb_output.clicked.connect(self.output_directory)
         hl.addWidget(self.tb_output)
@@ -274,13 +276,13 @@ class MMWindow(QMainWindow):
         gb_progress.setTitle(self.tr('Progress'))
         vl = QVBoxLayout(gb_progress)
         label_progress = QLabel(gb_progress)
-        label_progress.setText('Operation Progress')
+        label_progress.setText(self.tr('Operation Progress'))
         vl.addWidget(label_progress)
         self.pb_progress = QProgressBar(gb_progress)
         self.pb_progress.setProperty('value', 0)
         vl.addWidget(self.pb_progress)
         label_total_progress = QLabel(gb_progress)
-        label_total_progress.setText('Total Progress')
+        label_total_progress.setText(self.tr('Total Progress'))
         vl.addWidget(label_total_progress)
         self.pb_total_progress = QProgressBar(gb_progress)
         self.pb_total_progress.setProperty('value', 0)
@@ -319,24 +321,24 @@ class MMWindow(QMainWindow):
     def closeEvent(self, event):
         """Things to todo on close."""
         # Disconnect the finished signal
-        self.converter.finished.disconnect(self.finish_file_encoding)
+        self.converter.process.finished.disconnect(self.finish_file_encoding)
         # Close communication and kill the encoding process
-        if self.converter.state() == QProcess.Running:
-            self.converter.close()
-            self.converter.kill()
+        if self.converter.is_running:
+            self.converter.process.close()
+            self.converter.process.kill()
         # Save settings
         self.write_app_settings()
         event.accept()
 
     def check_conversion_lib(self):
         """Check if ffmpeg or/and avconv are installed on the system."""
-        if utils.which(CONV_LIB.ffmpeg) or utils.which(CONV_LIB.avconv):
+        if which(CONV_LIB.ffmpeg) or which(CONV_LIB.avconv):
             return True
         else:
             msg_box = QMessageBox(
                 QMessageBox.Critical,
                 self.tr('Error!'),
-                self.tr('ffmpeg or avconv binaries not found in your system'),
+                self.tr('ffmpeg or avconv libraries not found in your system'),
                 QMessageBox.NoButton, self)
             msg_box.addButton("&Ok", QMessageBox.AcceptRole)
             if msg_box.exec_() == QMessageBox.AcceptRole:
@@ -346,63 +348,81 @@ class MMWindow(QMainWindow):
     def create_actions(self):
         """Create the actions and connect them to the tool bar buttons."""
         self.add_media_file_action = QAction(
+            # Remove this line to use costume icons
+            self.style().standardIcon(QStyle.SP_DialogOpenButton),
             self.tr('&Open'),
             self,
             shortcut="Ctrl+O",
             enabled=True,
-            statusTip=self.tr('Add media files to the '
+            statusTip=self.tr('Add video files to the '
                               'list of conversion tasks'),
             triggered=self.add_media)
-        self.add_media_file_action.setIcon(QIcon(':/icons/images/abrir.png'))
+        # Uncomment this line to use costume icons
+        # self.add_media_file_action.setIcon(QIcon(':/icons/images/abrir.png'))
 
         self.clear_media_list_action = QAction(
+            # Remove this line to use costume icons
+            self.style().standardIcon(QStyle.SP_TrashIcon),
             self.tr('Clear &List'),
             self,
             shortcut="Ctrl+Del",
             enabled=False,
-            statusTip=self.tr('Clear the media list'),
+            statusTip=self.tr('Clear the Media List'),
             triggered=self.clear_media_list)
-        self.clear_media_list_action.setIcon(QIcon(':/icons/images/limpiar.png'))
+        # Uncomment this line to use costume icons
+        # self.clear_media_list_action.setIcon(QIcon(':/icons/images/limpiar.png'))
 
         self.remove_media_file_action = QAction(
+            # Remove this line to use costume icons
+            self.style().standardIcon(QStyle.SP_BrowserStop),
             self.tr('&Remove File'),
             self,
             shortcut="Del",
             enabled=False,
-            statusTip=self.tr('Remove media files from the list'),
+            statusTip=self.tr('Remove Video Files from the List'),
             triggered=self.remove_media_file)
-        self.remove_media_file_action.setIcon(QIcon(':/icons/images/eliminar.png'))
+        # Uncomment this line to use costume icons
+        # self.remove_media_file_action.setIcon(QIcon(':/icons/images/eliminar.png'))
 
         self.convert_action = QAction(
+            # Remove this line to use costume icons
+            self.style().standardIcon(QStyle.SP_MediaPlay),
             self.tr('&Convert'),
             self,
             shortcut="Ctrl+R",
             enabled=False,
-            statusTip=self.tr('Start conversion process'),
+            statusTip=self.tr('Start Conversion Process'),
             triggered=self.start_encoding)
-        self.convert_action.setIcon(QIcon(':/icons/images/convertir.png'))
+        # Uncomment this line to use costume icons
+        # self.convert_action.setIcon(QIcon(':/icons/images/convertir.png'))
 
         self.stop_action = QAction(
+            # Remove this line to use costume icons
+            self.style().standardIcon(QStyle.SP_MediaStop),
             self.tr('&Stop'),
             self,
             shortcut="Ctrl+P",
             enabled=False,
-            statusTip=self.tr('Stop media file conversion'),
+            statusTip=self.tr('Stop Video File Conversion'),
             triggered=self.stop_file_encoding)
-        self.stop_action.setIcon(QIcon(':/icons/images/parar.png'))
+        # Uncomment this line to use costume icons
+        # self.stop_action.setIcon(QIcon(':/icons/images/parar.png'))
 
         self.about_action = QAction(
+            # Remove this line to use costume icons
+            self.style().standardIcon(QStyle.SP_MessageBoxInformation),
             self.tr('&About'),
             self,
             shortcut="Ctrl+H",
             enabled=True,
             statusTip=self.tr('About VideoMorph {v}'.format(v=VERSION)),
             triggered=self.about)
-        self.about_action.setIcon(QIcon(':/icons/images/parar.png'))
+        # Uncomment this line to use costume icons
+        # self.about_action.setIcon(QIcon(':/icons/images/parar.png'))
 
         self.exit_action = QAction(
             self.style().standardIcon(QStyle.SP_DialogCloseButton),
-            self.tr('&Exit'),
+            self.tr('E&xit'),
             self,
             shortcut="Ctrl+Q",
             enabled=True,
@@ -415,7 +435,7 @@ class MMWindow(QMainWindow):
             self,
             shortcut="Ctrl+S",
             enabled=True,
-            statusTip=self.tr('Open VideoMorph {v} settings dialog'.format(
+            statusTip=self.tr('Open VideoMorph {v} Settings Dialog'.format(
                 v=VERSION)),
             triggered=self.settings)
 
@@ -442,7 +462,7 @@ class MMWindow(QMainWindow):
         self.edit_menu.addAction(self.clear_media_list_action)
         self.edit_menu.addAction(self.remove_media_file_action)
 
-        self.convert_menu = self.menuBar().addMenu(self.tr('&Convert'))
+        self.convert_menu = self.menuBar().addMenu(self.tr('&Conversion'))
         self.convert_menu.addAction(self.convert_action)
         self.convert_menu.addAction(self.stop_action)
 
@@ -468,9 +488,9 @@ class MMWindow(QMainWindow):
         elif self.conversion_lib == CONV_LIB.avconv:
             s.radio_btn_avconv.setChecked(True)
 
-        if not utils.which(CONV_LIB.ffmpeg):
+        if not which(CONV_LIB.ffmpeg):
             s.radio_btn_ffmpeg.setEnabled(False)
-        elif not utils.which(CONV_LIB.avconv):
+        elif not which(CONV_LIB.avconv):
             s.radio_btn_avconv.setEnabled(False)
 
         if s.exec_():
@@ -506,7 +526,7 @@ class MMWindow(QMainWindow):
         options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
         directory = QFileDialog.getExistingDirectory(
             self,
-            self.tr('Choose output directory'),
+            self.tr('Choose Output Directory'),
             QDir.homePath(),
             options=options)
 
@@ -537,40 +557,49 @@ class MMWindow(QMainWindow):
         # This rewind the encoding list if the encoding process is not running
         if not self.converter.is_running:
             self.media_list.running_index = -1
-
-        # Add selected medias to the table and to MediaList
+        # Add selected medias to the table and to MediaList using threads to
+        # minimize delay
+        threads = []
         for media_path in media_paths:
-            # Create the file and add_file it to the list
-            media_file = media.MediaFile(file_path=media_path,
-                                         prober=self.get_prober())
+
+            t = MediaFileThread(
+                media_path=media_path,
+                target_quality=str(self.cb_presets.currentText()),
+                prober=self.get_prober())
+            t.start()
+            threads.append(t)
+
+        for t in threads:
+            t.join()
+
+        for thread in threads:
+
             try:
-                self.media_list.add_file(media_file)
+                self.media_list.add_file(thread.media_file)
                 self.tb_tasks.setRowCount(rows + 1)
-            except media.FileAddedError:
+            except FileAddedError:
+                del thread.media_file
                 continue
+            # Test if the file was added to the list
+            # (0 duration files are not added)
+            if thread.media_file in self.media_list:
+                item = QTableWidgetItem()
+                item.setText(thread.media_file.get_name(with_extension=True))
+                self.tb_tasks.setItem(rows, NAME, item)
+                item = QTableWidgetItem()
+                file_duration = str(
+                    write_time(thread.media_file.info.format_duration))
+                item.setText(file_duration)
+                self.tb_tasks.setItem(rows, DURATION, item)
+                item = QTableWidgetItem()
+                item.setText(str(self.cb_presets.currentText()))
 
-            item = QTableWidgetItem()
-            item.setText(media_file.get_name(with_extension=True))
-            self.tb_tasks.setItem(rows, NAME, item)
-            item = QTableWidgetItem()
-            file_duration = str(
-                utils.write_time(media_file.info.format_duration))
-            item.setText(file_duration)
-            self.tb_tasks.setItem(rows, DURATION, item)
-            item = QTableWidgetItem()
-            target_quality = str(self.cb_presets.currentText())
-            item.setText(target_quality)
-
-            # Initialize the MediaFile.target_quality
-            media_file.target_quality = target_quality
-
-            self.tb_tasks.setItem(rows, QUALITY, item)
-            item = QTableWidgetItem()
-            item.setText(self.tr(STATUS.todo))
-            self.tb_tasks.setItem(rows, PROGRESS, item)
-            # Next table row
-            rows += 1
-
+                self.tb_tasks.setItem(rows, QUALITY, item)
+                item = QTableWidgetItem()
+                item.setText(self.tr('To convert'))
+                self.tb_tasks.setItem(rows, PROGRESS, item)
+                # Next table row
+                rows += 1
         # After adding files to the list, recalculate the list duration
         self.total_duration = self.media_list.duration
         # Update tool buttons so you can convert, or add_file, or clear...
@@ -640,8 +669,8 @@ class MMWindow(QMainWindow):
                 running_media.status == STATUS.stopped):
 
             self.converter.start_encoding(
-                file_index=self.media_list.running_index,
-                output_dir=self.le_output.text())
+                cmd=self.media_list.get_running_file().get_conversion_cmd(
+                    output_dir=self.le_output.text()))
         else:
             self.end_encoding_process()
 
@@ -654,38 +683,35 @@ class MMWindow(QMainWindow):
         self.time_jump = 0.0
         self.partial_time = 0.0
         self.total_time = 0.0
-        # Terminate the file encoding process
-        self.converter.terminate()
-        if self.converter.state() == QProcess.Running:
-            self.converter.kill()
+        # Terminate the file encoding
+        self.converter.stop_encoding()
 
     def finish_file_encoding(self):
         """Finish the file encoding process."""
         if not self.media_list.get_running_file().status == STATUS.stopped:
             # Close and kill the converter process
-            self.converter.close()
+            self.converter.process.close()
             # Check if the process finished OK
-            if self.converter.exitStatus() == QProcess.NormalExit:
+            if self.converter.process.exitStatus() == QProcess.NormalExit:
                 # When finished a file conversion...
                 self.tb_tasks.item(self.media_list.running_index, 3).setText(
-                    self.tr(STATUS.done))
+                    self.tr('Done!'))
                 self.media_list.get_running_file().status = STATUS.done
                 self.pb_progress.setProperty("value", 0)
             # Attempt to end the conversion process
             self.end_encoding_process()
         else:
             # If the process was stopped
-            if self.converter.state() == QProcess.NotRunning:
+            if not self.converter.is_running:
                 self.tb_tasks.item(self.media_list.running_index, 3).setText(
-                    self.tr(STATUS.stopped))
+                    self.tr('Stopped!'))
             # Attempt to end the conversion process
             self.end_encoding_process()
 
     def end_encoding_process(self):
 
-        # Test if running_index is out of range
-        if self.media_list.running_index + 1 >= self.media_list.length:
-            # List is done
+        # Test if encoding process is finished
+        if self.converter.encoding_done:
             msg_box = QMessageBox(
                 QMessageBox.Information,
                 self.tr('Finished!'),
@@ -711,7 +737,7 @@ class MMWindow(QMainWindow):
     def _read_encoding_output(self):
         """Read the encoding output from the self.converter stdout."""
         time_pattern = re.compile(r'time=([0-9.:]+) ')
-        ret = str(self.converter.readAll())
+        ret = str(self.converter.process.readAll())
         time = time_pattern.findall(ret)
 
         if time:
@@ -719,8 +745,7 @@ class MMWindow(QMainWindow):
             if ':' in time[0]:
                 time_in_secs = 0
                 for part in time[0].split(':'):
-                    time_in_secs = 60 * time_in_secs + float(
-                        part)
+                    time_in_secs = 60 * time_in_secs + float(part)
             else:
                 time_in_secs = float(time[0])
 
@@ -755,8 +780,8 @@ class MMWindow(QMainWindow):
                         'Operation remaining time: {rt}\t\t\t '
                         'Total remaining time: {trt}').format(
                     m=self.media_list.get_running_file().get_name(True),
-                    rt=utils.write_time(float(op_time) - time_in_secs),
-                    trt=utils.write_time(
+                    rt=write_time(float(op_time) - time_in_secs),
+                    trt=write_time(
                         self.total_duration - self.total_time)))
 
     # TODO: Review this and setEditorData for repeated code
@@ -776,7 +801,7 @@ class MMWindow(QMainWindow):
                     self.media_list.get_file_status(
                         item.row()) == STATUS.stopped):
                 self.tb_tasks.item(item.row(), PROGRESS).setText(
-                    self.tr(STATUS.todo))
+                    self.tr('To convert'))
             # Update file Done or Stopped status
             self.media_list.set_file_status(file_index=item.row(),
                                             status=STATUS.todo)
@@ -794,7 +819,7 @@ class MMWindow(QMainWindow):
                             self.media_list.get_file_status(
                                 i) == STATUS.stopped):
                         self.tb_tasks.item(i, PROGRESS).setText(
-                            self.tr(STATUS.todo))
+                            self.tr('To convert'))
 
                     self.media_list.get_file(i).target_quality = str(
                         self.cb_presets.currentText())
@@ -873,7 +898,7 @@ class TargetQualityDelegate(QItemDelegate):
                 self.parent.media_list.get_file_status(
                 index.row()) == STATUS.stopped):
             self.parent.tb_tasks.item(index.row(), PROGRESS).setText(
-                self.tr(STATUS.todo))
+                self.tr('To convert'))
         # Update file status
         self.parent.media_list.set_file_status(file_index=index.row(),
                                                status=STATUS.todo)
@@ -890,6 +915,21 @@ class TargetQualityDelegate(QItemDelegate):
             QAbstractItemView.NoEditTriggers)
 
 
+class MediaFileThread(Thread):
+    def __init__(self, media_path, target_quality, prober='ffprobe'):
+        super(MediaFileThread, self).__init__()
+        self.media_path = media_path
+        self.target_quality = target_quality
+        self.prober = prober
+        self.media_file = None
+
+    def run(self):
+        # Create media files to be added to the list
+        self.media_file = MediaFile(file_path=self.media_path,
+                                    target_quality=self.target_quality,
+                                    prober=self.prober)
+
+
 def main():
     """Main app function."""
     import sys
@@ -899,6 +939,7 @@ def main():
     locale = QLocale.system().name()
     if locale == 'es_CU':
         locale = 'es_ES'
+    # locale = 'es_ES'
     appTranslator = QTranslator()
     if exists(filePath + '/translations/'):
         appTranslator.load(filePath + "/translations/videomorph_" + locale)
