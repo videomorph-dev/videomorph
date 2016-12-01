@@ -307,7 +307,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../videomorph.py" line="160"/>
         <source>Conversion Presets</source>
-        <translation>Preconfiguraciones de Conversión</translation>
+        <translation>Perfiles de Conversión</translation>
     </message>
     <message>
         <location filename="../videomorph.py" line="170"/>
@@ -332,7 +332,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../videomorph.py" line="254"/>
         <source>Output Directory</source>
-        <translation>Derectorio de Salida</translation>
+        <translation>Directorio de Salida</translation>
     </message>
     <message>
         <location filename="../videomorph.py" line="279"/>
