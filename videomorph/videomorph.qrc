@@ -1,11 +1,4 @@
 <RCC>
-  <qresource prefix="icons">
-    <file>images/abrir.png</file>
-    <file>images/convertir.png</file>
-    <file>images/eliminar.png</file>
-    <file>images/limpiar.png</file>
-    <file>images/parar.png</file>
-  </qresource>
   <qresource prefix="logo">
     <file>images/videomorph.png</file>
   </qresource>
