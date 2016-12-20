@@ -21,6 +21,7 @@
 """This module defines the VideoMorph main window that holds the UI."""
 
 import re
+import os
 from functools import partial
 from threading import Thread
 
@@ -288,11 +289,10 @@ class MMWindow(QMainWindow):
         vl.addWidget(self.pb_total_progress)
         self.vl2.addWidget(gb_progress)
 
-    def _get_settings_file(self):
-        import os
-        return QSettings(QDir.homePath() +
-                         '{0}.videomorph{1}config.ini'.format(
-                         os.sep, os.sep),
+    @staticmethod
+    def _get_settings_file():
+        return QSettings('{0}{1}.videomorph{2}config.ini'.format(
+                            QDir.homePath(), os.sep, os.sep),
                          QSettings.IniFormat)
 
     def read_app_settings(self):
