@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="logo">
+    <file>images/videomorph.png</file>
+  </qresource>
+</RCC>
