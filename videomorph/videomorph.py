@@ -21,7 +21,7 @@
 """This module defines the VideoMorph main window that holds the UI."""
 
 import re
-import os
+from os import sep
 from functools import partial
 from threading import Thread
 
@@ -292,7 +292,7 @@ class MMWindow(QMainWindow):
     @staticmethod
     def _get_settings_file():
         return QSettings('{0}{1}.videomorph{2}config.ini'.format(
-                            QDir.homePath(), os.sep, os.sep),
+                            QDir.homePath(), sep, sep),
                          QSettings.IniFormat)
 
     def read_app_settings(self):
@@ -945,11 +945,13 @@ def main():
     #     locale = 'es_ES'
     locale = 'es_ES'
     appTranslator = QTranslator()
-    if exists(filePath + '/translations/'):
-        appTranslator.load(filePath + "/translations/videomorph_" + locale)
+    if exists(filePath + '{0}translations{1}'.format(sep, sep)):
+        appTranslator.load("{0}{1}translations{2}videomorph_{3}".format(
+            filePath, sep, sep, locale))
     else:
         appTranslator.load(
-            "/usr/share/videomorph/translations/videomorph_" + locale)
+            "{0}usr{1}share{2}videomorph{3}"
+            "translations{4}videomorph_{5}".format(sep, sep, sep, sep, locale))
     app.installTranslator(appTranslator)
     qtTranslator = QTranslator()
     qtTranslator.load("qt_" + locale,
