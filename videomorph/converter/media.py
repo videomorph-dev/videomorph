@@ -21,6 +21,7 @@
 """This module provides the definition of MediaList and MediaFile classes."""
 
 import shlex
+import os.path
 from subprocess import Popen
 from subprocess import PIPE
 
@@ -151,8 +152,8 @@ class MediaFile:
 
     def get_name(self, with_extension=False):
         """Return the file name."""
-        full_file_name = self.path.split('/')[-1]
-        file_name = '.'.join(full_file_name.split('.')[:-1])
+        full_file_name = os.path.basename(self.path)
+        file_name = full_file_name.split('.')[0]
 
         if with_extension:
             return full_file_name
@@ -191,9 +192,9 @@ class MediaFile:
     def _get_output_file_path(self, output_dir):
         """Return the the output file path."""
         output_file_path = (output_dir +
-                            '/' +
+                            os.sep +  # multi-platform path separator
                             self.profile.quality_tag +
-                            ' ' +
+                            '_' +
                             self.get_name() +
                             self.profile.profile_extension)
         return output_file_path

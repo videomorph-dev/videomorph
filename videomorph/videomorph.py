@@ -21,7 +21,6 @@
 """This module defines the VideoMorph main window that holds the UI."""
 
 import re
-from time import time
 from functools import partial
 from threading import Thread
 
