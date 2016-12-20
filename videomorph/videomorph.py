@@ -290,7 +290,10 @@ class MMWindow(QMainWindow):
 
     def read_app_settings(self):
         """Read the app settings."""
-        settings = QSettings(QDir.homePath() + '/.videomorph/config.ini',
+        import os
+        settings = QSettings(QDir.homePath() +
+                             '{0}.videomorph{1}config.ini'.format(
+                                 os.sep, os.sep),
                              QSettings.IniFormat)
         pos = settings.value("pos", QPoint(600, 200), type=QPoint)
         size = settings.value("size", QSize(1096, 510), type=QSize)
@@ -935,10 +938,10 @@ def main():
     from os.path import dirname, realpath, exists
     app = QApplication(sys.argv)
     filePath = dirname(realpath(__file__))
-    locale = QLocale.system().name()
-    if locale == 'es_CU':
-        locale = 'es_ES'
-    # locale = 'es_ES'
+    # locale = QLocale.system().name()
+    # if locale == 'es_CU':
+    #     locale = 'es_ES'
+    locale = 'es_ES'
     appTranslator = QTranslator()
     if exists(filePath + '/translations/'):
         appTranslator.load(filePath + "/translations/videomorph_" + locale)
