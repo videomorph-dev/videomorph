@@ -288,13 +288,16 @@ class MMWindow(QMainWindow):
         vl.addWidget(self.pb_total_progress)
         self.vl2.addWidget(gb_progress)
 
+    def _get_settings_file(self):
+        import os
+        return QSettings(QDir.homePath() +
+                         '{0}.videomorph{1}config.ini'.format(
+                         os.sep, os.sep),
+                         QSettings.IniFormat)
+
     def read_app_settings(self):
         """Read the app settings."""
-        import os
-        settings = QSettings(QDir.homePath() +
-                             '{0}.videomorph{1}config.ini'.format(
-                                 os.sep, os.sep),
-                             QSettings.IniFormat)
+        settings = self._get_settings_file()
         pos = settings.value("pos", QPoint(600, 200), type=QPoint)
         size = settings.value("size", QSize(1096, 510), type=QSize)
         self.resize(size)
@@ -311,8 +314,7 @@ class MMWindow(QMainWindow):
 
     def write_app_settings(self):
         """Write app settings on exit."""
-        settings = QSettings(QDir.homePath() + '/.videomorph/config.ini',
-                             QSettings.IniFormat)
+        settings = self._get_settings_file()
         settings.setValue("pos", self.pos())
         settings.setValue("size", self.size())
         settings.setValue("profile", self.cb_profiles.currentIndex())
