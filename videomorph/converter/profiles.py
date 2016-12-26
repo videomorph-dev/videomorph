@@ -47,7 +47,7 @@ class BaseProfile:
     @property
     def quality_tag(self):
         """Generate a tag from profile quality string."""
-        tag_regex = compile(r'[A-Z0-9]')
+        tag_regex = compile(r'[A-Z]4?')
         tag = ''.join(tag_regex.findall(self.profile_quality))
 
         return '[' + tag + ']'

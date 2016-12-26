@@ -20,7 +20,7 @@
 
 import nose
 
-from videomorph.videomorph import utils
+from videomorph.converter import utils
 
 
 @nose.tools.raises(ValueError)
