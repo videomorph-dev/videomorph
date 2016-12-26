@@ -940,10 +940,10 @@ def main():
     from os.path import dirname, realpath, exists
     app = QApplication(sys.argv)
     filePath = dirname(realpath(__file__))
-    # locale = QLocale.system().name()
-    # if locale == 'es_CU':
-    #     locale = 'es_ES'
-    locale = 'es_ES'
+    locale = QLocale.system().name()
+    if locale == 'es_CU':
+        locale = 'es_ES'
+    # locale = 'es_ES'
     appTranslator = QTranslator()
     if exists(filePath + '{0}translations{1}'.format(sep, sep)):
         appTranslator.load("{0}{1}translations{2}videomorph_{3}".format(
