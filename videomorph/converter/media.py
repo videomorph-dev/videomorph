@@ -194,7 +194,7 @@ class MediaFile:
         output_file_path = (output_dir +
                             os.sep +  # multi-platform path separator
                             self.profile.quality_tag +
-                            '_' +
+                            '-' +
                             self.get_name() +
                             self.profile.profile_extension)
         return output_file_path
