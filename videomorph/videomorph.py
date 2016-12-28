@@ -573,11 +573,8 @@ class MMWindow(QMainWindow):
             t.start()
             threads.append(t)
 
-        for t in threads:
-            t.join()
-
         for thread in threads:
-
+            thread.join()
             try:
                 self.media_list.add_file(thread.media_file)
                 self.tb_tasks.setRowCount(rows + 1)
