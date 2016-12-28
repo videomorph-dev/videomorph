@@ -558,9 +558,23 @@ class MMWindow(QMainWindow):
         # Count rows in the tasks table
         rows = self.tb_tasks.rowCount()
 
-        # This rewind the encoding list if the encoding process is not running
-        if not self.converter.is_running:
+        # Update tool buttons so you can convert, or add_file, or clear...
+        # only if there is not a conversion process running
+        if self.converter.is_running:
+            self.update_interface(presets=False,
+                                  profiles=False,
+                                  convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  output_dir=False,
+                                  settings=False)
+        else:
+            # This rewind the encoding list if the encoding process is
+            # not running
             self.media_list.running_index = -1
+            # Update ui
+            self.update_interface(stop=False, remove=False)
+
         # Add selected medias to the table and to MediaList using threads to
         # minimize delay
         threads = []
@@ -603,8 +617,6 @@ class MMWindow(QMainWindow):
                 rows += 1
         # After adding files to the list, recalculate the list duration
         self.total_duration = self.media_list.duration
-        # Update tool buttons so you can convert, or add_file, or clear...
-        self.update_interface(stop=False, remove=False)
 
     def remove_media_file(self):
         """Remove selected media file from the list."""
