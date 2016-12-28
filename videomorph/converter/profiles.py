@@ -135,10 +135,25 @@ class WMVProfile(BaseProfile):
                                          profile_extension='.wmv',
                                          **kwargs)
 
+
+class WEBMProfile(BaseProfile):
+    """Base class for the WEBM profile."""
+
+    presets = OrderedDict([('WEBM Fullscreen (4:3)', '-f webm -aspect 4:3 -vcodec libvpx -g 120 -level 216 -profile:v 0 -qmax 42 -qmin 10 -rc_buf_aggressivity 0.95 -vb 2M -acodec libvorbis -aq 90 -ac 2 -threads {0}'.format(CPU_CORES)),
+                           ('WEBM Widescreen (16:9)', '-f webm -aspect 16:9 -vcodec libvpx -g 120 -level 216 -profile:v 0 -qmax 42 -qmin 10 -rc_buf_aggressivity 0.95 -vb 2M -acodec libvorbis -aq 90 -ac 2 -threads {0}'.format(CPU_CORES))])
+
+    def __init__(self, **kwargs):
+        """Class initializer."""
+        super(WEBMProfile, self).__init__(profile_name='WEBM',
+                                          profile_extension='.webm',
+                                          **kwargs)
+
+
 # Encoding PROFILES
 PROFILES = OrderedDict([('MP4', MP4Profile),
                         ('DVD', DVDProfile),
                         ('VCD', VCDProfile),
                         ('AVI', AVIProfile),
                         ('FLV', FLVProfile),
-                        ('WMV', WMVProfile)])
+                        ('WMV', WMVProfile),
+                        ('WEBM', WEBMProfile)])
