@@ -1001,7 +1001,8 @@ def main():
     else:
         appTranslator.load(
             "{0}usr{1}share{2}videomorph{3}"
-            "translations{4}videomorph_{5}".format(sep, sep, sep, sep, locale))
+            "translations{4}videomorph_{5}".format(sep, sep, sep, sep, sep,
+                                                   locale))
     app.installTranslator(appTranslator)
     qtTranslator = QTranslator()
     qtTranslator.load("qt_" + locale,
