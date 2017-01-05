@@ -430,7 +430,7 @@ class MMWindow(QMainWindow):
             self,
             shortcut="Ctrl+H",
             enabled=True,
-            statusTip=self.tr('About {n} {v}'.format(n=APPNAME, v=VERSION)),
+            statusTip=self.tr('About VideoMorph'),
             triggered=self.about)
         # Uncomment this line to use costume icons
         # self.about_action.setIcon(QIcon(':/icons/images/parar.png'))
@@ -441,7 +441,7 @@ class MMWindow(QMainWindow):
             self,
             shortcut="Ctrl+Q",
             enabled=True,
-            statusTip=self.tr('Exit {n} {v}'.format(n=APPNAME, v=VERSION)),
+            statusTip=self.tr('Exit VideoMorph'),
             triggered=self.close)
 
         self.settings_action = QAction(
@@ -450,8 +450,7 @@ class MMWindow(QMainWindow):
             self,
             shortcut="Ctrl+S",
             enabled=True,
-            statusTip=self.tr('Open {n} {v} Settings Dialog'.format(
-                n=APPNAME, v=VERSION)),
+            statusTip=self.tr('Open VideoMorph Settings Dialog'),
             triggered=self.settings)
 
         # Add actions to the tool bar
@@ -991,11 +990,10 @@ def main():
     from os.path import dirname, realpath, exists
     app = QApplication(sys.argv)
     filePath = dirname(realpath(__file__))
-    locale = QLocale.system().name()
-    if locale == 'es_CU':
-        locale = 'es_ES'
-    # TODO: Correct translations
-    # locale = 'es_ES'
+    # locale = QLocale.system().name()
+    # if locale == 'es_CU':
+    #     locale = 'es_ES'
+    locale = 'es_ES'
     appTranslator = QTranslator()
     if exists(filePath + '{0}translations{1}'.format(sep, sep)):
         appTranslator.load("{0}{1}translations{2}videomorph_{3}".format(
