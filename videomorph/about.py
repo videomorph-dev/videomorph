@@ -42,7 +42,7 @@ class AboutVM(QDialog):
     def __init__(self, parent=None):
         """Class initializer."""
         super(AboutVM, self).__init__(parent)
-        self.setWindowTitle(self.tr('About' + ' ' + APPNAME))
+        self.setWindowTitle(self.tr('About {n}'.format(n=APPNAME)))
         self.resize(374, 404)
         self.horizontalLayout_3 = QHBoxLayout(self)
         self.verticalLayout_4 = QVBoxLayout()
