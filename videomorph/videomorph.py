@@ -60,6 +60,7 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QItemDelegate,
                              qApp)
 
+from . import APPNAME
 from . import VERSION
 from . import videomorph_qrc
 from .about import AboutVM
@@ -97,7 +98,7 @@ class MMWindow(QMainWindow):
         # Window size
         self.resize(680, 576)
         # Set window title
-        self.setWindowTitle('VideoMorph' + ' ' + VERSION)
+        self.setWindowTitle(APPNAME + ' ' + VERSION)
         # Define and set app icon
         icon = QIcon()
         icon.addPixmap(QPixmap(':/logo/images/videomorph.png'))
@@ -429,7 +430,7 @@ class MMWindow(QMainWindow):
             self,
             shortcut="Ctrl+H",
             enabled=True,
-            statusTip=self.tr('About VideoMorph {v}'.format(v=VERSION)),
+            statusTip=self.tr('About {n} {v}'.format(n=APPNAME, v=VERSION)),
             triggered=self.about)
         # Uncomment this line to use costume icons
         # self.about_action.setIcon(QIcon(':/icons/images/parar.png'))
@@ -440,7 +441,7 @@ class MMWindow(QMainWindow):
             self,
             shortcut="Ctrl+Q",
             enabled=True,
-            statusTip=self.tr('Exit VideoMorph {v}'.format(v=VERSION)),
+            statusTip=self.tr('Exit {n} {v}'.format(n=APPNAME, v=VERSION)),
             triggered=self.close)
 
         self.settings_action = QAction(
@@ -449,8 +450,8 @@ class MMWindow(QMainWindow):
             self,
             shortcut="Ctrl+S",
             enabled=True,
-            statusTip=self.tr('Open VideoMorph {v} Settings Dialog'.format(
-                v=VERSION)),
+            statusTip=self.tr('Open {n} {v} Settings Dialog'.format(
+                n=APPNAME, v=VERSION)),
             triggered=self.settings)
 
         # Add actions to the tool bar
@@ -993,6 +994,7 @@ def main():
     locale = QLocale.system().name()
     if locale == 'es_CU':
         locale = 'es_ES'
+    # TODO: Correct translations
     # locale = 'es_ES'
     appTranslator = QTranslator()
     if exists(filePath + '{0}translations{1}'.format(sep, sep)):
