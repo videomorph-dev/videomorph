@@ -73,6 +73,7 @@ from .converter import MediaList
 from .converter import which
 from .converter import write_time
 from .converter import PROFILES
+from .converter import PARAMS
 from .settings import SettingsDialog
 
 # Conversion tasks list table columns
@@ -533,8 +534,9 @@ class MMWindow(QMainWindow):
         profile = self.cb_profiles.currentText()
         cb_presets.clear()
 
-        for preset in PROFILES[profile].presets:
-            cb_presets.addItem(preset)
+        for quality in PARAMS:
+            if quality.startswith(profile):
+                cb_presets.addItem(quality)
 
         self.update_media_files_status()
 
@@ -597,6 +599,7 @@ class MMWindow(QMainWindow):
 
             t = MediaFileThread(
                 media_path=media_path,
+                profile=str(self.cb_profiles.currentText()),
                 target_quality=str(self.cb_presets.currentText()),
                 prober=self.get_prober())
             t.start()
@@ -833,7 +836,6 @@ class MMWindow(QMainWindow):
                     trt=write_time(
                         self.total_duration - self.total_time)))
 
-    # TODO: Review this and setEditorData for repeated code
     def update_media_files_status(self):
         """Update target Quality."""
         # Current item
@@ -970,9 +972,10 @@ class TargetQualityDelegate(QItemDelegate):
 
 
 class MediaFileThread(Thread):
-    def __init__(self, media_path, target_quality, prober='ffprobe'):
+    def __init__(self, media_path, profile, target_quality, prober='ffprobe'):
         super(MediaFileThread, self).__init__()
         self.media_path = media_path
+        self.profile = profile
         self.target_quality = target_quality
         self.prober = prober
         self.media_file = None
@@ -980,6 +983,7 @@ class MediaFileThread(Thread):
     def run(self):
         # Create media files to be added to the list
         self.media_file = MediaFile(file_path=self.media_path,
+                                    profile_name=self.profile,
                                     target_quality=self.target_quality,
                                     prober=self.prober)
 

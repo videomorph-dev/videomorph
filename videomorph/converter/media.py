@@ -29,6 +29,7 @@ from collections import namedtuple
 
 from .utils import which
 from .profiles import PROFILES
+from .profiles import PARAMS
 
 
 class MediaError(Exception):
@@ -135,19 +136,22 @@ class MediaFile:
     """Class representing a video file."""
 
     __slots__ = ('path',
+                 'profile_name',
                  'prober',
                  'status',
                  'target_quality',
                  'profile',
                  'info')
 
-    def __init__(self, file_path, target_quality, prober='ffprobe'):
+    def __init__(self, file_path, profile_name, target_quality,
+                 prober='ffprobe'):
         """Class initializer."""
         self.path = file_path
+        self.profile_name = profile_name
+        self.target_quality = target_quality
+        self.profile = self._get_profile(self.profile_name)
         self.prober = prober
         self.status = STATUS.todo
-        self.target_quality = target_quality
-        self.profile = self._get_profile(target_quality)
         self.info = MediaInfo(self.path, self.prober)
 
     def get_name(self, with_extension=False):
@@ -166,26 +170,22 @@ class MediaFile:
     def get_conversion_cmd(self, output_dir):
         """Return the conversion command."""
         # Update the profile
-        self.profile = self._get_profile(self.target_quality)
+        self.profile = self._get_profile(self.profile_name)
 
         output_file_path = self._get_output_file_path(output_dir)
 
         cmd = ['-i', self.path] + \
-              shlex.split(self.profile.profile_params) + \
+              shlex.split(self.profile.params) + \
               ['-y', output_file_path]
 
         return cmd
 
-    @staticmethod
-    def _get_profile(target_quality):
+    def _get_profile(self, profile_name):
         """Return a profile object."""
-        for profile, profile_class in PROFILES.items():
-            if target_quality in profile_class.presets:
-                profile_name = profile
+        profile = PROFILES[profile_name]
 
-        profile = PROFILES[profile_name](
-            profile_quality=target_quality,
-            profile_params=PROFILES[profile_name].presets[target_quality])
+        profile.quality = self.target_quality
+        profile.params = PARAMS[self.target_quality]
 
         return profile
 
@@ -196,7 +196,7 @@ class MediaFile:
                             self.profile.quality_tag +
                             '-' +
                             self.get_name() +
-                            self.profile.profile_extension)
+                            self.profile.extension)
         return output_file_path
 
 

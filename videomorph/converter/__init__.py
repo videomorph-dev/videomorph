@@ -7,3 +7,4 @@ from .media import MediaList
 from .utils import which
 from .utils import write_time
 from .profiles import PROFILES
+from .profiles import PARAMS
