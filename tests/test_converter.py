@@ -33,6 +33,7 @@ def setup():
     media_list = media.MediaList()
     media_file = media.MediaFile(file_path='Dad.mpg',
                                  target_quality='DVD Fullscreen (4:3)',
+                                 profile_name='DVD',
                                  prober='ffprobe')
     media_list.add_file(media_file)
     global conv

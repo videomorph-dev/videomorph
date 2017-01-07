@@ -156,6 +156,7 @@ def test_duration():
 def _get_media_file_obj(file_path='Dad.mpg', prober='ffprobe'):
     return media.MediaFile(file_path,
                            target_quality='DVD Fullscreen (4:3)',
+                           profile_name='DVD',
                            prober=prober)
 
 
