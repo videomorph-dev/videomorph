@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<video_profiles>
+    <MP4>
+        <MP4HighQuality>
+            <preset_name>MP4 High Quality</preset_name>
+            <preset_params>-crf 35.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 128k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2</preset_params>
+            <file_exteinsion>.mp4</file_exteinsion>
+        </MP4HighQuality>
+        <MP4VeryHighQuality>
+            <preset_name>MP4 Very High Quality</preset_name>
+            <preset_params>-crf 25.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 160k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2</preset_params>
+            <file_exteinsion>.mp4</file_exteinsion>
+        </MP4VeryHighQuality>
+        <MP4SuperHighQuality>
+            <preset_name>MP4 Super High Quality</preset_name>
+            <preset_params>-crf 15.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2</preset_params>
+            <file_exteinsion>.mp4</file_exteinsion>
+        </MP4SuperHighQuality>
+        <MP4Fullscreen>
+            <preset_name>MP4 Fullscreen (4:3)</preset_name>
+            <preset_params>-f mp4 -r 29.97 -vcodec libx264 -s 640x480 -b:v 1000k -aspect 4:3 -flags +loop -cmp +chroma -deblockalpha 0 -deblockbeta 0 -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2</preset_params>
+            <file_exteinsion>.mp4</file_exteinsion>
+        </MP4Fullscreen>
+        <MP4Widescreen>
+            <preset_name>MP4 Widescreen (16:9)</preset_name>
+            <preset_params>-f mp4 -r 29.97 -vcodec libx264 -s 704x384 -b:v 1000k -aspect 16:9 -flags +loop -cmp +chroma -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -trellis 2 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2</preset_params>
+            <file_exteinsion>.mp4</file_exteinsion>
+        </MP4Widescreen>
+    </MP4>
+    <DVD>
+        <DVDFullscreen>
+            <preset_name>DVD Fullscreen (4:3)</preset_name>
+            <preset_params>-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 4:3 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2</preset_params>
+            <file_exteinsion>.mpg</file_exteinsion>
+        </DVDFullscreen>
+        <DVDWidescreen>
+            <preset_name>DVD Widescreen (16:9)</preset_name>
+            <preset_params>-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 16:9 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2</preset_params>
+            <file_exteinsion>.mpg</file_exteinsion>
+        </DVDWidescreen>
+        <DVDFullscreenHighQuality>
+            <preset_name>DVD Fullscreen (4:3) High Quality</preset_name>
+            <preset_params>-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 4:3 -b:v 8000k -mbd rd -cmp 0 -subcmp 2</preset_params>
+            <file_exteinsion>.mpg</file_exteinsion>
+        </DVDFullscreenHighQuality>
+        <DVDWidescreenHighQuality>
+            <preset_name>DVD Widescreen (16:9) High Quality</preset_name>
+            <preset_params>-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 16:9 -b:v 8000k -g 12 -mbd rd -cmp 0 -subcmp 2</preset_params>
+            <file_exteinsion>.mpg</file_exteinsion>
+        </DVDWidescreenHighQuality>
+        <DVDLowQuality>
+            <preset_name>DVD Low Quality</preset_name>
+            <preset_params>-f dvd -target ntsc-dvd -b:v 5000k -r 29.97 -s 720x480 -ar 48000 -b:a 384k</preset_params>
+            <file_exteinsion>.mpg</file_exteinsion>
+        </DVDLowQuality>
+    </DVD>
+    <VCD>
+        <VCDHighQuality>
+            <preset_name>VCD High Quality</preset_name>
+            <preset_params>-f vcd -target ntsc-vcd -mbd rd -cmp 0 -subcmp 2</preset_params>
+            <file_exteinsion>.mpg</file_exteinsion>
+        </VCDHighQuality>
+    </VCD>
+    <AVI>
+        <AVIMSCompatible>
+            <preset_name>AVI MS Compatible</preset_name>
+            <preset_params>-acodec libmp3lame -vcodec msmpeg4 -b:a 192k -b:v 1000k -s 640x480 -ar 44100</preset_params>
+            <file_exteinsion>.avi</file_exteinsion>
+        </AVIMSCompatible>
+        <AVIXVIDFullscreen>
+            <preset_name>AVI XVID Fullscreen (4:3)</preset_name>
+            <preset_params>-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 640x480 -aspect 4:3 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2</preset_params>
+            <file_exteinsion>.avi</file_exteinsion>
+        </AVIXVIDFullscreen>
+        <AVIXVIDWidescreen>
+            <preset_name>AVI XVID Widescreen (16:9)</preset_name>
+            <preset_params>-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 704x384 -aspect 16:9 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2</preset_params>
+            <file_exteinsion>.avi</file_exteinsion>
+        </AVIXVIDWidescreen>
+    </AVI>
+    <FLV>
+        <FLVFullscreen>
+            <preset_name>FLV Fullscreen (4:3)</preset_name>
+            <preset_params>-vcodec flv -f flv -r 29.97 -s 320x240 -aspect 4:3 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k</preset_params>
+            <file_exteinsion>.flv</file_exteinsion>
+        </FLVFullscreen>
+        <FLVWidescreen>
+            <preset_name>FLV Widescreen (16:9)</preset_name>
+            <preset_params>-vcodec flv -f flv -r 29.97 -s 320x180 -aspect 16:9 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k</preset_params>
+            <file_exteinsion>.flv</file_exteinsion>
+        </FLVWidescreen>
+    </FLV>
+    <WMV>
+        <WMVGeneric>
+            <preset_name>WMV Generic</preset_name>
+            <preset_params>-vcodec wmv2 -acodec wmav2 -b:v 1000k -b:a 160k -r 25</preset_params>
+            <file_exteinsion>.wmv</file_exteinsion>
+        </WMVGeneric>
+    </WMV>
+    <WEBM>
+        <WEBMFullscreen>
+            <preset_name>WEBM Fullscreen (4:3)</preset_name>
+            <preset_params>-f webm -aspect 4:3 -vcodec libvpx -g 120 -level 216 -profile:v 0 -qmax 42 -qmin 10 -rc_buf_aggressivity 0.95 -vb 2M -acodec libvorbis -aq 90 -ac 2</preset_params>
+            <file_exteinsion>.webm</file_exteinsion>
+        </WEBMFullscreen>
+        <WEBMWidescreen>
+            <preset_name>WEBM Widescreen (16:9)</preset_name>
+            <preset_params>-f webm -aspect 16:9 -vcodec libvpx -g 120 -level 216 -profile:v 0 -qmax 42 -qmin 10 -rc_buf_aggressivity 0.95 -vb 2M -acodec libvorbis -aq 90 -ac 2</preset_params>
+            <file_exteinsion>.webm</file_exteinsion>
+        </WEBMWidescreen>
+    </WEBM>
+</video_profiles>

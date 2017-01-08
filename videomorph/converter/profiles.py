@@ -23,7 +23,7 @@
 from os import cpu_count
 from re import compile
 from collections import OrderedDict
-
+from xml.etree import ElementTree
 
 CPU_CORES = (cpu_count() - 1 if
              cpu_count() is not None
@@ -51,6 +51,16 @@ PARAMS = OrderedDict([('MP4 High Quality', '-crf 35.0 -vcodec libx264 -acodec aa
                       ])
 
 
+def get_profiles():
+    profiles = OrderedDict()
+    tree = ElementTree.parse('/home/lpozo/DevSpace/Ozkar/videomorph0.7/videomorph/profiles.xml')
+    root = tree.getroot()
+    for elem in root:
+        profiles[elem.tag] = Profile(extension=elem[0][2].text)
+
+    return profiles
+
+
 class Profile:
     """Base class for a profile."""
 
@@ -72,10 +82,4 @@ class Profile:
         return '[' + tag + ']'
 
 
-PROFILES = OrderedDict([('MP4', Profile(extension='.mp4')),
-                        ('DVD', Profile(extension='.mpg')),
-                        ('VCD', Profile(extension='.mpg')),
-                        ('AVI', Profile(extension='.avi')),
-                        ('FLV', Profile(extension='.flv')),
-                        ('WMV', Profile(extension='.wmv')),
-                        ('WEBM', Profile(extension='.webm'))])
+PROFILES = get_profiles()
