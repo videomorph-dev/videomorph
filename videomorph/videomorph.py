@@ -75,6 +75,7 @@ from .converter import write_time
 from .converter import PROFILES
 from .converter import PARAMS
 from .settings import SettingsDialog
+from .addprofile import AddProfileDialog
 
 # Conversion tasks list table columns
 NAME, DURATION, QUALITY, PROGRESS = range(4)
@@ -366,6 +367,16 @@ class MMWindow(QMainWindow):
         # Uncomment this line to use costume icons
         # self.add_media_file_action.setIcon(QIcon(':/icons/images/abrir.png'))
 
+        self.add_profile_action = QAction(
+            # Remove this line to use costume icons
+            self.style().standardIcon(QStyle.SP_DialogApplyButton),
+            self.tr('&Add Customized Profile...'),
+            self,
+            shortcut="Ctrl+F",
+            enabled=True,
+            statusTip=self.tr('Add Customized Profile'),
+            triggered=self.add_profile)
+
         self.clear_media_list_action = QAction(
             # Remove this line to use costume icons
             self.style().standardIcon(QStyle.SP_TrashIcon),
@@ -475,6 +486,8 @@ class MMWindow(QMainWindow):
         self.file_menu.addAction(self.exit_action)
 
         self.edit_menu = self.menuBar().addMenu(self.tr('&Edit'))
+        self.edit_menu.addAction(self.add_profile_action)
+        self.edit_menu.addSeparator()
         self.edit_menu.addAction(self.clear_media_list_action)
         self.edit_menu.addAction(self.remove_media_file_action)
 
@@ -654,6 +667,10 @@ class MMWindow(QMainWindow):
             # Remove file from MediaList
             self.media_list.delete_file(file_index=item)
             self.total_duration = self.media_list.duration
+
+    def add_profile(self):
+        ap = AddProfileDialog(parent=self)
+        ap.exec_()
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
