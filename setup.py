@@ -23,7 +23,7 @@ setup(
                 ('/usr/share/videomorph/images',
                  ['videomorph/images/videomorph.png']),
                 ('/usr/share/videomorph/stdprofiles',
-                 ['videomorph/stdprofiles/profiles.xml'])
+                 ['videomorph/stdprofiles/profiles.xml']),
                 ('/usr/share/doc/videomorph',
                  ['README.md', 'LICENSE', 'AUTHORS'])],
     scripts=["bin/videomorph"]
