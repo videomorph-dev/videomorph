@@ -42,10 +42,10 @@ class SettingsDialog(QDialog):
         self.group_layout = QtWidgets.QVBoxLayout(self.group_box)
 
         self.radio_btn_ffmpeg = QtWidgets.QRadioButton(self.group_box)
-        self.radio_btn_ffmpeg.setText(self.tr('Use ffmpeg library'))
+        self.radio_btn_ffmpeg.setText(self.tr('Use Ffmpeg Library'))
 
         self.radio_btn_avconv = QtWidgets.QRadioButton(self.group_box)
-        self.radio_btn_avconv.setText(self.tr('Use avconv library'))
+        self.radio_btn_avconv.setText(self.tr('Use Avconv Library'))
 
         self.group_layout.addWidget(self.radio_btn_ffmpeg)
         self.group_layout.addWidget(self.radio_btn_avconv)

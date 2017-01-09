@@ -34,7 +34,8 @@ from PyQt5.QtWidgets import (QDialog,
                              QLabel,
                              QSpacerItem)
 
-from videomorph import VERSION
+from . import APPNAME
+from . import VERSION
 
 
 class AboutVM(QDialog):
@@ -53,9 +54,8 @@ class AboutVM(QDialog):
         self.label.setPixmap(QPixmap(':/logo/images/videomorph.png'))
         self.label.setScaledContents(True)
         self.horizontalLayout_2.addWidget(self.label)
-        self.label_2 = QLabel(
-            "<p align=\"center\"><span style=\" font-size:20pt; font-weight:600;\">VideoMorph</span></p><p align=\"center\"><span style=\" font-size:9pt; font-weight:600;\">version {v}</span></p>".format(
-                v=VERSION))
+        self.label_2 = QLabel("<p align=\"center\"><span style=\" font-size:20pt; font-weight:600;\">{n}</span></p><p align=\"center\"><span style=\" font-size:9pt; font-weight:600;\">version {v}</span></p>".format(
+            n=APPNAME, v=VERSION))
         self.label_2.setMinimumSize(QSize(0, 64))
         self.label_2.setMaximumSize(QSize(16777215, 64))
         self.horizontalLayout_2.addWidget(self.label_2)

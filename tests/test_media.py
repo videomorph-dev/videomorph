@@ -63,12 +63,12 @@ def test_get_info_with_ffprobe():
 
 def test_get_conversion_cmd():
     media_file = _get_media_file_obj()
-    assert media_file.get_conversion_cmd('.') == ['-i', 'Dad.mpg', '-f', 'dvd', '-target', 'ntsc-dvd', '-vcodec', 'mpeg2video', '-r', '29.97', '-s', '352x480', '-aspect', '4:3', '-b:v', '4000k', '-mbd', 'rd', '-cmp', '2', '-subcmp', '2', '-acodec', 'mp2', '-b:a', '192k', '-ar', '48000', '-ac', '2', '-threads', '3', '-y', './[DVDF]_Dad.mpg']
+    assert media_file.get_conversion_cmd('.') == ['-i', 'Dad.mpg', '-f', 'dvd', '-target', 'ntsc-dvd', '-vcodec', 'mpeg2video', '-r', '29.97', '-s', '352x480', '-aspect', '4:3', '-b:v', '4000k', '-mbd', 'rd', '-cmp', '2', '-subcmp', '2', '-acodec', 'mp2', '-b:a', '192k', '-ar', '48000', '-ac', '2', '-threads', '3', '-y', './[DVDF]-Dad.mpg']
 
 
 def test_profile():
     media_file = _get_media_file_obj()
-    assert isinstance(media_file.profile, profiles.BaseProfile)
+    assert isinstance(media_file.profile, profiles.Profile)
 
 
 # Set of tests for media.MediaList class
@@ -156,6 +156,7 @@ def test_duration():
 def _get_media_file_obj(file_path='Dad.mpg', prober='ffprobe'):
     return media.MediaFile(file_path,
                            target_quality='DVD Fullscreen (4:3)',
+                           profile_name='DVD',
                            prober=prober)
 
 

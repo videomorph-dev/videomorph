@@ -62,3 +62,15 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Video file for testing
+tests/Dad.mpg
+
+# DEB packages
+*.deb
+build_deb.sh
+videomorph_0.7xenial_all/
+
+# Files for installing-uninstalling
+install.sh
+uninstall.sh
