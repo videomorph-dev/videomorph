@@ -72,8 +72,8 @@ from .converter import MediaFile
 from .converter import MediaList
 from .converter import which
 from .converter import write_time
-from .converter import PROFILES
-from .converter import PARAMS
+from .converter import get_locale
+from .converter import QUALITIES_PER_PROFILE
 from .settings import SettingsDialog
 from .addprofile import AddProfileDialog
 
@@ -540,16 +540,15 @@ class MMWindow(QMainWindow):
 
     def populate_profiles(self):
         """Populate profiles combo box."""
-        self.cb_profiles.addItems(PROFILES.keys())
+        self.cb_profiles.addItems(QUALITIES_PER_PROFILE.keys())
 
     def populate_presets(self, cb_presets):
         """Populate presets combo box."""
         profile = self.cb_profiles.currentText()
         cb_presets.clear()
 
-        for quality in PARAMS:
-            if quality.startswith(profile):
-                cb_presets.addItem(quality)
+        cb_presets.addItems(
+            QUALITIES_PER_PROFILE[self.cb_profiles.currentText()])
 
         self.update_media_files_status()
 
@@ -1011,9 +1010,7 @@ def main():
     from os.path import dirname, realpath, exists
     app = QApplication(sys.argv)
     filePath = dirname(realpath(__file__))
-    locale = QLocale.system().name()
-    if locale == 'es_CU':
-        locale = 'es_ES'
+    locale = get_locale()
     # locale = 'es_ES'
     appTranslator = QTranslator()
     if exists(filePath + '{0}translations{1}'.format(sep, sep)):

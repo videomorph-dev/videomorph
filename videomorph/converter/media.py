@@ -22,6 +22,7 @@
 
 import shlex
 import os.path
+from os import cpu_count
 from subprocess import Popen
 from subprocess import PIPE
 
@@ -30,6 +31,10 @@ from collections import namedtuple
 from .utils import which
 from .profiles import PROFILES
 from .profiles import PARAMS
+
+CPU_CORES = (cpu_count() - 1 if
+             cpu_count() is not None
+             else 0)
 
 
 class MediaError(Exception):
@@ -43,7 +48,6 @@ class FileAddedError(MediaError):
 
 
 MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
-
 
 STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
 
@@ -176,6 +180,7 @@ class MediaFile:
 
         cmd = ['-i', self.path] + \
               shlex.split(self.profile.params) + \
+              ['-threads', str(CPU_CORES)] + \
               ['-y', output_file_path]
 
         return cmd

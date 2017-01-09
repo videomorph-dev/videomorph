@@ -4,7 +4,7 @@ from .media import STATUS
 from .media import FileAddedError
 from .media import MediaFile
 from .media import MediaList
+from .utils import get_locale
 from .utils import which
 from .utils import write_time
-from .profiles import PROFILES
-from .profiles import PARAMS
+from .profiles import QUALITIES_PER_PROFILE
