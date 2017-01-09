@@ -20,17 +20,33 @@
 
 """This module contains the PRESETS for encoding different video formats."""
 
+from os import sep
+from os.path import expanduser, join, exists
 from re import compile
 from collections import OrderedDict
+from distutils.file_util import copy_file
 from xml.etree import ElementTree
 
 from .utils import get_locale
 
 
+def _get_profiles_xml_path():
+    return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
+
+
+def _create_profiles_xml_file():
+    profiles_xml = _get_profiles_xml_path()
+
+    if not exists(profiles_xml):
+        # TODO: This must get the file from '/usr/share/videomorph/stdprofiles'
+        copy_file('../videomorph/stdprofiles/profiles.xml', profiles_xml)
+        # copy_file('/usr/share/videomorph/stdprofiles/profiles.xml',
+        #           profiles_xml)
+
+
 def _parse_profiles_xml():
     """Returns the profiles.xml root."""
-    tree = ElementTree.parse(
-        '/home/lpozo/DevSpace/Ozkar/videomorph0.7/videomorph/profiles.xml')
+    tree = ElementTree.parse(_get_profiles_xml_path())
     return tree.getroot()
 
 
@@ -94,7 +110,9 @@ class Profile:
         return '[' + tag + ']'
 
 
-PARAMS = _get_preset_params(get_locale())
+_create_profiles_xml_file()
+
+PRESETS_PARAMS = _get_preset_params(get_locale())
 
 PROFILES = _get_profiles()
 

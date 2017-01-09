@@ -30,7 +30,7 @@ from collections import namedtuple
 
 from .utils import which
 from .profiles import PROFILES
-from .profiles import PARAMS
+from .profiles import PRESETS_PARAMS
 
 CPU_CORES = (cpu_count() - 1 if
              cpu_count() is not None
@@ -190,7 +190,7 @@ class MediaFile:
         profile = PROFILES[profile_name]
 
         profile.quality = self.target_quality
-        profile.params = PARAMS[self.target_quality]
+        profile.params = PRESETS_PARAMS[self.target_quality]
 
         return profile
 
