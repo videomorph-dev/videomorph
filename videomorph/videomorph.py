@@ -95,6 +95,8 @@ class MMWindow(QMainWindow):
         self.partial_time = 0.0
         self.total_time = 0.0
         self.total_duration = 0.0
+        # XML Profile
+        # self.xml_profile = _XMLProfile()
 
         # App interface setup
         # Window size
@@ -136,7 +138,6 @@ class MMWindow(QMainWindow):
 
         # Create the converter according to the user selection of
         # conversion library
-
         self.converter = Converter(media_list=self.media_list,
                                    conversion_lib=self.conversion_lib)
 

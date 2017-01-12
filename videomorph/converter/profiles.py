@@ -30,63 +30,105 @@ from xml.etree import ElementTree
 from .utils import get_locale
 
 
-def _get_profiles_xml_path():
-    return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
+class _XMLProfile:
+    """Class to manage the profiles.xml file."""
 
+    def __init__(self):
+        self._create_profiles_xml_file()
 
-def _create_profiles_xml_file():
-    profiles_xml = _get_profiles_xml_path()
+    def add_profile(self, profile, preset, params, extension):
+        xml_profile = ElementTree.Element(profile)
+        rx = compile(r'[A-z]')
+        preset_tag = ''.join(rx.findall(preset))
+        xml_preset = ElementTree.Element(preset_tag)
+        xml_preset_name = ElementTree.Element('preset_name')
+        xml_preset_name.text = preset
+        xml_params = ElementTree.Element('preset_params')
+        xml_params.text = params
+        xml_extension = ElementTree.Element('file_extension')
+        xml_extension.text = extension
 
-    if not exists(profiles_xml):
-        # TODO: This must get the file from '/usr/share/videomorph/stdprofiles'
-        copy_file('../videomorph/stdprofiles/profiles.xml', profiles_xml)
-        # copy_file('/usr/share/videomorph/stdprofiles/profiles.xml',
-        #           profiles_xml)
+        for num, elem in enumerate([xml_preset_name, xml_params,
+                                    xml_extension, xml_preset_name]):
+            xml_preset.insert(num, elem)
 
+        xml_profile.insert(-1, xml_preset)
+        # self.save_tree()
+        print(xml_profile)
 
-def _parse_profiles_xml():
-    """Returns the profiles.xml root."""
-    tree = ElementTree.parse(_get_profiles_xml_path())
-    return tree.getroot()
+    def get_profiles(self):
+        """Return a dict of Profile objects."""
+        profiles = OrderedDict()
 
+        for elem in self._xml_root:
+            profiles[elem.tag] = Profile(extension=elem[0][2].text)
 
-def _get_profiles():
-    """Return a dict of Profile objects."""
-    profiles = OrderedDict()
-    root = _parse_profiles_xml()
-    for elem in root:
-        profiles[elem.tag] = Profile(extension=elem[0][2].text)
+        return profiles
 
-    return profiles
+    def get_preset_params(self, locale):
+        """Return a dict of preset/params."""
+        preset_params = OrderedDict()
 
+        for elem in self._xml_root:
+            for e in elem:
+                if locale == 'es_ES':
+                    # Create the dict with keys in spanish
+                    preset_params[e[3].text] = e[1].text
+                else:
+                    # Create the dict with keys in english
+                    preset_params[e[0].text] = e[1].text
 
-def _get_preset_params(locale):
-    preset_params = OrderedDict()
-    root = _parse_profiles_xml()
-    for elem in root:
-        for e in elem:
-            if locale == 'es_ES':
-                preset_params[e[3].text] = e[1].text
+        return preset_params
+
+    def get_qualities_per_profile(self, locale):
+        qualities_per_profile = OrderedDict()
+        values = []
+
+        for elem in self._xml_root:
+            for e in elem:
+                if locale == 'es_ES':
+                    # Create the dict with values in spanish
+                    values.append(e[3].text)
+                else:
+                    # Create the dict with values in english
+                    values.append(e[0].text)
+
+            qualities_per_profile[elem.tag] = values
+            # Reinitialize values
+            values = []
+
+        return qualities_per_profile
+
+    def save_tree(self):
+        """Save xml tree."""
+
+        with open(self._profiles_xml_path, 'wb') as _file:
+            try:
+                ElementTree.ElementTree(self._xml_root).write(_file)
+            except Exception:
+                pass
+
+    @property
+    def _profiles_xml_path(self):
+        return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
+
+    def _create_profiles_xml_file(self):
+        profiles_xml = self._profiles_xml_path
+
+        if not exists(profiles_xml):
+            if exists('/usr/share/videomorph/stdprofiles/profiles.xml'):
+                # if VideoMorph is installed
+                copy_file('/usr/share/videomorph/stdprofiles/profiles.xml',
+                          profiles_xml)
             else:
-                preset_params[e[0].text] = e[1].text
+                # if not installed
+                copy_file('../videomorph/stdprofiles/profiles.xml', profiles_xml)
 
-    return preset_params
-
-
-def _get_qualities_per_profile(locale):
-    qualities_per_profile = OrderedDict()
-    values_list = []
-    root = _parse_profiles_xml()
-    for elem in root:
-        for e in elem:
-            if locale == 'es_ES':
-                values_list.append(e[3].text)
-            else:
-                values_list.append(e[0].text)
-
-        qualities_per_profile[elem.tag] = values_list
-        values_list = []
-    return qualities_per_profile
+    @property
+    def _xml_root(self):
+        """Returns the profiles.xml root."""
+        tree = ElementTree.parse(self._profiles_xml_path)
+        return tree.getroot()
 
 
 class Profile:
@@ -110,10 +152,10 @@ class Profile:
         return '[' + tag + ']'
 
 
-_create_profiles_xml_file()
+_xml_profile = _XMLProfile()
 
-PRESETS_PARAMS = _get_preset_params(get_locale())
+PRESETS_PARAMS = _xml_profile.get_preset_params(get_locale())
 
-PROFILES = _get_profiles()
+PROFILES = _xml_profile.get_profiles()
 
-QUALITIES_PER_PROFILE = _get_qualities_per_profile(get_locale())
+QUALITIES_PER_PROFILE = _xml_profile.get_qualities_per_profile(get_locale())
