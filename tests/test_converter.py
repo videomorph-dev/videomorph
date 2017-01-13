@@ -24,6 +24,7 @@ from PyQt5.QtCore import QProcess
 
 from videomorph.converter import converter
 from videomorph.converter import media
+from videomorph.converter import XMLProfile
 
 conv = None
 
@@ -31,10 +32,12 @@ conv = None
 # Set of test for Converter class
 def setup():
     media_list = media.MediaList()
-    media_file = media.MediaFile(file_path='Dad.mpg',
-                                 target_quality='DVD Fullscreen (4:3)',
-                                 profile_name='DVD',
-                                 prober='ffprobe')
+    media_file = media.MediaFile(
+        file_path='Dad.mpg',
+        conversion_profile=XMLProfile.get_conversion_profile(
+            profile_name='DVD',
+            target_quality='DVD Fullscreen (4:3)'),
+        prober='ffprobe')
     media_list.add_file(media_file)
     global conv
     conv = converter.Converter(media_list)
