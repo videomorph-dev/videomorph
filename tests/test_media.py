@@ -68,7 +68,7 @@ def test_get_conversion_cmd():
 
 def test_profile():
     media_file = _get_media_file_obj()
-    assert isinstance(media_file.profile, profiles.Profile)
+    assert isinstance(media_file.profile, profiles._Profile)
 
 
 # Set of tests for media.MediaList class

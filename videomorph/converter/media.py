@@ -29,8 +29,7 @@ from subprocess import PIPE
 from collections import namedtuple
 
 from .utils import which
-from .profiles import PROFILES
-from .profiles import PRESETS_PARAMS
+
 
 CPU_CORES = (cpu_count() - 1 if
              cpu_count() is not None
@@ -140,20 +139,15 @@ class MediaFile:
     """Class representing a video file."""
 
     __slots__ = ('path',
-                 'profile_name',
+                 'conversion_profile',
                  'prober',
                  'status',
-                 'target_quality',
-                 'profile',
                  'info')
 
-    def __init__(self, file_path, profile_name, target_quality,
-                 prober='ffprobe'):
+    def __init__(self, file_path, conversion_profile, prober='ffprobe'):
         """Class initializer."""
         self.path = file_path
-        self.profile_name = profile_name
-        self.target_quality = target_quality
-        self.profile = self._get_profile(self.profile_name)
+        self.conversion_profile = conversion_profile
         self.prober = prober
         self.status = STATUS.todo
         self.info = MediaInfo(self.path, self.prober)
@@ -173,35 +167,23 @@ class MediaFile:
 
     def get_conversion_cmd(self, output_dir):
         """Return the conversion command."""
-        # Update the profile
-        self.profile = self._get_profile(self.profile_name)
-
         output_file_path = self._get_output_file_path(output_dir)
 
         cmd = ['-i', self.path] + \
-              shlex.split(self.profile.params) + \
+              shlex.split(self.conversion_profile.params) + \
               ['-threads', str(CPU_CORES)] + \
               ['-y', output_file_path]
 
         return cmd
 
-    def _get_profile(self, profile_name):
-        """Return a profile object."""
-        profile = PROFILES[profile_name]
-
-        profile.quality = self.target_quality
-        profile.params = PRESETS_PARAMS[self.target_quality]
-
-        return profile
-
     def _get_output_file_path(self, output_dir):
         """Return the the output file path."""
         output_file_path = (output_dir +
                             os.sep +  # multi-platform path separator
-                            self.profile.quality_tag +
+                            self.conversion_profile.quality_tag +
                             '-' +
                             self.get_name() +
-                            self.profile.extension)
+                            self.conversion_profile.extension)
         return output_file_path
 
 

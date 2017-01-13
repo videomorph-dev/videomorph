@@ -7,4 +7,4 @@ from .media import MediaList
 from .utils import get_locale
 from .utils import which
 from .utils import write_time
-from .profiles import QUALITIES_PER_PROFILE
+from .profiles import XMLProfile

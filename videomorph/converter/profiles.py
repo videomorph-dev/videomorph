@@ -27,17 +27,15 @@ from collections import OrderedDict
 from distutils.file_util import copy_file
 from xml.etree import ElementTree
 
-from .utils import get_locale
 
-
-class _XMLProfile:
+class XMLProfile:
     """Class to manage the profiles.xml file."""
 
     def __init__(self):
         self._create_profiles_xml_file()
 
-    def add_profile(self, profile, preset, params, extension):
-        xml_profile = ElementTree.Element(profile)
+    def add_conversion_profile(self, profile_name, preset, params, extension):
+        xml_profile = ElementTree.Element(profile_name)
         rx = compile(r'[A-z]')
         preset_tag = ''.join(rx.findall(preset))
         xml_preset = ElementTree.Element(preset_tag)
@@ -56,29 +54,41 @@ class _XMLProfile:
         # self.save_tree()
         print(xml_profile)
 
-    def get_profiles(self):
-        """Return a dict of Profile objects."""
-        profiles = OrderedDict()
-
+    def get_conversion_profile(self, profile_name, target_quality):
+        """Return a Profile objects."""
         for elem in self._xml_root:
-            profiles[elem.tag] = Profile(extension=elem[0][2].text)
+            if elem.tag == profile_name:
+                for e in elem:
+                    if (e[0].text == target_quality or
+                            e[3].text == target_quality):
+                        return _Profile(name=profile_name,
+                                        extension=e[2].text,
+                                        quality=target_quality,
+                                        params=e[1].text)
 
-        return profiles
-
-    def get_preset_params(self, locale):
+    def get_preset_params(self, target_quality):
         """Return a dict of preset/params."""
-        preset_params = OrderedDict()
 
         for elem in self._xml_root:
             for e in elem:
-                if locale == 'es_ES':
-                    # Create the dict with keys in spanish
-                    preset_params[e[3].text] = e[1].text
-                else:
-                    # Create the dict with keys in english
-                    preset_params[e[0].text] = e[1].text
+                if e[0].text == target_quality or e[3].text == target_quality:
+                    return e[1].text
 
-        return preset_params
+
+    # def get_preset_params(self, locale):
+    #     """Return a dict of preset/params."""
+    #     preset_params = OrderedDict()
+    #
+    #     for elem in self._xml_root:
+    #         for e in elem:
+    #             if locale == 'es_ES':
+    #                 # Create the dict with keys in spanish
+    #                 preset_params[e[3].text] = e[1].text
+    #             else:
+    #                 # Create the dict with keys in english
+    #                 preset_params[e[0].text] = e[1].text
+    #
+    #     return preset_params
 
     def get_qualities_per_profile(self, locale):
         qualities_per_profile = OrderedDict()
@@ -131,17 +141,28 @@ class _XMLProfile:
         return tree.getroot()
 
 
-class Profile:
+class _Profile:
     """Base class for a Video Profile."""
 
     def __init__(self,
+                 name=None,
                  extension=None,
                  quality=None,
                  params=None):
         """Class initializer."""
+        self.name = name
         self.extension = extension
-        self.quality = quality
+        self._quality = quality
         self.params = params
+
+    @property
+    def quality(self):
+        return self._quality
+
+    @quality.setter
+    def quality(self, value):
+        self._quality = value
+        # TODO: Modify self.params when self._quality change
 
     @property
     def quality_tag(self):
@@ -150,12 +171,3 @@ class Profile:
         tag = ''.join(tag_regex.findall(self.quality))
 
         return '[' + tag + ']'
-
-
-_xml_profile = _XMLProfile()
-
-PRESETS_PARAMS = _xml_profile.get_preset_params(get_locale())
-
-PROFILES = _xml_profile.get_profiles()
-
-QUALITIES_PER_PROFILE = _xml_profile.get_qualities_per_profile(get_locale())

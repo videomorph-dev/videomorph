@@ -73,7 +73,7 @@ from .converter import MediaList
 from .converter import which
 from .converter import write_time
 from .converter import get_locale
-from .converter import QUALITIES_PER_PROFILE
+from .converter import XMLProfile
 from .settings import SettingsDialog
 from .addprofile import AddProfileDialog
 
@@ -96,7 +96,7 @@ class MMWindow(QMainWindow):
         self.total_time = 0.0
         self.total_duration = 0.0
         # XML Profile
-        # self.xml_profile = _XMLProfile()
+        self.xml_profile = XMLProfile()
 
         # App interface setup
         # Window size
@@ -541,15 +541,17 @@ class MMWindow(QMainWindow):
 
     def populate_profiles(self):
         """Populate profiles combo box."""
-        self.cb_profiles.addItems(QUALITIES_PER_PROFILE.keys())
+        self.cb_profiles.addItems(
+            self.xml_profile.get_qualities_per_profile(
+                locale=get_locale()).keys())
 
     def populate_presets(self, cb_presets):
         """Populate presets combo box."""
-        profile = self.cb_profiles.currentText()
         cb_presets.clear()
 
         cb_presets.addItems(
-            QUALITIES_PER_PROFILE[self.cb_profiles.currentText()])
+            self.xml_profile.get_qualities_per_profile(
+                locale=get_locale())[self.cb_profiles.currentText()])
 
         self.update_media_files_status()
 
@@ -612,8 +614,10 @@ class MMWindow(QMainWindow):
 
             t = MediaFileThread(
                 media_path=media_path,
-                profile=str(self.cb_profiles.currentText()),
-                target_quality=str(self.cb_presets.currentText()),
+                conversion_profile=self.xml_profile.get_conversion_profile(
+                    self.cb_profiles.currentText(),
+                    self.cb_presets.currentText()
+                ),
                 prober=self.get_prober())
             t.start()
             threads.append(t)
@@ -854,16 +858,18 @@ class MMWindow(QMainWindow):
                         self.total_duration - self.total_time)))
 
     def update_media_files_status(self):
-        """Update target Quality."""
+        """Update file status."""
         # Current item
         item = self.tb_tasks.currentItem()
         if item is not None:
             # Update target_quality in table
             self.tb_tasks.item(item.row(), QUALITY).setText(
                 str(self.cb_presets.currentText()))
-            # Update file target_quality
-            self.media_list.get_file(item.row()).target_quality = str(
-                self.cb_presets.currentText())
+            # Update files conversion profile
+            self.media_list.get_file(item.row()).conversion_profile = \
+                self.xml_profile.get_conversion_profile(
+                    self.cb_profiles.currentText(),
+                    self.cb_presets.currentText())
             # Update table Progress field if file is: Done or Stopped
             if (self.media_list.get_file_status(item.row()) == STATUS.done or
                     self.media_list.get_file_status(
@@ -890,8 +896,12 @@ class MMWindow(QMainWindow):
                         self.tb_tasks.item(i, PROGRESS).setText(
                             self.tr('To Convert'))
 
-                    self.media_list.get_file(i).target_quality = str(
-                        self.cb_presets.currentText())
+                    # Update files conversion profiles
+                    self.media_list.get_file(i).conversion_profile = \
+                        self.xml_profile.get_conversion_profile(
+                            self.cb_profiles.currentText(),
+                            self.cb_presets.currentText())
+
                 self.update_interface(clear=False, stop=False,
                                       stop_all=False, remove=False)
             self._set_media_status()
@@ -961,9 +971,13 @@ class TargetQualityDelegate(QItemDelegate):
             QItemDelegate.setEditorData(self, editor, index)
 
     def update(self, editor, index):
-        # Update file target_quality
+        # Update file conversion profile
         selected_file = self.parent.media_list.get_file(index.row())
-        selected_file.target_quality = editor.currentText()
+        selected_file.conversion_profile = \
+            self.parent.xml_profile.get_conversion_profile(
+                self.parent.cb_profiles.currentText(),
+                editor.currentText())
+
         # Update table Progress field if file is: Done or Stopped
         if (self.parent.media_list.get_file_status(
                 index.row()) == STATUS.done or
@@ -983,25 +997,23 @@ class TargetQualityDelegate(QItemDelegate):
                                      remove=False)
 
         selected_file = self.parent.media_list.get_file(index.row())
-        selected_file.target_quality = editor.currentText()
+        selected_file.conversion_profile.target_quality = editor.currentText()
         self.parent.tb_tasks.setEditTriggers(
             QAbstractItemView.NoEditTriggers)
 
 
 class MediaFileThread(Thread):
-    def __init__(self, media_path, profile, target_quality, prober='ffprobe'):
+    def __init__(self, media_path, conversion_profile, prober='ffprobe'):
         super(MediaFileThread, self).__init__()
         self.media_path = media_path
-        self.profile = profile
-        self.target_quality = target_quality
+        self.conversion_profile = conversion_profile
         self.prober = prober
         self.media_file = None
 
     def run(self):
         # Create media files to be added to the list
         self.media_file = MediaFile(file_path=self.media_path,
-                                    profile_name=self.profile,
-                                    target_quality=self.target_quality,
+                                    conversion_profile=self.conversion_profile,
                                     prober=self.prober)
 
 
