@@ -25,8 +25,9 @@ from locale import getlocale
 
 
 def get_locale():
-    return 'es_ES' if getlocale()[0] == 'es_CU' else getlocale()[0]
-    # return 'es_ES'
+    # return 'es_ES' if getlocale()[0] == 'es_CU' else getlocale()[0]
+    return 'es_ES'
+
 
 def which(app):
     """Detect if an app is installed in your system."""

@@ -73,7 +73,6 @@ from .converter import MediaList
 from .converter import which
 from .converter import write_time
 from .converter import get_locale
-from .converter import XMLProfile
 from .settings import SettingsDialog
 from .addprofile import AddProfileDialog
 
@@ -96,7 +95,8 @@ class MMWindow(QMainWindow):
         self.total_time = 0.0
         self.total_duration = 0.0
         # XML Profile
-        self.xml_profile = XMLProfile()
+        from .converter import XMLProfile
+        self.xml_profile = XMLProfile
 
         # App interface setup
         # Window size
@@ -541,16 +541,14 @@ class MMWindow(QMainWindow):
 
     def populate_profiles(self):
         """Populate profiles combo box."""
-        self.cb_profiles.addItems(
-            self.xml_profile.get_qualities_per_profile(
+        self.cb_profiles.addItems(self.xml_profile.get_qualities_per_profile(
                 locale=get_locale()).keys())
 
     def populate_presets(self, cb_presets):
         """Populate presets combo box."""
         cb_presets.clear()
 
-        cb_presets.addItems(
-            self.xml_profile.get_qualities_per_profile(
+        cb_presets.addItems(self.xml_profile.get_qualities_per_profile(
                 locale=get_locale())[self.cb_profiles.currentText()])
 
         self.update_media_files_status()
@@ -865,11 +863,9 @@ class MMWindow(QMainWindow):
             # Update target_quality in table
             self.tb_tasks.item(item.row(), QUALITY).setText(
                 str(self.cb_presets.currentText()))
-            # Update files conversion profile
-            self.media_list.get_file(item.row()).conversion_profile = \
-                self.xml_profile.get_conversion_profile(
-                    self.cb_profiles.currentText(),
-                    self.cb_presets.currentText())
+            # Update files target quality
+            self.media_list.get_file(item.row()).conversion_profile.quality = \
+                self.cb_presets.currentText()
             # Update table Progress field if file is: Done or Stopped
             if (self.media_list.get_file_status(item.row()) == STATUS.done or
                     self.media_list.get_file_status(
@@ -897,10 +893,8 @@ class MMWindow(QMainWindow):
                             self.tr('To Convert'))
 
                     # Update files conversion profiles
-                    self.media_list.get_file(i).conversion_profile = \
-                        self.xml_profile.get_conversion_profile(
-                            self.cb_profiles.currentText(),
-                            self.cb_presets.currentText())
+                    self.media_list.get_file(i).conversion_profile.quality = \
+                        self.cb_presets.currentText()
 
                 self.update_interface(clear=False, stop=False,
                                       stop_all=False, remove=False)

@@ -28,7 +28,7 @@ from distutils.file_util import copy_file
 from xml.etree import ElementTree
 
 
-class XMLProfile:
+class _XMLProfile:
     """Class to manage the profiles.xml file."""
 
     def __init__(self):
@@ -68,27 +68,10 @@ class XMLProfile:
 
     def get_preset_params(self, target_quality):
         """Return a dict of preset/params."""
-
         for elem in self._xml_root:
             for e in elem:
                 if e[0].text == target_quality or e[3].text == target_quality:
                     return e[1].text
-
-
-    # def get_preset_params(self, locale):
-    #     """Return a dict of preset/params."""
-    #     preset_params = OrderedDict()
-    #
-    #     for elem in self._xml_root:
-    #         for e in elem:
-    #             if locale == 'es_ES':
-    #                 # Create the dict with keys in spanish
-    #                 preset_params[e[3].text] = e[1].text
-    #             else:
-    #                 # Create the dict with keys in english
-    #                 preset_params[e[0].text] = e[1].text
-    #
-    #     return preset_params
 
     def get_qualities_per_profile(self, locale):
         qualities_per_profile = OrderedDict()
@@ -132,13 +115,17 @@ class XMLProfile:
                           profiles_xml)
             else:
                 # if not installed
-                copy_file('../videomorph/stdprofiles/profiles.xml', profiles_xml)
+                copy_file('../videomorph/stdprofiles/profiles.xml',
+                          profiles_xml)
 
     @property
     def _xml_root(self):
         """Returns the profiles.xml root."""
         tree = ElementTree.parse(self._profiles_xml_path)
         return tree.getroot()
+
+
+XMLProfile = _XMLProfile()
 
 
 class _Profile:
@@ -162,7 +149,8 @@ class _Profile:
     @quality.setter
     def quality(self, value):
         self._quality = value
-        # TODO: Modify self.params when self._quality change
+        # Update the params when the target quality change
+        self.params = XMLProfile.get_preset_params(self._quality)
 
     @property
     def quality_tag(self):
