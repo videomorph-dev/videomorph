@@ -21,7 +21,7 @@
 """This module contains the PRESETS for encoding different video formats."""
 
 from os import sep
-from os.path import expanduser, join, exists, dirname
+from os.path import expanduser, join, exists
 from re import compile
 from collections import OrderedDict
 from distutils.file_util import copy_file
@@ -54,9 +54,10 @@ class _XMLProfile:
     def __init__(self):
         self._xml_root = None
 
-    def update_xml_root(self):
+    def set_xml_root(self):
         self._xml_root = self._get_xml_root()
 
+    # TODO: delete_conversion_profile and exit_conversion_profile methods
     def add_conversion_profile(self, profile_name, preset, params, extension):
 
         if not profile_name:
@@ -76,7 +77,7 @@ class _XMLProfile:
         extension = extension.lower()
 
         xml_profile = ElementTree.Element(profile_name)
-        rx = compile(r'[A-z]4?')
+        rx = compile(r'[A-z][0-9]?')
         preset_tag = ''.join(rx.findall(preset))
         xml_preset = ElementTree.Element(preset_tag)
         xml_preset_name = ElementTree.Element('preset_name')
@@ -142,7 +143,6 @@ class _XMLProfile:
 
     def save_tree(self):
         """Save xml tree."""
-
         with open(self._profiles_xml_path, 'wb') as _file:
             try:
                 ElementTree.ElementTree(self._xml_root).write(_file)
@@ -202,7 +202,7 @@ class _Profile:
     @property
     def quality_tag(self):
         """Generate a tag from profile quality string."""
-        tag_regex = compile(r'[A-Z]4?')
+        tag_regex = compile(r'[A-Z][0-9]?')
         tag = ''.join(tag_regex.findall(self.quality))
 
         return '[' + tag + ']'

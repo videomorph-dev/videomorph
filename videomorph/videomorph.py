@@ -138,10 +138,10 @@ class MMWindow(QMainWindow):
         from .converter import XMLProfile
         self.xml_profile = XMLProfile
         self.xml_profile.create_profiles_xml_file()
-        self.xml_profile.update_xml_root()
+        self.xml_profile.set_xml_root()
 
         # Populate PROFILES combo box
-        self.populate_profiles()
+        self.populate_profiles_combo()
 
         # Read app settings
         self.read_app_settings()
@@ -209,7 +209,7 @@ class MMWindow(QMainWindow):
         self.cb_presets.setMinimumSize(QSize(200, 0))
 
         self.cb_profiles.currentIndexChanged.connect(partial(
-            self.populate_presets, self.cb_presets))
+            self.populate_presets_combo, self.cb_presets))
 
         self.cb_presets.activated.connect(self.update_media_files_status)
 
@@ -568,20 +568,20 @@ class MMWindow(QMainWindow):
         elif self.conversion_lib == CONV_LIB.avconv:
             return 'avprobe'
 
-    def populate_profiles(self):
+    def populate_profiles_combo(self):
         """Populate profiles combo box."""
+        self.cb_profiles.clear()
+
         self.cb_profiles.addItems(self.xml_profile.get_qualities_per_profile(
                 locale=get_locale()).keys())
-        print(self.cb_profiles.currentIndex())
 
-    def populate_presets(self, cb_presets):
+    def populate_presets_combo(self, cb_presets):
         """Populate presets combo box."""
         if self.cb_profiles.currentText() != '':
             cb_presets.clear()
             cb_presets.addItems(self.xml_profile.get_qualities_per_profile(
                     locale=get_locale())[self.cb_profiles.currentText()])
             self.update_media_files_status()
-        print(self.cb_presets.currentIndex())
 
     def output_directory(self):
         """Choose output directory."""
@@ -978,7 +978,7 @@ class TargetQualityDelegate(QItemDelegate):
     def createEditor(self, parent, option, index):
         if index.column() == QUALITY:
             editor = QComboBox(parent)
-            self.parent.populate_presets(cb_presets=editor)
+            self.parent.populate_presets_combo(cb_presets=editor)
             editor.activated.connect(partial(self.update,
                                              editor,
                                              index))
