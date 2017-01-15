@@ -22,6 +22,7 @@
 
 import re
 from os import sep
+from os.path import exists
 from functools import partial
 from threading import Thread
 
@@ -129,6 +130,10 @@ class MMWindow(QMainWindow):
 
         # Default conversion library
         self.conversion_lib = CONV_LIB.ffmpeg
+
+        # Create initial Settings if not created
+        self.create_initial_settings()
+
         # Read app settings
         self.read_app_settings()
 
@@ -303,6 +308,17 @@ class MMWindow(QMainWindow):
         return QSettings('{0}{1}.videomorph{2}config.ini'.format(
                             QDir.homePath(), sep, sep),
                          QSettings.IniFormat)
+
+    def create_initial_settings(self):
+        if not exists('{0}{1}.videomorph{2}config.ini'.format(
+                QDir.homePath(), sep, sep)):
+            settings = self._get_settings_file()
+            settings.setValue("pos", QPoint(100, 50))
+            settings.setValue("size", QSize(1096, 510))
+            settings.setValue("profile", 0)
+            settings.setValue("preset", 0)
+            settings.setValue("output_dir", QDir.homePath())
+            settings.setValue('conversion_lib', CONV_LIB.ffmpeg)
 
     def read_app_settings(self):
         """Read the app settings."""

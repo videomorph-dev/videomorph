@@ -154,7 +154,7 @@ class _XMLProfile:
         return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
 
     def create_profiles_xml_file(self):
-        profiles_xml = dirname(self._profiles_xml_path)
+        profiles_xml = self._profiles_xml_path
 
         if not exists(profiles_xml):
             if exists('/usr/share/videomorph/stdprofiles/profiles.xml'):
