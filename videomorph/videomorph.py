@@ -312,13 +312,10 @@ class MMWindow(QMainWindow):
     def create_initial_settings(self):
         if not exists('{0}{1}.videomorph{2}config.ini'.format(
                 QDir.homePath(), sep, sep)):
-            settings = self._get_settings_file()
-            settings.setValue("pos", QPoint(100, 50))
-            settings.setValue("size", QSize(1096, 510))
-            settings.setValue("profile", 0)
-            settings.setValue("preset", 0)
-            settings.setValue("output_dir", QDir.homePath())
-            settings.setValue('conversion_lib', CONV_LIB.ffmpeg)
+            self.write_app_settings(pos=QPoint(100, 50),
+                                    size=QSize(1096, 510),
+                                    profile_index=0,
+                                    preset_index=0)
 
     def read_app_settings(self):
         """Read the app settings."""
@@ -337,15 +334,21 @@ class MMWindow(QMainWindow):
         if 'conversion_lib' in settings.allKeys():
             self.conversion_lib = settings.value('conversion_lib')
 
-    def write_app_settings(self):
+    def write_app_settings(self,
+                           pos,
+                           size,
+                           profile_index,
+                           preset_index,
+                           output_dir=QDir.homePath(),
+                           conv_lib=CONV_LIB.ffmpeg):
         """Write app settings on exit."""
         settings = self._get_settings_file()
-        settings.setValue("pos", self.pos())
-        settings.setValue("size", self.size())
-        settings.setValue("profile", self.cb_profiles.currentIndex())
-        settings.setValue("preset", self.cb_presets.currentIndex())
-        settings.setValue("output_dir", self.le_output.text())
-        settings.setValue('conversion_lib', self.conversion_lib)
+        settings.setValue("pos", pos)
+        settings.setValue("size", size)
+        settings.setValue("profile", profile_index)
+        settings.setValue("preset", preset_index)
+        settings.setValue("output_dir", output_dir)
+        settings.setValue('conversion_lib', conv_lib)
 
     def closeEvent(self, event):
         """Things to todo on close."""
@@ -356,7 +359,12 @@ class MMWindow(QMainWindow):
             self.converter.process.close()
             self.converter.process.kill()
         # Save settings
-        self.write_app_settings()
+        self.write_app_settings(pos=self.pos(),
+                                size=self.size(),
+                                profile_index=self.cb_profiles.currentIndex(),
+                                preset_index=self.cb_presets.currentIndex(),
+                                output_dir=self.le_output.text(),
+                                conv_lib=self.conversion_lib)
         event.accept()
 
     def check_conversion_lib(self):
