@@ -134,9 +134,6 @@ class MMWindow(QMainWindow):
         # Create initial Settings if not created
         self.create_initial_settings()
 
-        # Read app settings
-        self.read_app_settings()
-
         # XML Profile
         from .converter import XMLProfile
         self.xml_profile = XMLProfile
@@ -145,6 +142,9 @@ class MMWindow(QMainWindow):
 
         # Populate PROFILES combo box
         self.populate_profiles()
+
+        # Read app settings
+        self.read_app_settings()
 
         # Create the converter according to the user selection of
         # conversion library
@@ -572,6 +572,7 @@ class MMWindow(QMainWindow):
         """Populate profiles combo box."""
         self.cb_profiles.addItems(self.xml_profile.get_qualities_per_profile(
                 locale=get_locale()).keys())
+        print(self.cb_profiles.currentIndex())
 
     def populate_presets(self, cb_presets):
         """Populate presets combo box."""
@@ -580,6 +581,7 @@ class MMWindow(QMainWindow):
             cb_presets.addItems(self.xml_profile.get_qualities_per_profile(
                     locale=get_locale())[self.cb_profiles.currentText()])
             self.update_media_files_status()
+        print(self.cb_presets.currentIndex())
 
     def output_directory(self):
         """Choose output directory."""
