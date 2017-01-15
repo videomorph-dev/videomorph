@@ -94,9 +94,6 @@ class MMWindow(QMainWindow):
         self.partial_time = 0.0
         self.total_time = 0.0
         self.total_duration = 0.0
-        # XML Profile
-        from .converter import XMLProfile
-        self.xml_profile = XMLProfile
 
         # App interface setup
         # Window size
@@ -129,12 +126,20 @@ class MMWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
         # Create actions
         self.create_actions()
-        # Populate PROFILES combo box
-        self.populate_profiles()
+
         # Default conversion library
         self.conversion_lib = CONV_LIB.ffmpeg
         # Read app settings
         self.read_app_settings()
+
+        # XML Profile
+        from .converter import XMLProfile
+        self.xml_profile = XMLProfile
+        self.xml_profile.create_profiles_xml_file()
+        self.xml_profile.update_xml_root()
+
+        # Populate PROFILES combo box
+        self.populate_profiles()
 
         # Create the converter according to the user selection of
         # conversion library
@@ -546,12 +551,11 @@ class MMWindow(QMainWindow):
 
     def populate_presets(self, cb_presets):
         """Populate presets combo box."""
-        cb_presets.clear()
-
-        cb_presets.addItems(self.xml_profile.get_qualities_per_profile(
-                locale=get_locale())[self.cb_profiles.currentText()])
-
-        self.update_media_files_status()
+        if self.cb_profiles.currentText() != '':
+            cb_presets.clear()
+            cb_presets.addItems(self.xml_profile.get_qualities_per_profile(
+                    locale=get_locale())[self.cb_profiles.currentText()])
+            self.update_media_files_status()
 
     def output_directory(self):
         """Choose output directory."""
