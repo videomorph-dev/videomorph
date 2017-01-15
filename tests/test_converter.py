@@ -28,16 +28,20 @@ from videomorph.converter import XMLProfile
 
 conv = None
 
+XMLProfile.create_profiles_xml_file()
+XMLProfile.set_xml_root()
 
 # Set of test for Converter class
 def setup():
     media_list = media.MediaList()
+
     media_file = media.MediaFile(
         file_path='Dad.mpg',
         conversion_profile=XMLProfile.get_conversion_profile(
             profile_name='DVD',
             target_quality='DVD Fullscreen (4:3)'),
         prober='ffprobe')
+
     media_list.add_file(media_file)
     global conv
     conv = converter.Converter(media_list)
