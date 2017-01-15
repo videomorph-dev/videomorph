@@ -734,6 +734,7 @@ class MMWindow(QMainWindow):
         # Update tool buttons state
         self.update_interface(presets=False,
                               profiles=False,
+                              add_profile=False,
                               convert=False,
                               clear=False,
                               remove=False,
@@ -944,6 +945,7 @@ class MMWindow(QMainWindow):
                          stop_all=True,
                          presets=True,
                          profiles=True,
+                         add_profile=True,
                          output_dir=True,
                          settings=True):
         self.add_media_file_action.setEnabled(add)
@@ -954,6 +956,7 @@ class MMWindow(QMainWindow):
         self.stop_all_action.setEnabled(stop_all)
         self.cb_presets.setEnabled(presets)
         self.cb_profiles.setEnabled(profiles)
+        self.add_profile_action.setEnabled(add_profile)
         self.tb_output.setEnabled(output_dir)
         self.tb_tasks.setCurrentItem(None)
         self.settings_action.setEnabled(settings)
