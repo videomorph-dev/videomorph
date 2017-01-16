@@ -63,4 +63,4 @@ Code & Artwork by:
 Contributors:
 
  - [Maikel Llamaret Heredia](http://gutl.jovenclub.cu)
- - [Carlos Parra Zaldivar](http://carlosp.cubava.cu)
+ - [Carlos Parra Zaldivar](http://libreoffice.cubava.cu)
