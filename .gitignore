@@ -74,3 +74,6 @@ videomorph_0.7xenial_all/
 # Files for installing-uninstalling
 install.sh
 uninstall.sh
+
+# .ui files
+*.ui
