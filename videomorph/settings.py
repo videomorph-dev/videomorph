@@ -25,6 +25,8 @@ from PyQt5.QtWidgets import QDialog
 
 
 class SettingsDialog(QDialog):
+    """Dialog to define the conversion library to use."""
+
     def __init__(self, parent=None):
         """Class initializer."""
         super(SettingsDialog, self).__init__(parent)

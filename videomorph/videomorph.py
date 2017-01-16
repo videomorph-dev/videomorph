@@ -32,7 +32,6 @@ from PyQt5.QtCore import (QSize,
                           QDir,
                           QPoint,
                           QProcess,
-                          QLocale,
                           QTranslator,
                           QLibraryInfo)
 from PyQt5.QtGui import QPixmap, QIcon
@@ -64,7 +63,7 @@ from PyQt5.QtWidgets import (QMainWindow,
 from . import APPNAME
 from . import VERSION
 from . import videomorph_qrc
-from .about import AboutVM
+from .about import AboutVMDialog
 from .converter import Converter
 from .converter import CONV_LIB
 from .converter import STATUS
@@ -539,10 +538,11 @@ class MMWindow(QMainWindow):
         self.statusBar().showMessage(self.tr('Ready'))
 
     def about(self):
-        a = AboutVM(parent=self)
+        a = AboutVMDialog(parent=self)
         a.exec_()
 
     def settings(self):
+        """Open a Setting Dialog to define the conversion library to use."""
         s = SettingsDialog(parent=self)
         if self.conversion_lib == CONV_LIB.ffmpeg:
             s.radio_btn_ffmpeg.setChecked(True)
@@ -563,24 +563,27 @@ class MMWindow(QMainWindow):
                 self.converter.conversion_lib = self.conversion_lib
 
     def get_prober(self):
+        """Return a prober depending on the conversion library used."""
         if self.conversion_lib == CONV_LIB.ffmpeg:
             return 'ffprobe'
         elif self.conversion_lib == CONV_LIB.avconv:
             return 'avprobe'
 
     def populate_profiles_combo(self):
-        """Populate profiles combo box."""
+        """Populate profiles combobox."""
+        # Clear combobox content
         self.cb_profiles.clear()
-
+        # Populate the combobox with new data
         self.cb_profiles.addItems(self.xml_profile.get_qualities_per_profile(
                 locale=get_locale()).keys())
 
     def populate_presets_combo(self, cb_presets):
         """Populate presets combo box."""
-        if self.cb_profiles.currentText() != '':
+        current_profile = self.cb_profiles.currentText()
+        if current_profile != '':
             cb_presets.clear()
             cb_presets.addItems(self.xml_profile.get_qualities_per_profile(
-                    locale=get_locale())[self.cb_profiles.currentText()])
+                    locale=get_locale())[current_profile])
             self.update_media_files_status()
 
     def output_directory(self):
@@ -716,7 +719,7 @@ class MMWindow(QMainWindow):
         msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
 
         if msg_box.exec_() == QMessageBox.AcceptRole:
-            # If use says YES clear table of conversion tasks
+            # If user says YES clear table of conversion tasks
             self.tb_tasks.clearContents()
             self.tb_tasks.setRowCount(0)
             # Clear MediaList.medias so it does not contain any element
@@ -934,8 +937,8 @@ class MMWindow(QMainWindow):
 
     def _set_media_status(self):
         """Update media files state of conversion."""
-        for media_ in self.media_list:
-            media_.status = STATUS.todo
+        for media_file in self.media_list:
+            media_file.status = STATUS.todo
         self.media_list.running_index = -1
 
     def update_interface(self,
@@ -970,6 +973,7 @@ class MMWindow(QMainWindow):
 
 class TargetQualityDelegate(QItemDelegate):
     """Combobox to select the target quality from the task list."""
+
     def __init__(self, parent=None):
         """Class initializer."""
         super(TargetQualityDelegate, self).__init__(parent)
@@ -993,12 +997,11 @@ class TargetQualityDelegate(QItemDelegate):
             if i == -1:
                 i = 0
             editor.setCurrentIndex(i)
-
         else:
             QItemDelegate.setEditorData(self, editor, index)
 
     def update(self, editor, index):
-        # Update file conversion profile
+        # Update video conversion profile
         selected_file = self.parent.media_list.get_file(index.row())
         selected_file.conversion_profile = \
             self.parent.xml_profile.get_conversion_profile(
@@ -1049,13 +1052,13 @@ def main():
     import sys
     from os.path import dirname, realpath, exists
     app = QApplication(sys.argv)
-    filePath = dirname(realpath(__file__))
+    file_path = dirname(realpath(__file__))
     locale = get_locale()
     # locale = 'es_ES'
     appTranslator = QTranslator()
-    if exists(filePath + '{0}translations{1}'.format(sep, sep)):
+    if exists(file_path + '{0}translations{1}'.format(sep, sep)):
         appTranslator.load("{0}{1}translations{2}videomorph_{3}".format(
-            filePath, sep, sep, locale))
+            file_path, sep, sep, locale))
     else:
         appTranslator.load(
             "{0}usr{1}share{2}videomorph{3}"
@@ -1066,9 +1069,9 @@ def main():
     qtTranslator.load("qt_" + locale,
                       QLibraryInfo.location(QLibraryInfo.TranslationsPath))
     app.installTranslator(qtTranslator)
-    mainWin = MMWindow()
-    if mainWin.check_conversion_lib():
-        mainWin.show()
+    main_win = MMWindow()
+    if main_win.check_conversion_lib():
+        main_win.show()
         sys.exit(app.exec_())
 
 

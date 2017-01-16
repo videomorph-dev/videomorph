@@ -8,3 +8,7 @@ from .utils import get_locale
 from .utils import which
 from .utils import write_time
 from .profiles import XMLProfile
+from .profiles import (ProfileNameBlankError,
+                       ProfilePresetBlankError,
+                       ProfileParamsBlankError,
+                       ProfileExtensionError)

@@ -3,22 +3,23 @@
 [![Build Status](https://travis-ci.org/codeshard/videomorph.png?branch=master)](https://travis-ci.org/codeshard/videomorph)
 [![codecov.io](https://codecov.io/github/codeshard/videomorph/coverage.svg?branch=master)](https://codecov.io/github/codeshard/videomorph?branch=master)
 
-VideoMorph is a small GUI wrapper for [ffmpeg](http://ffmpeg.org)
+VideoMorph is a small GUI wrapper for [ffmpeg](http://ffmpeg.org),
 based on code from [python-video-converter](https://github.com/senko/python-video-converter)
-and presets idea from [QWinFF](http://qwinff.github.io).
+and presets idea from [QWinFF](http://qwinff.github.io) and
+[FF Multi Converter](https://github.com/Ilias95/FF-Multi-Converter).
 
-##Screenshot
+## Screenshot
 
 ![Screenshot](screenshot.png)
 
 ## Goal
 
-Unlike other video converters, VideoMorph focuses on a single task,
-convert video, making simple, easy to use and allowing the user choose outputting
-between the most popular video formats.
+Unlike other video converters, VideoMorph focuses on a single goal:
+video conversion, making it simple, easy to use and allowing the user to convert
+to the currently most popular video formats.
 
-VideoMorph UI is simple and clean focused on usability, eliminating annoying options rarely used.
-Videomorph is a video converter, just that. If you want a video editor,
+VideoMorph UI is simple and clean, focused on usability, eliminating annoying options rarely used.
+VideoMorph is a video converter, just that. If you want a video editor,
 VideoMorph isn't for you.
 
 ## Installation and requirements
@@ -39,9 +40,10 @@ VideoMorph uses the following libraries and programs:
  - [FFmpeg](ffmpeg.org)
 
 You should have installed these programs and libraries for the proper
-functioning of Videomorph.
+functioning of VideoMorph.
 
 ## Contributing
+
 Just clone the repo and make a pull request!
 
 ## Licensing and Patents
@@ -56,9 +58,9 @@ under LGPL/GPL
 Code & Artwork by:
 
  - [Ozkar L. Garcell](mailto:codeshard@openmailbox.org)
- - Leodanis Pozo Ramos (mailto:lpozo@openmailbox.org)
+ - [Leodanis Pozo Ramos](mailto:lpozo@openmailbox.org)
 
 Contributors:
 
- - [Maikel LLamaret Heredia](http://swlx.cubava.cu)
+ - [Maikel Llamaret Heredia](http://gutl.jovenclub.cu)
  - [Carlos Parra Zaldivar](http://carlosp.cubava.cu)
