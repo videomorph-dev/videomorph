@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# File name: test_converter.py
+# File name: test_profiles.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2015-2016 VideoMorph Development Team
@@ -19,43 +19,39 @@
 #   limitations under the License.
 
 import nose
-
-from PyQt5.QtCore import QProcess
-
-from videomorph.converter import converter
-from videomorph.converter import media
 from videomorph.converter import XMLProfile
-
-conv = None
 
 XMLProfile.create_profiles_xml_file()
 XMLProfile.set_xml_root()
 
-# Set of test for Converter class
+profile = None
+
+
 def setup():
-    media_list = media.MediaList()
-
-    media_file = media.MediaFile(
-        file_path='Dad.mpg',
-        conversion_profile=XMLProfile.get_conversion_profile(
-            profile_name='DVD',
-            target_quality='DVD Fullscreen (4:3)'),
-        prober='ffprobe')
-
-    media_list.add_file(media_file)
-    global conv
-    conv = converter.Converter(media_list)
-    conv.start_encoding(cmd=media_file.get_conversion_cmd(output_dir='.'))
+    global profile
+    profile = XMLProfile.get_conversion_profile(
+        profile_name='MP4',
+        target_quality='MP4 Widescreen (16:9)')
 
 
 def teardown():
-    conv.process.close()
-    conv.process.kill()
+    pass
 
 
-def test_is_running():
-    assert conv.process.state() == QProcess.Starting
+def test_quality_tag():
+    assert profile.quality_tag == '[MP4W]'
+
+
+def test_get_quality():
+    assert profile.quality == 'MP4 Widescreen (16:9)'
+
+
+def test_quality():
+    profile.quality = 'WMV Generic'
+    assert profile.params == '-vcodec wmv2 -acodec wmav2 -b:v 1000k -b:a 160k -r 25'
+    assert profile.extension == '.wmv'
+
 
 
 if __name__ == '__main__':
-    nose.run()
+    nose.main()

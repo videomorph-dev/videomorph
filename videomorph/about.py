@@ -38,10 +38,11 @@ from . import APPNAME
 from . import VERSION
 
 
-class AboutVM(QDialog):
+class AboutVMDialog(QDialog):
+    """Dialog to show info about VideoMorph."""
     def __init__(self, parent=None):
         """Class initializer."""
-        super(AboutVM, self).__init__(parent)
+        super(AboutVMDialog, self).__init__(parent)
         self.setWindowTitle(self.tr('About VideoMorph'))
         self.resize(374, 404)
         self.horizontalLayout_3 = QHBoxLayout(self)
