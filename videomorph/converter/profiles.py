@@ -21,10 +21,11 @@
 """This module contains the PRESETS for encoding different video formats."""
 
 from os import sep
-from os.path import expanduser, join, exists
+from os.path import expanduser, join, exists, isdir
 from re import compile
 from collections import OrderedDict
 from distutils.file_util import copy_file
+from distutils.errors import DistutilsFileError
 from xml.etree import ElementTree
 
 
@@ -103,6 +104,14 @@ class _XMLProfile:
                 self._xml_root.insert(0, xml_profile)
                 self.save_tree()
                 break
+
+    def export_profile_xml_file(self, dst_dir):
+        if isdir(dst_dir):
+            # Raise PermissionError if user don't have write permission
+            try:
+                copy_file(src=self._profiles_xml_path, dst=dst_dir)
+            except DistutilsFileError:
+                raise PermissionError
 
     def get_conversion_profile(self, profile_name, target_quality):
         """Return a Profile objects."""

@@ -120,26 +120,26 @@ class AddProfileDialog(QDialog):
                 extension=self.le_extension.text()
             )
         except ProfileNameBlankError:
-            QMessageBox.warning(
-                self, self.tr('Add Profile - Error!'),
+            QMessageBox.critical(
+                self, self.tr('Error!'),
                 self.tr("Profile Name Can't Be Left Blank.")
             )
             self.le_profile_name.setFocus()
         except ProfilePresetBlankError:
-            QMessageBox.warning(
-                self, self.tr('Add Profile - Error!'),
+            QMessageBox.critical(
+                self, self.tr('Error!'),
                 self.tr("Target Quality Name Can't Be Left Blank.")
             )
             self.le_preset_name.setFocus()
         except ProfileParamsBlankError:
-            QMessageBox.warning(
-                self, self.tr('Add Profile - Error!'),
+            QMessageBox.critical(
+                self, self.tr('Error!'),
                 self.tr("Command Line Parameters Can't Be Left Blank.")
             )
             self.le_params.setFocus()
         except ProfileExtensionError:
-            QMessageBox.warning(
-                self, self.tr('Add Profile - Error!'),
+            QMessageBox.critical(
+                self, self.tr('Error!'),
                 self.tr("Output File Extension Can't Be Left Blank and "
                         "Must Begin with a \".\"")
             )

@@ -406,6 +406,16 @@ class MMWindow(QMainWindow):
             statusTip=self.tr('Add Customized Profile'),
             triggered=self.add_profile)
 
+        self.export_profile_action = QAction(
+            # Remove this line to use costume icons
+            self.style().standardIcon(QStyle.SP_DialogSaveButton),
+            self.tr('&Export Conversion Profiles...'),
+            self,
+            shortcut="Ctrl+E",
+            enabled=True,
+            statusTip=self.tr('Export Conversion Profiles'),
+            triggered=self.export_profile)
+
         self.clear_media_list_action = QAction(
             # Remove this line to use costume icons
             self.style().standardIcon(QStyle.SP_TrashIcon),
@@ -516,6 +526,7 @@ class MMWindow(QMainWindow):
 
         self.edit_menu = self.menuBar().addMenu(self.tr('&Edit'))
         self.edit_menu.addAction(self.add_profile_action)
+        self.edit_menu.addAction(self.export_profile_action)
         self.edit_menu.addSeparator()
         self.edit_menu.addAction(self.clear_media_list_action)
         self.edit_menu.addAction(self.remove_media_file_action)
@@ -706,6 +717,28 @@ class MMWindow(QMainWindow):
     def add_profile(self):
         ap = AddProfileDialog(parent=self)
         ap.exec_()
+
+    def export_profile(self):
+        options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
+        directory = QFileDialog.getExistingDirectory(
+            self,
+            self.tr('Export to Directory'),
+            QDir.homePath(),
+            options=options)
+
+        if directory:
+            try:
+                self.xml_profile.export_profile_xml_file(dst_dir=directory)
+            except PermissionError:
+                QMessageBox.critical(
+                    self, self.tr('Error!'),
+                    self.tr("Access Denied for Writing to: {dir}".format(
+                        dir=directory)))
+            else:
+                QMessageBox.information(
+                    self, self.tr('Information!'),
+                    self.tr('Conversion Profiles Successfully '
+                            'Exported to: {dir}'.format(dir=directory)))
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
