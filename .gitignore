@@ -48,7 +48,7 @@ coverage.xml
 *.mo
 *.pot
 
-# Geany 
+# Geany
 *.geany
 
 #PyCharm
@@ -69,7 +69,7 @@ tests/Dad.mpg
 # DEB packages
 *.deb
 build_deb.sh
-videomorph_0.7xenial_all/
+videomorph_0.8a_xenial_all/
 
 # Files for installing-uninstalling
 install.sh
