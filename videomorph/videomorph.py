@@ -22,7 +22,7 @@
 
 import re
 from os import sep
-from os.path import exists
+from os.path import exists, basename
 from functools import partial
 from threading import Thread
 
@@ -851,11 +851,12 @@ class MMWindow(QMainWindow):
         if self.converter.encoding_done:
             msg_box = QMessageBox(
                 QMessageBox.Information,
-                self.tr('Finished!'),
+                self.tr('Information!'),
                 self.tr('Encoding Process Successfully Finished!'),
                 QMessageBox.Ok,
                 self)
             msg_box.show()
+            self.setWindowTitle(APPNAME + ' ' + VERSION)
             self.statusBar().showMessage(self.tr('Ready'))
             # Reset all progress related variables
             self.pb_progress.setProperty("value", 0)
@@ -907,11 +908,9 @@ class MMWindow(QMainWindow):
 
             # Calculate total progress percent
             total_progress = int(self.total_time /
-                                 float(self.total_duration) *
-                                 100)
+                                 float(self.total_duration) * 100)
             # Update the total progress bar
-            self.pb_total_progress.setProperty("value",
-                                               total_progress)
+            self.pb_total_progress.setProperty("value", total_progress)
 
             self.statusBar().showMessage(
                 self.tr('Converting: {m}\t\t\t '
@@ -919,8 +918,13 @@ class MMWindow(QMainWindow):
                         'Total Remaining Time: {trt}').format(
                     m=self.media_list.get_running_file().get_name(True),
                     rt=write_time(float(op_time) - time_in_secs),
-                    trt=write_time(
-                        self.total_duration - self.total_time)))
+                    trt=write_time(self.total_duration - self.total_time)))
+
+            current_file_name = basename(
+                self.media_list.get_running_file().path)
+            self.setWindowTitle('[' + current_file_name + ']' +
+                                '-' + str(operation_progress) +
+                                '%' + ' - ' + APPNAME + ' ' + VERSION)
 
     def update_media_files_status(self):
         """Update file status."""
