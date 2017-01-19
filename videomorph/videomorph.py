@@ -912,19 +912,33 @@ class MMWindow(QMainWindow):
             # Update the total progress bar
             self.pb_total_progress.setProperty("value", total_progress)
 
+            # Avoid negative total_remaining_time
+            try:
+                total_remaining_time = write_time(self.total_duration -
+                                                  self.total_time)
+            except ValueError:
+                total_remaining_time = write_time(0)
+            # Avoid negative operation_remaining_time
+            try:
+                operation_remaining_time = write_time(float(op_time) -
+                                                      time_in_secs)
+            except ValueError:
+                operation_remaining_time = write_time(0)
+
             self.statusBar().showMessage(
                 self.tr('Converting: {m}\t\t\t '
-                        'Operation Remaining Time: {rt}\t\t\t '
+                        'Operation Remaining Time: {ort}\t\t\t '
                         'Total Remaining Time: {trt}').format(
                     m=self.media_list.get_running_file().get_name(True),
-                    rt=write_time(float(op_time) - time_in_secs),
-                    trt=write_time(self.total_duration - self.total_time)))
+                    ort=operation_remaining_time,
+                    trt=total_remaining_time))
 
             current_file_name = basename(
                 self.media_list.get_running_file().path)
-            self.setWindowTitle('[' + current_file_name + ']' +
-                                '-' + str(operation_progress) +
-                                '%' + ' - ' + APPNAME + ' ' + VERSION)
+
+            self.setWindowTitle(str(operation_progress) + '%' + '-' +
+                                '[' + current_file_name + ']' +
+                                ' - ' + APPNAME + ' ' + VERSION)
 
     def update_media_files_status(self):
         """Update file status."""
