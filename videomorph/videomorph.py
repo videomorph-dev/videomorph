@@ -142,6 +142,11 @@ class MMWindow(QMainWindow):
         # Populate PROFILES combo box
         self.populate_profiles_combo()
 
+        # Create the conversion profile object only once
+        self.conversion_profile = self.xml_profile.get_conversion_profile(
+            profile_name=self.cb_profiles.currentText(),
+            target_quality=self.cb_presets.currentText())
+
         # Read app settings
         self.read_app_settings()
 
@@ -649,11 +654,6 @@ class MMWindow(QMainWindow):
             # Update ui
             self.update_interface(stop=False, stop_all=False, remove=False)
 
-        # Create the conversion profile object only once
-        conversion_profile = self.xml_profile.get_conversion_profile(
-            profile_name=self.cb_profiles.currentText(),
-            target_quality=self.cb_presets.currentText())
-
         # Add selected medias to the table and to MediaList using threads to
         # minimize delay
         threads = []
@@ -661,7 +661,7 @@ class MMWindow(QMainWindow):
 
             t = MediaFileThread(
                 media_path=media_path,
-                conversion_profile=conversion_profile,
+                conversion_profile=self.conversion_profile,
                 prober=self.get_prober())
             t.start()
             threads.append(t)
