@@ -797,6 +797,7 @@ class MMWindow(QMainWindow):
         """Stop file encoding process and continue with the list."""
         # Set MediaFile.status attribute
         self.media_list.get_running_file().status = STATUS.stopped
+        # TODO: Delete the file when conversion is stopped
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
         self.time_jump = 0.0
@@ -846,9 +847,12 @@ class MMWindow(QMainWindow):
             self.end_encoding_process()
 
     def end_encoding_process(self):
-
+        """End up the encoding process."""
         # Test if encoding process is finished
         if self.converter.encoding_done:
+            # TODO: Fix situations where the encoding is stopped for the user
+            # or could not be done for some reazon (e.g. PermissionError,
+            # ffmpeg error, etc.)
             msg_box = QMessageBox(
                 QMessageBox.Information,
                 self.tr('Information!'),

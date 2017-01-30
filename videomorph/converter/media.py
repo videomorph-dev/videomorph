@@ -167,6 +167,7 @@ class MediaFile:
 
     def get_conversion_cmd(self, output_dir):
         """Return the conversion command."""
+        # TODO: Test if output_dir is writeable
         output_file_path = self._get_output_file_path(output_dir)
 
         cmd = ['-i', self.path] + \

@@ -58,7 +58,7 @@ class _XMLProfile:
     def set_xml_root(self):
         self._xml_root = self._get_xml_root()
 
-    # TODO: delete_conversion_profile and exit_conversion_profile methods
+    # TODO: delete_conversion_profile and edit_conversion_profile methods
     def add_conversion_profile(self, profile_name, preset, params, extension):
 
         if not profile_name:
@@ -112,6 +112,12 @@ class _XMLProfile:
                 copy_file(src=self._profiles_xml_path, dst=dst_dir)
             except DistutilsFileError:
                 raise PermissionError
+
+    def import_profile_xml(self, src_file):
+        try:
+            copy_file(src=src_file, dst=self._profiles_xml_path)
+        except DistutilsFileError:
+            raise PermissionError
 
     def get_conversion_profile(self, profile_name, target_quality):
         """Return a Profile objects."""
