@@ -142,6 +142,11 @@ class MMWindow(QMainWindow):
         # Populate PROFILES combo box
         self.populate_profiles_combo()
 
+        # Create the conversion profile object only once
+        self.conversion_profile = self.xml_profile.get_conversion_profile(
+            profile_name=self.cb_profiles.currentText(),
+            target_quality=self.cb_presets.currentText())
+
         # Read app settings
         self.read_app_settings()
 
@@ -656,10 +661,7 @@ class MMWindow(QMainWindow):
 
             t = MediaFileThread(
                 media_path=media_path,
-                conversion_profile=self.xml_profile.get_conversion_profile(
-                    self.cb_profiles.currentText(),
-                    self.cb_presets.currentText()
-                ),
+                conversion_profile=self.conversion_profile,
                 prober=self.get_prober())
             t.start()
             threads.append(t)
@@ -783,12 +785,15 @@ class MMWindow(QMainWindow):
         self.media_list.running_index += 1
 
         running_media = self.media_list.get_running_file()
+        running_media.conversion_profile.quality = self.tb_tasks.item(
+            self.media_list.running_index,
+            QUALITY).text()
 
         if (not running_media.status == STATUS.done and not
                 running_media.status == STATUS.stopped):
 
             self.converter.start_encoding(
-                cmd=self.media_list.get_running_file().get_conversion_cmd(
+                cmd=running_media.get_conversion_cmd(
                     output_dir=self.le_output.text()))
         else:
             self.end_encoding_process()
@@ -952,9 +957,6 @@ class MMWindow(QMainWindow):
             # Update target_quality in table
             self.tb_tasks.item(item.row(), QUALITY).setText(
                 str(self.cb_presets.currentText()))
-            # Update files target quality
-            self.media_list.get_file(item.row()).conversion_profile.quality = \
-                self.cb_presets.currentText()
             # Update table Progress field if file is: Done or Stopped
             if (self.media_list.get_file_status(item.row()) == STATUS.done or
                     self.media_list.get_file_status(
@@ -976,14 +978,10 @@ class MMWindow(QMainWindow):
                         str(self.cb_presets.currentText()))
 
                     if (self.media_list.get_file_status(i) == STATUS.done or
-                            self.media_list.get_file_status(
-                                i) == STATUS.stopped):
+                            self.media_list.get_file_status(i) ==
+                                STATUS.stopped):
                         self.tb_tasks.item(i, PROGRESS).setText(
                             self.tr('To Convert'))
-
-                    # Update files conversion profiles
-                    self.media_list.get_file(i).conversion_profile.quality = \
-                        self.cb_presets.currentText()
 
                 self.update_interface(clear=False, stop=False,
                                       stop_all=False, remove=False)
@@ -1056,12 +1054,6 @@ class TargetQualityDelegate(QItemDelegate):
             QItemDelegate.setEditorData(self, editor, index)
 
     def update(self, editor, index):
-        # Update video conversion profile
-        selected_file = self.parent.media_list.get_file(index.row())
-        selected_file.conversion_profile = \
-            self.parent.xml_profile.get_conversion_profile(
-                self.parent.cb_profiles.currentText(),
-                editor.currentText())
 
         # Update table Progress field if file is: Done or Stopped
         if (self.parent.media_list.get_file_status(
@@ -1081,10 +1073,7 @@ class TargetQualityDelegate(QItemDelegate):
                                      stop_all=False,
                                      remove=False)
 
-        selected_file = self.parent.media_list.get_file(index.row())
-        selected_file.conversion_profile.target_quality = editor.currentText()
-        self.parent.tb_tasks.setEditTriggers(
-            QAbstractItemView.NoEditTriggers)
+        self.parent.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
 
 class MediaFileThread(Thread):
