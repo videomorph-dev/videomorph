@@ -138,6 +138,9 @@ class MMWindow(QMainWindow):
         self.xml_profile = XMLProfile
         self.xml_profile.create_profiles_xml_file()
         self.xml_profile.set_xml_root()
+        self.conversion_profile = self.xml_profile.get_conversion_profile(
+            profile_name=self.cb_profiles.currentText(),
+            target_quality=self.cb_presets.currentText())
 
         # Populate PROFILES combo box
         self.populate_profiles_combo()
@@ -656,10 +659,7 @@ class MMWindow(QMainWindow):
 
             t = MediaFileThread(
                 media_path=media_path,
-                conversion_profile=self.xml_profile.get_conversion_profile(
-                    self.cb_profiles.currentText(),
-                    self.cb_presets.currentText()
-                ),
+                conversion_profile=self.conversion_profile,
                 prober=self.get_prober())
             t.start()
             threads.append(t)
@@ -788,7 +788,7 @@ class MMWindow(QMainWindow):
                 running_media.status == STATUS.stopped):
 
             self.converter.start_encoding(
-                cmd=self.media_list.get_running_file().get_conversion_cmd(
+                cmd=running_media.get_conversion_cmd(
                     output_dir=self.le_output.text()))
         else:
             self.end_encoding_process()
