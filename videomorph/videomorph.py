@@ -654,6 +654,7 @@ class MMWindow(QMainWindow):
             # Update ui
             self.update_interface(stop=False, stop_all=False, remove=False)
 
+        # TODO: Undo this because threading lib does not make real multi-thread
         # Add selected medias to the table and to MediaList using threads to
         # minimize delay
         threads = []
