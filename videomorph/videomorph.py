@@ -1094,12 +1094,12 @@ class MediaFileThread(Thread):
 
 def main():
     """Main app function."""
+    # TODO: Make it run on Windows
     import sys
     from os.path import dirname, realpath, exists
     app = QApplication(sys.argv)
     file_path = dirname(realpath(__file__))
     locale = get_locale()
-    # locale = 'es_ES'
     appTranslator = QTranslator()
     if exists(file_path + '{0}translations{1}'.format(sep, sep)):
         appTranslator.load("{0}{1}translations{2}videomorph_{3}".format(
