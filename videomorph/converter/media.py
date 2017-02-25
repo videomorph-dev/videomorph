@@ -80,7 +80,7 @@ class MediaList(list):
             raise FileAddedError('File is already added')
         elif not media_file.get_info('format_duration'):
             # 0 duration video file not added
-            return None
+            raise FileAddedError('File is zero length')
         else:
             self.append(media_file)
 
