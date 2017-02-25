@@ -24,7 +24,6 @@ import re
 from os import sep
 from os.path import exists, basename
 from functools import partial
-from threading import Thread
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -654,47 +653,39 @@ class MMWindow(QMainWindow):
             # Update ui
             self.update_interface(stop=False, stop_all=False, remove=False)
 
-        # TODO: Undo this because threading lib does not make real multi-thread
-        # Add selected medias to the table and to MediaList using threads to
-        # minimize delay
-        threads = []
+        # Get the prober to use
+        prober = self.get_prober()
+
+        # Add selected medias to the table and to MediaList
         for media_path in media_paths:
-
-            t = MediaFileThread(
-                media_path=media_path,
-                conversion_profile=self.conversion_profile,
-                prober=self.get_prober())
-            t.start()
-            threads.append(t)
-
-        for thread in threads:
-            thread.join()
+            media_file = MediaFile(file_path=media_path,
+                                   conversion_profile=self.conversion_profile,
+                                   prober=prober)
             try:
-                self.media_list.add_file(thread.media_file)
+                self.media_list.add_file(media_file)
                 self.tb_tasks.setRowCount(rows + 1)
             except FileAddedError:
-                del thread.media_file
+                del media_file
                 continue
-            # Test if the file was added to the list
-            # (0 duration files are not added)
-            if thread.media_file in self.media_list:
-                item = QTableWidgetItem()
-                item.setText(thread.media_file.get_name(with_extension=True))
-                self.tb_tasks.setItem(rows, NAME, item)
-                item = QTableWidgetItem()
-                file_duration = str(
-                    write_time(thread.media_file.info.format_duration))
-                item.setText(file_duration)
-                self.tb_tasks.setItem(rows, DURATION, item)
-                item = QTableWidgetItem()
-                item.setText(str(self.cb_presets.currentText()))
 
-                self.tb_tasks.setItem(rows, QUALITY, item)
-                item = QTableWidgetItem()
-                item.setText(self.tr('To Convert'))
-                self.tb_tasks.setItem(rows, PROGRESS, item)
-                # Next table row
-                rows += 1
+            item = QTableWidgetItem()
+            item.setText(media_file.get_name(with_extension=True))
+            self.tb_tasks.setItem(rows, NAME, item)
+            item = QTableWidgetItem()
+            file_duration = str(
+                write_time(media_file.info.format_duration))
+            item.setText(file_duration)
+            self.tb_tasks.setItem(rows, DURATION, item)
+            item = QTableWidgetItem()
+            item.setText(str(self.cb_presets.currentText()))
+
+            self.tb_tasks.setItem(rows, QUALITY, item)
+            item = QTableWidgetItem()
+            item.setText(self.tr('To Convert'))
+            self.tb_tasks.setItem(rows, PROGRESS, item)
+            # Next table row
+            rows += 1
+
         # After adding files to the list, recalculate the list duration
         self.total_duration = self.media_list.duration
 
@@ -1075,21 +1066,6 @@ class TargetQualityDelegate(QItemDelegate):
                                      remove=False)
 
         self.parent.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
-
-class MediaFileThread(Thread):
-    def __init__(self, media_path, conversion_profile, prober='ffprobe'):
-        super(MediaFileThread, self).__init__()
-        self.media_path = media_path
-        self.conversion_profile = conversion_profile
-        self.prober = prober
-        self.media_file = None
-
-    def run(self):
-        # Create media files to be added to the list
-        self.media_file = MediaFile(file_path=self.media_path,
-                                    conversion_profile=self.conversion_profile,
-                                    prober=self.prober)
 
 
 def main():
