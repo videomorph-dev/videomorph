@@ -128,7 +128,8 @@ class _XMLProfile:
                             e[3].text == target_quality):
                         return _Profile(quality=target_quality,
                                         params=e[1].text,
-                                        extension=e[2].text)
+                                        extension=e[2].text,
+                                        xml_profile=self)
 
     def get_preset_attr(self, target_quality, attr_index=1):
         """Return a dict of preset/params."""
@@ -196,11 +197,13 @@ class _Profile:
     def __init__(self,
                  quality=None,
                  params=None,
-                 extension=None):
+                 extension=None,
+                 xml_profile=None):
         """Class initializer."""
         self._quality = quality
         self.params = params
         self.extension = extension
+        self.xml_profile = xml_profile
 
     @property
     def quality(self):
@@ -210,9 +213,9 @@ class _Profile:
     def quality(self, value):
         self._quality = value
         # Update the params and extension when the target quality change
-        self.params = XMLProfile.get_preset_attr(self._quality)
-        self.extension = XMLProfile.get_preset_attr(self._quality,
-                                                    attr_index=2)
+        self.params = self.xml_profile.get_preset_attr(self._quality)
+        self.extension = self.xml_profile.get_preset_attr(self._quality,
+                                                          attr_index=2)
 
     @property
     def quality_tag(self):
