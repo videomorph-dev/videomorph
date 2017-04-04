@@ -24,6 +24,7 @@ import re
 from os import sep
 from os.path import exists, basename
 from functools import partial
+from time import time
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -655,7 +656,7 @@ class MMWindow(QMainWindow):
 
         # Get the prober to use
         prober = self.get_prober()
-
+        start = time()
         # Add selected medias to the table and to MediaList
         for media_path in media_paths:
             media_file = MediaFile(file_path=media_path,
@@ -688,6 +689,7 @@ class MMWindow(QMainWindow):
 
         # After adding files to the list, recalculate the list duration
         self.total_duration = self.media_list.duration
+        print(time() - start)
 
     def remove_media_file(self):
         """Remove selected media file from the list."""
