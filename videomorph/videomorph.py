@@ -24,6 +24,7 @@ import re
 from os import sep
 from os.path import exists, basename
 from functools import partial
+from time import time
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -659,7 +660,7 @@ class MMWindow(QMainWindow):
             self.media_list.running_index = -1
             # Update ui
             self.update_interface(stop=False, stop_all=False, remove=False)
-
+        start = time()
         self._fill_media_list(files_paths)
 
         self.tb_tasks.setRowCount(self.media_list.length)
@@ -670,7 +671,6 @@ class MMWindow(QMainWindow):
             self.tb_tasks.setItem(row, NAME, item)
 
             item = QTableWidgetItem()
-            print(media_file.info.format_duration)
             item.setText(str(write_time(media_file.info.format_duration)))
             self.tb_tasks.setItem(row, DURATION, item)
 
@@ -684,6 +684,7 @@ class MMWindow(QMainWindow):
 
         # After adding files to the list, recalculate the list duration
         self.total_duration = self.media_list.duration
+        print(time() - start)
 
     def remove_media_file(self):
         """Remove selected media file from the list."""
