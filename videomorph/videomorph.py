@@ -624,6 +624,11 @@ class MMWindow(QMainWindow):
                 pass
         return self.media_list
 
+    def _insert_table_item(self, item_text, row, column):
+        item = QTableWidgetItem()
+        item.setText(item_text)
+        self.tb_tasks.setItem(row, column, item)
+
     def add_media(self):
         """Add media files to the list of conversion tasks."""
         # Dialog title
@@ -666,21 +671,24 @@ class MMWindow(QMainWindow):
         self.tb_tasks.setRowCount(self.media_list.length)
 
         for row, media_file in enumerate(self.media_list):
-            item = QTableWidgetItem()
-            item.setText(media_file.get_name(with_extension=True))
-            self.tb_tasks.setItem(row, NAME, item)
+            self._insert_table_item(
+                item_text=media_file.get_name(with_extension=True),
+                row=row,
+                column=NAME)
 
-            item = QTableWidgetItem()
-            item.setText(str(write_time(media_file.info.format_duration)))
-            self.tb_tasks.setItem(row, DURATION, item)
+            self._insert_table_item(
+                item_text=str(write_time(media_file.info.format_duration)),
+                row=row,
+                column=DURATION)
 
-            item = QTableWidgetItem()
-            item.setText(str(self.cb_presets.currentText()))
-            self.tb_tasks.setItem(row, QUALITY, item)
+            self._insert_table_item(
+                item_text=str(self.cb_presets.currentText()),
+                row=row,
+                column=QUALITY)
 
-            item = QTableWidgetItem()
-            item.setText(self.tr('To Convert'))
-            self.tb_tasks.setItem(row, PROGRESS, item)
+            self._insert_table_item(item_text=self.tr('To Convert'),
+                                    row=row,
+                                    column=PROGRESS)
 
         # After adding files to the list, recalculate the list duration
         self.total_duration = self.media_list.duration
