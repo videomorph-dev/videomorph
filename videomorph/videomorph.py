@@ -24,6 +24,7 @@ import re
 from os import sep
 from os.path import exists, basename
 from functools import partial
+from threading import Thread
 from time import time
 
 from PyQt5.QtCore import (QSize,
@@ -617,11 +618,35 @@ class MMWindow(QMainWindow):
         return media_file
 
     def _fill_media_list(self, files_paths):
-        for media_file in map(self._media_file_factory, files_paths):
+
+        class MediaFileThread(Thread):
+            def __init__(self, media_path, factory):
+                super(MediaFileThread, self).__init__()
+                self.media_path = media_path
+                self.factory = factory
+                self.media_file = None
+
+            def run(self):
+                # Create media files to be added to the list
+                self.media_file = self.factory(self.media_path)
+
+        threads = []
+        for file_path in files_paths:
+            t = MediaFileThread(media_path=file_path,
+                                factory=self._media_file_factory)
+            t.start()
+            threads.append(t)
+
+        for t in threads:
+            t.join()
+
+        for thread in threads:
             try:
-                self.media_list.add_file(media_file)
+                self.media_list.add_file(thread.media_file)
             except FileAddedError:
+                del thread.media_file
                 pass
+
         return self.media_list
 
     def _insert_table_item(self, item_text, row, column):
