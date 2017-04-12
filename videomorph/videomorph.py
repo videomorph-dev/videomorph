@@ -69,6 +69,7 @@ from .converter import Converter
 from .converter import CONV_LIB
 from .converter import STATUS
 from .converter import FileAddedError
+from .converter import InvalidMetadataError
 from .converter import MediaFile
 from .converter import MediaList
 from .converter import which
@@ -645,7 +646,16 @@ class MMWindow(QMainWindow):
                 self.media_list.add_file(thread.media_file)
             except FileAddedError:
                 del thread.media_file
-                pass
+            except InvalidMetadataError:
+                msg_box = QMessageBox(
+                    QMessageBox.Information,
+                    self.tr('Information!'),
+                    self.tr('Invalid Video File Information for: {0}. '
+                            'File not Added to Conversion List.'.format(
+                        thread.media_file.get_name(with_extension=True))),
+                    QMessageBox.Ok,
+                    self)
+                msg_box.show()
 
         return self.media_list
 

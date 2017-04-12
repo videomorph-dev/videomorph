@@ -45,6 +45,10 @@ class FileAddedError(MediaError):
     """Exception to raise when a file is already added."""
     pass
 
+class InvalidMetadataError(MediaError):
+    """Exception to raise when the file don't have a valid metadata info."""
+    pass
+
 
 MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
 
@@ -82,7 +86,11 @@ class MediaList(list):
             # 0 duration video file not added
             raise FileAddedError('File is zero length')
         else:
-            self.append(media_file)
+            try:
+                float(media_file.get_info('format_duration'))
+                self.append(media_file)
+            except:
+                raise InvalidMetadataError('Invalid file metadata info.')
 
     def delete_file(self, file_index):
         """Delete a video file from the list."""
