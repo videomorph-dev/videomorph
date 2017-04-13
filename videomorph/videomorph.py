@@ -24,6 +24,7 @@ import re
 from os import sep
 from os.path import exists, basename
 from functools import partial
+from threading import Thread
 from time import time
 
 from PyQt5.QtCore import (QSize,
@@ -68,6 +69,7 @@ from .converter import Converter
 from .converter import CONV_LIB
 from .converter import STATUS
 from .converter import FileAddedError
+from .converter import InvalidMetadataError
 from .converter import MediaFile
 from .converter import MediaList
 from .converter import which
@@ -127,8 +129,9 @@ class MMWindow(QMainWindow):
         # Create actions
         self.create_actions()
 
-        # Default conversion library
+        # Default conversion library and prober
         self.conversion_lib = CONV_LIB.ffmpeg
+        self.prober = "ffprobe"
 
         # Create initial Settings if not created
         self.create_initial_settings()
@@ -574,16 +577,11 @@ class MMWindow(QMainWindow):
             if s.radio_btn_ffmpeg.isChecked():
                 self.conversion_lib = CONV_LIB.ffmpeg
                 self.converter.conversion_lib = self.conversion_lib
+                self.prober = 'ffprobe'
             elif s.radio_btn_avconv.isChecked():
                 self.conversion_lib = CONV_LIB.avconv
                 self.converter.conversion_lib = self.conversion_lib
-
-    def get_prober(self):
-        """Return a prober depending on the conversion library used."""
-        if self.conversion_lib == CONV_LIB.ffmpeg:
-            return 'ffprobe'
-        elif self.conversion_lib == CONV_LIB.avconv:
-            return 'avprobe'
+                self.prober = 'avprobe'
 
     def populate_profiles_combo(self):
         """Populate profiles combobox."""
@@ -614,6 +612,58 @@ class MMWindow(QMainWindow):
         if directory:
             self.le_output.setText(directory)
 
+    def _media_file_factory(self, media_path):
+        media_file = MediaFile(file_path=media_path,
+                               conversion_profile=self.conversion_profile,
+                               prober=self.prober)
+        return media_file
+
+    def _fill_media_list(self, files_paths):
+
+        class MediaFileThread(Thread):
+            def __init__(self, media_path, factory):
+                super(MediaFileThread, self).__init__()
+                self.media_path = media_path
+                self.factory = factory
+                self.media_file = None
+
+            def run(self):
+                # Create media files to be added to the list
+                self.media_file = self.factory(self.media_path)
+
+        threads = []
+        for file_path in files_paths:
+            t = MediaFileThread(media_path=file_path,
+                                factory=self._media_file_factory)
+            t.start()
+            threads.append(t)
+
+        for t in threads:
+            t.join()
+
+        for thread in threads:
+            try:
+                self.media_list.add_file(thread.media_file)
+            except FileAddedError:
+                del thread.media_file
+            except InvalidMetadataError:
+                msg_box = QMessageBox(
+                    QMessageBox.Information,
+                    self.tr('Information!'),
+                    self.tr('Invalid Video File Information for: {0}. '
+                            'File not Added to Conversion List.'.format(
+                        thread.media_file.get_name(with_extension=True))),
+                    QMessageBox.Ok,
+                    self)
+                msg_box.show()
+
+        return self.media_list
+
+    def _insert_table_item(self, item_text, row, column):
+        item = QTableWidgetItem()
+        item.setText(item_text)
+        self.tb_tasks.setItem(row, column, item)
+
     def add_media(self):
         """Add media files to the list of conversion tasks."""
         # Dialog title
@@ -625,17 +675,14 @@ class MMWindow(QMainWindow):
                     '*.wmv *.mov *.vob *.ogv *.ts)')
 
         # Select media files and store their path
-        media_paths, _ = QFileDialog.getOpenFileNames(self,
+        files_paths, _ = QFileDialog.getOpenFileNames(self,
                                                       title,
                                                       QDir.homePath(),
                                                       v_filter)
 
         # If no file is selected then return
-        if not media_paths:
+        if not files_paths:
             return
-
-        # Count rows in the tasks table
-        rows = self.tb_tasks.rowCount()
 
         # Update tool buttons so you can convert, or add_file, or clear...
         # only if there is not a conversion process running
@@ -653,39 +700,30 @@ class MMWindow(QMainWindow):
             self.media_list.running_index = -1
             # Update ui
             self.update_interface(stop=False, stop_all=False, remove=False)
-
-        # Get the prober to use
-        prober = self.get_prober()
         start = time()
-        # Add selected medias to the table and to MediaList
-        for media_path in media_paths:
-            media_file = MediaFile(file_path=media_path,
-                                   conversion_profile=self.conversion_profile,
-                                   prober=prober)
-            try:
-                self.media_list.add_file(media_file)
-                self.tb_tasks.setRowCount(rows + 1)
-            except FileAddedError:
-                del media_file
-                continue
+        self._fill_media_list(files_paths)
 
-            item = QTableWidgetItem()
-            item.setText(media_file.get_name(with_extension=True))
-            self.tb_tasks.setItem(rows, NAME, item)
-            item = QTableWidgetItem()
-            file_duration = str(
-                write_time(media_file.info.format_duration))
-            item.setText(file_duration)
-            self.tb_tasks.setItem(rows, DURATION, item)
-            item = QTableWidgetItem()
-            item.setText(str(self.cb_presets.currentText()))
+        self.tb_tasks.setRowCount(self.media_list.length)
 
-            self.tb_tasks.setItem(rows, QUALITY, item)
-            item = QTableWidgetItem()
-            item.setText(self.tr('To Convert'))
-            self.tb_tasks.setItem(rows, PROGRESS, item)
-            # Next table row
-            rows += 1
+        for row, media_file in enumerate(self.media_list):
+            self._insert_table_item(
+                item_text=media_file.get_name(with_extension=True),
+                row=row,
+                column=NAME)
+
+            self._insert_table_item(
+                item_text=str(write_time(media_file.info.format_duration)),
+                row=row,
+                column=DURATION)
+
+            self._insert_table_item(
+                item_text=str(self.cb_presets.currentText()),
+                row=row,
+                column=QUALITY)
+
+            self._insert_table_item(item_text=self.tr('To Convert'),
+                                    row=row,
+                                    column=PROGRESS)
 
         # After adding files to the list, recalculate the list duration
         self.total_duration = self.media_list.duration
