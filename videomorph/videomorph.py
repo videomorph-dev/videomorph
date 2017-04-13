@@ -632,11 +632,11 @@ class MMWindow(QMainWindow):
                 del thread.media_file
             except InvalidMetadataError:
                 msg_box = QMessageBox(
-                    QMessageBox.Information,
-                    self.tr('Information!'),
-                    self.tr('Invalid Video File Information for: {0}. '
+                    QMessageBox.Critical,
+                    self.tr('Error!'),
+                    self.tr('Invalid Video File Information for: {fn}. '
                             'File not Added to Conversion List.'.format(
-                        thread.media_file.get_name(with_extension=True))),
+                        fn=thread.media_file.get_name(with_extension=True))),
                     QMessageBox.Ok,
                     self)
                 msg_box.show()
