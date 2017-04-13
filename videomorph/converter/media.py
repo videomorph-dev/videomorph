@@ -25,7 +25,7 @@ import os.path
 from os import cpu_count
 from subprocess import Popen
 from subprocess import PIPE
-
+from threading import Thread
 from collections import namedtuple
 
 from .utils import which
@@ -243,3 +243,26 @@ class MediaInfo:
                     self.f_bit_rate = _get_value(format_line)
                 elif format_line.startswith('size'):
                     self.file_size = _get_value(format_line)
+
+
+class MediaFileThread(Thread):
+    def __init__(self, factory, media_path,
+                 conversion_profile, prober):
+        super(MediaFileThread, self).__init__()
+        self.factory = factory
+        self.file_path = media_path
+        self.conversion_profile = conversion_profile
+        self.prober = prober
+        self.media_file = None
+
+    def run(self):
+        # Create media files to be added to the list
+        self.media_file = self.factory(self.file_path,
+                                       self.conversion_profile,
+                                       self.prober)
+
+
+def media_file_factory(file_path, conversion_profile, prober):
+    return MediaFile(file_path=file_path,
+                     conversion_profile=conversion_profile,
+                     prober=prober)
