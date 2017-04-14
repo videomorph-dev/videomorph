@@ -202,11 +202,7 @@ class MediaInfo:
         self.media_path = media_path
         self.prober = prober
         # Format info
-        self.format_name = None
-        self.format_long_name = None
-        self.format_bit_rate = None
         self.format_duration = None
-        self.file_size = None
 
         self._parse_probe()
 
@@ -232,17 +228,9 @@ class MediaInfo:
         with self._probe() as f:
             for format_line in f:
                 format_line = format_line.strip()
-                if format_line.startswith('format_name'):
-                    self.format_name = _get_value(format_line)
-                elif format_line.startswith('format_long_name'):
-                    self.format_long_name = _get_value(format_line)
-                elif format_line.startswith('duration'):
+                if format_line.startswith('duration'):
                     self.format_duration = _get_value(format_line)
-                elif format_line.startswith('bit_rate'):
-                    self.f_bit_rate = _get_value(format_line)
-                elif format_line.startswith('size'):
-                    self.file_size = _get_value(format_line)
-
+                    break
 
 class MediaFileThread(Thread):
     def __init__(self, factory, media_path,
