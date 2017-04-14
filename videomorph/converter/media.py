@@ -78,19 +78,18 @@ class MediaList(list):
 
     def add_file(self, media_file):
         """Add a video file to the list."""
-        if not isinstance(media_file, MediaFile):
-            raise MediaError('Not valid MediaFile object')
-        elif self._file_is_added(media_file):
+        if self._file_is_added(media_file):
             raise FileAddedError('File is already added')
         elif not media_file.get_info('format_duration'):
             # 0 duration video file not added
-            raise FileAddedError('File is zero length')
+            raise InvalidMetadataError('File is zero length')
         else:
             try:
+                # Invalid metadata
                 float(media_file.get_info('format_duration'))
                 self.append(media_file)
             except:
-                raise InvalidMetadataError('Invalid file metadata info.')
+                raise InvalidMetadataError('Invalid file duration')
 
     def delete_file(self, file_index):
         """Delete a video file from the list."""
