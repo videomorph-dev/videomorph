@@ -191,6 +191,7 @@ class _XMLProfile:
 XMLProfile = _XMLProfile()
 
 
+# TODO: Idea: maybe the _Profile should contains its own library and prober
 class _Profile:
     """Base class for a Video Profile."""
 

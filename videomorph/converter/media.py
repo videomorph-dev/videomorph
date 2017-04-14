@@ -25,7 +25,7 @@ import os.path
 from os import cpu_count
 from subprocess import Popen
 from subprocess import PIPE
-
+from threading import Thread
 from collections import namedtuple
 
 from .utils import which
@@ -78,19 +78,18 @@ class MediaList(list):
 
     def add_file(self, media_file):
         """Add a video file to the list."""
-        if not isinstance(media_file, MediaFile):
-            raise MediaError('Not valid MediaFile object')
-        elif self._file_is_added(media_file):
+        if self._file_is_added(media_file):
             raise FileAddedError('File is already added')
         elif not media_file.get_info('format_duration'):
             # 0 duration video file not added
-            raise FileAddedError('File is zero length')
+            raise InvalidMetadataError('File is zero length')
         else:
             try:
+                # Invalid metadata
                 float(media_file.get_info('format_duration'))
                 self.append(media_file)
             except:
-                raise InvalidMetadataError('Invalid file metadata info.')
+                raise InvalidMetadataError('Invalid file duration')
 
     def delete_file(self, file_index):
         """Delete a video file from the list."""
@@ -243,3 +242,26 @@ class MediaInfo:
                     self.f_bit_rate = _get_value(format_line)
                 elif format_line.startswith('size'):
                     self.file_size = _get_value(format_line)
+
+
+class MediaFileThread(Thread):
+    def __init__(self, factory, media_path,
+                 conversion_profile, prober):
+        super(MediaFileThread, self).__init__()
+        self.factory = factory
+        self.file_path = media_path
+        self.conversion_profile = conversion_profile
+        self.prober = prober
+        self.media_file = None
+
+    def run(self):
+        # Create media files to be added to the list
+        self.media_file = self.factory(self.file_path,
+                                       self.conversion_profile,
+                                       self.prober)
+
+
+def media_file_factory(file_path, conversion_profile, prober):
+    return MediaFile(file_path=file_path,
+                     conversion_profile=conversion_profile,
+                     prober=prober)

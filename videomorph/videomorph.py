@@ -24,7 +24,6 @@ import re
 from os import sep
 from os.path import exists, basename
 from functools import partial
-from threading import Thread
 from time import time
 
 from PyQt5.QtCore import (QSize,
@@ -70,7 +69,8 @@ from .converter import CONV_LIB
 from .converter import STATUS
 from .converter import FileAddedError
 from .converter import InvalidMetadataError
-from .converter import MediaFile
+from .converter import MediaFileThread
+from .converter import media_file_factory
 from .converter import MediaList
 from .converter import which
 from .converter import write_time
@@ -612,29 +612,13 @@ class MMWindow(QMainWindow):
         if directory:
             self.le_output.setText(directory)
 
-    def _media_file_factory(self, media_path):
-        media_file = MediaFile(file_path=media_path,
-                               conversion_profile=self.conversion_profile,
-                               prober=self.prober)
-        return media_file
-
     def _fill_media_list(self, files_paths):
-
-        class MediaFileThread(Thread):
-            def __init__(self, media_path, factory):
-                super(MediaFileThread, self).__init__()
-                self.media_path = media_path
-                self.factory = factory
-                self.media_file = None
-
-            def run(self):
-                # Create media files to be added to the list
-                self.media_file = self.factory(self.media_path)
-
         threads = []
         for file_path in files_paths:
-            t = MediaFileThread(media_path=file_path,
-                                factory=self._media_file_factory)
+            t = MediaFileThread(factory=media_file_factory,
+                                media_path=file_path,
+                                conversion_profile=self.conversion_profile,
+                                prober=self.prober)
             t.start()
             threads.append(t)
 
@@ -648,11 +632,11 @@ class MMWindow(QMainWindow):
                 del thread.media_file
             except InvalidMetadataError:
                 msg_box = QMessageBox(
-                    QMessageBox.Information,
-                    self.tr('Information!'),
-                    self.tr('Invalid Video File Information for: {0}. '
+                    QMessageBox.Critical,
+                    self.tr('Error!'),
+                    self.tr('Invalid Video File Information for: {fn}. '
                             'File not Added to Conversion List.'.format(
-                        thread.media_file.get_name(with_extension=True))),
+                        fn=thread.media_file.get_name(with_extension=True))),
                     QMessageBox.Ok,
                     self)
                 msg_box.show()
