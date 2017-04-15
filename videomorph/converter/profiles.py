@@ -21,7 +21,7 @@
 """This module contains the PRESETS for encoding different video formats."""
 
 from os import sep
-from os.path import expanduser, join, exists, isdir
+from os.path import expanduser, join, exists
 from re import compile
 from collections import OrderedDict
 from distutils.file_util import copy_file
@@ -106,12 +106,11 @@ class _XMLProfile:
                 break
 
     def export_profile_xml_file(self, dst_dir):
-        if isdir(dst_dir):
-            # Raise PermissionError if user don't have write permission
-            try:
-                copy_file(src=self._profiles_xml_path, dst=dst_dir)
-            except DistutilsFileError:
-                raise PermissionError
+        # Raise PermissionError if user don't have write permission
+        try:
+            copy_file(src=self._profiles_xml_path, dst=dst_dir)
+        except DistutilsFileError:
+            raise PermissionError
 
     def import_profile_xml(self, src_file):
         try:
