@@ -22,7 +22,8 @@
 
 import shlex
 import os.path
-from os import cpu_count
+from os.path import exists
+from os import cpu_count, remove, access
 from subprocess import Popen
 from subprocess import PIPE
 from threading import Thread
@@ -44,6 +45,7 @@ class MediaError(Exception):
 class FileAddedError(MediaError):
     """Exception to raise when a file is already added."""
     pass
+
 
 class InvalidMetadataError(MediaError):
     """Exception to raise when the file don't have a valid metadata info."""
@@ -174,17 +176,19 @@ class MediaFile:
 
     def get_conversion_cmd(self, output_dir):
         """Return the conversion command."""
-        # TODO: Test if output_dir is writeable
-        output_file_path = self._get_output_file_path(output_dir)
+        if not access(output_dir, os.W_OK):
+            raise PermissionError('Access denial')
+
+        output_file_path = self.get_output_path(output_dir)
 
         cmd = ['-i', self.path] + \
-              shlex.split(self.conversion_profile.params) + \
-              ['-threads', str(CPU_CORES)] + \
-              ['-y', output_file_path]
+            shlex.split(self.conversion_profile.params) + \
+            ['-threads', str(CPU_CORES)] + \
+            ['-y', output_file_path]
 
         return cmd
 
-    def _get_output_file_path(self, output_dir):
+    def get_output_path(self, output_dir):
         """Return the the output file path."""
         output_file_path = (output_dir +
                             os.sep +  # multi-platform path separator
@@ -193,6 +197,10 @@ class MediaFile:
                             self.get_name() +
                             self.conversion_profile.extension)
         return output_file_path
+
+    def delete_output(self, output_path):
+        if exists(self.get_output_path(output_path)):
+            remove(self.get_output_path(output_path))
 
 
 class MediaInfo:
@@ -231,6 +239,7 @@ class MediaInfo:
                 if format_line.startswith('duration'):
                     self.format_duration = _get_value(format_line)
                     break
+
 
 class MediaFileThread(Thread):
     def __init__(self, factory, media_path,

@@ -611,6 +611,7 @@ class MMWindow(QMainWindow):
 
         if directory:
             self.le_output.setText(directory)
+            self.update_interface(stop=False, stop_all=False, remove=False)
 
     def _fill_media_list(self, files_paths):
         threads = []
@@ -635,7 +636,7 @@ class MMWindow(QMainWindow):
                     QMessageBox.Critical,
                     self.tr('Error!'),
                     self.tr('Invalid Video File Information for: {fn}. '
-                            'File not Added to Conversion List.'.format(
+                            'File not Added to Conversion List'.format(
                         fn=thread.media_file.get_name(with_extension=True))),
                     QMessageBox.Ok,
                     self)
@@ -807,10 +808,21 @@ class MMWindow(QMainWindow):
 
         if (not running_media.status == STATUS.done and not
                 running_media.status == STATUS.stopped):
-
-            self.converter.start_encoding(
-                cmd=running_media.get_conversion_cmd(
-                    output_dir=self.le_output.text()))
+            try:
+                self.converter.start_encoding(
+                    cmd=running_media.get_conversion_cmd(
+                        output_dir=self.le_output.text()))
+            except PermissionError:
+                msg_box = QMessageBox(
+                    QMessageBox.Critical,
+                    self.tr('Error!'),
+                    self.tr('Can not Write to Selected Output Directory'),
+                    QMessageBox.Ok,
+                    self)
+                msg_box.show()
+                self.media_list.running_index = -1
+                self.update_interface(convert=False, stop=False,
+                                      stop_all=False, remove=False)
         else:
             self.end_encoding_process()
 
@@ -818,7 +830,9 @@ class MMWindow(QMainWindow):
         """Stop file encoding process and continue with the list."""
         # Set MediaFile.status attribute
         self.media_list.get_running_file().status = STATUS.stopped
-        # TODO: Delete the file when conversion is stopped
+        # Delete the file when conversion is stopped by the user
+        self.media_list.get_running_file().delete_output(
+            self.le_output.text())
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
         self.time_jump = 0.0
@@ -828,6 +842,8 @@ class MMWindow(QMainWindow):
         self.converter.stop_encoding()
 
     def stop_all_files_encoding(self):
+        # Delete the file when conversion is stopped by the user
+        self.media_list.get_running_file().delete_output(self.le_output.text())
         for media_file in self.media_list:
             # Set MediaFile.status attribute
             if media_file.status != STATUS.done:
@@ -871,9 +887,6 @@ class MMWindow(QMainWindow):
         """End up the encoding process."""
         # Test if encoding process is finished
         if self.converter.encoding_done:
-            # TODO: Fix situations where the encoding is stopped for the user
-            # or could not be done for some reazon (e.g. PermissionError,
-            # ffmpeg error, etc.)
             msg_box = QMessageBox(
                 QMessageBox.Information,
                 self.tr('Information!'),
