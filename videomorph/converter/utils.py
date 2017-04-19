@@ -21,11 +21,12 @@
 """This module contains some utilities and functions."""
 
 import os
-from locale import getlocale
+from locale import getdefaultlocale
 
 
 def get_locale():
-    return 'es_ES' if getlocale()[0] == 'es_CU' else getlocale()[0]
+    return ('es_ES' if getdefaultlocale()[0] == 'es_CU' else
+            getdefaultlocale()[0])
     # return 'es_ES'
 
 
