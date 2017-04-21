@@ -26,7 +26,15 @@ VideoMorph isn't for you.
 
 To install the package:
 
-    python3 setup.py install
+    sudo python3 setup.py install # This does not install dependencies
+
+    or:
+
+    sudo install.sh # This does install dependencies
+
+To install the .deb file
+
+    use GDebi Packages Installer, just that...
 
 This only installs VideoMorph. The [ffmpeg](http://ffmpeg.org) package should be installed
 or compiled in your distribution.
