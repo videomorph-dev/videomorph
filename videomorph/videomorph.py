@@ -644,13 +644,7 @@ class MMWindow(QMainWindow):
 
         return self.media_list
 
-    def _insert_table_item(self, item_text, row, column):
-        item = QTableWidgetItem()
-        item.setText(item_text)
-        self.tb_tasks.setItem(row, column, item)
-
-    def add_media(self):
-        """Add media files to the list of conversion tasks."""
+    def _load_files(self):
         # Dialog title
         title = self.tr('Select Video Files')
         # Media filters
@@ -664,30 +658,14 @@ class MMWindow(QMainWindow):
                                                       title,
                                                       QDir.homePath(),
                                                       v_filter)
+        return files_paths
 
-        # If no file is selected then return
-        if not files_paths:
-            return
+    def _insert_table_item(self, item_text, row, column):
+        item = QTableWidgetItem()
+        item.setText(item_text)
+        self.tb_tasks.setItem(row, column, item)
 
-        # Update tool buttons so you can convert, or add_file, or clear...
-        # only if there is not a conversion process running
-        if self.converter.is_running:
-            self.update_interface(presets=False,
-                                  profiles=False,
-                                  convert=False,
-                                  clear=False,
-                                  remove=False,
-                                  output_dir=False,
-                                  settings=False)
-        else:
-            # This rewind the encoding list if the encoding process is
-            # not running
-            self.media_list.running_index = -1
-            # Update ui
-            self.update_interface(stop=False, stop_all=False, remove=False)
-        start = time()
-        self._fill_media_list(files_paths)
-
+    def _create_table(self):
         self.tb_tasks.setRowCount(self.media_list.length)
 
         for row, media_file in enumerate(self.media_list):
@@ -710,9 +688,37 @@ class MMWindow(QMainWindow):
                                     row=row,
                                     column=PROGRESS)
 
+    def add_media(self):
+        """Add media files to the list of conversion tasks."""
+        files_paths = self._load_files()
+        # If no file is selected then return
+        if not files_paths:
+            return
+
+        # Update tool buttons so you can convert, or add_file, or clear...
+        # only if there is not a conversion process running
+        if self.converter.is_running:
+            self.update_interface(presets=False,
+                                  profiles=False,
+                                  convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  output_dir=False,
+                                  settings=False)
+        else:
+            # This rewind the encoding list if the encoding process is
+            # not running
+            self.media_list.running_index = -1
+            # Update ui
+            self.update_interface(stop=False, stop_all=False, remove=False)
+        start = time()
+        self._fill_media_list(files_paths)
+        print(time() - start)
+
+        self._create_table()
+
         # After adding files to the list, recalculate the list duration
         self.total_duration = self.media_list.duration
-        print(time() - start)
 
     def remove_media_file(self):
         """Remove selected media file from the list."""
