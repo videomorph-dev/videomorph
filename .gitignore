@@ -71,9 +71,5 @@ tests/Dad.mpg
 build_deb.sh
 videomorph_0.8a_xenial_all/
 
-# Files for installing-uninstalling
-install.sh
-uninstall.sh
-
 # .ui files
 *.ui
