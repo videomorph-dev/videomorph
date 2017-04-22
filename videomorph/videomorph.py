@@ -809,8 +809,7 @@ class MMWindow(QMainWindow):
 
         running_media = self.media_list.get_running_file()
         running_media.conversion_profile.quality = self.tb_tasks.item(
-            self.media_list.running_index,
-            QUALITY).text()
+            self.media_list.running_index, QUALITY).text()
 
         if (not running_media.status == STATUS.done and not
                 running_media.status == STATUS.stopped):
@@ -837,8 +836,7 @@ class MMWindow(QMainWindow):
         # Set MediaFile.status attribute
         self.media_list.get_running_file().status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
-        self.media_list.get_running_file().delete_output(
-            self.le_output.text())
+        self.media_list.get_running_file().delete_output(self.le_output.text())
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
         self.time_jump = 0.0
@@ -1014,7 +1012,7 @@ class MMWindow(QMainWindow):
 
                     if (self.media_list.get_file_status(i) == STATUS.done or
                             self.media_list.get_file_status(i) ==
-                                STATUS.stopped):
+                            STATUS.stopped):
                         self.tb_tasks.item(i, PROGRESS).setText(
                             self.tr('To Convert'))
 
