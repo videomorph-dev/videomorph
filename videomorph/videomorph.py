@@ -630,7 +630,7 @@ class MMWindow(QMainWindow):
             try:
                 self.media_list.add_file(thread.media_file)
             except FileAddedError:
-                del thread.media_file
+                pass
             except InvalidMetadataError:
                 msg_box = QMessageBox(
                     QMessageBox.Critical,
