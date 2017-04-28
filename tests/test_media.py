@@ -86,7 +86,6 @@ def test_add_file():
     assert media_file is media_list[0]
 
 
-@nose.tools.raises(media.FileAddedError)
 def test_add_file_twice():
     """Testing adding the same file two times."""
     media_file = _get_media_file_obj()
@@ -95,6 +94,7 @@ def test_add_file_twice():
     # test adding the same file twice
     media_list.add_file(media_file)
     media_list.add_file(media_file)
+    assert media_list.length == 1
 
 
 def test_clear():

@@ -67,7 +67,6 @@ from .about import AboutVMDialog
 from .converter import Converter
 from .converter import CONV_LIB
 from .converter import STATUS
-from .converter import FileAddedError
 from .converter import InvalidMetadataError
 from .converter import MediaFileThread
 from .converter import media_file_factory
@@ -629,8 +628,6 @@ class MMWindow(QMainWindow):
         for thread in threads:
             try:
                 self.media_list.add_file(thread.media_file)
-            except FileAddedError:
-                pass
             except InvalidMetadataError:
                 msg_box = QMessageBox(
                     QMessageBox.Critical,

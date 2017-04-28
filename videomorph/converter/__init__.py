@@ -1,7 +1,6 @@
 from .converter import Converter
 from .converter import CONV_LIB
 from .media import STATUS
-from .media import FileAddedError
 from .media import InvalidMetadataError
 from .media import MediaFile
 from .media import MediaFileThread
