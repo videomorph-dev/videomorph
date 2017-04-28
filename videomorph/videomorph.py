@@ -22,7 +22,8 @@
 
 import re
 from os import sep
-from os.path import exists, basename
+from os.path import exists
+from os.path import basename
 from functools import partial
 from time import time
 
@@ -918,66 +919,68 @@ class MMWindow(QMainWindow):
         ret = str(self.converter.process.readAll())
         time = time_pattern.findall(ret)
 
-        if time:
-            # Convert time to seconds
-            if ':' in time[0]:
-                time_in_secs = 0
-                for part in time[0].split(':'):
-                    time_in_secs = 60 * time_in_secs + float(part)
-            else:
-                time_in_secs = float(time[0])
+        if not time:
+            return
 
-            # Calculate operation progress percent
-            op_time = self.media_list.get_running_file().info.format_duration
-            operation_progress = int(time_in_secs / float(op_time) * 100)
+        # Convert time to seconds
+        if ':' in time[0]:
+            time_in_secs = 0
+            for part in time[0].split(':'):
+                time_in_secs = 60 * time_in_secs + float(part)
+        else:
+            time_in_secs = float(time[0])
 
-            # Update the table and the operation progress bar
-            self.pb_progress.setProperty("value", operation_progress)
-            self.tb_tasks.item(self.media_list.running_index, 3).setText(
-                str(operation_progress) + "%")
+        # Calculate operation progress percent
+        op_time = self.media_list.get_running_file().info.format_duration
+        operation_progress = int(time_in_secs / float(op_time) * 100)
 
-            # Calculate total time
-            if self.partial_time > time_in_secs:
-                self.time_jump += self.partial_time
-                self.total_time = self.time_jump + time_in_secs
-                self.partial_time = time_in_secs
-            else:
-                self.total_time = self.time_jump + time_in_secs
-                self.partial_time = time_in_secs
+        # Update the table and the operation progress bar
+        self.pb_progress.setProperty("value", operation_progress)
+        self.tb_tasks.item(self.media_list.running_index, 3).setText(
+            str(operation_progress) + "%")
 
-            # Calculate total progress percent
-            total_progress = int(self.total_time /
-                                 float(self.total_duration) * 100)
-            # Update the total progress bar
-            self.pb_total_progress.setProperty("value", total_progress)
+        # Calculate total time
+        if self.partial_time > time_in_secs:
+            self.time_jump += self.partial_time
+            self.total_time = self.time_jump + time_in_secs
+            self.partial_time = time_in_secs
+        else:
+            self.total_time = self.time_jump + time_in_secs
+            self.partial_time = time_in_secs
 
-            # Avoid negative total_remaining_time
-            try:
-                total_remaining_time = write_time(self.total_duration -
-                                                  self.total_time)
-            except ValueError:
-                total_remaining_time = write_time(0)
-            # Avoid negative operation_remaining_time
-            try:
-                operation_remaining_time = write_time(float(op_time) -
-                                                      time_in_secs)
-            except ValueError:
-                operation_remaining_time = write_time(0)
+        # Calculate total progress percent
+        total_progress = int(self.total_time /
+                             float(self.total_duration) * 100)
+        # Update the total progress bar
+        self.pb_total_progress.setProperty("value", total_progress)
 
-            self.statusBar().showMessage(
-                self.tr('Converting: {m}\t\t\t '
-                        'Operation Remaining Time: {ort}\t\t\t '
-                        'Total Remaining Time: {trt}').format(
-                    m=self.media_list.get_running_file().get_name(True),
-                    ort=operation_remaining_time,
-                    trt=total_remaining_time))
+        # Avoid negative total_remaining_time
+        try:
+            total_remaining_time = write_time(self.total_duration -
+                                              self.total_time)
+        except ValueError:
+            total_remaining_time = write_time(0)
+        # Avoid negative operation_remaining_time
+        try:
+            operation_remaining_time = write_time(float(op_time) -
+                                                  time_in_secs)
+        except ValueError:
+            operation_remaining_time = write_time(0)
 
-            current_file_name = basename(
-                self.media_list.get_running_file().path)
+        self.statusBar().showMessage(
+            self.tr('Converting: {m}\t\t\t '
+                    'Operation Remaining Time: {ort}\t\t\t '
+                    'Total Remaining Time: {trt}').format(
+                m=self.media_list.get_running_file().get_name(True),
+                ort=operation_remaining_time,
+                trt=total_remaining_time))
 
-            self.setWindowTitle(str(operation_progress) + '%' + '-' +
-                                '[' + current_file_name + ']' +
-                                ' - ' + APPNAME + ' ' + VERSION)
+        current_file_name = basename(
+            self.media_list.get_running_file().path)
+
+        self.setWindowTitle(str(operation_progress) + '%' + '-' +
+                            '[' + current_file_name + ']' +
+                            ' - ' + APPNAME + ' ' + VERSION)
 
     def update_media_files_status(self):
         """Update file status."""
