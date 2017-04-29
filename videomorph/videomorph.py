@@ -138,7 +138,7 @@ class MMWindow(QMainWindow):
 
         # XML Profile
         from .converter import XMLProfile
-        self.xml_profile = XMLProfile
+        self.xml_profile = XMLProfile()
         self.xml_profile.create_profiles_xml_file()
         self.xml_profile.set_xml_root()
 

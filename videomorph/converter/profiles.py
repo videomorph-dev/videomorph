@@ -20,9 +20,9 @@
 
 """This module contains the PRESETS for encoding different video formats."""
 
+import re
 from os import sep
 from os.path import expanduser, join, exists
-from re import compile
 from collections import OrderedDict
 from distutils.file_util import copy_file
 from distutils.errors import DistutilsFileError
@@ -30,47 +30,53 @@ from xml.etree import ElementTree
 
 
 class ProfileError(Exception):
+    """Base Exception."""
     pass
 
 
-class ProfileNameBlankError(ProfileError):
+class ProfileBlankNameError(ProfileError):
+    """Exception for Profile Blank Name."""
     pass
 
 
-class ProfilePresetBlankError(ProfileError):
+class ProfileBlankPresetError(ProfileError):
+    """Exception form Profile Blank Preset."""
     pass
 
 
-class ProfileParamsBlankError(ProfileError):
+class ProfileBlankParamsError(ProfileError):
+    """Exception form Profile Blank Params."""
     pass
 
 
 class ProfileExtensionError(ProfileError):
+    """Exception form Profile Extension Error."""
     pass
 
 
-class _XMLProfile:
+class XMLProfile:
     """Class to manage the profiles.xml file."""
 
     def __init__(self):
         self._xml_root = None
 
     def set_xml_root(self):
+        """Set the XML root."""
         self._xml_root = self._get_xml_root()
 
     # TODO: delete_conversion_profile and edit_conversion_profile methods
     def add_conversion_profile(self, profile_name, preset, params, extension):
-
+        """Add a conversion profile."""
         if not profile_name:
-            raise ProfileNameBlankError
+            raise ProfileBlankNameError
 
         profile_name = profile_name.upper()
 
         if not preset:
-            raise ProfilePresetBlankError
+            raise ProfileBlankPresetError
 
         if not params:
-            raise ProfileParamsBlankError
+            raise ProfileBlankParamsError
 
         if not extension.startswith('.'):
             raise ProfileExtensionError
@@ -78,8 +84,8 @@ class _XMLProfile:
         extension = extension.lower()
 
         xml_profile = ElementTree.Element(profile_name)
-        rx = compile(r'[A-z][0-9]?')
-        preset_tag = ''.join(rx.findall(preset))
+        regexp = re.compile(r'[A-z][0-9]?')
+        preset_tag = ''.join(regexp.findall(preset))
         xml_preset = ElementTree.Element(preset_tag)
         xml_preset_name = ElementTree.Element('preset_name')
         xml_preset_name.text = preset
@@ -90,9 +96,9 @@ class _XMLProfile:
         xml_preset_name_es = ElementTree.Element('preset_name_es')
         xml_preset_name_es.text = preset
 
-        for num, elem in enumerate([xml_preset_name, xml_params,
-                                    xml_extension, xml_preset_name_es]):
-            xml_preset.insert(num, elem)
+        for i, elem in enumerate([xml_preset_name, xml_params,
+                                  xml_extension, xml_preset_name_es]):
+            xml_preset.insert(i, elem)
 
         for i, elem in enumerate(self._xml_root[:]):
             if elem.tag == xml_profile.tag:
@@ -106,6 +112,7 @@ class _XMLProfile:
                 break
 
     def export_profile_xml_file(self, dst_dir):
+        """Export a file with the conversion profiles."""
         # Raise PermissionError if user don't have write permission
         try:
             copy_file(src=self._profiles_xml_path, dst=dst_dir)
@@ -113,6 +120,7 @@ class _XMLProfile:
             raise PermissionError
 
     def import_profile_xml(self, src_file):
+        """Import a conversion profile file."""
         try:
             copy_file(src=src_file, dst=self._profiles_xml_path)
         except DistutilsFileError:
@@ -120,37 +128,38 @@ class _XMLProfile:
 
     def get_conversion_profile(self, profile_name, target_quality):
         """Return a Profile objects."""
-        for elem in self._xml_root:
-            if elem.tag == profile_name:
-                for e in elem:
-                    if (e[0].text == target_quality or
-                            e[3].text == target_quality):
+        for element in self._xml_root:
+            if element.tag == profile_name:
+                for item in element:
+                    if (item[0].text == target_quality or
+                            item[3].text == target_quality):
                         return _Profile(quality=target_quality,
-                                        params=e[1].text,
-                                        extension=e[2].text,
+                                        params=item[1].text,
+                                        extension=item[2].text,
                                         xml_profile=self)
 
     def get_preset_attr(self, target_quality, attr_index=1):
         """Return a dict of preset/params."""
-        for elem in self._xml_root:
-            for e in elem:
-                if e[0].text == target_quality or e[3].text == target_quality:
-                    return e[attr_index].text
+        for element in self._xml_root:
+            for item in element:
+                if item[0].text == target_quality or item[3].text == target_quality:
+                    return item[attr_index].text
 
     def get_qualities_per_profile(self, locale):
+        """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
         values = []
 
-        for elem in self._xml_root:
-            for e in elem:
+        for element in self._xml_root:
+            for item in element:
                 if locale == 'es_ES':
                     # Create the dict with values in spanish
-                    values.append(e[3].text)
+                    values.append(item[3].text)
                 else:
                     # Create the dict with values in english
-                    values.append(e[0].text)
+                    values.append(item[0].text)
 
-            qualities_per_profile[elem.tag] = values
+            qualities_per_profile[element.tag] = values
             # Reinitialize values
             values = []
 
@@ -159,16 +168,15 @@ class _XMLProfile:
     def save_tree(self):
         """Save xml tree."""
         with open(self._profiles_xml_path, 'wb') as _file:
-            try:
-                ElementTree.ElementTree(self._xml_root).write(_file)
-            except Exception:
-                pass
+            ElementTree.ElementTree(self._xml_root).write(_file)
 
     @property
     def _profiles_xml_path(self):
+        """Return the path to the profiles file."""
         return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
 
     def create_profiles_xml_file(self):
+        """Create a xml file with the conversion profiles."""
         profiles_xml = self._profiles_xml_path
 
         if not exists(profiles_xml):
@@ -187,7 +195,7 @@ class _XMLProfile:
         return tree.getroot()
 
 
-XMLProfile = _XMLProfile()
+# XMLProfile = _XMLProfile()
 
 
 # TODO: Idea: maybe the _Profile should contains its own library and prober
@@ -207,10 +215,12 @@ class _Profile:
 
     @property
     def quality(self):
+        """Return the target Quality."""
         return self._quality
 
     @quality.setter
     def quality(self, value):
+        """Set the target Quality and other parameters needed to get it."""
         self._quality = value
         # Update the params and extension when the target quality change
         self.params = self.xml_profile.get_preset_attr(self._quality)
@@ -220,7 +230,7 @@ class _Profile:
     @property
     def quality_tag(self):
         """Generate a tag from profile quality string."""
-        tag_regex = compile(r'[A-Z][0-9]?')
+        tag_regex = re.compile(r'[A-Z][0-9]?')
         tag = ''.join(tag_regex.findall(self.quality))
 
         return '[' + tag + ']'

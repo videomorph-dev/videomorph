@@ -24,9 +24,9 @@ from PyQt5.QtWidgets import (QDialog, QWidget, QVBoxLayout, QLabel,
                              QMessageBox)
 
 from .converter import XMLProfile
-from .converter import (ProfileNameBlankError,
-                        ProfilePresetBlankError,
-                        ProfileParamsBlankError,
+from .converter import (ProfileBlankNameError,
+                        ProfileBlankPresetError,
+                        ProfileBlankParamsError,
                         ProfileExtensionError)
 
 
@@ -119,19 +119,19 @@ class AddProfileDialog(QDialog):
                 params=self.le_params.text(),
                 extension=self.le_extension.text()
             )
-        except ProfileNameBlankError:
+        except ProfileBlankNameError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
                 self.tr("Profile Name Can't Be Left Blank.")
             )
             self.le_profile_name.setFocus()
-        except ProfilePresetBlankError:
+        except ProfileBlankPresetError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
                 self.tr("Target Quality Name Can't Be Left Blank.")
             )
             self.le_preset_name.setFocus()
-        except ProfileParamsBlankError:
+        except ProfileBlankParamsError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
                 self.tr("Command Line Parameters Can't Be Left Blank.")

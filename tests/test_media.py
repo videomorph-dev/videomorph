@@ -156,9 +156,11 @@ def test_duration():
 
 # Helper functions
 def _get_media_file_obj(file_path='Dad.mpg', prober='ffprobe'):
+    xml_profile = XMLProfile()
+    xml_profile.set_xml_root()
     return media.MediaFile(
         file_path,
-        conversion_profile=XMLProfile.get_conversion_profile(
+        conversion_profile=xml_profile.get_conversion_profile(
             profile_name='DVD', target_quality='DVD Fullscreen (4:3)'),
         prober=prober)
 

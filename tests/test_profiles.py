@@ -21,15 +21,16 @@
 import nose
 from videomorph.converter import XMLProfile
 
-XMLProfile.create_profiles_xml_file()
-XMLProfile.set_xml_root()
+xml_profile = XMLProfile()
+xml_profile.create_profiles_xml_file()
+xml_profile.set_xml_root()
 
 profile = None
 
 
 def setup():
     global profile
-    profile = XMLProfile.get_conversion_profile(
+    profile = xml_profile.get_conversion_profile(
         profile_name='MP4',
         target_quality='MP4 Widescreen (16:9)')
 
