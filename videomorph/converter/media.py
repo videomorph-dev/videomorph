@@ -76,7 +76,7 @@ class MediaList(list):
     def add_file(self, media_file):
         """Add a video file to the list."""
         if self._file_is_added(media_file):
-            pass
+            return
         elif not media_file.get_info('format_duration'):
             # 0 duration video file not added
             raise InvalidMetadataError('File is zero length')

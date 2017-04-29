@@ -312,9 +312,9 @@ class MMWindow(QMainWindow):
 
     @staticmethod
     def _get_settings_file():
-        return QSettings('{0}{1}.videomorph{2}config.ini'.format(
-                            QDir.homePath(), sep, sep),
-                         QSettings.IniFormat)
+        return QSettings(
+            '{0}{1}.videomorph{2}config.ini'.format(QDir.homePath(), sep, sep),
+            QSettings.IniFormat)
 
     def create_initial_settings(self):
         if not exists('{0}{1}.videomorph{2}config.ini'.format(
