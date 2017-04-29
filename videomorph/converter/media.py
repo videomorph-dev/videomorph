@@ -133,10 +133,8 @@ class MediaList(list):
     def duration(self):
         """Return the duration time of MediaList counting undone files only."""
         return sum(float(media.info.format_duration) for
-                   media in
-                   self if not
-                   media.status == STATUS.done and not
-                   media.status == STATUS.stopped)
+                   media in self if media.status != STATUS.done and
+                   media.status != STATUS.stopped)
 
 
 class MediaFile:
@@ -172,7 +170,7 @@ class MediaFile:
     def get_conversion_cmd(self, output_dir):
         """Return the conversion command."""
         if not access(output_dir, os.W_OK):
-            raise PermissionError('Access denial')
+            raise PermissionError('Access denied')
 
         output_file_path = self.get_output_path(output_dir)
 
@@ -194,6 +192,7 @@ class MediaFile:
         return output_file_path
 
     def delete_output(self, output_path):
+        """Delete the output file if conversion is stoped."""
         if exists(self.get_output_path(output_path)):
             remove(self.get_output_path(output_path))
 
@@ -211,6 +210,7 @@ class MediaInfo:
 
     @staticmethod
     def _spawn(cmd):
+        """Return a Popen object."""
         return Popen(cmd,
                      stdin=PIPE,
                      stdout=PIPE,
@@ -218,6 +218,7 @@ class MediaInfo:
                      universal_newlines=True)
 
     def _probe(self):
+        """Return the prober output as a file like object."""
         prober = self._spawn([which(self.prober),
                               '-show_format',
                               self.media_path])
@@ -225,11 +226,13 @@ class MediaInfo:
         return prober.stdout
 
     def _parse_probe(self):
+        """Parse the prober output."""
         def _get_value(line_):
+            """Prepare the data for parsing."""
             return line_.split('=')[-1].strip()
 
-        with self._probe() as f:
-            for format_line in f:
+        with self._probe() as probe_file:
+            for format_line in probe_file:
                 format_line = format_line.strip()
                 if format_line.startswith('duration'):
                     self.format_duration = _get_value(format_line)
@@ -237,6 +240,7 @@ class MediaInfo:
 
 
 class MediaFileThread(Thread):
+    """Thread class to handle the creation of MediaFile objects."""
     def __init__(self, factory, media_path,
                  conversion_profile, prober):
         super(MediaFileThread, self).__init__()
@@ -247,13 +251,14 @@ class MediaFileThread(Thread):
         self.media_file = None
 
     def run(self):
-        # Create media files to be added to the list
+        """Create media files to be added to the list."""
         self.media_file = self.factory(self.file_path,
                                        self.conversion_profile,
                                        self.prober)
 
 
 def media_file_factory(file_path, conversion_profile, prober):
+    """Factory function for creating MediaFile objects."""
     return MediaFile(file_path=file_path,
                      conversion_profile=conversion_profile,
                      prober=prober)
