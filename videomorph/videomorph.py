@@ -109,10 +109,10 @@ class MMWindow(QMainWindow):
         # Define app central widget
         self.central_widget = QWidget(self)
         # Difine layouts
-        self.vl = QVBoxLayout(self.central_widget)
-        self.hl = QHBoxLayout()
-        self.vl1 = QVBoxLayout()
-        self.vl2 = QVBoxLayout()
+        self.vertical_layout = QVBoxLayout(self.central_widget)
+        self.horizontal_layout = QHBoxLayout()
+        self.vertical_layout_1 = QVBoxLayout()
+        self.vertical_layout_2 = QVBoxLayout()
         # Define groups
         self.group_settings()
         self.fix_layout()
@@ -122,8 +122,8 @@ class MMWindow(QMainWindow):
         # Create the toolbar
         self.create_toolbar()
         # Add layouts
-        self.hl.addLayout(self.vl2)
-        self.vl.addLayout(self.hl)
+        self.horizontal_layout.addLayout(self.vertical_layout_2)
+        self.vertical_layout.addLayout(self.horizontal_layout)
         # Set central widget
         self.setCentralWidget(self.central_widget)
         # Create actions
@@ -185,31 +185,30 @@ class MMWindow(QMainWindow):
         size_policy.setHeightForWidth(
             gb_settings.sizePolicy().hasHeightForWidth())
         gb_settings.setSizePolicy(size_policy)
-        hl = QHBoxLayout(gb_settings)
-        vl = QVBoxLayout()
-        hl1 = QHBoxLayout()
+        horizontal_layout = QHBoxLayout(gb_settings)
+        vertical_layout = QVBoxLayout()
+        horizontal_layout_1 = QHBoxLayout()
         label = QLabel(self.tr('Convert To:'))
-        hl1.addWidget(label)
+        horizontal_layout_1.addWidget(label)
         spacer_item = QSpacerItem(40,
                                   20,
                                   QSizePolicy.Expanding,
                                   QSizePolicy.Minimum)
-        hl1.addItem(spacer_item)
-        vl.addLayout(hl1)
+        horizontal_layout_1.addItem(spacer_item)
+        vertical_layout.addLayout(horizontal_layout_1)
         self.cb_profiles = QComboBox(
             gb_settings,
             statusTip=self.tr('Select the Desired Video Format'))
         self.cb_profiles.setMinimumSize(QSize(200, 0))
-        vl.addWidget(self.cb_profiles)
-        hl2 = QHBoxLayout()
+        vertical_layout.addWidget(self.cb_profiles)
+        horizontal_layout_2 = QHBoxLayout()
         label = QLabel(self.tr('Target Quality:'))
-        hl2.addWidget(label)
-        spacerItem1 = QSpacerItem(40,
-                                  20,
-                                  QSizePolicy.Expanding,
-                                  QSizePolicy.Minimum)
-        hl2.addItem(spacerItem1)
-        vl.addLayout(hl2)
+        horizontal_layout_2.addWidget(label)
+        spacer_item_1 = QSpacerItem(40, 20,
+                                    QSizePolicy.Expanding,
+                                    QSizePolicy.Minimum)
+        horizontal_layout_2.addItem(spacer_item_1)
+        vertical_layout.addLayout(horizontal_layout_2)
         self.cb_presets = QComboBox(
             gb_settings,
             statusTip=self.tr('Select the Desired Video Quality'))
@@ -220,9 +219,9 @@ class MMWindow(QMainWindow):
 
         self.cb_presets.activated.connect(self.update_media_files_status)
 
-        vl.addWidget(self.cb_presets)
-        hl.addLayout(vl)
-        self.vl1.addWidget(gb_settings)
+        vertical_layout.addWidget(self.cb_presets)
+        horizontal_layout.addLayout(vertical_layout)
+        self.vertical_layout_1.addWidget(gb_settings)
 
     def fix_layout(self):
         """Fix widgets layout."""
@@ -230,19 +229,19 @@ class MMWindow(QMainWindow):
                                   40,
                                   QSizePolicy.Minimum,
                                   QSizePolicy.Expanding)
-        self.vl1.addItem(spacer_item)
-        self.hl.addLayout(self.vl1)
+        self.vertical_layout_1.addItem(spacer_item)
+        self.horizontal_layout.addLayout(self.vertical_layout_1)
 
     def group_tasks_list(self):
         """Define the Tasks Group arrangement."""
         gb_tasks = QGroupBox(self.central_widget)
         gb_tasks.setTitle(self.tr('List of Conversion Tasks'))
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(gb_tasks.sizePolicy().hasHeightForWidth())
-        gb_tasks.setSizePolicy(sizePolicy)
-        hl = QHBoxLayout(gb_tasks)
+        size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(gb_tasks.sizePolicy().hasHeightForWidth())
+        gb_tasks.setSizePolicy(size_policy)
+        horizontal_layout = QHBoxLayout(gb_tasks)
         self.tb_tasks = QTableWidget(gb_tasks)
         self.tb_tasks.setColumnCount(4)
         self.tb_tasks.setRowCount(0)
@@ -258,11 +257,12 @@ class MMWindow(QMainWindow):
         self.tb_tasks.cellClicked.connect(self._enable_remove_file_action)
         # Create a combo box for Target quality
         self.tb_tasks.setItemDelegate(TargetQualityDelegate(parent=self))
-        hl.addWidget(self.tb_tasks)
-        self.vl2.addWidget(gb_tasks)
+        horizontal_layout.addWidget(self.tb_tasks)
+        self.vertical_layout_2.addWidget(gb_tasks)
         self.tb_tasks.doubleClicked.connect(self.update_edit_triggers)
 
     def update_edit_triggers(self):
+        """Toggle Edit triggers on task table."""
         if (int(self.tb_tasks.currentColumn()) == QUALITY and not
                 self.converter.is_running):
             self.tb_tasks.setEditTriggers(QAbstractItemView.AllEditTriggers)
@@ -273,42 +273,42 @@ class MMWindow(QMainWindow):
         """Define the output directory Group arrangement."""
         gb_output = QGroupBox(self.central_widget)
         gb_output.setTitle(self.tr('Output Directory'))
-        vl = QVBoxLayout(gb_output)
-        vl1 = QVBoxLayout()
-        hl = QHBoxLayout()
+        vertical_layout = QVBoxLayout(gb_output)
+        vertical_layout_1 = QVBoxLayout()
+        horizontal_layout = QHBoxLayout()
         self.le_output = QLineEdit(
             str(QDir.homePath()),
             statusTip=self.tr('Choose Output Directory'))
         self.le_output.setReadOnly(True)
-        hl.addWidget(self.le_output)
+        horizontal_layout.addWidget(self.le_output)
         self.tb_output = QToolButton(
             gb_output,
             statusTip=self.tr('Choose Output Directory'))
         self.tb_output.setText('...')
         self.tb_output.clicked.connect(self.output_directory)
-        hl.addWidget(self.tb_output)
-        vl1.addLayout(hl)
-        vl.addLayout(vl1)
-        self.vl2.addWidget(gb_output)
+        horizontal_layout.addWidget(self.tb_output)
+        vertical_layout_1.addLayout(horizontal_layout)
+        vertical_layout.addLayout(vertical_layout_1)
+        self.vertical_layout_2.addWidget(gb_output)
 
     def group_progress(self):
         """Define the Progress Group arrangement."""
         gb_progress = QGroupBox(self.central_widget)
         gb_progress.setTitle(self.tr('Progress'))
-        vl = QVBoxLayout(gb_progress)
+        vertical_layout = QVBoxLayout(gb_progress)
         label_progress = QLabel(gb_progress)
         label_progress.setText(self.tr('Operation Progress'))
-        vl.addWidget(label_progress)
+        vertical_layout.addWidget(label_progress)
         self.pb_progress = QProgressBar(gb_progress)
         self.pb_progress.setProperty('value', 0)
-        vl.addWidget(self.pb_progress)
+        vertical_layout.addWidget(self.pb_progress)
         label_total_progress = QLabel(gb_progress)
         label_total_progress.setText(self.tr('Total Progress'))
-        vl.addWidget(label_total_progress)
+        vertical_layout.addWidget(label_total_progress)
         self.pb_total_progress = QProgressBar(gb_progress)
         self.pb_total_progress.setProperty('value', 0)
-        vl.addWidget(self.pb_total_progress)
-        self.vl2.addWidget(gb_progress)
+        vertical_layout.addWidget(self.pb_total_progress)
+        self.vertical_layout_2.addWidget(gb_progress)
 
     @staticmethod
     def _get_settings_file():
@@ -317,6 +317,7 @@ class MMWindow(QMainWindow):
             QSettings.IniFormat)
 
     def create_initial_settings(self):
+        """Create initial settings file."""
         if not exists('{0}{1}.videomorph{2}config.ini'.format(
                 QDir.homePath(), sep, sep)):
             self.write_app_settings(pos=QPoint(100, 50),
@@ -589,7 +590,7 @@ class MMWindow(QMainWindow):
         self.cb_profiles.clear()
         # Populate the combobox with new data
         self.cb_profiles.addItems(self.xml_profile.get_qualities_per_profile(
-                locale=get_locale()).keys())
+            locale=get_locale()).keys())
 
     def populate_presets_combo(self, cb_presets):
         """Populate presets combo box."""
@@ -597,7 +598,7 @@ class MMWindow(QMainWindow):
         if current_profile != '':
             cb_presets.clear()
             cb_presets.addItems(self.xml_profile.get_qualities_per_profile(
-                    locale=get_locale())[current_profile])
+                locale=get_locale())[current_profile])
             self.update_media_files_status()
 
     def output_directory(self):
@@ -635,7 +636,8 @@ class MMWindow(QMainWindow):
                     self.tr('Error!'),
                     self.tr('Invalid Video File Information for: {fn}. '
                             'File not Added to Conversion List'.format(
-                        fn=thread.media_file.get_name(with_extension=True))),
+                                fn=thread.media_file.get_name(
+                                    with_extension=True))),
                     QMessageBox.Ok,
                     self)
                 msg_box.show()
@@ -971,9 +973,9 @@ class MMWindow(QMainWindow):
             self.tr('Converting: {m}\t\t\t '
                     'Operation Remaining Time: {ort}\t\t\t '
                     'Total Remaining Time: {trt}').format(
-                m=self.media_list.get_running_file().get_name(True),
-                ort=operation_remaining_time,
-                trt=total_remaining_time))
+                        m=self.media_list.get_running_file().get_name(True),
+                        ort=operation_remaining_time,
+                        trt=total_remaining_time))
 
         current_file_name = basename(
             self.media_list.get_running_file().path)
@@ -1092,7 +1094,7 @@ class TargetQualityDelegate(QItemDelegate):
         if (self.parent.media_list.get_file_status(
                 index.row()) == STATUS.done or
                 self.parent.media_list.get_file_status(
-                index.row()) == STATUS.stopped):
+                    index.row()) == STATUS.stopped):
             self.parent.tb_tasks.item(index.row(), PROGRESS).setText(
                 self.tr('To Convert'))
         # Update file status
