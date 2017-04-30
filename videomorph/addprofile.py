@@ -147,5 +147,5 @@ class AddProfileDialog(QDialog):
         else:
             self.parent.xml_profile.set_xml_root()
             # self.parent.cb_profiles.clear()
-            self.parent.populate_profiles_combo()
+            self.parent._populate_profiles_combo()
             QDialog.accept(self)
