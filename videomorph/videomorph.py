@@ -24,6 +24,8 @@ import re
 from collections import OrderedDict
 from os import sep
 from os.path import exists
+from os.path import isdir
+from os.path import dirname
 from os.path import basename
 from functools import partial
 from time import time
@@ -133,6 +135,9 @@ class MMWindow(QMainWindow):
         # Default conversion library and prober
         self.conversion_lib = CONV_LIB.ffmpeg
         self.prober = "ffprobe"
+
+        # Default Source directory
+        self.source_dir = QDir.homePath()
 
         # Create initial Settings if not created
         self.create_initial_settings()
@@ -340,16 +345,21 @@ class MMWindow(QMainWindow):
             self.cb_presets.setCurrentIndex(int(preset))
         if 'output_dir' in settings.allKeys():
             self.le_output.setText(str(settings.value('output_dir')))
+        if 'source_dir' in settings.allKeys():
+            self.source_dir = str(settings.value('source_dir'))
         if 'conversion_lib' in settings.allKeys():
             self.conversion_lib = settings.value('conversion_lib')
 
     @property
     def app_setting_variables(self):
+        """Return a dict with the app setting variables."""
+        # Add new app setting variables here
         app_settings = OrderedDict(
             pos=self.pos(),
             size=self.size(),
             profile_index=self.cb_profiles.currentIndex(),
             preset_index=self.cb_presets.currentIndex(),
+            source_dir=self.source_dir,
             output_dir=self.le_output.text(),
             conv_lib=self.conversion_lib)
         return app_settings
@@ -642,7 +652,10 @@ class MMWindow(QMainWindow):
 
         return self.media_list
 
-    def _load_files(self):
+    def _load_files(self, source_dir=QDir.homePath()):
+        """Load video files."""
+        source_dir = source_dir if isdir(source_dir) else QDir.homePath()
+
         # Dialog title
         title = self.tr('Select Video Files')
         # Media filters
@@ -654,8 +667,16 @@ class MMWindow(QMainWindow):
         # Select media files and store their path
         files_paths, _ = QFileDialog.getOpenFileNames(self,
                                                       title,
-                                                      QDir.homePath(),
+                                                      source_dir,
                                                       v_filter)
+
+        if not files_paths:
+            self.source_dir = source_dir
+            return None
+        else:
+            # Update the source directory
+            self.source_dir = dirname(files_paths[0])
+
         return files_paths
 
     def _insert_table_item(self, item_text, row, column):
@@ -688,9 +709,9 @@ class MMWindow(QMainWindow):
 
     def add_media(self):
         """Add media files to the list of conversion tasks."""
-        files_paths = self._load_files()
+        files_paths = self._load_files(source_dir=self.source_dir)
         # If no file is selected then return
-        if not files_paths:
+        if files_paths is None:
             return
 
         # Update tool buttons so you can convert, or add_file, or clear...
