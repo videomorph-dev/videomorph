@@ -122,8 +122,6 @@ class VideoMorphMW(QMainWindow):
         self._group_tasks_list()
         self._group_output_directory()
         self._group_progress()
-        # Create the toolbar
-        self._create_toolbar()
         # Add layouts
         self.horizontal_layout.addLayout(self.vertical_layout_2)
         self.vertical_layout.addLayout(self.horizontal_layout)
@@ -174,6 +172,9 @@ class VideoMorphMW(QMainWindow):
 
         # Create app main menu bar
         self._create_main_menu()
+
+        # Create the toolbar
+        self._create_toolbar()
 
         # Create app status bar
         self._create_status_bar()
@@ -300,129 +301,143 @@ class VideoMorphMW(QMainWindow):
         vertical_layout.addWidget(self.pb_total_progress)
         self.vertical_layout_2.addWidget(gb_progress)
 
+    def _action_factory(self, text, callback, enabled=True, **kwargs):
+        """Helper method used for creating actions.
+
+        kwargs: bool checkable,
+                str shortcut,
+                QIcon icon,
+                str tip
+        """
+        action = QAction(text, self, triggered=callback)
+
+        action.setEnabled(enabled)
+
+        if 'icon' in kwargs:
+            action.setIcon(kwargs['icon'])
+        if 'shortcut' in kwargs:
+            action.setShortcut(kwargs['shortcut'])
+        if 'tip' in kwargs:
+            action.setToolTip(kwargs['tip'])
+            action.setStatusTip(kwargs['tip'])
+        if 'checkable' in kwargs:
+            action.setCheckable(kwargs['checkable'])
+
+        return action
+
     def _create_actions(self):
-        """Create the actions and connect them to the tool bar buttons."""
-        self.add_media_file_action = QAction(
-            # Remove this line to use costume icons
-            self.style().standardIcon(QStyle.SP_DialogOpenButton),
-            self.tr('&Open'),
-            self,
+        """Create actions."""
+        self.add_media_file_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_DialogOpenButton),
+            text=self.tr('&Open'),
             shortcut="Ctrl+O",
-            enabled=True,
-            statusTip=self.tr('Add Video Files to the List '
-                              'of Conversion Tasks'),
-            triggered=self.add_media)
-        # Uncomment this line to use costume icons
-        # self.add_media_file_action.setIcon(QIcon(':/icons/images/abrir.png'))
+            tip=self.tr('Add Video Files to the List of Conversion Tasks'),
+            callback=self.add_media)
 
-        self.add_profile_action = QAction(
-            # Remove this line to use costume icons
-            self.style().standardIcon(QStyle.SP_DialogApplyButton),
-            self.tr('&Add Customized Profile...'),
-            self,
+        self.add_profile_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_DialogApplyButton),
+            text=self.tr('&Add Customized Profile...'),
             shortcut="Ctrl+F",
-            enabled=True,
-            statusTip=self.tr('Add Customized Profile'),
-            triggered=self.add_profile)
+            tip=self.tr('Add Customized Profile'),
+            callback=self.add_profile)
 
-        self.export_profile_action = QAction(
-            # Remove this line to use costume icons
-            self.style().standardIcon(QStyle.SP_DialogSaveButton),
-            self.tr('&Export Conversion Profiles...'),
-            self,
+        self.export_profile_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_DialogSaveButton),
+            text=self.tr('&Export Conversion Profiles...'),
             shortcut="Ctrl+E",
-            enabled=True,
-            statusTip=self.tr('Export Conversion Profiles'),
-            triggered=self.export_profile)
+            tip=self.tr('Export Conversion Profiles'),
+            callback=self.export_profile)
 
-        self.clear_media_list_action = QAction(
-            # Remove this line to use costume icons
-            self.style().standardIcon(QStyle.SP_TrashIcon),
-            self.tr('Clear &List'),
-            self,
+        self.clear_media_list_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_TrashIcon),
+            text=self.tr('Clear &List'),
             shortcut="Ctrl+Del",
             enabled=False,
-            statusTip=self.tr('Clear the Video Files List'),
-            triggered=self.clear_media_list)
-        # Uncomment this line to use costume icons
-        # self.clear_media_list_action.setIcon(QIcon(':/icons/images/limpiar.png'))
+            tip=self.tr('Clear the Video Files List'),
+            callback=self.clear_media_list)
 
-        self.remove_media_file_action = QAction(
-            # Remove this line to use costume icons
-            self.style().standardIcon(QStyle.SP_BrowserStop),
-            self.tr('&Remove File'),
-            self,
+        self.remove_media_file_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_BrowserStop),
+            text=self.tr('&Remove File'),
             shortcut="Del",
             enabled=False,
-            statusTip=self.tr('Remove Video File from the List'),
-            triggered=self.remove_media_file)
-        # Uncomment this line to use costume icons
-        # self.remove_media_file_action.setIcon(QIcon(':/icons/images/eliminar.png'))
+            tip=self.tr('Remove Video File from the List'),
+            callback=self.remove_media_file)
 
-        self.convert_action = QAction(
-            # Remove this line to use costume icons
-            self.style().standardIcon(QStyle.SP_MediaPlay),
-            self.tr('&Convert'),
-            self,
+        self.convert_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_MediaPlay),
+            text=self.tr('&Convert'),
             shortcut="Ctrl+R",
             enabled=False,
-            statusTip=self.tr('Start Conversion Process'),
-            triggered=self.start_encoding)
-        # Uncomment this line to use costume icons
-        # self.convert_action.setIcon(QIcon(':/icons/images/convertir.png'))
+            tip=self.tr('Start Conversion Process'),
+            callback=self.start_encoding)
 
-        self.stop_action = QAction(
-            # Remove this line to use costume icons
-            self.style().standardIcon(QStyle.SP_MediaStop),
-            self.tr('&Stop'),
-            self,
+        self.stop_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_MediaStop),
+            text=self.tr('&Stop'),
             shortcut="Ctrl+P",
             enabled=False,
-            statusTip=self.tr('Stop Video File Conversion'),
-            triggered=self.stop_file_encoding)
-        # Uncomment this line to use costume icons
-        # self.stop_action.setIcon(QIcon(':/icons/images/parar.png'))
+            tip=self.tr('Stop Video File Conversion'),
+            callback=self.stop_file_encoding)
 
-        self.stop_all_action = QAction(
-            # Remove this line to use costume icons
-            self.style().standardIcon(QStyle.SP_DialogCancelButton),
-            self.tr('S&top All'),
-            self,
+        self.stop_all_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_DialogCancelButton),
+            text=self.tr('S&top All'),
             shortcut="Ctrl+A",
             enabled=False,
-            statusTip=self.tr('Stop All Video Conversion Tasks'),
-            triggered=self.stop_all_files_encoding)
+            tip=self.tr('Stop All Video Conversion Tasks'),
+            callback=self.stop_all_files_encoding)
 
-        self.about_action = QAction(
-            # Remove this line to use costume icons
-            self.style().standardIcon(QStyle.SP_MessageBoxInformation),
-            self.tr('&About VideoMorph...'),
-            self,
+        self.about_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_MessageBoxInformation),
+            text=self.tr('&About VideoMorph...'),
             shortcut="Ctrl+H",
-            enabled=True,
-            statusTip=self.tr('About VideoMorph'),
-            triggered=self.about)
-        # Uncomment this line to use costume icons
-        # self.about_action.setIcon(QIcon(':/icons/images/parar.png'))
+            tip=self.tr('About VideoMorph'),
+            callback=self.about)
 
-        self.exit_action = QAction(
-            self.style().standardIcon(QStyle.SP_DialogCloseButton),
-            self.tr('E&xit'),
-            self,
+        self.exit_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_DialogCloseButton),
+            text=self.tr('E&xit'),
             shortcut="Ctrl+Q",
-            enabled=True,
-            statusTip=self.tr('Exit VideoMorph'),
-            triggered=self.close)
+            tip=self.tr('Exit VideoMorph'),
+            callback=self.close)
 
-        self.settings_action = QAction(
-            self.style().standardIcon(QStyle.SP_FileDialogDetailedView),
-            self.tr('&Settings...'),
-            self,
+        self.settings_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_FileDialogDetailedView),
+            text=self.tr('&Settings...'),
             shortcut="Ctrl+S",
-            enabled=True,
-            statusTip=self.tr('Open VideoMorph Settings Dialog'),
-            triggered=self.settings)
+            tip=self.tr('Open VideoMorph Settings Dialog'),
+            callback=self.settings)
 
+    def _create_main_menu(self):
+        """Create main app menu."""
+        # File menu
+        self.file_menu = self.menuBar().addMenu(self.tr('&File'))
+        self.file_menu.addAction(self.add_media_file_action)
+        self.file_menu.addSeparator()
+        self.file_menu.addAction(self.settings_action)
+        self.file_menu.addSeparator()
+        self.file_menu.addAction(self.exit_action)
+        # Edit menu
+        self.edit_menu = self.menuBar().addMenu(self.tr('&Edit'))
+        self.edit_menu.addAction(self.add_profile_action)
+        self.edit_menu.addAction(self.export_profile_action)
+        self.edit_menu.addSeparator()
+        self.edit_menu.addAction(self.clear_media_list_action)
+        self.edit_menu.addAction(self.remove_media_file_action)
+        # Conversion menu
+        self.conversion_menu = self.menuBar().addMenu(self.tr('&Conversion'))
+        self.conversion_menu.addAction(self.convert_action)
+        self.conversion_menu.addAction(self.stop_action)
+        self.conversion_menu.addSeparator()
+        self.conversion_menu.addAction(self.stop_all_action)
+        # Help menu
+        self.help_menu = self.menuBar().addMenu(self.tr('&Help'))
+        self.help_menu.addAction(self.about_action)
+
+    def _create_toolbar(self):
+        """Create a toolbar and add it to the interface."""
+        self.tool_bar = QToolBar(self)
         # Add actions to the tool bar
         self.tool_bar.addAction(self.add_media_file_action)
         self.tool_bar.addSeparator()
@@ -434,35 +449,7 @@ class VideoMorphMW(QMainWindow):
         self.tool_bar.addAction(self.stop_all_action)
         self.tool_bar.addSeparator()
         self.tool_bar.addAction(self.settings_action)
-
-    def _create_main_menu(self):
-        """Create main app menu."""
-        self.file_menu = self.menuBar().addMenu(self.tr('&File'))
-        self.file_menu.addAction(self.add_media_file_action)
-        self.file_menu.addSeparator()
-        self.file_menu.addAction(self.settings_action)
-        self.file_menu.addSeparator()
-        self.file_menu.addAction(self.exit_action)
-
-        self.edit_menu = self.menuBar().addMenu(self.tr('&Edit'))
-        self.edit_menu.addAction(self.add_profile_action)
-        self.edit_menu.addAction(self.export_profile_action)
-        self.edit_menu.addSeparator()
-        self.edit_menu.addAction(self.clear_media_list_action)
-        self.edit_menu.addAction(self.remove_media_file_action)
-
-        self.convert_menu = self.menuBar().addMenu(self.tr('&Conversion'))
-        self.convert_menu.addAction(self.convert_action)
-        self.convert_menu.addAction(self.stop_action)
-        self.convert_menu.addSeparator()
-        self.convert_menu.addAction(self.stop_all_action)
-
-        self.hel_menu = self.menuBar().addMenu(self.tr('&Help'))
-        self.hel_menu.addAction(self.about_action)
-
-    def _create_toolbar(self):
-        """Create and add_file a tool bar to the interface."""
-        self.tool_bar = QToolBar(self)
+        # Add the toolbar to main window
         self.addToolBar(Qt.TopToolBarArea, self.tool_bar)
 
     def _create_status_bar(self):
