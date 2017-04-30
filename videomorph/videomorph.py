@@ -204,7 +204,8 @@ class VideoMorphMW(QMainWindow):
         vertical_layout.addLayout(horizontal_layout_1)
         self.cb_profiles = QComboBox(
             gb_settings,
-            statusTip=self.tr('Select the Desired Video Format'))
+            statusTip=self.tr('Select the Desired Video Format'),
+            toolTip=self.tr('Select the Desired Video Format'))
         self.cb_profiles.setMinimumSize(QSize(200, 0))
         vertical_layout.addWidget(self.cb_profiles)
         horizontal_layout_2 = QHBoxLayout()
@@ -217,7 +218,8 @@ class VideoMorphMW(QMainWindow):
         vertical_layout.addLayout(horizontal_layout_2)
         self.cb_presets = QComboBox(
             gb_settings,
-            statusTip=self.tr('Select the Desired Video Quality'))
+            statusTip=self.tr('Select the Desired Video Quality'),
+            toolTip=self.tr('Select the Desired Video Quality'))
         self.cb_presets.setMinimumSize(QSize(200, 0))
 
         self.cb_profiles.currentIndexChanged.connect(partial(
@@ -261,25 +263,27 @@ class VideoMorphMW(QMainWindow):
 
     def _group_output_directory(self):
         """Define the output directory Group arrangement."""
-        gb_output = QGroupBox(self.central_widget)
-        gb_output.setTitle(self.tr('Output Directory'))
-        vertical_layout = QVBoxLayout(gb_output)
+        gb_output_dir = QGroupBox(self.central_widget)
+        gb_output_dir.setTitle(self.tr('Output Directory'))
+        vertical_layout = QVBoxLayout(gb_output_dir)
         vertical_layout_1 = QVBoxLayout()
         horizontal_layout = QHBoxLayout()
         self.le_output = QLineEdit(
             str(QDir.homePath()),
-            statusTip=self.tr('Choose Output Directory'))
+            statusTip=self.tr('Choose Output Directory'),
+            toolTip=self.tr('Choose Output Directory'))
         self.le_output.setReadOnly(True)
         horizontal_layout.addWidget(self.le_output)
         self.tb_output = QToolButton(
-            gb_output,
-            statusTip=self.tr('Choose Output Directory'))
+            gb_output_dir,
+            statusTip=self.tr('Choose Output Directory'),
+            toolTip=self.tr('Choose Output Directory'))
         self.tb_output.setText('...')
         self.tb_output.clicked.connect(self.output_directory)
         horizontal_layout.addWidget(self.tb_output)
         vertical_layout_1.addLayout(horizontal_layout)
         vertical_layout.addLayout(vertical_layout_1)
-        self.vertical_layout_2.addWidget(gb_output)
+        self.vertical_layout_2.addWidget(gb_output_dir)
 
     def _group_progress(self):
         """Define the Progress Group arrangement."""
