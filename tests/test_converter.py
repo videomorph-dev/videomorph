@@ -45,7 +45,7 @@ def setup():
 
     media_list.add_file(media_file)
     global conv
-    conv = converter.Converter(media_list)
+    conv = converter.Converter()
     conv.start_encoding(cmd=media_file.get_conversion_cmd(output_dir='.'))
 
 
