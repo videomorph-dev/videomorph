@@ -86,12 +86,12 @@ from .addprofile import AddProfileDialog
 NAME, DURATION, QUALITY, PROGRESS = range(4)
 
 
-class MMWindow(QMainWindow):
+class VideoMorphMW(QMainWindow):
     """Main Window class."""
 
     def __init__(self):
         """Class initializer."""
-        super(MMWindow, self).__init__()
+        super(VideoMorphMW, self).__init__()
         # App data structures
         # Create the Media list object
         self.media_list = MediaList()
@@ -1162,7 +1162,7 @@ def main():
     qt_translator.load("qt_" + locale,
                        QLibraryInfo.location(QLibraryInfo.TranslationsPath))
     app.installTranslator(qt_translator)
-    main_win = MMWindow()
+    main_win = VideoMorphMW()
     if main_win.check_conversion_lib():
         main_win.show()
         sys.exit(app.exec_())
