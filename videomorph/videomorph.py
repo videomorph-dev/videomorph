@@ -1131,7 +1131,6 @@ class TargetQualityDelegate(QItemDelegate):
 
 def main():
     """Main app function."""
-    # TODO: Make it run on Windows
     import sys
     app = QApplication(sys.argv)
     file_path = dirname(realpath(__file__))

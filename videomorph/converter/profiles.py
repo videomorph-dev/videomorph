@@ -64,7 +64,6 @@ class XMLProfile:
         """Set the XML root."""
         self._xml_root = self._get_xml_root()
 
-    # TODO: delete_conversion_profile and edit_conversion_profile methods
     def add_conversion_profile(self, profile_name, preset, params, extension):
         """Add a conversion profile."""
         if not profile_name:
@@ -198,7 +197,6 @@ class XMLProfile:
 # XMLProfile = _XMLProfile()
 
 
-# TODO: Idea: maybe the _Profile should contains its own library and prober
 class _Profile:
     """Base class for a Video Profile."""
 
