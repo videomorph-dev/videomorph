@@ -29,7 +29,6 @@ from os.path import dirname
 from os.path import exists
 from os.path import isdir
 from os.path import realpath
-from time import time
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -735,9 +734,8 @@ class VideoMorphMW(QMainWindow):
             self.media_list.running_index = -1
             # Update ui
             self.update_interface(stop=False, stop_all=False, remove=False)
-        start = time()
+
         self._fill_media_list(files_paths)
-        print(time() - start)
 
         self._create_table()
 
