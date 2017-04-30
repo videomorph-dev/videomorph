@@ -35,10 +35,9 @@ CONV_LIB = ConversionLib('ffmpeg', 'avconv')
 class Converter:
     """Converter class to provide conversion functionality."""
 
-    def __init__(self, media_list, conversion_lib=CONV_LIB.ffmpeg):
+    def __init__(self, conversion_lib=CONV_LIB.ffmpeg):
         """Class initializer."""
         self.conversion_lib = conversion_lib
-        self.media_list = media_list
         self.process = QProcess()
 
     def start_encoding(self, cmd):
@@ -56,7 +55,6 @@ class Converter:
         """Return the individual file encoding process state."""
         return self.process.state() == QProcess.Running
 
-    @property
-    def encoding_done(self):
+    def encoding_done(self, media_list):
         """Return True if media list is done."""
-        return self.media_list.running_index + 1 >= self.media_list.length
+        return media_list.running_index + 1 >= media_list.length

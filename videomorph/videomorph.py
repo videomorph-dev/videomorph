@@ -70,14 +70,15 @@ from . import videomorph_qrc
 from .about import AboutVMDialog
 from .converter import Converter
 from .converter import CONV_LIB
-from .converter import STATUS
+from .converter import get_locale
 from .converter import InvalidMetadataError
 from .converter import MediaFileThread
 from .converter import media_file_factory
 from .converter import MediaList
+from .converter import STATUS
 from .converter import which
 from .converter import write_time
-from .converter import get_locale
+from .converter import XMLProfile
 from .settings import SettingsDialog
 from .addprofile import AddProfileDialog
 
@@ -86,7 +87,7 @@ NAME, DURATION, QUALITY, PROGRESS = range(4)
 
 
 class VideoMorphMW(QMainWindow):
-    """Main Window class."""
+    """Video Morph Main Window class."""
 
     def __init__(self):
         """Class initializer."""
@@ -127,6 +128,7 @@ class VideoMorphMW(QMainWindow):
         self.vertical_layout.addLayout(self.horizontal_layout)
         # Set central widget
         self.setCentralWidget(self.central_widget)
+
         # Create actions
         self._create_actions()
 
@@ -141,7 +143,6 @@ class VideoMorphMW(QMainWindow):
         self._create_initial_settings()
 
         # XML Profile
-        from .converter import XMLProfile
         self.xml_profile = XMLProfile()
         self.xml_profile.create_profiles_xml_file()
         self.xml_profile.set_xml_root()
@@ -159,9 +160,7 @@ class VideoMorphMW(QMainWindow):
 
         # Create the converter according to the user selection of
         # conversion library
-        self.converter = Converter(media_list=self.media_list,
-                                   conversion_lib=self.conversion_lib)
-
+        self.converter = Converter(conversion_lib=self.conversion_lib)
         self.converter.process.setProcessChannelMode(QProcess.MergedChannels)
         self.converter.process.readyRead.connect(self._read_encoding_output)
         self.converter.process.finished.connect(self._finish_file_encoding)
@@ -902,7 +901,7 @@ class VideoMorphMW(QMainWindow):
     def _end_encoding_process(self):
         """End up the encoding process."""
         # Test if encoding process is finished
-        if self.converter.encoding_done:
+        if self.converter.encoding_done(self.media_list):
             msg_box = QMessageBox(
                 QMessageBox.Information,
                 self.tr('Information!'),
