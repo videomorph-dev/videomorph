@@ -22,12 +22,13 @@
 
 import re
 from collections import OrderedDict
+from functools import partial
 from os import sep
+from os.path import basename
+from os.path import dirname
 from os.path import exists
 from os.path import isdir
-from os.path import dirname
-from os.path import basename
-from functools import partial
+from os.path import realpath
 from time import time
 
 from PyQt5.QtCore import (QSize,
@@ -229,15 +230,6 @@ class MMWindow(QMainWindow):
         horizontal_layout.addLayout(vertical_layout)
         self.vertical_layout_1.addWidget(gb_settings)
 
-    def _fix_layout(self):
-        """Fix widgets layout."""
-        spacer_item = QSpacerItem(20,
-                                  40,
-                                  QSizePolicy.Minimum,
-                                  QSizePolicy.Expanding)
-        self.vertical_layout_1.addItem(spacer_item)
-        self.horizontal_layout.addLayout(self.vertical_layout_1)
-
     def _group_tasks_list(self):
         """Define the Tasks Group arrangement."""
         gb_tasks = QGroupBox(self.central_widget)
@@ -245,7 +237,8 @@ class MMWindow(QMainWindow):
         size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(gb_tasks.sizePolicy().hasHeightForWidth())
+        size_policy.setHeightForWidth(
+            gb_tasks.sizePolicy().hasHeightForWidth())
         gb_tasks.setSizePolicy(size_policy)
         horizontal_layout = QHBoxLayout(gb_tasks)
         self.tb_tasks = QTableWidget(gb_tasks)
@@ -266,14 +259,6 @@ class MMWindow(QMainWindow):
         horizontal_layout.addWidget(self.tb_tasks)
         self.vertical_layout_2.addWidget(gb_tasks)
         self.tb_tasks.doubleClicked.connect(self._update_edit_triggers)
-
-    def _update_edit_triggers(self):
-        """Toggle Edit triggers on task table."""
-        if (int(self.tb_tasks.currentColumn()) == QUALITY and not
-                self.converter.is_running):
-            self.tb_tasks.setEditTriggers(QAbstractItemView.AllEditTriggers)
-        else:
-            self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def _group_output_directory(self):
         """Define the output directory Group arrangement."""
@@ -315,88 +300,6 @@ class MMWindow(QMainWindow):
         self.pb_total_progress.setProperty('value', 0)
         vertical_layout.addWidget(self.pb_total_progress)
         self.vertical_layout_2.addWidget(gb_progress)
-
-    @staticmethod
-    def _get_settings_file():
-        return QSettings(
-            '{0}{1}.videomorph{2}config.ini'.format(QDir.homePath(), sep, sep),
-            QSettings.IniFormat)
-
-    def _create_initial_settings(self):
-        """Create initial settings file."""
-        if not exists('{0}{1}.videomorph{2}config.ini'.format(
-                QDir.homePath(), sep, sep)):
-            self._write_app_settings(pos=QPoint(100, 50),
-                                     size=QSize(1096, 510),
-                                     profile_index=0,
-                                     preset_index=0)
-
-    def _read_app_settings(self):
-        """Read the app settings."""
-        settings = self._get_settings_file()
-        pos = settings.value("pos", QPoint(600, 200), type=QPoint)
-        size = settings.value("size", QSize(1096, 510), type=QSize)
-        self.resize(size)
-        self.move(pos)
-        if 'profile_index' and 'preset_index' in settings.allKeys():
-            profile = settings.value('profile_index')
-            preset = settings.value('preset_index')
-            self.cb_profiles.setCurrentIndex(int(profile))
-            self.cb_presets.setCurrentIndex(int(preset))
-        if 'output_dir' in settings.allKeys():
-            self.le_output.setText(str(settings.value('output_dir')))
-        if 'source_dir' in settings.allKeys():
-            self.source_dir = str(settings.value('source_dir'))
-        if 'conversion_lib' in settings.allKeys():
-            self.conversion_lib = settings.value('conversion_lib')
-
-    @property
-    def _app_setting_variables(self):
-        """Return a dict with the app setting variables."""
-        # Add new app setting variables here
-        app_settings = OrderedDict(
-            pos=self.pos(),
-            size=self.size(),
-            profile_index=self.cb_profiles.currentIndex(),
-            preset_index=self.cb_presets.currentIndex(),
-            source_dir=self.source_dir,
-            output_dir=self.le_output.text(),
-            conv_lib=self.conversion_lib)
-        return app_settings
-
-    def _write_app_settings(self, **app_settings):
-        """Write app settings on exit."""
-        settings = self._get_settings_file()
-
-        for key, setting in app_settings.items():
-            settings.setValue(key, setting)
-
-    def closeEvent(self, event):
-        """Things to todo on close."""
-        # Disconnect the finished signal
-        self.converter.process.finished.disconnect(self._finish_file_encoding)
-        # Close communication and kill the encoding process
-        if self.converter.is_running:
-            self.converter.process.close()
-            self.converter.process.kill()
-        # Save settings
-        self._write_app_settings(**self._app_setting_variables)
-        event.accept()
-
-    def check_conversion_lib(self):
-        """Check if ffmpeg or/and avconv are installed on the system."""
-        if which(CONV_LIB.ffmpeg) or which(CONV_LIB.avconv):
-            return True
-        else:
-            msg_box = QMessageBox(
-                QMessageBox.Critical,
-                self.tr('Error!'),
-                self.tr('Ffmpeg or Avconv Libraries not Found in your System'),
-                QMessageBox.NoButton, self)
-            msg_box.addButton("&Ok", QMessageBox.AcceptRole)
-            if msg_box.exec_() == QMessageBox.AcceptRole:
-                qApp.closeAllWindows()
-                return False
 
     def _create_actions(self):
         """Create the actions and connect them to the tool bar buttons."""
@@ -567,6 +470,93 @@ class MMWindow(QMainWindow):
         """Create app status bar."""
         self.statusBar().showMessage(self.tr('Ready'))
 
+    def _fix_layout(self):
+        """Fix widgets layout."""
+        spacer_item = QSpacerItem(20,
+                                  40,
+                                  QSizePolicy.Minimum,
+                                  QSizePolicy.Expanding)
+        self.vertical_layout_1.addItem(spacer_item)
+        self.horizontal_layout.addLayout(self.vertical_layout_1)
+
+    def _update_edit_triggers(self):
+        """Toggle Edit triggers on task table."""
+        if (int(self.tb_tasks.currentColumn()) == QUALITY and not
+                self.converter.is_running):
+            self.tb_tasks.setEditTriggers(QAbstractItemView.AllEditTriggers)
+        else:
+            self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
+    @property
+    def _app_setting_variables(self):
+        """Return a dict with the app setting variables."""
+        # Add new app setting variables here
+        app_settings = OrderedDict(
+            pos=self.pos(),
+            size=self.size(),
+            profile_index=self.cb_profiles.currentIndex(),
+            preset_index=self.cb_presets.currentIndex(),
+            source_dir=self.source_dir,
+            output_dir=self.le_output.text(),
+            conv_lib=self.conversion_lib)
+        return app_settings
+
+    @staticmethod
+    def _get_settings_file():
+        return QSettings(
+            '{0}{1}.videomorph{2}config.ini'.format(QDir.homePath(), sep, sep),
+            QSettings.IniFormat)
+
+    def _create_initial_settings(self):
+        """Create initial settings file."""
+        if not exists('{0}{1}.videomorph{2}config.ini'.format(
+                QDir.homePath(), sep, sep)):
+            self._write_app_settings(pos=QPoint(100, 50),
+                                     size=QSize(1096, 510),
+                                     profile_index=0,
+                                     preset_index=0)
+
+    def _read_app_settings(self):
+        """Read the app settings."""
+        settings = self._get_settings_file()
+        pos = settings.value("pos", QPoint(600, 200), type=QPoint)
+        size = settings.value("size", QSize(1096, 510), type=QSize)
+        self.resize(size)
+        self.move(pos)
+        if 'profile_index' and 'preset_index' in settings.allKeys():
+            profile = settings.value('profile_index')
+            preset = settings.value('preset_index')
+            self.cb_profiles.setCurrentIndex(int(profile))
+            self.cb_presets.setCurrentIndex(int(preset))
+        if 'output_dir' in settings.allKeys():
+            self.le_output.setText(str(settings.value('output_dir')))
+        if 'source_dir' in settings.allKeys():
+            self.source_dir = str(settings.value('source_dir'))
+        if 'conversion_lib' in settings.allKeys():
+            self.conversion_lib = settings.value('conversion_lib')
+
+    def _write_app_settings(self, **app_settings):
+        """Write app settings on exit."""
+        settings = self._get_settings_file()
+
+        for key, setting in app_settings.items():
+            settings.setValue(key, setting)
+
+    def check_conversion_lib(self):
+        """Check if ffmpeg or/and avconv are installed on the system."""
+        if which(CONV_LIB.ffmpeg) or which(CONV_LIB.avconv):
+            return True
+        else:
+            msg_box = QMessageBox(
+                QMessageBox.Critical,
+                self.tr('Error!'),
+                self.tr('Ffmpeg or Avconv Libraries not Found in your System'),
+                QMessageBox.NoButton, self)
+            msg_box.addButton("&Ok", QMessageBox.AcceptRole)
+            if msg_box.exec_() == QMessageBox.AcceptRole:
+                qApp.closeAllWindows()
+                return False
+
     def about(self):
         """Show About dialog."""
         about_dlg = AboutVMDialog(parent=self)
@@ -624,6 +614,18 @@ class MMWindow(QMainWindow):
         if directory:
             self.le_output.setText(directory)
             self.update_interface(stop=False, stop_all=False, remove=False)
+
+    def closeEvent(self, event):
+        """Things to todo on close."""
+        # Disconnect the finished signal
+        self.converter.process.finished.disconnect(self._finish_file_encoding)
+        # Close communication and kill the encoding process
+        if self.converter.is_running:
+            self.converter.process.close()
+            self.converter.process.kill()
+        # Save settings
+        self._write_app_settings(**self._app_setting_variables)
+        event.accept()
 
     def _fill_media_list(self, files_paths):
         threads = []
@@ -1143,12 +1145,11 @@ def main():
     """Main app function."""
     # TODO: Make it run on Windows
     import sys
-    import os.path
     app = QApplication(sys.argv)
-    file_path = os.path.dirname(os.path.realpath(__file__))
+    file_path = dirname(realpath(__file__))
     locale = get_locale()
     app_translator = QTranslator()
-    if os.path.exists(file_path + '{0}translations{1}'.format(sep, sep)):
+    if exists(file_path + '{0}translations{1}'.format(sep, sep)):
         app_translator.load("{0}{1}translations{2}videomorph_{3}".format(
             file_path, sep, sep, locale))
     else:
