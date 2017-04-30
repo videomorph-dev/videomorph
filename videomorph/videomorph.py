@@ -476,20 +476,6 @@ class VideoMorphMW(QMainWindow):
         else:
             self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-    @property
-    def _app_setting_variables(self):
-        """Return a dict with the app setting variables."""
-        # Add new app setting variables here
-        app_settings = OrderedDict(
-            pos=self.pos(),
-            size=self.size(),
-            profile_index=self.cb_profiles.currentIndex(),
-            preset_index=self.cb_presets.currentIndex(),
-            source_dir=self.source_dir,
-            output_dir=self.le_output.text(),
-            conv_lib=self.conversion_lib)
-        return app_settings
-
     @staticmethod
     def _get_settings_file():
         return QSettings('{0}{1}.videomorph{2}config.ini'.format(
@@ -526,10 +512,22 @@ class VideoMorphMW(QMainWindow):
 
     def _write_app_settings(self, **app_settings):
         """Write app settings on exit."""
-        settings = self._get_settings_file()
+        settings_file = self._get_settings_file()
 
-        for key, setting in app_settings.items():
-            settings.setValue(key, setting)
+        settings = OrderedDict(
+            pos=self.pos(),
+            size=self.size(),
+            profile_index=self.cb_profiles.currentIndex(),
+            preset_index=self.cb_presets.currentIndex(),
+            source_dir=self.source_dir,
+            output_dir=self.le_output.text(),
+            conv_lib=self.conversion_lib)
+
+        if app_settings:
+            settings.update(app_settings)
+
+        for key, setting in settings.items():
+            settings_file.setValue(key, setting)
 
     def check_conversion_lib(self):
         """Check if ffmpeg or/and avconv are installed on the system."""
@@ -613,7 +611,7 @@ class VideoMorphMW(QMainWindow):
             self.converter.process.close()
             self.converter.process.kill()
         # Save settings
-        self._write_app_settings(**self._app_setting_variables)
+        self._write_app_settings()
 
         event.accept()
 
@@ -1043,8 +1041,9 @@ class VideoMorphMW(QMainWindow):
             media_file.status = STATUS.todo
         self.media_list.running_index = -1
 
-    def update_interface(self,
-                         add=True,
+    def update_interface(self, **i_vars):
+        """Update the interface status."""
+        variables = dict(add=True,
                          convert=True,
                          clear=True,
                          remove=True,
@@ -1054,20 +1053,22 @@ class VideoMorphMW(QMainWindow):
                          profiles=True,
                          add_profile=True,
                          output_dir=True,
-                         settings=True):
-        """Update the interface status."""
-        self.add_media_file_action.setEnabled(add)
-        self.convert_action.setEnabled(convert)
-        self.clear_media_list_action.setEnabled(clear)
-        self.remove_media_file_action.setEnabled(remove)
-        self.stop_action.setEnabled(stop)
-        self.stop_all_action.setEnabled(stop_all)
-        self.cb_presets.setEnabled(presets)
-        self.cb_profiles.setEnabled(profiles)
-        self.add_profile_action.setEnabled(add_profile)
-        self.tb_output.setEnabled(output_dir)
+                         settings=True)
+
+        variables.update(i_vars)
+
+        self.add_media_file_action.setEnabled(variables['add'])
+        self.convert_action.setEnabled(variables['convert'])
+        self.clear_media_list_action.setEnabled(variables['clear'])
+        self.remove_media_file_action.setEnabled(variables['remove'])
+        self.stop_action.setEnabled(variables['stop'])
+        self.stop_all_action.setEnabled(variables['stop_all'])
+        self.cb_presets.setEnabled(variables['presets'])
+        self.cb_profiles.setEnabled(variables['profiles'])
+        self.add_profile_action.setEnabled(variables['add_profile'])
+        self.tb_output.setEnabled(variables['output_dir'])
+        self.settings_action.setEnabled(variables['settings'])
         self.tb_tasks.setCurrentItem(None)
-        self.settings_action.setEnabled(settings)
 
     def _enable_remove_file_action(self):
         if not self.converter.is_running:
