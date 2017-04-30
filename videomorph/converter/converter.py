@@ -28,7 +28,6 @@ from .utils import which
 
 ConversionLib = namedtuple('ConversionLib', 'ffmpeg avconv')
 
-
 CONV_LIB = ConversionLib('ffmpeg', 'avconv')
 
 
