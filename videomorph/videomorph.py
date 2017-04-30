@@ -204,8 +204,8 @@ class VideoMorphMW(QMainWindow):
         vertical_layout.addLayout(horizontal_layout_1)
         self.cb_profiles = QComboBox(
             gb_settings,
-            statusTip=self.tr('Select the Desired Video Format'),
-            toolTip=self.tr('Select the Desired Video Format'))
+            statusTip=self.tr('Select a Video Format'),
+            toolTip=self.tr('Select a Video Format'))
         self.cb_profiles.setMinimumSize(QSize(200, 0))
         vertical_layout.addWidget(self.cb_profiles)
         horizontal_layout_2 = QHBoxLayout()
@@ -218,8 +218,8 @@ class VideoMorphMW(QMainWindow):
         vertical_layout.addLayout(horizontal_layout_2)
         self.cb_presets = QComboBox(
             gb_settings,
-            statusTip=self.tr('Select the Desired Video Quality'),
-            toolTip=self.tr('Select the Desired Video Quality'))
+            statusTip=self.tr('Select a Video Target Quality'),
+            toolTip=self.tr('Select a Video Target Quality'))
         self.cb_presets.setMinimumSize(QSize(200, 0))
 
         self.cb_profiles.currentIndexChanged.connect(partial(
@@ -492,9 +492,9 @@ class VideoMorphMW(QMainWindow):
 
     @staticmethod
     def _get_settings_file():
-        return QSettings(
-            '{0}{1}.videomorph{2}config.ini'.format(QDir.homePath(), sep, sep),
-            QSettings.IniFormat)
+        return QSettings('{0}{1}.videomorph{2}config.ini'.format(
+            QDir.homePath(), sep, sep),
+                         QSettings.IniFormat)
 
     def _create_initial_settings(self):
         """Create initial settings file."""
@@ -583,7 +583,7 @@ class VideoMorphMW(QMainWindow):
             locale=get_locale()).keys())
 
     def populate_presets_combo(self, cb_presets):
-        """Populate presets combo box."""
+        """Populate presets combobox."""
         current_profile = self.cb_profiles.currentText()
         if current_profile != '':
             cb_presets.clear()
@@ -614,9 +614,11 @@ class VideoMorphMW(QMainWindow):
             self.converter.process.kill()
         # Save settings
         self._write_app_settings(**self._app_setting_variables)
+
         event.accept()
 
     def _fill_media_list(self, files_paths):
+        """Fill MediaList object with MediaFile objects."""
         threads = []
         for file_path in files_paths:
             thread = MediaFileThread(factory=media_file_factory,
@@ -653,16 +655,16 @@ class VideoMorphMW(QMainWindow):
         # Dialog title
         title = self.tr('Select Video Files')
         # Media filters
-        v_filter = (self.tr('Video Files') +
-                    '(*.mkv *.ogg *.mp4 *.mpg *.dat '
-                    '*.f4v *.flv *.wv *.3gp *.avi *.webm '
-                    '*.wmv *.mov *.vob *.ogv *.ts)')
+        video_filters = (self.tr('Video Files') +
+                         '(*.mkv *.ogg *.mp4 *.mpg *.dat '
+                         '*.f4v *.flv *.wv *.3gp *.avi *.webm '
+                         '*.wmv *.mov *.vob *.ogv *.ts)')
 
         # Select media files and store their path
         files_paths, _ = QFileDialog.getOpenFileNames(self,
                                                       title,
                                                       source_dir,
-                                                      v_filter)
+                                                      video_filters)
 
         if not files_paths:
             self.source_dir = source_dir
@@ -684,22 +686,18 @@ class VideoMorphMW(QMainWindow):
         for row, media_file in enumerate(self.media_list):
             self._insert_table_item(
                 item_text=media_file.get_name(with_extension=True),
-                row=row,
-                column=NAME)
+                row=row, column=NAME)
 
             self._insert_table_item(
                 item_text=str(write_time(media_file.info.format_duration)),
-                row=row,
-                column=DURATION)
+                row=row, column=DURATION)
 
             self._insert_table_item(
                 item_text=str(self.cb_presets.currentText()),
-                row=row,
-                column=QUALITY)
+                row=row, column=QUALITY)
 
             self._insert_table_item(item_text=self.tr('To Convert'),
-                                    row=row,
-                                    column=PROGRESS)
+                                    row=row, column=PROGRESS)
 
     def add_media(self):
         """Add media files to the list of conversion tasks."""
@@ -734,10 +732,10 @@ class VideoMorphMW(QMainWindow):
 
     def remove_media_file(self):
         """Remove selected media file from the list."""
-        item = self.tb_tasks.currentItem().row()
-        if item is not None:
+        file_row = self.tb_tasks.currentItem().row()
+        if file_row is not None:
             # Delete file from table
-            self.tb_tasks.removeRow(item)
+            self.tb_tasks.removeRow(file_row)
             # If all files are deleted... update the interface
             if not self.tb_tasks.rowCount():
                 self.update_interface(convert=False,
@@ -748,7 +746,7 @@ class VideoMorphMW(QMainWindow):
                                       presets=False,
                                       profiles=False)
             # Remove file from MediaList
-            self.media_list.delete_file(file_index=item)
+            self.media_list.delete_file(file_index=file_row)
             self.total_duration = self.media_list.duration
 
     def add_profile(self):
@@ -794,7 +792,7 @@ class VideoMorphMW(QMainWindow):
             # If user says YES clear table of conversion tasks
             self.tb_tasks.clearContents()
             self.tb_tasks.setRowCount(0)
-            # Clear MediaList.medias so it does not contain any element
+            # Clear MediaList so it contains no element
             self.media_list.clear()
             # Update buttons so user cannot convert, clear, or stop if there
             # is no file in the list
@@ -933,8 +931,8 @@ class VideoMorphMW(QMainWindow):
     def _read_encoding_output(self):
         """Read the encoding output from the self.converter stdout."""
         time_pattern = re.compile(r'time=([0-9.:]+) ')
-        ret = str(self.converter.process.readAll())
-        time_read = time_pattern.findall(ret)
+        process_output = str(self.converter.process.readAll())
+        time_read = time_pattern.findall(process_output)
 
         if not time_read:
             return
@@ -1022,15 +1020,16 @@ class VideoMorphMW(QMainWindow):
             self.update_interface(clear=False, stop=False,
                                   stop_all=False, remove=False)
         else:
-            if self.tb_tasks.rowCount():
-                for i in range(self.tb_tasks.rowCount()):
-                    self.tb_tasks.item(i, QUALITY).setText(
+            rows = self.tb_tasks.rowCount()
+            if rows:
+                for row in range(rows):
+                    self.tb_tasks.item(row, QUALITY).setText(
                         str(self.cb_presets.currentText()))
 
-                    if (self.media_list.get_file_status(i) == STATUS.done or
-                            self.media_list.get_file_status(i) ==
+                    if (self.media_list.get_file_status(row) == STATUS.done or
+                            self.media_list.get_file_status(row) ==
                             STATUS.stopped):
-                        self.tb_tasks.item(i, PROGRESS).setText(
+                        self.tb_tasks.item(row, PROGRESS).setText(
                             self.tr('To Convert'))
 
                 self.update_interface(clear=False, stop=False,
