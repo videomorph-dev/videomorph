@@ -619,10 +619,11 @@ class VideoMorphMW(QMainWindow):
         """Fill MediaList object with MediaFile objects."""
         threads = []
         for file_path in files_paths:
-            thread = MediaFileThread(factory=media_file_factory,
-                                     media_path=file_path,
-                                     conversion_profile=self.conversion_profile,
-                                     prober=self.prober)
+            thread = MediaFileThread(
+                factory=media_file_factory,
+                media_path=file_path,
+                conversion_profile=self.conversion_profile,
+                prober=self.prober)
             thread.start()
             threads.append(thread)
 
