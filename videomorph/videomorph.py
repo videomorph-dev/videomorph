@@ -73,7 +73,6 @@ from .converter import CONV_LIB
 from .converter import get_locale
 from .converter import InvalidMetadataError
 from .converter import MediaFileThread
-from .converter import media_file_factory
 from .converter import MediaList
 from .converter import STATUS
 from .converter import which
@@ -620,7 +619,6 @@ class VideoMorphMW(QMainWindow):
         threads = []
         for file_path in files_paths:
             thread = MediaFileThread(
-                factory=media_file_factory,
                 media_path=file_path,
                 conversion_profile=self.conversion_profile,
                 prober=self.prober)

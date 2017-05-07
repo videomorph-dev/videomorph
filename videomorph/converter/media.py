@@ -241,10 +241,8 @@ class MediaInfo:
 
 class MediaFileThread(Thread):
     """Thread class to handle the creation of MediaFile objects."""
-    def __init__(self, factory, media_path,
-                 conversion_profile, prober):
+    def __init__(self, media_path, conversion_profile, prober):
         super(MediaFileThread, self).__init__()
-        self.factory = factory
         self.file_path = media_path
         self.conversion_profile = conversion_profile
         self.prober = prober
@@ -252,9 +250,9 @@ class MediaFileThread(Thread):
 
     def run(self):
         """Create media files to be added to the list."""
-        self.media_file = self.factory(self.file_path,
-                                       self.conversion_profile,
-                                       self.prober)
+        self.media_file = media_file_factory(self.file_path,
+                                             self.conversion_profile,
+                                             self.prober)
 
 
 def media_file_factory(file_path, conversion_profile, prober):
