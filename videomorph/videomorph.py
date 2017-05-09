@@ -306,10 +306,15 @@ class VideoMorphMW(QMainWindow):
     def _action_factory(self, text, callback, enabled=True, **kwargs):
         """Helper method used for creating actions.
 
-        kwargs: bool checkable,
-                str shortcut,
-                QIcon icon,
-                str tip
+        Args:
+            text (str): Text to show in the action
+            callback (method): Method to be called when action is triggered
+            enabled (bool): Set the action enabled or not
+        kwargs:
+            checkable (bool): Turn the action checkable or not
+            shortcut (str): Define the key shortcut to run the action
+            icon (QIcon): Icon for the action
+            tip (str): Tip to show in status bar or hint
         """
         action = QAction(text, self, triggered=callback)
 
@@ -510,7 +515,11 @@ class VideoMorphMW(QMainWindow):
             self.conversion_lib = settings.value('conversion_lib')
 
     def _write_app_settings(self, **app_settings):
-        """Write app settings on exit."""
+        """Write app settings on exit.
+
+        Args:
+            app_settings (OrderedDict): OrderedDict to collect all app settings
+        """
         settings_file = self._get_settings_file()
 
         settings = OrderedDict(
@@ -580,7 +589,11 @@ class VideoMorphMW(QMainWindow):
             locale=get_locale()).keys())
 
     def populate_presets_combo(self, cb_presets):
-        """Populate presets combobox."""
+        """Populate presets combobox.
+
+        Args:
+            cb_presets (QComboBox): List all available presets
+        """
         current_profile = self.cb_profiles.currentText()
         if current_profile != '':
             cb_presets.clear()
@@ -1041,7 +1054,11 @@ class VideoMorphMW(QMainWindow):
         self.media_list.running_index = -1
 
     def update_interface(self, **i_vars):
-        """Update the interface status."""
+        """Update the interface status.
+
+        Args:
+            i_vars (dict): Dict to collect all the interface variables
+        """
         variables = dict(add=True,
                          convert=True,
                          clear=True,
