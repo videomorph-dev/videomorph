@@ -141,7 +141,8 @@ class XMLProfile:
         """Return a dict of preset/params."""
         for element in self._xml_root:
             for item in element:
-                if item[0].text == target_quality or item[3].text == target_quality:
+                if (item[0].text == target_quality or
+                            item[3].text == target_quality):
                     return item[attr_index].text
 
     def get_qualities_per_profile(self, locale):
@@ -192,9 +193,6 @@ class XMLProfile:
         """Returns the profiles.xml root."""
         tree = ElementTree.parse(self._profiles_xml_path)
         return tree.getroot()
-
-
-# XMLProfile = _XMLProfile()
 
 
 class _Profile:
