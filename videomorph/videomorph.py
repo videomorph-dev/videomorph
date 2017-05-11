@@ -19,7 +19,7 @@
 #   limitations under the License.
 
 """This module defines the VideoMorph main window that holds the UI."""
-
+import performance
 import re
 from collections import OrderedDict
 from functools import partial
@@ -627,6 +627,8 @@ class VideoMorphMW(QMainWindow):
 
         event.accept()
 
+    @performance.func_profiler
+    @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with MediaFile objects."""
         threads = []
