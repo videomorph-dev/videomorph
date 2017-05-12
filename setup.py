@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-
-from setuptools import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 from videomorph.videomorph import VERSION
 
