@@ -1,7 +1,7 @@
 #!/bin/bash
 # VideoMorph installation script
 
-depends="ffmpeg avconv python3 python3-pyqt5"
+depends="ffmpeg python3 python3-pyqt5"
 
 for dep in $depends
 do
