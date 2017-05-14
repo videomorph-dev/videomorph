@@ -20,6 +20,7 @@
 
 """This module defines the installation script for VideoMorph."""
 
+from sys import platform
 from setuptools import setup, find_packages
 
 from videomorph import VERSION
@@ -36,6 +37,26 @@ annoying options rarely used.
 Videomorph is a video converter, just that. If you want a video
 editor, VideoMorph isn't for you.
 """
+
+LINUX_PATHS = {'apps': '/usr/share/applications',
+               'icons': '/usr/share/icons',
+               'i18n': '/usr/share/videomorph/translations',
+               'profiles': '/usr/share/videomorph/stdprofiles',
+               'doc': '/usr/share/doc/videomorph'}
+
+VM_PATHS = {'apps': 'share/applications',
+            'icons': 'share/icons',
+            'i18n': 'share/videomorph/translations',
+            'profiles': 'share/videomorph/stdprofiles',
+            'doc': 'share/doc/videomorph',
+            'bin': 'bin/videomorph'}
+
+sys_path = None
+
+if platform == 'linux':
+    sys_path = LINUX_PATHS
+elif platform == 'windows':
+    pass
 
 
 if __name__ == '__main__':
@@ -55,22 +76,22 @@ if __name__ == '__main__':
 
           data_files=[
               # Desktop entry
-              ('/usr/share/applications',
-               ['share/applications/videomorph.desktop']),
+              (sys_path['apps'],
+               [VM_PATHS['apps'] + '/videomorph.desktop']),
               # App icon
-              ('/usr/share/icons',
-               ['share/icons/videomorph.png']),
+              (sys_path['icons'],
+               [VM_PATHS['icons'] + '/videomorph.png']),
               # App translation file
-              ('/usr/share/videomorph/translations',
-               ['share/videomorph/translations/videomorph_es.qm']),
+              (sys_path['i18n'],
+               [VM_PATHS['i18n'] + '/videomorph_es.qm']),
               # Default conversion profiles
-              ('/usr/share/videomorph/stdprofiles',
-               ['share/videomorph/stdprofiles/profiles.xml']),
+              (sys_path['profiles'],
+               [VM_PATHS['profiles'] + '/profiles.xml']),
               # Documentation files
-              ('/usr/share/doc/videomorph',
+              (sys_path['doc'],
                ['README.md', 'LICENSE', 'AUTHORS',
                 'copyright', 'changelog.gz', 'TODO'])
           ],
 
-          scripts=['bin/videomorph']
+          scripts=[VM_PATHS['bin']]
          )
