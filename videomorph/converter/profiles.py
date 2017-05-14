@@ -186,7 +186,7 @@ class XMLProfile:
                           profiles_xml)
             else:
                 # if not installed
-                copy_file('../videomorph/stdprofiles/profiles.xml',
+                copy_file('../share/videomorph/stdprofiles/profiles.xml',
                           profiles_xml)
 
     def _get_xml_root(self):

@@ -21,6 +21,7 @@
 """This module defines the VideoMorph main window that holds the UI."""
 
 import re
+import sys
 from collections import OrderedDict
 from functools import partial
 from os import sep
@@ -28,7 +29,6 @@ from os.path import basename
 from os.path import dirname
 from os.path import exists
 from os.path import isdir
-from os.path import realpath
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -1150,24 +1150,26 @@ class TargetQualityDelegate(QItemDelegate):
 
 def main():
     """Main app function."""
-    import sys
+    # Create the app
     app = QApplication(sys.argv)
-    file_path = dirname(realpath(__file__))
+    # Set app translator
     locale = get_locale()
     app_translator = QTranslator()
-    if exists(file_path + '{0}translations{1}'.format(sep, sep)):
-        app_translator.load("{0}{1}translations{2}videomorph_{3}".format(
-            file_path, sep, sep, locale))
+    if exists('..{0}share{1}videomorph{2}translations'.format(sep, sep, sep)):
+        app_translator.load(
+            "..{0}share{1}videomorph{2}translations{3}videomorph_{4}".format(
+                sep, sep, sep, sep, locale))
     else:
         app_translator.load(
-            "{0}usr{1}share{2}videomorph{3}"
-            "translations{4}videomorph_{5}".format(sep, sep, sep, sep, sep,
-                                                   locale))
+            "{0}usr{1}share{2}videomorph{3}translations"
+            "{4}videomorph_{5}".format(sep, sep, sep, sep, sep, locale))
+
     app.installTranslator(app_translator)
     qt_translator = QTranslator()
     qt_translator.load("qt_" + locale,
                        QLibraryInfo.location(QLibraryInfo.TranslationsPath))
     app.installTranslator(qt_translator)
+
     main_win = VideoMorphMW()
     if main_win.check_conversion_lib():
         main_win.show()

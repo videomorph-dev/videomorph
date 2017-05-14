@@ -18,19 +18,19 @@ if __name__ == '__main__':
 
           data_files=[  # Desktop entry
                       ('/usr/share/applications',
-                       ['share/videomorph.desktop']),
+                       ['share/applications/videomorph.desktop']),
                         # App icon
                       ('/usr/share/icons',
-                       ['share/videomorph.png']),
+                       ['share/icons/videomorph.png']),
                         # App translation file
                       ('/usr/share/videomorph/translations',
-                       ['videomorph/translations/videomorph_es.qm']),
+                       ['share/videomorph/translations/videomorph_es.qm']),
                         # Default conversion profiles
                       ('/usr/share/videomorph/stdprofiles',
-                       ['videomorph/stdprofiles/profiles.xml']),
+                       ['share/videomorph/stdprofiles/profiles.xml']),
                         # Documentation files
                       ('/usr/share/doc/videomorph',
                        ['README.md', 'LICENSE', 'AUTHORS'])],
 
-          scripts=["bin/videomorph"]
+          scripts=['bin/videomorph']
           )
