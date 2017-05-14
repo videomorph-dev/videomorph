@@ -22,8 +22,8 @@
 
 from setuptools import setup, find_packages
 
-from videomorph.videomorph import VERSION
-from videomorph.videomorph import PACKAGE_NAME
+from videomorph import VERSION
+from videomorph import PACKAGE_NAME
 
 
 LONG_DESC = """Small Video Converter based on ffmpeg, Python 3 and Qt5.
