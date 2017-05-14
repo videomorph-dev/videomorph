@@ -52,7 +52,7 @@ class AboutVMDialog(QDialog):
         self.label.setMinimumSize(QSize(64, 64))
         self.label.setMaximumSize(QSize(64, 64))
         self.label.setText("")
-        self.label.setPixmap(QPixmap(':/logo/images/videomorph.png'))
+        self.label.setPixmap(QPixmap(':/logo/videomorph.png'))
         self.label.setScaledContents(True)
         self.horizontalLayout_2.addWidget(self.label)
         self.label_2 = QLabel("<p align=\"center\"><span style=\" font-size:20pt; font-weight:600;\">{n}</span></p><p align=\"center\"><span style=\" font-size:9pt; font-weight:600;\">version {v}</span></p>".format(
