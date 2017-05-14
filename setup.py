@@ -16,17 +16,19 @@ if __name__ == '__main__':
           license='Apache License, Version 2.0',
           packages=find_packages(exclude=['tests', 'docs']),
 
-          data_files=[('/usr/share/applications',
+          data_files=[  # Desktop entry
+                      ('/usr/share/applications',
                        ['share/videomorph.desktop']),
+                        # App icon
                       ('/usr/share/icons',
                        ['share/videomorph.png']),
+                        # App translation file
                       ('/usr/share/videomorph/translations',
-                       ['videomorph/translations/videomorph_es.qm',
-                      'videomorph/translations/videomorph_es.ts']),
-                      ('/usr/share/videomorph/images',
-                       ['videomorph/images/videomorph.png']),
+                       ['videomorph/translations/videomorph_es.qm']),
+                        # Default conversion profiles
                       ('/usr/share/videomorph/stdprofiles',
                        ['videomorph/stdprofiles/profiles.xml']),
+                        # Documentation files
                       ('/usr/share/doc/videomorph',
                        ['README.md', 'LICENSE', 'AUTHORS'])],
 
