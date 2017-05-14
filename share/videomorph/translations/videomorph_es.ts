@@ -5,22 +5,22 @@
     <message>
         <location filename="about.py" line="46"/>
         <source>About VideoMorph</source>
-        <translation type="unfinished"></translation>
+        <translation>Acerca de VideoMorph</translation>
     </message>
     <message>
         <location filename="about.py" line="98"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info</translation>
     </message>
     <message>
         <location filename="about.py" line="100"/>
         <source>Credits</source>
-        <translation type="unfinished"></translation>
+        <translation>Créditos</translation>
     </message>
     <message>
         <location filename="about.py" line="102"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Licencia</translation>
     </message>
     <message>
         <location filename="about.py" line="105"/>
@@ -41,7 +41,23 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Contributors:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Carlos Parra Zaldivar - Artwork.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Desarrolladores:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ozkar L. Garcell - líder del proyecto&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;codeshard@openmailbox.org&amp;gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Leodanis Pozo Ramos - desarrollador principal&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;lpozo@openmailbox.org&amp;gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Traductores:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ozkar L. Garcell - en_US, es_ES&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Colaboradores:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Carlos Parra Zaldivar - Artwork.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="about.py" line="125"/>
@@ -54,7 +70,15 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;VideoMorph&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; is a small GUI front-end for &lt;/span&gt;&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;ffmpeg&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; and avconv, based on code from &lt;/span&gt;&lt;a href=&quot;https://github.com/senko/python-video-converter&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;python-video-converter&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; and presets idea from &lt;/span&gt;&lt;a href=&quot;http://qwinff.github.io/&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;QWinFF&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/codeshard/videomorph&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;https://github.com/codeshard/videomorph&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Un conversor de videos simple y ligero.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;VideoMorph&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; es una pequeña interfaz para  &lt;/span&gt;&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;ffmpeg&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; y avconv basado en el código de &lt;/span&gt;&lt;a href=&quot;https://github.com/senko/python-video-converter&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;python-video-converter&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; y usando las perfiles de &lt;/span&gt;&lt;a href=&quot;http://qwinff.github.io/&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;QWinFF&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/codeshard/videomorph&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;https://github.com/codeshard/videomorph&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="about.py" line="137"/>
@@ -234,7 +258,7 @@ p, li { white-space: pre-wrap; }
       of your accepting any such warranty or additional liability.
 
    END OF TERMS AND CONDITIONS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -242,52 +266,52 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="addprofile.py" line="39"/>
         <source>Add Customized Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir Perfil de Conversión Personalizado</translation>
     </message>
     <message>
         <location filename="addprofile.py" line="50"/>
         <source>Pr&amp;ofile Name (e.g. MP4)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nombre del Perfil (Ej. MP4)</translation>
     </message>
     <message>
         <location filename="addprofile.py" line="61"/>
         <source>&amp;Target Quality Name (e.g. MP4 Widescreen (16:9))</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Calidad Objetivo (Ej. MP4 Pantalla Panorámica (16:9))</translation>
     </message>
     <message>
         <location filename="addprofile.py" line="73"/>
         <source>&amp;Command Line Parameters for Tarrget Quality</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Parámetros de Línea de Comandos para la Calidad Objetivo</translation>
     </message>
     <message>
         <location filename="addprofile.py" line="85"/>
         <source>Output File &amp;Extension (e.g. .mp4)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addprofile.py" line="141"/>
-        <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Extensión del Archivo de Salida (Ej. .mp4)</translation>
     </message>
     <message>
         <location filename="addprofile.py" line="123"/>
         <source>Profile Name Can&apos;t Be Left Blank.</source>
-        <translation type="unfinished"></translation>
+        <translation>El Nombre del Perfil no Puede Dejarse en Blanco.</translation>
     </message>
     <message>
         <location filename="addprofile.py" line="129"/>
         <source>Target Quality Name Can&apos;t Be Left Blank.</source>
-        <translation type="unfinished"></translation>
+        <translation>La Calidad Objetivo no Puede Dejarse en Blanco.</translation>
     </message>
     <message>
         <location filename="addprofile.py" line="135"/>
         <source>Command Line Parameters Can&apos;t Be Left Blank.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ls Parámetros de Línea de Comandos no Pueden Dejarse en Blanco.</translation>
     </message>
     <message>
         <location filename="addprofile.py" line="141"/>
         <source>Output File Extension Can&apos;t Be Left Blank and Must Begin with a &quot;.&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>La Extensión del Archivo de Salida no Puede Dejarse en Blanco y Debe Comenzar con un &apos;.&apos;</translation>
+    </message>
+    <message>
+        <location filename="addprofile.py" line="141"/>
+        <source>Error!</source>
+        <translation>Error!</translation>
     </message>
 </context>
 <context>
@@ -295,22 +319,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="settings.py" line="35"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferencias</translation>
     </message>
     <message>
         <location filename="settings.py" line="42"/>
         <source>Conversion Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Librería de Conversión</translation>
     </message>
     <message>
         <location filename="settings.py" line="47"/>
         <source>Use Ffmpeg Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Emplear la Librería Ffmpeg</translation>
     </message>
     <message>
         <location filename="settings.py" line="50"/>
         <source>Use Avconv Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Emplear la Librería Avconv</translation>
     </message>
 </context>
 <context>
@@ -318,7 +342,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="videomorph.py" line="1132"/>
         <source>To Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir</translation>
     </message>
 </context>
 <context>
@@ -326,302 +350,302 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="videomorph.py" line="186"/>
         <source>Conversion Presets</source>
-        <translation type="unfinished"></translation>
+        <translation>Perfiles de Conversión</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="196"/>
         <source>Convert To:</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir a:</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="204"/>
         <source>Select a Video Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione un Formato de Video</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="211"/>
         <source>Target Quality:</source>
-        <translation type="unfinished"></translation>
+        <translation>Calidad Objetivo:</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="218"/>
         <source>Select a Video Target Quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione una Calidad de Video Objetivo</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="236"/>
         <source>List of Conversion Tasks</source>
-        <translation type="unfinished"></translation>
+        <translation>Listado de Tareas de Conversión</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="251"/>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del Archivo</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="251"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Duración</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="251"/>
         <source>Target Quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Calidad Objetivo</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="290"/>
         <source>Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Progreso</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="266"/>
         <source>Output Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Directorio Destino</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="607"/>
         <source>Choose Output Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione el Directorio Destino</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="293"/>
         <source>Operation Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Progreso de la Operación</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="299"/>
         <source>Total Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Progreso Total</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="337"/>
         <source>&amp;Open</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Abrir</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="337"/>
         <source>Add Video Files to the List of Conversion Tasks</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir Archivo de Video a la Lista de Tareas de Conversión</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="344"/>
         <source>&amp;Add Customized Profile...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Añadir Perfil de Conversión Personalizado...</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="344"/>
         <source>Add Customized Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir Perfil de Conversión Personalizado</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="351"/>
         <source>&amp;Export Conversion Profiles...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exportar Perfiles de Conversión...</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="351"/>
         <source>Export Conversion Profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar Perfiles de Conversión</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="358"/>
         <source>Clear &amp;List</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar &amp;Lista</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="358"/>
         <source>Clear the Video Files List</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar la Lista de Archivos de Video</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="366"/>
         <source>&amp;Remove File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eliminar Archivo</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="366"/>
         <source>Remove Video File from the List</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar Archivo de Video de la Lista</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="374"/>
         <source>&amp;Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Convertir</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="374"/>
         <source>Start Conversion Process</source>
-        <translation type="unfinished"></translation>
+        <translation>Iniciar el Proceso de Conversión</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="382"/>
         <source>&amp;Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Detener</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="382"/>
         <source>Stop Video File Conversion</source>
-        <translation type="unfinished"></translation>
+        <translation>Detener la Conversión del Archivo de Video</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="390"/>
         <source>S&amp;top All</source>
-        <translation type="unfinished"></translation>
+        <translation>Detener &amp;Todo</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="390"/>
         <source>Stop All Video Conversion Tasks</source>
-        <translation type="unfinished"></translation>
+        <translation>Detener Todas las Tareas de Converisión</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="398"/>
         <source>&amp;About VideoMorph...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Acerca de VideoMorph...</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="398"/>
         <source>About VideoMorph</source>
-        <translation type="unfinished"></translation>
+        <translation>Acerca de VideoMorph</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="405"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>Sa&amp;lir</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="405"/>
         <source>Exit VideoMorph</source>
-        <translation type="unfinished"></translation>
+        <translation>Salir de VideoMorph</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="412"/>
         <source>&amp;Settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Preferencias...</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="412"/>
         <source>Open VideoMorph Settings Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir el Diálogo de Configuraciones de VideoMorph</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="422"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Archivo</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="429"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Edición</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="436"/>
         <source>&amp;Conversion</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Conversión</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="442"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;yuda</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="925"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Listo</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="843"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Error!</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="545"/>
         <source>Ffmpeg or Avconv Libraries not Found in your System</source>
-        <translation type="unfinished"></translation>
+        <translation>Las Librerías Ffmpeg o Avconv no se Encuentran e su Sistema</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="648"/>
         <source>Invalid Video File Information for: {fn}. File not Added to Conversion List</source>
-        <translation type="unfinished"></translation>
+        <translation>Información de Video no Válida para: {fn}. El Archivo no se Añadió a la Lista de Conversión</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="666"/>
         <source>Select Video Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione Archivos de Video</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="668"/>
         <source>Video Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de Video</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="1042"/>
         <source>To Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="770"/>
         <source>Export to Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar al Directorio</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="780"/>
         <source>Access Denied for Writing to: {dir}</source>
-        <translation type="unfinished"></translation>
+        <translation>Acceso Denegado para Escritura en: {dir}</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="917"/>
         <source>Information!</source>
-        <translation type="unfinished"></translation>
+        <translation>Información!</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="785"/>
         <source>Conversion Profiles Successfully Exported to: {dir}</source>
-        <translation type="unfinished"></translation>
+        <translation>Perfiles de Conversión Exportados con Éxito a: {dir}</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="792"/>
         <source>Warning!</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia!</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="792"/>
         <source>Clear All Tasks?</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar Todas las Tareas de Conversión?</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="798"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sí</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="799"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;No</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="843"/>
         <source>Can not Write to Selected Output Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>No se Puede Escribir en el Directorio Seleccionado</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="909"/>
         <source>Stopped!</source>
-        <translation type="unfinished"></translation>
+        <translation>Detenido!</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="900"/>
         <source>Done!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hecho!</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="917"/>
         <source>Encoding Process Successfully Finished!</source>
-        <translation type="unfinished"></translation>
+        <translation>Proceso de Conversión Concluido Exitosamente!</translation>
     </message>
     <message>
         <location filename="videomorph.py" line="995"/>
         <source>Converting: {m}<byte value="x9"/><byte value="x9"/><byte value="x9"/> Operation Remaining Time: {ort}<byte value="x9"/><byte value="x9"/><byte value="x9"/> Total Remaining Time: {trt}</source>
-        <translation type="unfinished"></translation>
+        <translation>Convirtiendo: {m}<byte value="x9"/><byte value="x9"/><byte value="x9"/> Tiempo Restante de la Operación: {ort}<byte value="x9"/><byte value="x9"/><byte value="x9"/> Tiempo Restante Total: {trt}</translation>
     </message>
 </context>
 </TS>
