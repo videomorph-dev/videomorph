@@ -23,18 +23,14 @@
 import shlex
 import os.path
 from os.path import exists
-from os import cpu_count, remove, access
+from os import remove, access
 from subprocess import Popen
 from subprocess import PIPE
 from threading import Thread
 from collections import namedtuple
 
 from .utils import which
-
-
-CPU_CORES = (cpu_count() - 1 if
-             cpu_count() is not None
-             else 0)
+from videomorph import CPU_CORES
 
 
 class MediaError(Exception):

@@ -25,6 +25,8 @@ from setuptools import setup, find_packages
 
 from videomorph import VERSION
 from videomorph import PACKAGE_NAME
+from videomorph import LINUX_PATHS
+from videomorph import VM_PATHS
 
 
 LONG_DESC = """Small Video Converter based on ffmpeg, Python 3 and Qt5.
@@ -37,19 +39,6 @@ annoying options rarely used.
 Videomorph is a video converter, just that. If you want a video
 editor, VideoMorph isn't for you.
 """
-
-LINUX_PATHS = {'apps': '/usr/share/applications',
-               'icons': '/usr/share/icons',
-               'i18n': '/usr/share/videomorph/translations',
-               'profiles': '/usr/share/videomorph/stdprofiles',
-               'doc': '/usr/share/doc/videomorph'}
-
-VM_PATHS = {'apps': 'share/applications',
-            'icons': 'share/icons',
-            'i18n': 'share/videomorph/translations',
-            'profiles': 'share/videomorph/stdprofiles',
-            'doc': 'share/doc/videomorph',
-            'bin': 'bin/videomorph'}
 
 sys_path = None
 

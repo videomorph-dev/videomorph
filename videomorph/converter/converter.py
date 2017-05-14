@@ -20,16 +20,10 @@
 
 """This module provides the definition of the Converter class."""
 
-from collections import namedtuple
-
 from PyQt5.QtCore import QProcess
 
 from .utils import which
-
-ConversionLib = namedtuple('ConversionLib', 'ffmpeg avconv')
-
-CONV_LIB = ConversionLib('ffmpeg', 'avconv')
-
+from videomorph import CONV_LIB
 
 class Converter:
     """Converter class to provide conversion functionality."""
