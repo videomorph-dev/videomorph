@@ -9,6 +9,8 @@ Next version or later:
     - Improve the profile._Profile class to make it contains the conversion_lib and there for the prober
     - Improve the performance of videomorph._fill_media_list method
     - Pack in .rpm format
+    - Accept a video file or a directory with videos in the command line (videomorph -if=video.avi
+      videomorph -id=VideosDir)
 
 Someday:
     - Make it run on Windows
