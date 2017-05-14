@@ -30,7 +30,8 @@ if __name__ == '__main__':
                        ['share/videomorph/stdprofiles/profiles.xml']),
                         # Documentation files
                       ('/usr/share/doc/videomorph',
-                       ['README.md', 'LICENSE', 'AUTHORS'])],
+                       ['README.md', 'LICENSE', 'AUTHORS',
+                        'copyright', 'changelog.Debian', 'TODO'])],
 
           scripts=['bin/videomorph']
           )
