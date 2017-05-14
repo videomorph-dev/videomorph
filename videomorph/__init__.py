@@ -1,3 +1,4 @@
 APPNAME = 'VideoMorph'
-VERSION = '0.8'
-CODENAME = 'argonaut'
+PACKAGE_NAME = APPNAME.lower()
+VERSION = '1.0'
+CODENAME = 'traveler'

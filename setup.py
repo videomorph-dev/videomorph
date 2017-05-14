@@ -20,10 +20,10 @@
 
 """This module defines the installation script for VideoMorph."""
 
-
 from setuptools import setup, find_packages
 
 from videomorph.videomorph import VERSION
+from videomorph.videomorph import PACKAGE_NAME
 
 
 LONG_DESC = """Small Video Converter based on ffmpeg, Python 3 and Qt5.
@@ -39,7 +39,7 @@ editor, VideoMorph isn't for you.
 
 
 if __name__ == '__main__':
-    setup(name='videomorph',
+    setup(name=PACKAGE_NAME,
           version=VERSION,
           description='Small Video Converter based on ffmpeg, '
                       'Python 3 and Qt5, focused on usability.',
