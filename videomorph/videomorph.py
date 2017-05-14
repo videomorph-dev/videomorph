@@ -80,7 +80,6 @@ from .converter import write_time
 from .converter import XMLProfile
 from .settings import SettingsDialog
 from .addprofile import AddProfileDialog
-import performance
 
 # Conversion tasks list table columns
 NAME, DURATION, QUALITY, PROGRESS = range(4)
@@ -628,8 +627,6 @@ class VideoMorphMW(QMainWindow):
 
         event.accept()
 
-    @performance.func_profiler
-    @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with MediaFile objects."""
         threads = []
