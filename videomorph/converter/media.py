@@ -27,11 +27,10 @@ from os import remove, access
 from subprocess import Popen
 from subprocess import PIPE
 from threading import Thread
-from collections import namedtuple
 
 from .utils import which
 from videomorph import CPU_CORES
-
+from videomorph import STATUS
 
 class MediaError(Exception):
     """General exception class."""
@@ -41,11 +40,6 @@ class MediaError(Exception):
 class InvalidMetadataError(MediaError):
     """Exception to raise when the file don't have a valid metadata info."""
     pass
-
-
-MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
-
-STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
 
 
 class MediaList(list):

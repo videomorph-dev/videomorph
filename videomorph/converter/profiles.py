@@ -28,6 +28,8 @@ from distutils.file_util import copy_file
 from distutils.errors import DistutilsFileError
 from xml.etree import ElementTree
 
+from videomorph import LINUX_PATHS
+from videomorph import VM_PATHS
 
 class ProfileError(Exception):
     """Base Exception."""
@@ -180,13 +182,13 @@ class XMLProfile:
         profiles_xml = self._profiles_xml_path
 
         if not exists(profiles_xml):
-            if exists('/usr/share/videomorph/stdprofiles/profiles.xml'):
+            if exists(LINUX_PATHS['profiles'] + '/profiles.xml'):
                 # if VideoMorph is installed
-                copy_file('/usr/share/videomorph/stdprofiles/profiles.xml',
+                copy_file(LINUX_PATHS['profiles'] + '/profiles.xml',
                           profiles_xml)
             else:
                 # if not installed
-                copy_file('../share/videomorph/stdprofiles/profiles.xml',
+                copy_file('../' + VM_PATHS['profiles'] + '/profiles.xml',
                           profiles_xml)
 
     def _get_xml_root(self):

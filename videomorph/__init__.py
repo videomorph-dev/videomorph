@@ -9,6 +9,10 @@ PACKAGE_NAME = APPNAME.lower()
 ConversionLib = namedtuple('ConversionLib', 'ffmpeg avconv')
 CONV_LIB = ConversionLib('ffmpeg', 'avconv')
 
+MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
+STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
+
+
 CPU_CORES = (cpu_count() - 1 if
              cpu_count() is not None
              else 0)

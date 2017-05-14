@@ -66,15 +66,15 @@ from PyQt5.QtWidgets import (QMainWindow,
 
 from . import APPNAME
 from . import VERSION
+from . import STATUS
+from . import CONV_LIB
 from . import videomorph_qrc
 from .about import AboutVMDialog
 from .converter import Converter
-from .converter import CONV_LIB
 from .converter import get_locale
 from .converter import InvalidMetadataError
 from .converter import MediaFileThread
 from .converter import MediaList
-from .converter import STATUS
 from .converter import which
 from .converter import write_time
 from .converter import XMLProfile
