@@ -19,7 +19,7 @@
 #   limitations under the License.
 
 """This module defines the VideoMorph main window that holds the UI."""
-import performance
+
 import re
 from collections import OrderedDict
 from functools import partial
@@ -80,6 +80,7 @@ from .converter import write_time
 from .converter import XMLProfile
 from .settings import SettingsDialog
 from .addprofile import AddProfileDialog
+import performance
 
 # Conversion tasks list table columns
 NAME, DURATION, QUALITY, PROGRESS = range(4)
