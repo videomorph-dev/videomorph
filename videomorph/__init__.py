@@ -5,6 +5,7 @@ APPNAME = 'VideoMorph'
 VERSION = '1.0'
 CODENAME = 'traveler'
 PACKAGE_NAME = APPNAME.lower()
+MAINTAINER = APPNAME + ' ' + 'Development Team'
 
 ConversionLib = namedtuple('ConversionLib', 'ffmpeg avconv')
 CONV_LIB = ConversionLib('ffmpeg', 'avconv')
