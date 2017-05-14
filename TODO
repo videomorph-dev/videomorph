@@ -1,0 +1,12 @@
+TODO List:
+----------
+
+Next version or later:
+    - Include subtitles in the video file
+    - Import presets from outer source
+    - Improve the Artwork, mainly the icons theme
+    - Alow the use to decide if the source video file is to be removed
+    - Improve the profile._Profile class to make it contains the conversion_lib and there for the prober
+
+Someday:
+    - Make it run on Windows
