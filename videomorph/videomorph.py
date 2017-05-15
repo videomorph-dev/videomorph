@@ -796,6 +796,7 @@ class VideoMorphMW(QMainWindow):
                             'Exported to: {dir}'.format(dir=directory)))
 
     def import_profile(self):
+        """Import conversion profiles."""
         # Dialog title
         title = self.tr('Select a Profiles File')
         # Media filters
@@ -818,8 +819,8 @@ class VideoMorphMW(QMainWindow):
                 QMessageBox.information(
                     self, self.tr('Information!'),
                     self.tr('Conversion Profiles Successfully '
-                            'Imported to: {dir}'.format(
-                        dir=dirname(self.xml_profile.profiles_xml_path))))
+                            'Imported to: {dir}'.format(dir=dirname(
+                                self.xml_profile.profiles_xml_path))))
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
