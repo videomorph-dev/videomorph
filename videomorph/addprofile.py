@@ -20,12 +20,13 @@
 
 """This module provides the dialog for VideoMorph profiles."""
 
+from functools import partial
+
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import (QDialog, QWidget, QVBoxLayout, QLabel,
                              QLineEdit, QSpacerItem, QDialogButtonBox,
                              QMessageBox)
 
-from .converter import XMLProfile
 from .converter import (ProfileBlankNameError,
                         ProfileBlankPresetError,
                         ProfileBlankParamsError,
@@ -109,14 +110,15 @@ class AddProfileDialog(QDialog):
         self.label_3.setBuddy(self.le_params)
         self.label_4.setBuddy(self.le_extension)
 
-        self.button_box.accepted.connect(self.accept)
+        self.button_box.accepted.connect(partial(self.accept,
+                                                 self.parent.xml_profile))
         self.button_box.rejected.connect(self.reject)
         QtCore.QMetaObject.connectSlotsByName(self)
 
-    def accept(self):
+    def accept(self, xml_profie):
         """Accept the dialog result."""
         try:
-            XMLProfile.add_conversion_profile(
+            xml_profie.add_conversion_profile(
                 profile_name=self.le_profile_name.text(),
                 preset=self.le_preset_name.text(),
                 params=self.le_params.text(),
