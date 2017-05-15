@@ -116,14 +116,14 @@ class XMLProfile:
         """Export a file with the conversion profiles."""
         # Raise PermissionError if user don't have write permission
         try:
-            copy_file(src=self._profiles_xml_path, dst=dst_dir)
+            copy_file(src=self.profiles_xml_path, dst=dst_dir)
         except DistutilsFileError:
             raise PermissionError
 
     def import_profile_xml(self, src_file):
         """Import a conversion profile file."""
         try:
-            copy_file(src=src_file, dst=self._profiles_xml_path)
+            copy_file(src=src_file, dst=self.profiles_xml_path)
         except DistutilsFileError:
             raise PermissionError
 
@@ -169,17 +169,17 @@ class XMLProfile:
 
     def save_tree(self):
         """Save xml tree."""
-        with open(self._profiles_xml_path, 'wb') as _file:
+        with open(self.profiles_xml_path, 'wb') as _file:
             ElementTree.ElementTree(self._xml_root).write(_file)
 
     @property
-    def _profiles_xml_path(self):
+    def profiles_xml_path(self):
         """Return the path to the profiles file."""
         return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
 
     def create_profiles_xml_file(self):
         """Create a xml file with the conversion profiles."""
-        profiles_xml = self._profiles_xml_path
+        profiles_xml = self.profiles_xml_path
 
         if not exists(profiles_xml):
             if exists(LINUX_PATHS['profiles'] + '/profiles.xml'):
@@ -193,7 +193,7 @@ class XMLProfile:
 
     def _get_xml_root(self):
         """Returns the profiles.xml root."""
-        tree = ElementTree.parse(self._profiles_xml_path)
+        tree = ElementTree.parse(self.profiles_xml_path)
         return tree.getroot()
 
 

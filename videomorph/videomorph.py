@@ -349,11 +349,18 @@ class VideoMorphMW(QMainWindow):
             callback=self.add_profile)
 
         self.export_profile_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_DialogSaveButton),
+            icon=self.style().standardIcon(QStyle.SP_ArrowUp),
             text=self.tr('&Export Conversion Profiles...'),
             shortcut="Ctrl+E",
             tip=self.tr('Export Conversion Profiles'),
             callback=self.export_profile)
+
+        self.import_profile_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_DialogSaveButton),
+            text=self.tr('&Import Conversion Profiles...'),
+            shortcut="Ctrl+I",
+            tip=self.tr('Import Conversion Profiles'),
+            callback=self.import_profile)
 
         self.clear_media_list_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_TrashIcon),
@@ -429,6 +436,7 @@ class VideoMorphMW(QMainWindow):
         self.edit_menu = self.menuBar().addMenu(self.tr('&Edit'))
         self.edit_menu.addAction(self.add_profile_action)
         self.edit_menu.addAction(self.export_profile_action)
+        self.edit_menu.addAction(self.import_profile_action)
         self.edit_menu.addSeparator()
         self.edit_menu.addAction(self.clear_media_list_action)
         self.edit_menu.addAction(self.remove_media_file_action)
@@ -786,6 +794,32 @@ class VideoMorphMW(QMainWindow):
                     self, self.tr('Information!'),
                     self.tr('Conversion Profiles Successfully '
                             'Exported to: {dir}'.format(dir=directory)))
+
+    def import_profile(self):
+        # Dialog title
+        title = self.tr('Select a Profiles File')
+        # Media filters
+        profile_filters = (self.tr('Profiles Files') + '(*.xml)')
+
+        # Select media files and store their path
+        file_path, _ = QFileDialog.getOpenFileName(self,
+                                                   title,
+                                                   QDir.homePath(),
+                                                   profile_filters)
+        if file_path:
+            try:
+                self.xml_profile.import_profile_xml(src_file=file_path)
+            except PermissionError:
+                QMessageBox.critical(
+                    self, self.tr('Error!'),
+                    self.tr("Access Denied for Writing to: {dir}".format(
+                        dir=dirname(self.xml_profile.profiles_xml_path))))
+            else:
+                QMessageBox.information(
+                    self, self.tr('Information!'),
+                    self.tr('Conversion Profiles Successfully '
+                            'Imported to: {dir}'.format(
+                        dir=dirname(self.xml_profile.profiles_xml_path))))
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
