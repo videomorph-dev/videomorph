@@ -25,3 +25,7 @@ INSTALL:
 - Install
 
     sudo python3 setup.py install
+
+    or
+
+    sudo install.sh

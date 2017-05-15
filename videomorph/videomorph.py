@@ -68,6 +68,7 @@ from . import APPNAME
 from . import VERSION
 from . import STATUS
 from . import CONV_LIB
+from . import PROBER
 from . import videomorph_qrc
 from .about import AboutVMDialog
 from .converter import Converter
@@ -133,7 +134,6 @@ class VideoMorphMW(QMainWindow):
 
         # Default conversion library and prober
         self.conversion_lib = CONV_LIB.ffmpeg
-        self.prober = "ffprobe"
 
         # Default Source directory
         self.source_dir = QDir.homePath()
@@ -152,7 +152,8 @@ class VideoMorphMW(QMainWindow):
         # Create the conversion profile object only once
         self.conversion_profile = self.xml_profile.get_conversion_profile(
             profile_name=self.cb_profiles.currentText(),
-            target_quality=self.cb_presets.currentText())
+            target_quality=self.cb_presets.currentText(),
+            conv_lib=self.conversion_lib)
 
         # Read app settings
         self._read_app_settings()
@@ -582,11 +583,11 @@ class VideoMorphMW(QMainWindow):
             if settings_dlg.radio_btn_ffmpeg.isChecked():
                 self.conversion_lib = CONV_LIB.ffmpeg
                 self.converter.conversion_lib = self.conversion_lib
-                self.prober = 'ffprobe'
+                self.prober = PROBER.ffprobe
             elif settings_dlg.radio_btn_avconv.isChecked():
                 self.conversion_lib = CONV_LIB.avconv
                 self.converter.conversion_lib = self.conversion_lib
-                self.prober = 'avprobe'
+                self.prober = PROBER.avprobe
 
     def _populate_profiles_combo(self):
         """Populate profiles combobox."""
@@ -641,8 +642,7 @@ class VideoMorphMW(QMainWindow):
         for file_path in files_paths:
             thread = MediaFileThread(
                 media_path=file_path,
-                conversion_profile=self.conversion_profile,
-                prober=self.prober)
+                conversion_profile=self.conversion_profile)
             thread.start()
             threads.append(thread)
 

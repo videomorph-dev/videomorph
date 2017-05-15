@@ -136,11 +136,11 @@ class MediaFile:
                  'status',
                  'info')
 
-    def __init__(self, file_path, conversion_profile, prober='ffprobe'):
+    def __init__(self, file_path, conversion_profile):
         """Class initializer."""
         self.path = file_path
         self.conversion_profile = conversion_profile
-        self.prober = prober
+        self.prober = self.conversion_profile.prober
         self.status = STATUS.todo
         self.info = MediaInfo(self.path, self.prober)
 
@@ -231,22 +231,19 @@ class MediaInfo:
 
 class MediaFileThread(Thread):
     """Thread class to handle the creation of MediaFile objects."""
-    def __init__(self, media_path, conversion_profile, prober):
+    def __init__(self, media_path, conversion_profile):
         super(MediaFileThread, self).__init__()
         self.file_path = media_path
         self.conversion_profile = conversion_profile
-        self.prober = prober
         self.media_file = None
 
     def run(self):
         """Create media files to be added to the list."""
         self.media_file = media_file_factory(self.file_path,
-                                             self.conversion_profile,
-                                             self.prober)
+                                             self.conversion_profile)
 
 
-def media_file_factory(file_path, conversion_profile, prober):
+def media_file_factory(file_path, conversion_profile):
     """Factory function for creating MediaFile objects."""
     return MediaFile(file_path=file_path,
-                     conversion_profile=conversion_profile,
-                     prober=prober)
+                     conversion_profile=conversion_profile)

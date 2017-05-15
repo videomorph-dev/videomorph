@@ -25,6 +25,7 @@ from PyQt5.QtCore import QProcess
 from .utils import which
 from videomorph import CONV_LIB
 
+
 class Converter:
     """Converter class to provide conversion functionality."""
 
@@ -48,6 +49,7 @@ class Converter:
         """Return the individual file encoding process state."""
         return self.process.state() == QProcess.Running
 
-    def encoding_done(self, media_list):
+    @staticmethod
+    def encoding_done(media_list):
         """Return True if media list is done."""
         return media_list.running_index + 1 >= media_list.length

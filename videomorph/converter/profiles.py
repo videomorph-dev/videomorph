@@ -30,6 +30,9 @@ from xml.etree import ElementTree
 
 from videomorph import LINUX_PATHS
 from videomorph import VM_PATHS
+from videomorph import CONV_LIB
+from videomorph import PROBER
+
 
 class ProfileError(Exception):
     """Base Exception."""
@@ -127,7 +130,8 @@ class XMLProfile:
         except DistutilsFileError:
             raise PermissionError
 
-    def get_conversion_profile(self, profile_name, target_quality):
+    def get_conversion_profile(self, profile_name,
+                               target_quality, conv_lib=CONV_LIB.ffmpeg):
         """Return a Profile objects."""
         for element in self._xml_root:
             if element.tag == profile_name:
@@ -200,16 +204,19 @@ class XMLProfile:
 class _Profile:
     """Base class for a Video Profile."""
 
-    def __init__(self,
-                 quality=None,
-                 params=None,
-                 extension=None,
-                 xml_profile=None):
+    def __init__(self, conv_lib=CONV_LIB.ffmpeg,
+                 quality=None, params=None,
+                 extension=None, xml_profile=None):
         """Class initializer."""
         self._quality = quality
+        self.conv_lib = conv_lib
         self.params = params
         self.extension = extension
         self.xml_profile = xml_profile
+        if self.conv_lib == CONV_LIB.ffmpeg:
+            self.prober = PROBER.ffprobe
+        else:
+            self.prober = PROBER.avprobe
 
     @property
     def quality(self):
