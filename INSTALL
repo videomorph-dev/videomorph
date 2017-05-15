@@ -1,0 +1,31 @@
+
+                  _ _     _ _ _   _ _ _    _    _    _ _ _    _ _ _    _ _ _
+    \      /  |  |    \  |       |     |  | \  / |  |     |  |     |  |     |  |     |
+     \    /   |  |    |  |_ _    |     |  |  \/  |  |     |  |  _ _|  |_ _ _|  |_ _ _|
+      \  /    |  |    |  |       |     |  |      |  |     |  |   \    |        |     |
+       \/     |  |_ _ /  |_ _ _  |_ _ _|  |      |  |_ _ _|  |    \   |        |     |
+
+
+VideoMorph 1.0
+
+DEPENDENCIES:
+- python3-pyqt5 (>=5.5.1)
+- python3:any (>=3.5.1-3)
+- ffmpeg (>=2.8.10)
+
+INSTALL:
+- Extract the source file
+
+    tar -xvf videomorph-1.0.tar.gz
+
+- Change to the source dir
+
+    cd videomorph-1.0
+
+- Install
+
+    sudo python3 setup.py install
+
+    or
+
+    sudo install.sh
