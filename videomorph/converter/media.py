@@ -32,6 +32,7 @@ from .utils import which
 from videomorph import CPU_CORES
 from videomorph import STATUS
 
+
 class MediaError(Exception):
     """General exception class."""
     pass

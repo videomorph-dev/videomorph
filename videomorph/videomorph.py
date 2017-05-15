@@ -583,11 +583,11 @@ class VideoMorphMW(QMainWindow):
             if settings_dlg.radio_btn_ffmpeg.isChecked():
                 self.conversion_lib = CONV_LIB.ffmpeg
                 self.converter.conversion_lib = self.conversion_lib
-                self.prober = PROBER.ffprobe
+                self.conversion_profile.prober = PROBER.ffprobe
             elif settings_dlg.radio_btn_avconv.isChecked():
                 self.conversion_lib = CONV_LIB.avconv
                 self.converter.conversion_lib = self.conversion_lib
-                self.prober = PROBER.avprobe
+                self.conversion_profile.prober = PROBER.avprobe
 
     def populate_profiles_combo(self):
         """Populate profiles combobox."""

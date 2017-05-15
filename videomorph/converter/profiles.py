@@ -131,14 +131,16 @@ class XMLProfile:
             raise PermissionError
 
     def get_conversion_profile(self, profile_name,
-                               target_quality, conv_lib=CONV_LIB.ffmpeg):
+                               target_quality,
+                               conv_lib=CONV_LIB.ffmpeg):
         """Return a Profile objects."""
         for element in self._xml_root:
             if element.tag == profile_name:
                 for item in element:
                     if (item[0].text == target_quality or
                             item[3].text == target_quality):
-                        return _Profile(quality=target_quality,
+                        return _Profile(conv_lib=conv_lib,
+                                        quality=target_quality,
                                         params=item[1].text,
                                         extension=item[2].text,
                                         xml_profile=self)
@@ -148,7 +150,7 @@ class XMLProfile:
         for element in self._xml_root:
             for item in element:
                 if (item[0].text == target_quality or
-                            item[3].text == target_quality):
+                        item[3].text == target_quality):
                     return item[attr_index].text
 
     def get_qualities_per_profile(self, locale):
