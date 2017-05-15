@@ -32,4 +32,4 @@ VM_PATHS = {'apps': 'share/applications',
             'i18n': 'share/videomorph/translations',
             'profiles': 'share/videomorph/stdprofiles',
             'doc': 'share/doc/videomorph',
-            'bin': 'bin/videomorph'}
+            'bin': 'bin'}

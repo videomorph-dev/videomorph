@@ -82,5 +82,5 @@ if __name__ == '__main__':
                 'copyright', 'changelog.gz', 'TODO'])
           ],
 
-          scripts=[VM_PATHS['bin']]
+          scripts=[VM_PATHS['bin'] + '/videomorph']
          )
