@@ -16,7 +16,7 @@
 #   distributed under the License is distributed on an "AS IS" BASIS,
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
-#   limitations under the License. 
+#   limitations under the License.
 
 """This module provides a dialog to show app information."""
 
@@ -45,64 +45,67 @@ class AboutVMDialog(QDialog):
         super(AboutVMDialog, self).__init__(parent)
         self.setWindowTitle(self.tr('About VideoMorph'))
         self.resize(374, 404)
-        self.horizontalLayout_3 = QHBoxLayout(self)
-        self.verticalLayout_4 = QVBoxLayout()
-        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontal_layout_3 = QHBoxLayout(self)
+        self.vertical_layout_4 = QVBoxLayout()
+        self.horizontal_layout_2 = QHBoxLayout()
         self.label = QLabel(self)
         self.label.setMinimumSize(QSize(64, 64))
         self.label.setMaximumSize(QSize(64, 64))
         self.label.setText("")
         self.label.setPixmap(QPixmap(':/logo/videomorph.png'))
         self.label.setScaledContents(True)
-        self.horizontalLayout_2.addWidget(self.label)
-        self.label_2 = QLabel("<p align=\"center\"><span style=\" font-size:20pt; font-weight:600;\">{n}</span></p><p align=\"center\"><span style=\" font-size:9pt; font-weight:600;\">version {v}</span></p>".format(
-            n=APPNAME, v=VERSION))
+        self.horizontal_layout_2.addWidget(self.label)
+        self.label_2 = QLabel("<p align=\"center\"><span style=\" "
+                              "font-size:20pt; font-weight:600;\">{n}</span>"
+                              "</p><p align=\"center\"><span style=\" "
+                              "font-size:9pt; font-weight:600;\">version {v}"
+                              "</span></p>".format(n=APPNAME, v=VERSION))
         self.label_2.setMinimumSize(QSize(0, 64))
         self.label_2.setMaximumSize(QSize(16777215, 64))
-        self.horizontalLayout_2.addWidget(self.label_2)
-        self.verticalLayout_4.addLayout(self.horizontalLayout_2)
-        self.tabWidget = QTabWidget(self)
+        self.horizontal_layout_2.addWidget(self.label_2)
+        self.vertical_layout_4.addLayout(self.horizontal_layout_2)
+        self.tab_widget = QTabWidget(self)
         self.tab = QWidget()
-        self.verticalLayout_2 = QVBoxLayout(self.tab)
-        self.textEdit_3 = QTextEdit(self.tab)
-        self.textEdit_3.setReadOnly(True)
-        self.verticalLayout_2.addWidget(self.textEdit_3)
-        self.tabWidget.addTab(self.tab, "")
+        self.vertical_layout_2 = QVBoxLayout(self.tab)
+        self.text_edit_3 = QTextEdit(self.tab)
+        self.text_edit_3.setReadOnly(True)
+        self.vertical_layout_2.addWidget(self.text_edit_3)
+        self.tab_widget.addTab(self.tab, "")
         self.tab_2 = QWidget()
-        self.verticalLayout_3 = QVBoxLayout(self.tab_2)
-        self.textEdit_2 = QTextEdit(self.tab_2)
-        self.textEdit_2.setReadOnly(True)
-        self.verticalLayout_3.addWidget(self.textEdit_2)
-        self.tabWidget.addTab(self.tab_2, "")
+        self.vertical_layout_3 = QVBoxLayout(self.tab_2)
+        self.text_edit_2 = QTextEdit(self.tab_2)
+        self.text_edit_2.setReadOnly(True)
+        self.vertical_layout_3.addWidget(self.text_edit_2)
+        self.tab_widget.addTab(self.tab_2, "")
         self.tab_3 = QWidget()
-        self.verticalLayout = QVBoxLayout(self.tab_3)
-        self.plainTextEdit = QPlainTextEdit(self.tab_3)
-        self.plainTextEdit.setReadOnly(True)
-        self.verticalLayout.addWidget(self.plainTextEdit)
-        self.tabWidget.addTab(self.tab_3, "")
-        self.verticalLayout_4.addWidget(self.tabWidget)
-        self.horizontalLayout = QHBoxLayout()
-        spacerItem = QSpacerItem(40,
-                                 20,
-                                 QSizePolicy.Expanding,
-                                 QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem)
-        self.buttonBox = QDialogButtonBox(self)
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Ok)
-        self.buttonBox.accepted.connect(self.accept)
-        self.horizontalLayout.addWidget(self.buttonBox)
-        self.verticalLayout_4.addLayout(self.horizontalLayout)
-        self.horizontalLayout_3.addLayout(self.verticalLayout_4)
+        self.vertical_layout = QVBoxLayout(self.tab_3)
+        self.plain_text_edit = QPlainTextEdit(self.tab_3)
+        self.plain_text_edit.setReadOnly(True)
+        self.vertical_layout.addWidget(self.plain_text_edit)
+        self.tab_widget.addTab(self.tab_3, "")
+        self.vertical_layout_4.addWidget(self.tab_widget)
+        self.horizontal_layout = QHBoxLayout()
+        spacer_item = QSpacerItem(40,
+                                  20,
+                                  QSizePolicy.Expanding,
+                                  QSizePolicy.Minimum)
+        self.horizontal_layout.addItem(spacer_item)
+        self.button_box = QDialogButtonBox(self)
+        self.button_box.setOrientation(Qt.Horizontal)
+        self.button_box.setStandardButtons(QDialogButtonBox.Ok)
+        self.button_box.accepted.connect(self.accept)
+        self.horizontal_layout.addWidget(self.button_box)
+        self.vertical_layout_4.addLayout(self.horizontal_layout)
+        self.horizontal_layout_3.addLayout(self.vertical_layout_4)
 
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab),
-                                  self.tr("Info"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2),
-                                  self.tr("Credits"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3),
-                                  self.tr("License"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab),
+                                   self.tr("Info"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_2),
+                                   self.tr("Credits"))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_3),
+                                   self.tr("License"))
 
-        self.textEdit_2.setHtml(self.tr(
+        self.text_edit_2.setHtml(self.tr(
             "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
             "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
             "p, li { white-space: pre-wrap; }\n"
@@ -122,7 +125,7 @@ class AboutVMDialog(QDialog):
             "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600;\"><br /></p></body></html>"
         ))
 
-        self.textEdit_3.setHtml(self.tr(
+        self.text_edit_3.setHtml(self.tr(
             "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
             "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
             "p, li { white-space: pre-wrap; }\n"
@@ -134,7 +137,7 @@ class AboutVMDialog(QDialog):
             "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://github.com/codeshard/videomorph\"><span style=\" text-decoration: underline; color:#2980b9;\">https://github.com/codeshard/videomorph</span></a></p></body></html>"
         ))
 
-        self.plainTextEdit.setPlainText(self.tr(
+        self.plain_text_edit.setPlainText(self.tr(
             "                                 Apache License\n"
             "                           Version 2.0, January 2004\n"
             "                        http://www.apache.org/licenses/\n"
