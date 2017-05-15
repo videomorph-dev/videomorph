@@ -78,7 +78,7 @@ if __name__ == '__main__':
                [VM_PATHS['profiles'] + '/profiles.xml']),
               # Documentation files
               (SYS_PATH['doc'],
-               ['README.md', 'LICENSE', 'AUTHORS',
+               ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL',
                 'copyright', 'changelog.gz', 'TODO'])
           ],
 
