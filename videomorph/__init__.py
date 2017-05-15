@@ -10,6 +10,9 @@ MAINTAINER = APPNAME + ' ' + 'Development Team'
 ConversionLib = namedtuple('ConversionLib', 'ffmpeg avconv')
 CONV_LIB = ConversionLib('ffmpeg', 'avconv')
 
+Prober = namedtuple('Prober', 'ffprobe avprobe')
+PROBER = Prober('ffprobe', 'avprobe')
+
 MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
 STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
 
