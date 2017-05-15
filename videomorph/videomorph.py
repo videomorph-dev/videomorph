@@ -354,14 +354,14 @@ class VideoMorphMW(QMainWindow):
             text=self.tr('&Export Conversion Profiles...'),
             shortcut="Ctrl+E",
             tip=self.tr('Export Conversion Profiles'),
-            callback=self.export_profile)
+            callback=self.export_profiles)
 
         self.import_profile_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_DialogSaveButton),
             text=self.tr('&Import Conversion Profiles...'),
             shortcut="Ctrl+I",
             tip=self.tr('Import Conversion Profiles'),
-            callback=self.import_profile)
+            callback=self.import_profiles)
 
         self.clear_media_list_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_TrashIcon),
@@ -772,7 +772,19 @@ class VideoMorphMW(QMainWindow):
         add_profile_dlg = AddProfileDialog(parent=self)
         add_profile_dlg.exec_()
 
-    def export_profile(self):
+    def _export_import_profiles(self, func, path, msg_error, msg_info):
+        try:
+            func(path)
+        except PermissionError:
+            QMessageBox.critical(
+                self, self.tr('Error!'),
+                msg_error)
+        else:
+            QMessageBox.information(
+                self, self.tr('Information!'),
+                msg_info)
+
+    def export_profiles(self):
         """Export conversion profiles."""
         options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
         directory = QFileDialog.getExistingDirectory(
@@ -782,20 +794,17 @@ class VideoMorphMW(QMainWindow):
             options=options)
 
         if directory:
-            try:
-                self.xml_profile.export_profile_xml_file(dst_dir=directory)
-            except PermissionError:
-                QMessageBox.critical(
-                    self, self.tr('Error!'),
-                    self.tr("Access Denied for Writing to: {dir}".format(
-                        dir=directory)))
-            else:
-                QMessageBox.information(
-                    self, self.tr('Information!'),
-                    self.tr('Conversion Profiles Successfully '
-                            'Exported to: {dir}'.format(dir=directory)))
+            msg_error = self.tr("Access Denied for Writing to: {dir}".format(
+                dir=directory))
+            msg_info = self.tr('Conversion Profiles Successfully '
+                               'Exported to: {dir}/profiles.xml'.format(
+                                    dir=directory))
 
-    def import_profile(self):
+            self._export_import_profiles(
+                func=self.xml_profile.export_profile_xml_file,
+                path=directory, msg_error=msg_error, msg_info=msg_info)
+
+    def import_profiles(self):
         """Import conversion profiles."""
         # Dialog title
         title = self.tr('Select a Profiles File')
@@ -808,18 +817,14 @@ class VideoMorphMW(QMainWindow):
                                                    QDir.homePath(),
                                                    profile_filters)
         if file_path:
-            try:
-                self.xml_profile.import_profile_xml(src_file=file_path)
-            except PermissionError:
-                QMessageBox.critical(
-                    self, self.tr('Error!'),
-                    self.tr("Access Denied for Writing to: {dir}".format(
-                        dir=dirname(self.xml_profile.profiles_xml_path))))
-            else:
-                QMessageBox.information(
-                    self, self.tr('Information!'),
-                    self.tr('Conversion Profiles Successfully '
-                            'Imported from: {file}'.format(file=file_path)))
+            msg_error = self.tr("Access Denied for Writing to: {dir}".format(
+                dir=dirname(self.xml_profile.profiles_xml_path)))
+            msg_info = self.tr('Conversion Profiles Successfully '
+                               'Imported from: {file}'.format(file=file_path))
+
+            self._export_import_profiles(
+                func=self.xml_profile.import_profile_xml,
+                path=file_path, msg_error=msg_error, msg_info=msg_info)
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
