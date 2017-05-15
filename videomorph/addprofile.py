@@ -18,6 +18,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+"""This module provides the dialog for VideoMorph profiles."""
+
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import (QDialog, QWidget, QVBoxLayout, QLabel,
                              QLineEdit, QSpacerItem, QDialogButtonBox,
@@ -39,79 +41,80 @@ class AddProfileDialog(QDialog):
         self.setWindowTitle(self.tr("Add Customized Profile"))
         self.resize(399, 295)
 
-        self.layoutWidget = QWidget(self)
-        self.layoutWidget.setGeometry(QtCore.QRect(20, 20, 361, 257))
+        self.layout_widget = QWidget(self)
+        self.layout_widget.setGeometry(QtCore.QRect(20, 20, 361, 257))
 
-        self.verticalLayout_4 = QVBoxLayout(self.layoutWidget)
+        self.vertical_layout_4 = QVBoxLayout(self.layout_widget)
 
-        self.verticalLayout = QVBoxLayout()
+        self.vertical_layout = QVBoxLayout()
 
-        self.label = QLabel(self.layoutWidget)
+        self.label = QLabel(self.layout_widget)
         self.label.setText(self.tr("Pr&ofile Name (e.g. MP4)"))
-        self.verticalLayout.addWidget(self.label)
+        self.vertical_layout.addWidget(self.label)
 
-        self.le_profile_name = QLineEdit(self.layoutWidget)
-        self.verticalLayout.addWidget(self.le_profile_name)
+        self.le_profile_name = QLineEdit(self.layout_widget)
+        self.vertical_layout.addWidget(self.le_profile_name)
 
-        self.verticalLayout_4.addLayout(self.verticalLayout)
+        self.vertical_layout_4.addLayout(self.vertical_layout)
 
-        self.verticalLayout_2 = QVBoxLayout()
+        self.vertical_layout_2 = QVBoxLayout()
 
-        self.label_2 = QLabel(self.layoutWidget)
+        self.label_2 = QLabel(self.layout_widget)
         self.label_2.setText(self.tr(
             "&Target Quality Name (e.g. MP4 Widescreen (16:9))"))
-        self.verticalLayout_2.addWidget(self.label_2)
+        self.vertical_layout_2.addWidget(self.label_2)
 
-        self.le_preset_name = QLineEdit(self.layoutWidget)
-        self.verticalLayout_2.addWidget(self.le_preset_name)
+        self.le_preset_name = QLineEdit(self.layout_widget)
+        self.vertical_layout_2.addWidget(self.le_preset_name)
 
-        self.verticalLayout_4.addLayout(self.verticalLayout_2)
+        self.vertical_layout_4.addLayout(self.vertical_layout_2)
 
-        self.verticalLayout_3 = QVBoxLayout()
+        self.vertical_layout_3 = QVBoxLayout()
 
-        self.label_3 = QLabel(self.layoutWidget)
+        self.label_3 = QLabel(self.layout_widget)
         self.label_3.setText(self.tr(
             "&Command Line Parameters for Tarrget Quality"))
-        self.verticalLayout_3.addWidget(self.label_3)
+        self.vertical_layout_3.addWidget(self.label_3)
 
-        self.le_params = QLineEdit(self.layoutWidget)
-        self.verticalLayout_3.addWidget(self.le_params)
+        self.le_params = QLineEdit(self.layout_widget)
+        self.vertical_layout_3.addWidget(self.le_params)
 
-        self.verticalLayout_4.addLayout(self.verticalLayout_3)
+        self.vertical_layout_4.addLayout(self.vertical_layout_3)
 
-        self.verticalLayout_5 = QVBoxLayout()
+        self.vertical_layout_5 = QVBoxLayout()
 
-        self.label_4 = QLabel(self.layoutWidget)
+        self.label_4 = QLabel(self.layout_widget)
         self.label_4.setText(self.tr(
             "Output File &Extension (e.g. .mp4)"))
-        self.verticalLayout_5.addWidget(self.label_4)
+        self.vertical_layout_5.addWidget(self.label_4)
 
-        self.le_extension = QLineEdit(self.layoutWidget)
-        self.verticalLayout_5.addWidget(self.le_extension)
+        self.le_extension = QLineEdit(self.layout_widget)
+        self.vertical_layout_5.addWidget(self.le_extension)
 
-        self.verticalLayout_4.addLayout(self.verticalLayout_5)
+        self.vertical_layout_4.addLayout(self.vertical_layout_5)
 
-        spacerItem = QSpacerItem(20, 48,
-                                 QtWidgets.QSizePolicy.Minimum,
-                                 QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_4.addItem(spacerItem)
+        spacer_item = QSpacerItem(20, 48,
+                                  QtWidgets.QSizePolicy.Minimum,
+                                  QtWidgets.QSizePolicy.Expanding)
+        self.vertical_layout_4.addItem(spacer_item)
 
-        self.buttonBox = QDialogButtonBox(self.layoutWidget)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(
+        self.button_box = QDialogButtonBox(self.layout_widget)
+        self.button_box.setOrientation(QtCore.Qt.Horizontal)
+        self.button_box.setStandardButtons(
             QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
-        self.verticalLayout_4.addWidget(self.buttonBox)
+        self.vertical_layout_4.addWidget(self.button_box)
 
         self.label.setBuddy(self.le_profile_name)
         self.label_2.setBuddy(self.le_preset_name)
         self.label_3.setBuddy(self.le_params)
         self.label_4.setBuddy(self.le_extension)
 
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def accept(self):
+        """Accept the dialog result."""
         try:
             XMLProfile.add_conversion_profile(
                 profile_name=self.le_profile_name.text(),
@@ -147,5 +150,5 @@ class AddProfileDialog(QDialog):
         else:
             self.parent.xml_profile.set_xml_root()
             # self.parent.cb_profiles.clear()
-            self.parent._populate_profiles_combo()
+            self.parent.populate_profiles_combo()
             QDialog.accept(self)

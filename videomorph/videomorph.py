@@ -147,7 +147,7 @@ class VideoMorphMW(QMainWindow):
         self.xml_profile.set_xml_root()
 
         # Populate PROFILES combo box
-        self._populate_profiles_combo()
+        self.populate_profiles_combo()
 
         # Create the conversion profile object only once
         self.conversion_profile = self.xml_profile.get_conversion_profile(
@@ -589,7 +589,7 @@ class VideoMorphMW(QMainWindow):
                 self.converter.conversion_lib = self.conversion_lib
                 self.prober = PROBER.avprobe
 
-    def _populate_profiles_combo(self):
+    def populate_profiles_combo(self):
         """Populate profiles combobox."""
         # Clear combobox content
         self.cb_profiles.clear()

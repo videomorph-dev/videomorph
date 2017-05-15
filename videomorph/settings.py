@@ -54,12 +54,12 @@ class SettingsDialog(QDialog):
 
         self.main_layout.addWidget(self.group_box)
 
-        self.buttonBox = QtWidgets.QDialogButtonBox(self)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|
-                                          QtWidgets.QDialogButtonBox.Ok)
+        self.button_box = QtWidgets.QDialogButtonBox(self)
+        self.button_box.setOrientation(QtCore.Qt.Horizontal)
+        self.button_box.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel |
+                                           QtWidgets.QDialogButtonBox.Ok)
 
-        self.main_layout.addWidget(self.buttonBox)
-        self.buttonBox.rejected.connect(self.reject)
-        self.buttonBox.accepted.connect(self.accept)
+        self.main_layout.addWidget(self.button_box)
+        self.button_box.rejected.connect(self.reject)
+        self.button_box.accepted.connect(self.accept)
         self.setLayout(self.main_layout)
