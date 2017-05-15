@@ -40,10 +40,10 @@ Videomorph is a video converter, just that. If you want a video
 editor, VideoMorph isn't for you.
 """
 
-sys_path = None
+SYS_PATH = None
 
 if platform == 'linux':
-    sys_path = LINUX_PATHS
+    SYS_PATH = LINUX_PATHS
 elif platform == 'windows':
     pass
 
@@ -65,19 +65,19 @@ if __name__ == '__main__':
 
           data_files=[
               # Desktop entry
-              (sys_path['apps'],
+              (SYS_PATH['apps'],
                [VM_PATHS['apps'] + '/videomorph.desktop']),
               # App icon
-              (sys_path['icons'],
+              (SYS_PATH['icons'],
                [VM_PATHS['icons'] + '/videomorph.png']),
               # App translation file
-              (sys_path['i18n'],
+              (SYS_PATH['i18n'],
                [VM_PATHS['i18n'] + '/videomorph_es.qm']),
               # Default conversion profiles
-              (sys_path['profiles'],
+              (SYS_PATH['profiles'],
                [VM_PATHS['profiles'] + '/profiles.xml']),
               # Documentation files
-              (sys_path['doc'],
+              (SYS_PATH['doc'],
                ['README.md', 'LICENSE', 'AUTHORS',
                 'copyright', 'changelog.gz', 'TODO'])
           ],
