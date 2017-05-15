@@ -341,7 +341,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TargetQualityDelegate</name>
     <message>
-        <location filename="videomorph.py" line="1167"/>
+        <location filename="videomorph.py" line="1166"/>
         <source>To Convert</source>
         <translation>Convertir</translation>
     </message>
@@ -549,12 +549,12 @@ p, li { white-space: pre-wrap; }
         <translation>A&amp;yuda</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="960"/>
+        <location filename="videomorph.py" line="959"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="878"/>
+        <location filename="videomorph.py" line="877"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
@@ -579,7 +579,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivos de Video</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1077"/>
+        <location filename="videomorph.py" line="1076"/>
         <source>To Convert</source>
         <translation>Convertir</translation>
     </message>
@@ -594,7 +594,7 @@ p, li { white-space: pre-wrap; }
         <translation>Acceso Denegado para Escritura en: {dir}</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="952"/>
+        <location filename="videomorph.py" line="951"/>
         <source>Information!</source>
         <translation>Información!</translation>
     </message>
@@ -604,47 +604,47 @@ p, li { white-space: pre-wrap; }
         <translation>Perfiles de Conversión Exportados con Éxito a: {dir}</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="827"/>
+        <location filename="videomorph.py" line="826"/>
         <source>Warning!</source>
         <translation>Advertencia!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="827"/>
+        <location filename="videomorph.py" line="826"/>
         <source>Clear All Tasks?</source>
         <translation>Eliminar Todas las Tareas de Conversión?</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="833"/>
+        <location filename="videomorph.py" line="832"/>
         <source>&amp;Yes</source>
         <translation>&amp;Sí</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="834"/>
+        <location filename="videomorph.py" line="833"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="878"/>
+        <location filename="videomorph.py" line="877"/>
         <source>Can not Write to Selected Output Directory</source>
         <translation>No se Puede Escribir en el Directorio Seleccionado</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="944"/>
+        <location filename="videomorph.py" line="943"/>
         <source>Stopped!</source>
         <translation>Detenido!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="935"/>
+        <location filename="videomorph.py" line="934"/>
         <source>Done!</source>
         <translation>Hecho!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="952"/>
+        <location filename="videomorph.py" line="951"/>
         <source>Encoding Process Successfully Finished!</source>
         <translation>Proceso de Conversión Concluido Exitosamente!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1030"/>
+        <location filename="videomorph.py" line="1029"/>
         <source>Converting: {m}			 Operation Remaining Time: {ort}			 Total Remaining Time: {trt}</source>
         <translation>Convirtiendo: {m}			 Tiempo Restante de la Operación: {ort}			 Tiempo Restante Total: {trt}</translation>
     </message>
@@ -670,8 +670,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="videomorph.py" line="819"/>
-        <source>Conversion Profiles Successfully Imported to: {dir}</source>
-        <translation>Perfiles de Conversión Importados con Éxito a: {dir}</translation>
+        <source>Conversion Profiles Successfully Imported from: {file}</source>
+        <translation>Perfiles de Conversión Importados con Éxito desde: {file}</translation>
     </message>
 </context>
 </TS>
