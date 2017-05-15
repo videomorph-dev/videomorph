@@ -18,6 +18,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+"""This module provides tests for media.py module."""
+
 import nose
 
 from videomorph.converter import media
@@ -27,6 +29,7 @@ from videomorph.converter import XMLProfile
 
 # Set of tests for media.MediaFile class
 def test_get_name():
+    """Test get_name."""
     media_file = _get_media_file_obj()
     assert media_file.get_name() == 'Dad'
     # Another way to do this
@@ -37,6 +40,7 @@ def test_get_name():
 
 
 def test_get_info_with_ffprobe():
+    """Test get_info_with_ffprobe."""
     media_file = _get_media_file_obj()
 
     nose.tools.assert_almost_equal(
@@ -53,7 +57,8 @@ def test_get_info_with_ffprobe():
 # def test_get_info_with_avprobe():
 #     media_file = _get_media_file_obj(prober='avprobe')
 #
-#     nose.tools.assert_almost_equal(float(media_file.get_info('format_duration')),
+#     nose.tools.assert_almost_equal(float(
+#                                    media_file.get_info('format_duration')),
 #                                    120.68)
 #     nose.tools.assert_almost_equal(float(media_file.get_info('file_size')),
 #                                    21227416.0)
@@ -64,17 +69,31 @@ def test_get_info_with_ffprobe():
 
 
 def test_get_conversion_cmd():
+    """Test get_conversion_cmd."""
     media_file = _get_media_file_obj()
-    assert media_file.get_conversion_cmd('.') == ['-i', 'Dad.mpg', '-f', 'dvd', '-target', 'ntsc-dvd', '-vcodec', 'mpeg2video', '-r', '29.97', '-s', '352x480', '-aspect', '4:3', '-b:v', '4000k', '-mbd', 'rd', '-cmp', '2', '-subcmp', '2', '-acodec', 'mp2', '-b:a', '192k', '-ar', '48000', '-ac', '2', '-threads', '3', '-y', './[DVDF]-Dad.mpg']
+    assert media_file.get_conversion_cmd('.') == ['-i', 'Dad.mpg', '-f',
+                                                  'dvd', '-target',
+                                                  'ntsc-dvd', '-vcodec',
+                                                  'mpeg2video', '-r',
+                                                  '29.97', '-s', '352x480',
+                                                  '-aspect', '4:3', '-b:v',
+                                                  '4000k', '-mbd', 'rd',
+                                                  '-cmp', '2', '-subcmp', '2',
+                                                  '-acodec', 'mp2', '-b:a',
+                                                  '192k', '-ar', '48000',
+                                                  '-ac', '2', '-threads', '3',
+                                                  '-y', './[DVDF]-Dad.mpg']
 
 
 def test_profile():
+    """Test profile."""
     media_file = _get_media_file_obj()
     assert isinstance(media_file.conversion_profile, profiles._Profile)
 
 
 # Set of tests for media.MediaList class
 def test_add_file():
+    """Test add_file."""
     media_file = _get_media_file_obj()
     media_list = _get_media_list_obj(empty=True)
 
@@ -84,6 +103,16 @@ def test_add_file():
     assert len(media_list) == 1
     assert isinstance(media_list[0], media.MediaFile)
     assert media_file is media_list[0]
+
+
+@nose.tools.raises(media.InvalidMetadataError)
+def test_add_file_invalid_metadata():
+    """Test add_file invalid metadata."""
+    media_file = _get_media_file_obj()
+    media_list = _get_media_list_obj(empty=True)
+
+    media_file.info.format_duration = 'wrong'
+    media_list.add_file(media_file)
 
 
 def test_add_file_twice():
@@ -98,6 +127,7 @@ def test_add_file_twice():
 
 
 def test_clear():
+    """Test clear."""
     media_list = _get_media_list_obj()
 
     # Be sure there is one element in the list
@@ -108,6 +138,7 @@ def test_clear():
 
 
 def test_delete_file():
+    """Test delete_file."""
     media_list = _get_media_list_obj()
 
     # Be sure there is one element in the list
@@ -118,6 +149,7 @@ def test_delete_file():
 
 
 def test_get_file():
+    """Test get_file."""
     media_list = _get_media_list_obj()
 
     file = media_list.get_file(file_index=0)
@@ -126,6 +158,7 @@ def test_get_file():
 
 
 def test_get_file_name():
+    """Test get_file_name."""
     media_list = _get_media_list_obj()
 
     name = media_list.get_file_name(file_index=0)
@@ -136,18 +169,21 @@ def test_get_file_name():
 
 
 def test_get_file_path():
+    """Test get_file_path."""
     media_list = _get_media_list_obj()
 
     assert media_list.get_file_path(file_index=0) == 'Dad.mpg'
 
 
 def test_lenght():
+    """Test lenght."""
     media_list = _get_media_list_obj()
 
     nose.tools.assert_equal(media_list.length, 1)
 
 
 def test_duration():
+    """Test duration."""
     media_list = _get_media_list_obj()
 
     # with ffprobe
@@ -155,17 +191,18 @@ def test_duration():
 
 
 # Helper functions
-def _get_media_file_obj(file_path='Dad.mpg', prober='ffprobe'):
+def _get_media_file_obj(file_path='Dad.mpg'):
+    """Helper function to crate a valid file object."""
     xml_profile = XMLProfile()
     xml_profile.set_xml_root()
     return media.MediaFile(
         file_path,
         conversion_profile=xml_profile.get_conversion_profile(
-            profile_name='DVD', target_quality='DVD Fullscreen (4:3)'),
-        prober=prober)
+            profile_name='DVD', target_quality='DVD Fullscreen (4:3)'))
 
 
 def _get_media_list_obj(empty=False):
+    """Helper function to crate a valid media list object."""
     media_list = media.MediaList()
 
     if not empty:

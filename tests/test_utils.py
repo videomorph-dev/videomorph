@@ -18,6 +18,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+"""This module provides tests for utils.py module."""
+
 import nose
 
 from videomorph.converter import utils
@@ -76,13 +78,19 @@ def test_which_existing_app():
 
 def test_which_non_existing_app():
     """Test for a non existing app."""
-    assert utils.which('hypothetical_app') == None
+    assert utils.which('hypothetical_app') is None
 
 
 @nose.tools.raises(ValueError)
 def test_which_null_arg():
     """Test for a null string param (raises a ValueError)."""
     utils.which('')
+
+
+def test_get_locale():
+    """Test get_locale."""
+    from locale import getdefaultlocale
+    assert utils.get_locale() == getdefaultlocale()[0] or 'es_ES'
 
 
 if __name__ == '__main__':

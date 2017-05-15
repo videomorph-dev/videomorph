@@ -18,6 +18,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+"""This module provides tests for converter.py module."""
+
 import nose
 
 from PyQt5.QtCore import QProcess
@@ -28,20 +30,21 @@ from videomorph.converter import XMLProfile
 
 conv = None
 
-xml_profile = XMLProfile()
-xml_profile.create_profiles_xml_file()
-xml_profile.set_xml_root()
 
 # Set of test for Converter class
 def setup():
+    """Function to setup the test."""
+    xml_profile = XMLProfile()
+    xml_profile.create_profiles_xml_file()
+    xml_profile.set_xml_root()
+
     media_list = media.MediaList()
 
     media_file = media.MediaFile(
         file_path='Dad.mpg',
         conversion_profile=xml_profile.get_conversion_profile(
             profile_name='DVD',
-            target_quality='DVD Fullscreen (4:3)'),
-        prober='ffprobe')
+            target_quality='DVD Fullscreen (4:3)'))
 
     media_list.add_file(media_file)
     global conv
@@ -50,11 +53,13 @@ def setup():
 
 
 def teardown():
+    """Function to clean after tests are done."""
     conv.process.close()
     conv.process.kill()
 
 
 def test_is_running():
+    """Test is_running."""
     assert conv.process.state() == QProcess.Starting
 
 
