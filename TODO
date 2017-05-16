@@ -2,9 +2,7 @@ TODO List:
 ----------
 
 Next version or later:
-    - Include subtitles in the video file
     - Improve the Artwork, mainly the icons theme
-    - Allow the use to decide if the source video file is to be removed
     - Improve the performance of videomorph._fill_media_list method
     - Pack in .rpm format
     - Accept a video file or a directory with videos in the command line (videomorph -if=video.avi

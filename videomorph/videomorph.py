@@ -232,21 +232,20 @@ class VideoMorphMW(QMainWindow):
         self.chb_subtitle = QCheckBox(self.tr('Insert Subtitles if Available'),
                                       statusTip=self.tr(
                                           'Insert Subtitles if Available '
-                                          'in Current Directory'),
+                                          'in Source Directory'),
                                       toolTip=self.tr(
                                           'Insert Subtitles if Available '
-                                          'in Current Directory'))
+                                          'in Source Directory'))
         self.chb_subtitle.setEnabled(False)
         vertical_layout.addWidget(self.chb_subtitle)
         self.chb_delete = QCheckBox(self.tr('Delete Input Video '
                                             'Files When Finished'),
                                     statusTip=self.tr(
                                         'Delete Input Video '
-                                        'Files When All are Finished'),
+                                        'Files When Finished'),
                                     toolTip=self.tr(
                                         'Delete Input Video '
-                                        'Files When All are Finished')
-                                    )
+                                        'Files When Finished'))
         self.chb_delete.setEnabled(False)
         vertical_layout.addWidget(self.chb_delete)
         horizontal_layout.addLayout(vertical_layout)
@@ -823,7 +822,7 @@ class VideoMorphMW(QMainWindow):
                 dir=directory))
             msg_info = self.tr('Conversion Profiles Successfully '
                                'Exported to: {dir}/profiles.xml'.format(
-                                    dir=directory))
+                                   dir=directory))
 
             self._export_import_profiles(
                 func=self.xml_profile.export_profile_xml_file,
