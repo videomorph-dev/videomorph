@@ -166,18 +166,16 @@ class MediaFile:
         output_file_path = self.get_output_path(output_dir)
 
         if subtitle and self.subtitle_path:
-            cmd = ['-i', self.path,
-                   '-vf', "subtitles={0}:force_style='Fontsize=24,"
-                          "PrimaryColour=&HAA00FFFF':charenc=cp1252".format(
-                              self.subtitle_path)] + \
-                shlex.split(self.conversion_profile.params) + \
-                ['-threads', str(CPU_CORES)] + \
-                ['-y', output_file_path]
+            subtitle_opt = ['-vf', "subtitles={0}:force_style='Fontsize=24'"
+                                   ":charenc=cp1252".format(
+                                       self.subtitle_path)]
         else:
-            cmd = ['-i', self.path] + \
-                shlex.split(self.conversion_profile.params) + \
-                ['-threads', str(CPU_CORES)] + \
-                ['-y', output_file_path]
+            subtitle_opt = []
+
+        cmd = ['-i', self.path] + subtitle_opt + \
+            shlex.split(self.conversion_profile.params) + \
+            ['-threads', str(CPU_CORES)] + \
+            ['-y', output_file_path]
 
         return cmd
 
