@@ -49,6 +49,7 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QLabel,
                              QSpacerItem,
                              QComboBox,
+                             QCheckBox,
                              QProgressBar,
                              QToolBar,
                              QTableWidget,
@@ -228,6 +229,26 @@ class VideoMorphMW(QMainWindow):
         self.cb_presets.activated.connect(self._update_media_files_status)
 
         vertical_layout.addWidget(self.cb_presets)
+        self.chb_subtitle = QCheckBox(self.tr('Insert Subtitles if Available'),
+                                      statusTip=self.tr(
+                                          'Insert Subtitles if Available '
+                                          'in Current Directory'),
+                                      toolTip=self.tr(
+                                          'Insert Subtitles if Available '
+                                          'in Current Directory'))
+        self.chb_subtitle.setEnabled(False)
+        vertical_layout.addWidget(self.chb_subtitle)
+        self.chb_delete = QCheckBox(self.tr('Delete Input Video '
+                                            'Files When Finished'),
+                                    statusTip=self.tr(
+                                        'Delete Input Video '
+                                        'Files When All are Finished'),
+                                    toolTip=self.tr(
+                                        'Delete Input Video '
+                                        'Files When All are Finished')
+                                    )
+        self.chb_delete.setEnabled(False)
+        vertical_layout.addWidget(self.chb_delete)
         horizontal_layout.addLayout(vertical_layout)
         self.vertical_layout_1.addWidget(gb_settings)
 
@@ -729,11 +750,13 @@ class VideoMorphMW(QMainWindow):
         if self.converter.is_running:
             self.update_interface(presets=False,
                                   profiles=False,
+                                  subtitles_chb=False,
                                   convert=False,
                                   clear=False,
                                   remove=False,
                                   output_dir=False,
-                                  settings=False)
+                                  settings=False,
+                                  delete_chb=False)
         else:
             # This rewind the encoding list if the encoding process is
             # not running
@@ -762,7 +785,9 @@ class VideoMorphMW(QMainWindow):
                                       stop=False,
                                       stop_all=False,
                                       presets=False,
-                                      profiles=False)
+                                      profiles=False,
+                                      subtitles_chb=False,
+                                      delete_chb=False)
             # Remove file from MediaList
             self.media_list.delete_file(file_index=file_row)
             self.total_duration = self.media_list.duration
@@ -851,19 +876,23 @@ class VideoMorphMW(QMainWindow):
                                   stop=False,
                                   stop_all=False,
                                   presets=False,
-                                  profiles=False)
+                                  profiles=False,
+                                  subtitles_chb=False,
+                                  delete_chb=False)
 
     def start_encoding(self):
         """Start the encoding process."""
         # Update tool buttons state
         self.update_interface(presets=False,
                               profiles=False,
+                              subtitles_chb=False,
                               add_profile=False,
                               convert=False,
                               clear=False,
                               remove=False,
                               output_dir=False,
-                              settings=False)
+                              settings=False,
+                              delete_chb=False)
 
         # Increment the the MediaList index
         self.media_list.running_index += 1
@@ -877,7 +906,8 @@ class VideoMorphMW(QMainWindow):
             try:
                 self.converter.start_encoding(
                     cmd=running_media.get_conversion_cmd(
-                        output_dir=self.le_output.text()))
+                        output_dir=self.le_output.text(),
+                        subtitle=bool(self.chb_subtitle.checkState())))
             except PermissionError:
                 msg_box = QMessageBox(
                     QMessageBox.Critical,
@@ -939,6 +969,8 @@ class VideoMorphMW(QMainWindow):
                                    PROGRESS).setText(self.tr('Done!'))
                 self.media_list.get_running_file().status = STATUS.done
                 self.pb_progress.setProperty("value", 0)
+                if self.chb_delete.checkState():
+                    self.media_list.get_running_file().delete_input()
             # Attempt to end the conversion process
             self._end_encoding_process()
         else:
@@ -962,6 +994,7 @@ class VideoMorphMW(QMainWindow):
             msg_box.show()
             self.setWindowTitle(APPNAME + ' ' + VERSION)
             self.statusBar().showMessage(self.tr('Ready'))
+            self.chb_delete.setChecked(False)
             # Reset all progress related variables
             self.pb_progress.setProperty("value", 0)
             self.pb_total_progress.setProperty("value", 0)
@@ -1108,7 +1141,9 @@ class VideoMorphMW(QMainWindow):
                          profiles=True,
                          add_profile=True,
                          output_dir=True,
-                         settings=True)
+                         settings=True,
+                         subtitles_chb=True,
+                         delete_chb=True)
 
         variables.update(i_vars)
 
@@ -1122,6 +1157,8 @@ class VideoMorphMW(QMainWindow):
         self.cb_profiles.setEnabled(variables['profiles'])
         self.add_profile_action.setEnabled(variables['add_profile'])
         self.tb_output.setEnabled(variables['output_dir'])
+        self.chb_subtitle.setEnabled(variables['subtitles_chb'])
+        self.chb_delete.setEnabled(variables['delete_chb'])
         self.settings_action.setEnabled(variables['settings'])
         self.tb_tasks.setCurrentItem(None)
 

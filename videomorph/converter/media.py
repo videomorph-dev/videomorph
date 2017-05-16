@@ -158,17 +158,26 @@ class MediaFile:
         """Return an info attribute from a given file: media_file."""
         return self.info.__dict__.get(info_param)
 
-    def get_conversion_cmd(self, output_dir):
+    def get_conversion_cmd(self, output_dir, subtitle=False):
         """Return the conversion command."""
         if not access(output_dir, os.W_OK):
             raise PermissionError('Access denied')
 
         output_file_path = self.get_output_path(output_dir)
 
-        cmd = ['-i', self.path] + \
-            shlex.split(self.conversion_profile.params) + \
-            ['-threads', str(CPU_CORES)] + \
-            ['-y', output_file_path]
+        if subtitle and self.subtitle_path:
+            cmd = ['-i', self.path,
+                   '-vf', "subtitles={0}:force_style='Fontsize=24,"
+                          "PrimaryColour=&HAA00FFFF':charenc=cp1252".format(
+                              self.subtitle_path)] + \
+                shlex.split(self.conversion_profile.params) + \
+                ['-threads', str(CPU_CORES)] + \
+                ['-y', output_file_path]
+        else:
+            cmd = ['-i', self.path] + \
+                shlex.split(self.conversion_profile.params) + \
+                ['-threads', str(CPU_CORES)] + \
+                ['-y', output_file_path]
 
         return cmd
 
@@ -186,6 +195,20 @@ class MediaFile:
         """Delete the output file if conversion is stoped."""
         if exists(self.get_output_path(output_path)):
             remove(self.get_output_path(output_path))
+
+    def delete_input(self):
+        remove(self.path)
+
+    @property
+    def subtitle_path(self):
+        """Returns the subtitle path if exit."""
+        extension = self.path.split('.')[-1]
+        subtitle_path = self.path.strip('.' + extension) + '.srt'
+
+        if exists(subtitle_path):
+            return subtitle_path
+
+        return None
 
 
 class MediaInfo:

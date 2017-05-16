@@ -65,26 +65,6 @@
             <preset_name_es>FLV Pantalla Panor&#225;mica (16:9)</preset_name_es>
         </FLVWidescreen>
     </FLV>
-    <MPEG-4>
-        <MPEGHvideoveryhighquality>
-            <preset_name>MPEG-4 H.264 video (very high quality)</preset_name>
-            <preset_params>-crf 25.0 -vcodec libx264 -preset slower -acodec libfaac -ar 48000 -b:a 160k -coder 1 -flags +loop -cmp chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -threads 0</preset_params>
-            <file_extension>.mp4</file_extension>
-            <preset_name_es>MPEG-4 H.264 video (muy alta calidad)</preset_name_es>
-        </MPEGHvideoveryhighquality>
-        <MPEGHvideosuperhighquality>
-            <preset_name>MPEG-4 H.264 video (super high quality)</preset_name>
-            <preset_params>-crf 15.0 -vcodec libx264 -preset veryslow -acodec libfaac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -threads 0</preset_params>
-            <file_extension>.mp4</file_extension>
-            <preset_name_es>MPEG-4 H.264 video (súper alta calidad)</preset_name_es>
-        </MPEGHvideosuperhighquality>
-        <MPEGHvideohighquality>
-            <preset_name>MPEG-4 H.264 video (high quality)</preset_name>
-            <preset_params>-crf 35.0 -vcodec libx264 -preset slow -acodec libfaac -ar 48000 -b:a 128k -coder 1 -flags +loop -cmp chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -threads 0</preset_params>
-            <file_extension>.mp4</file_extension>
-            <preset_name_es>MPEG-4 H.264 video (alta calidad)</preset_name_es>
-        </MPEGHvideohighquality>
-    </MPEG-4>
     <MP4>
         <MP4Generic>
             <preset_name>MP4 Generic</preset_name>
