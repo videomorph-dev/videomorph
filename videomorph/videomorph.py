@@ -66,10 +66,11 @@ from PyQt5.QtWidgets import (QMainWindow,
                              qApp)
 
 from . import APPNAME
-from . import VERSION
-from . import STATUS
 from . import CONV_LIB
 from . import PROBER
+from . import STATUS
+from . import VERSION
+from . import VIDEO_FILTERS
 from . import videomorph_qrc
 from .about import AboutVMDialog
 from .converter import Converter
@@ -693,10 +694,8 @@ class VideoMorphMW(QMainWindow):
         # Dialog title
         title = self.tr('Select Video Files')
         # Media filters
-        video_filters = (self.tr('Video Files') +
-                         '(*.mkv *.ogg *.mp4 *.mpg *.dat '
-                         '*.f4v *.flv *.wv *.3gp *.avi *.webm '
-                         '*.wmv *.mov *.vob *.ogv *.ts)')
+        video_filters = (self.tr('Video Files') + ' ' +
+                         '(' + VIDEO_FILTERS + ')')
 
         # Select media files and store their path
         files_paths, _ = QFileDialog.getOpenFileNames(self,

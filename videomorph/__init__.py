@@ -33,6 +33,10 @@ MAINTAINER = APPNAME + ' ' + 'Development Team'
 ConversionLib = namedtuple('ConversionLib', 'ffmpeg avconv')
 CONV_LIB = ConversionLib('ffmpeg', 'avconv')
 
+VIDEO_FILTERS = ('*.mkv *.ogg *.mp4 *.mpg *.dat '
+                 '*.f4v *.flv *.wv *.3gp *.avi *.webm '
+                 '*.wmv *.mov *.vob *.ogv *.ts')
+
 Prober = namedtuple('Prober', 'ffprobe avprobe')
 PROBER = Prober('ffprobe', 'avprobe')
 
