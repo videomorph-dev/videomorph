@@ -91,38 +91,35 @@ def test_get_preset_attr():
 def test_get_qualities_per_profile():
     """Test get_qualities_per_profile."""
     qualities = xml_profile.get_qualities_per_profile(locale='es_ES')
-    assert qualities == OrderedDict([
-        ('MP4',
-         ['MP4 Alta Calidad',
-          'MP4 Muy Alta Calidad',
-          'MP4 Súper Alta Calidad',
-          'MP4 Pantalla Completa (4:3)',
-          'MP4 Pantalla Panorámica (19:9)']),
-
-        ('DVD',
-         ['DVD Pantalla Completa (4:3)',
-          'DVD Pantalla Panorámica (16:9)',
-          'DVD Pantalla Completa (4:3) Alta Calidad',
-          'DVD Pantalla Panorámica (16:9) Alta Calidad',
-          'DVD Baja Calidad']),
-
-        ('VCD',
-         ['VCD Alta Calidad']),
-
-        ('AVI',
-         ['Compatible MS',
-          'XVID Pantalla Completa (4:3)',
-          'XVID Pantalla Panorámica (16:9)']),
-
-        ('FLV',
-         ['FLV Pantalla Completa (4:3)',
-          'FLV Pantalla Panorámica (16:9)']),
-
-        ('WMV', ['WMV Genérico']),
-
-        ('WEBM',
-         ['WEBM Pantalla Completa (4:3)',
-          'WEBM Pantalla Panorámica (16:9)'])])
+    print(qualities)
+    assert qualities == OrderedDict(
+        [('AVI',
+          ['Compatible MS',
+           'XVID Pantalla Completa (4:3)',
+           'XVID Pantalla Panorámica (16:9)']),
+         ('DVD',
+          ['DVD Pantalla Completa (4:3)',
+           'DVD Pantalla Panorámica (16:9)',
+           'DVD Pantalla Completa (4:3) Alta Calidad',
+           'DVD Pantalla Panorámica (16:9) Alta Calidad',
+           'DVD Baja Calidad']),
+         ('FLV',
+          ['FLV Pantalla Completa (4:3)',
+           'FLV Pantalla Panorámica (16:9)']),
+         ('MP4',
+          ['MP4 Genérico',
+           'MP4 Alta Calidad',
+           'MP4 Muy Alta Calidad',
+           'MP4 Súper Alta Calidad',
+           'MP4 Pantalla Completa (4:3)',
+           'MP4 Pantalla Panorámica (19:9)']),
+         ('VCD',
+          ['VCD Alta Calidad']),
+         ('WEBM',
+          ['WEBM Pantalla Completa (4:3)',
+           'WEBM Pantalla Panorámica (16:9)']),
+         ('WMV',
+          ['WMV2 Genérico'])])
 
 
 # Tests for _Profile class
@@ -143,9 +140,10 @@ def test_get_quality():
 
 def test_quality():
     """Test quality."""
-    profile.quality = 'WMV Generic'
-    assert profile.params == '-vcodec wmv2 -acodec wmav2 -b:v 1000k ' \
-                             '-b:a 160k -r 25'
+    profile.quality = 'WMV2 Generic'
+    print(profile)
+    assert profile.params == '-vcodec wmv2 -acodec wmav2 -b:v 1000k -b:a ' \
+                             '160k -r 25 -ac 2'
     assert profile.extension == '.wmv'
 
 
