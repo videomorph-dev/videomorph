@@ -197,6 +197,7 @@ class MediaFile:
             remove(self.get_output_path(output_path))
 
     def delete_input(self):
+        """Delete the input file when conversion is finished."""
         remove(self.path)
 
     @property

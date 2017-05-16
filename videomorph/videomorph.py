@@ -361,7 +361,7 @@ class VideoMorphMW(QMainWindow):
             text=self.tr('&Open'),
             shortcut="Ctrl+O",
             tip=self.tr('Add Video Files to the List of Conversion Tasks'),
-            callback=self.add_media)
+            callback=self.open_media_files)
 
         self.add_profile_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_DialogApplyButton),
@@ -736,7 +736,12 @@ class VideoMorphMW(QMainWindow):
             self._insert_table_item(item_text=self.tr('To Convert'),
                                     row=row, column=PROGRESS)
 
-    def add_media_from_console(self, *files):
+    def add_media_files(self, *files):
+        """Add video files to conversion list.
+
+        Args:
+            files (list): List of video file paths
+        """
         # Update tool buttons so you can convert, or add_file, or clear...
         # only if there is not a conversion process running
         if self.converter.is_running:
@@ -763,38 +768,14 @@ class VideoMorphMW(QMainWindow):
         # After adding files to the list, recalculate the list duration
         self.total_duration = self.media_list.duration
 
-    def add_media(self):
+    def open_media_files(self):
         """Add media files to the list of conversion tasks."""
         files_paths = self._load_files(source_dir=self.source_dir)
         # If no file is selected then return
         if files_paths is None:
             return
 
-        # Update tool buttons so you can convert, or add_file, or clear...
-        # only if there is not a conversion process running
-        if self.converter.is_running:
-            self.update_interface(presets=False,
-                                  profiles=False,
-                                  subtitles_chb=False,
-                                  convert=False,
-                                  clear=False,
-                                  remove=False,
-                                  output_dir=False,
-                                  settings=False,
-                                  delete_chb=False)
-        else:
-            # This rewind the encoding list if the encoding process is
-            # not running
-            self.media_list.running_index = -1
-            # Update ui
-            self.update_interface(stop=False, stop_all=False, remove=False)
-
-        self._fill_media_list(files_paths)
-
-        self._create_table()
-
-        # After adding files to the list, recalculate the list duration
-        self.total_duration = self.media_list.duration
+        self.add_media_files(*files_paths)
 
     def remove_media_file(self):
         """Remove selected media file from the list."""
@@ -1314,7 +1295,7 @@ def run_on_console(app, main_win):
 
     if args.input_dir:
         if isdir(args.input_dir):
-            for dir_path, __, file_names in walk(args.input_dir):
+            for dir_path, _, file_names in walk(args.input_dir):
                 for file in file_names:
                     if file.split('.')[-1] in VIDEO_FILTERS:
                         files.append('{0}'.join([dir_path, file]).format(sep))
@@ -1323,7 +1304,7 @@ def run_on_console(app, main_win):
                   file=sys.stderr)
 
     if files:
-        main_win.add_media_from_console(*files)
+        main_win.add_media_files(*files)
         main_win.show()
         sys.exit(app.exec_())
 

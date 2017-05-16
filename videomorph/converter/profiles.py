@@ -141,7 +141,6 @@ class XMLProfile:
                             item[3].text == target_quality):
                         return _Profile(conv_lib=conv_lib,
                                         quality=target_quality,
-                                        params=item[1].text,
                                         extension=item[2].text,
                                         xml_profile=self)
 
@@ -207,14 +206,15 @@ class _Profile:
     """Base class for a Video Profile."""
 
     def __init__(self, conv_lib=CONV_LIB.ffmpeg,
-                 quality=None, params=None,
-                 extension=None, xml_profile=None):
+                 quality=None, extension=None, xml_profile=None):
         """Class initializer."""
-        self._quality = quality
-        self.conv_lib = conv_lib
-        self.params = params
-        self.extension = extension
         self.xml_profile = xml_profile
+        self.params = None
+        self._quality = None
+        self.conv_lib = conv_lib
+        # Set self.quality and also self.params
+        self.quality = quality
+        self.extension = extension
         if self.conv_lib == CONV_LIB.ffmpeg:
             self.prober = PROBER.ffprobe
         else:
