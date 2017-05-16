@@ -737,6 +737,33 @@ class VideoMorphMW(QMainWindow):
             self._insert_table_item(item_text=self.tr('To Convert'),
                                     row=row, column=PROGRESS)
 
+    def add_media_from_console(self, *files):
+        # Update tool buttons so you can convert, or add_file, or clear...
+        # only if there is not a conversion process running
+        if self.converter.is_running:
+            self.update_interface(presets=False,
+                                  profiles=False,
+                                  subtitles_chb=False,
+                                  convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  output_dir=False,
+                                  settings=False,
+                                  delete_chb=False)
+        else:
+            # This rewind the encoding list if the encoding process is
+            # not running
+            self.media_list.running_index = -1
+            # Update ui
+            self.update_interface(stop=False, stop_all=False, remove=False)
+
+        self._fill_media_list(files)
+
+        self._create_table()
+
+        # After adding files to the list, recalculate the list duration
+        self.total_duration = self.media_list.duration
+
     def add_media(self):
         """Add media files to the list of conversion tasks."""
         files_paths = self._load_files(source_dir=self.source_dir)
@@ -1244,8 +1271,37 @@ def main():
 
     main_win = VideoMorphMW()
     if main_win.check_conversion_lib():
-        main_win.show()
-        sys.exit(app.exec_())
+        # If it is running in console
+        if len(sys.argv) > 1:
+            run_on_console(app, main_win)
+        else:
+            main_win.show()
+            sys.exit(app.exec_())
+
+
+def run_on_console(app, main_win):
+    """Provides option to run VideoMorph from the command line."""
+    import argparse
+
+    parser = argparse.ArgumentParser(description=APPNAME + ' ' + VERSION)
+    parser.add_argument('-i', '--input_file',
+                        help='take the path to a video file as input',
+                        default=True,
+                        action='store_true',
+                        dest='input_opt')
+    parser.add_argument('input_file',
+                        # nargs='+',
+                        help='the path to the video file(s) to be converted')
+    args = parser.parse_args()
+
+    if args.input_opt and args.input_file:
+        if exists(args.input_file):
+            main_win.add_media_from_console(args.input_file)
+            main_win.show()
+            sys.exit(app.exec_())
+        else:
+            print("Video File: {0} doesn't exit".format(args.input_file))
+            exit()
 
 
 if __name__ == '__main__':
