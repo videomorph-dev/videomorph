@@ -83,7 +83,7 @@ from .converter import write_time
 from .converter import XMLProfile
 from .settings import SettingsDialog
 from .addprofile import AddProfileDialog
-# import performance
+import performance
 
 # Conversion tasks list table columns
 NAME, DURATION, QUALITY, PROGRESS = range(4)
@@ -664,7 +664,7 @@ class VideoMorphMW(QMainWindow):
 
         event.accept()
 
-    # @performance.measure_exec_time
+    @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with MediaFile objects."""
         for file in media_files_generator(
@@ -737,7 +737,8 @@ class VideoMorphMW(QMainWindow):
                 row=row, column=NAME)
 
             self._insert_table_item(
-                item_text=str(write_time(media_file.info.format_duration)),
+                item_text=str(write_time(
+                    media_file.get_info('format_duration'))),
                 row=row, column=DURATION)
 
             self._insert_table_item(

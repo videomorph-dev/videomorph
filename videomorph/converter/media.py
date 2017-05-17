@@ -24,11 +24,10 @@ import shlex
 import os.path
 from os.path import exists
 from os import remove, access
-from subprocess import Popen
-from subprocess import PIPE
 from threading import Thread
 
 from .utils import which
+from .utils import spawn_process
 from videomorph import CPU_CORES
 from videomorph import STATUS
 
@@ -123,7 +122,7 @@ class MediaList(list):
     @property
     def duration(self):
         """Return the duration time of MediaList counting undone files only."""
-        return sum(float(media.info.format_duration) for
+        return sum(float(media.get_info('format_duration')) for
                    media in self if media.status != STATUS.done and
                    media.status != STATUS.stopped)
 
@@ -143,7 +142,7 @@ class MediaFile:
         self.conversion_profile = conversion_profile
         self.prober = self.conversion_profile.prober
         self.status = STATUS.todo
-        self.info = MediaInfo(self.path, self.prober)
+        self.info = self._parse_probe()
 
     def get_name(self, with_extension=False):
         """Return the file name."""
@@ -156,7 +155,7 @@ class MediaFile:
 
     def get_info(self, info_param):
         """Return an info attribute from a given file: media_file."""
-        return self.info.__dict__.get(info_param)
+        return self.info.get(info_param)
 
     def get_conversion_cmd(self, output_dir, subtitle=False):
         """Return the conversion command."""
@@ -209,38 +208,19 @@ class MediaFile:
 
         return None
 
-
-class MediaInfo:
-    """Represent the streaming info of a video file."""
-
-    def __init__(self, media_path, prober):
-        self.media_path = media_path
-        self.prober = prober
-        # Format info
-        self.format_duration = None
-
-        self._parse_probe()
-
-    @staticmethod
-    def _spawn(cmd):
-        """Return a Popen object."""
-        return Popen(cmd,
-                     stdin=PIPE,
-                     stdout=PIPE,
-                     stderr=PIPE,
-                     universal_newlines=True)
-
     def _probe(self):
         """Return the prober output as a file like object."""
-        prober = self._spawn([which(self.prober),
-                              '-show_format',
-                              self.media_path])
+        prober_run = spawn_process([which(self.prober),
+                                    '-show_format',
+                                    self.path])
 
-        return prober.stdout
+        return prober_run.stdout
 
     def _parse_probe(self):
         """Parse the prober output."""
-        def _get_value(line_):
+        info = {}
+
+        def __get_value(line_):
             """Prepare the data for parsing."""
             return line_.split('=')[-1].strip()
 
@@ -248,8 +228,9 @@ class MediaInfo:
             for format_line in probe_file:
                 format_line = format_line.strip()
                 if format_line.startswith('duration'):
-                    self.format_duration = _get_value(format_line)
+                    info['format_duration'] = __get_value(format_line)
                     break
+        return info
 
 
 class MediaFileThread(Thread):
