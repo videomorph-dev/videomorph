@@ -6,5 +6,10 @@ Next version or later:
     - Improve the performance of videomorph._fill_media_list method
     - Pack in .rpm format
 
+
+BugFix:
+    - Whe user stop all the conversion tasks, the message is: 'Encoding Process Successfully Finished!'
+      and must be: 'Encoding Process Stopped' or something
+
 Someday:
     - Make it run on Windows
