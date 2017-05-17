@@ -111,7 +111,9 @@ def test_add_file_invalid_metadata():
     media_file = _get_media_file_obj()
     media_list = _get_media_list_obj(empty=True)
 
-    media_file.info.format_duration = 'wrong'
+    media_file.info['format_duration'] = 'wrong'
+    media_list.add_file(media_file)
+    media_file.info['format_duration'] = 0
     media_list.add_file(media_file)
 
 
