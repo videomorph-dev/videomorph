@@ -684,6 +684,18 @@ class VideoMorphMW(QMainWindow):
                     QMessageBox.Ok,
                     self)
                 msg_box.show()
+                # An error occurred, so interface get initial state back, but
+                # only if the list is empty
+                if not self.media_list.length:
+                    self.update_interface(convert=False,
+                                          clear=False,
+                                          remove=False,
+                                          stop=False,
+                                          stop_all=False,
+                                          presets=False,
+                                          profiles=False,
+                                          subtitles_chb=False,
+                                          delete_chb=False)
 
         return self.media_list
 
