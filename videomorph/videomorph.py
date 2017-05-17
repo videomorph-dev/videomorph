@@ -369,7 +369,7 @@ class VideoMorphMW(QMainWindow):
             text=self.tr('&Add Customized Profile...'),
             shortcut="Ctrl+F",
             tip=self.tr('Add Customized Profile'),
-            callback=self.add_profile)
+            callback=self.add_costume_profile)
 
         self.export_profile_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_ArrowUp),
@@ -810,18 +810,18 @@ class VideoMorphMW(QMainWindow):
             self.media_list.delete_file(file_index=file_row)
             self.total_duration = self.media_list.duration
 
-    def add_profile(self):
+    def add_costume_profile(self):
         """Show dialog for adding conversion profiles."""
         add_profile_dlg = AddProfileDialog(parent=self)
         add_profile_dlg.exec_()
 
-    def _export_import_profiles(self, func, path, msg_error, msg_info):
+    def _export_import_profiles(self, func, path, msg_info):
         try:
             func(path)
         except PermissionError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
-                msg_error)
+                self.tr('Access Denied for Writing to Selected Directory'))
         else:
             QMessageBox.information(
                 self, self.tr('Information!'),
@@ -837,22 +837,18 @@ class VideoMorphMW(QMainWindow):
             options=options)
 
         if directory:
-            msg_error = self.tr("Access Denied for Writing to: {dir}".format(
-                dir=directory))
-            msg_info = self.tr('Conversion Profiles Successfully '
-                               'Exported to: {dir}/profiles.xml'.format(
-                                   dir=directory))
+            msg_info = self.tr('Conversion Profiles Successfully Exported')
 
             self._export_import_profiles(
                 func=self.xml_profile.export_profile_xml_file,
-                path=directory, msg_error=msg_error, msg_info=msg_info)
+                path=directory, msg_info=msg_info)
 
     def import_profiles(self):
         """Import conversion profiles."""
         # Dialog title
         title = self.tr('Select a Profiles File')
         # Media filters
-        profile_filters = (self.tr('Profiles Files') + '(*.xml)')
+        profile_filters = (self.tr('Profiles Files ') + '(*.xml)')
 
         # Select media files and store their path
         file_path, _ = QFileDialog.getOpenFileName(self,
@@ -860,14 +856,11 @@ class VideoMorphMW(QMainWindow):
                                                    QDir.homePath(),
                                                    profile_filters)
         if file_path:
-            msg_error = self.tr("Access Denied for Writing to: {dir}".format(
-                dir=dirname(self.xml_profile.profiles_xml_path)))
-            msg_info = self.tr('Conversion Profiles Successfully '
-                               'Imported from: {file}'.format(file=file_path))
+            msg_info = self.tr('Conversion Profiles Successfully Imported')
 
             self._export_import_profiles(
                 func=self.xml_profile.import_profile_xml,
-                path=file_path, msg_error=msg_error, msg_info=msg_info)
+                path=file_path, msg_info=msg_info)
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
@@ -904,7 +897,7 @@ class VideoMorphMW(QMainWindow):
         self.update_interface(presets=False,
                               profiles=False,
                               subtitles_chb=False,
-                              add_profile=False,
+                              add_costume_profile=False,
                               convert=False,
                               clear=False,
                               remove=False,
@@ -1151,7 +1144,7 @@ class VideoMorphMW(QMainWindow):
                          stop_all=True,
                          presets=True,
                          profiles=True,
-                         add_profile=True,
+                         add_costume_profile=True,
                          output_dir=True,
                          settings=True,
                          subtitles_chb=True,
@@ -1167,7 +1160,7 @@ class VideoMorphMW(QMainWindow):
         self.stop_all_action.setEnabled(variables['stop_all'])
         self.cb_presets.setEnabled(variables['presets'])
         self.cb_profiles.setEnabled(variables['profiles'])
-        self.add_profile_action.setEnabled(variables['add_profile'])
+        self.add_profile_action.setEnabled(variables['add_costume_profile'])
         self.tb_output.setEnabled(variables['output_dir'])
         self.chb_subtitle.setEnabled(variables['subtitles_chb'])
         self.chb_delete.setEnabled(variables['delete_chb'])
