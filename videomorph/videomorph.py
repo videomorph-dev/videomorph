@@ -25,7 +25,6 @@ import sys
 from collections import OrderedDict
 from functools import partial
 from os import sep
-from os.path import basename
 from os.path import dirname
 from os.path import exists
 from os.path import isdir
@@ -1078,8 +1077,8 @@ class VideoMorphMW(QMainWindow):
                         ort=operation_remaining_time,
                         trt=total_remaining_time))
 
-        current_file_name = basename(
-            self.media_list.get_running_file().path)
+        current_file_name = self.media_list.get_running_file().get_name(
+            with_extension=True)
 
         self.setWindowTitle(str(operation_progress) + '%' + '-' +
                             '[' + current_file_name + ']' +
