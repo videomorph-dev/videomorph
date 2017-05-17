@@ -67,16 +67,17 @@ class MediaList(list):
         """Add a video file to the list."""
         if self._file_is_added(media_file):
             return
-        elif not media_file.get_info('format_duration'):
-            # 0 duration video file not added
-            raise InvalidMetadataError('File is zero length')
-        else:
-            try:
-                # Invalid metadata
-                float(media_file.get_info('format_duration'))
+
+        try:
+            # Invalid metadata
+            duration = float(media_file.get_info('format_duration'))
+            if duration > 0:
                 self.append(media_file)
-            except:
-                raise InvalidMetadataError('Invalid file duration')
+            else:
+                # 0 duration video file not added
+                raise InvalidMetadataError('File is zero length')
+        except:
+            raise InvalidMetadataError('Invalid file duration')
 
     def delete_file(self, file_index):
         """Delete a video file from the list."""
