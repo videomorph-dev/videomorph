@@ -277,3 +277,20 @@ def media_file_factory(file_path, conversion_profile):
     """
     return MediaFile(file_path=file_path,
                      conversion_profile=conversion_profile)
+
+
+def media_files_generator(files_paths, conversion_profile):
+    """Yield MediaFile objects to be added to MediaList."""
+    threads = []
+    for file_path in files_paths:
+        thread = MediaFileThread(
+            media_path=file_path,
+            conversion_profile=conversion_profile)
+        thread.start()
+        threads.append(thread)
+
+    for thread in threads:
+        thread.join()
+
+    for thread in threads:
+        yield thread.media_file

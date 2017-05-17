@@ -76,13 +76,14 @@ from .about import AboutVMDialog
 from .converter import Converter
 from .converter import get_locale
 from .converter import InvalidMetadataError
-from .converter import MediaFileThread
+from .converter import media_files_generator
 from .converter import MediaList
 from .converter import which
 from .converter import write_time
 from .converter import XMLProfile
 from .settings import SettingsDialog
 from .addprofile import AddProfileDialog
+# import performance
 
 # Conversion tasks list table columns
 NAME, DURATION, QUALITY, PROGRESS = range(4)
@@ -663,29 +664,21 @@ class VideoMorphMW(QMainWindow):
 
         event.accept()
 
+    # @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with MediaFile objects."""
-        threads = []
-        for file_path in files_paths:
-            thread = MediaFileThread(
-                media_path=file_path,
-                conversion_profile=self.conversion_profile)
-            thread.start()
-            threads.append(thread)
-
-        for thread in threads:
-            thread.join()
-
-        for thread in threads:
+        for file in media_files_generator(
+                files_paths=files_paths,
+                conversion_profile=self.conversion_profile):
             try:
-                self.media_list.add_file(thread.media_file)
+                self.media_list.add_file(file)
             except InvalidMetadataError:
                 msg_box = QMessageBox(
                     QMessageBox.Critical,
                     self.tr('Error!'),
                     self.tr('Invalid Video File Information for: {fn}. '
                             'File not Added to Conversion List'.format(
-                                fn=thread.media_file.get_name(
+                                fn=file.get_name(
                                     with_extension=True))),
                     QMessageBox.Ok,
                     self)
