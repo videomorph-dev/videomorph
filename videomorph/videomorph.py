@@ -567,6 +567,12 @@ class VideoMorphMW(QMainWindow):
         for key, setting in settings.items():
             settings_file.setValue(key, setting)
 
+    def _reset_progress_times(self):
+        """Reset the variables used to calculate progress."""
+        self.time_jump = 0.0
+        self.partial_time = 0.0
+        self.total_time = 0.0
+
     def check_conversion_lib(self):
         """Check if ffmpeg or/and avconv are installed on the system."""
         if which(CONV_LIB.ffmpeg) or which(CONV_LIB.avconv):
@@ -948,9 +954,7 @@ class VideoMorphMW(QMainWindow):
         self.media_list.get_running_file().delete_output(self.le_output.text())
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
-        self.time_jump = 0.0
-        self.partial_time = 0.0
-        self.total_time = 0.0
+        self._reset_progress_times()
         # Terminate the file encoding
         self.converter.stop_encoding()
 
@@ -971,9 +975,7 @@ class VideoMorphMW(QMainWindow):
 
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
-        self.time_jump = 0.0
-        self.partial_time = 0.0
-        self.total_time = 0.0
+        self._reset_progress_times()
 
     def _finish_file_encoding(self):
         """Finish the file encoding process."""
@@ -1016,9 +1018,7 @@ class VideoMorphMW(QMainWindow):
             # Reset all progress related variables
             self.pb_progress.setProperty("value", 0)
             self.pb_total_progress.setProperty("value", 0)
-            self.time_jump = 0.0
-            self.partial_time = 0.0
-            self.total_time = 0.0
+            self._reset_progress_times()
             self.total_duration = self.media_list.duration
             # Reset the running_index
             self.media_list.running_index = -1
