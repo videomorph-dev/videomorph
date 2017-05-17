@@ -1033,7 +1033,8 @@ class VideoMorphMW(QMainWindow):
             time_in_secs = float(time_read[0])
 
         # Calculate operation progress percent
-        op_time = self.media_list.get_running_file().info.format_duration
+        op_time = self.media_list.get_running_file().get_info(
+            'format_duration')
         operation_progress = int(time_in_secs / float(op_time) * 100)
 
         # Update the table and the operation progress bar

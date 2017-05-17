@@ -238,6 +238,6 @@ class _Profile:
     def quality_tag(self):
         """Generate a tag from profile quality string."""
         tag_regex = re.compile(r'[A-Z][0-9]?')
-        tag = ''.join(tag_regex.findall(self.quality))
+        tag = ''.join(tag_regex.findall(self._quality))
 
         return '[' + tag + ']'
