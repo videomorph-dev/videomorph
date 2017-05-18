@@ -26,12 +26,14 @@ from collections import OrderedDict
 import nose
 
 from videomorph.converter import XMLProfile
+from videomorph.converter import ConversionLib
 from videomorph.converter.profiles import _Profile
 from videomorph import PROBER
 
 
 profile = None
 xml_profile = None
+conv = ConversionLib()
 
 
 def setup():
@@ -43,7 +45,8 @@ def setup():
 
     profile = xml_profile.get_conversion_profile(
         profile_name='MP4',
-        target_quality='MP4 Widescreen (16:9)')
+        target_quality='MP4 Widescreen (16:9)',
+        prober=conv.prober)
 
 
 # Tests for XMLProfile class
@@ -57,7 +60,8 @@ def test_get_conversion_profile():
     """Test get_conversion_profile."""
     profile_ = xml_profile.get_conversion_profile(
         profile_name='MP4',
-        target_quality='MP4 Fullscreen (4:3)')
+        target_quality='MP4 Fullscreen (4:3)',
+        prober=conv.prober)
 
     assert isinstance(profile_, _Profile)
     assert profile_.params == '-f mp4 -r 29.97 -vcodec libx264 -s 640x480 ' \
@@ -107,19 +111,18 @@ def test_get_qualities_per_profile():
           ['FLV Pantalla Completa (4:3)',
            'FLV Pantalla Panorámica (16:9)']),
          ('MP4',
-          ['MP4 Genérico',
-           'MP4 Alta Calidad',
+          ['MP4 Alta Calidad',
            'MP4 Muy Alta Calidad',
            'MP4 Súper Alta Calidad',
            'MP4 Pantalla Completa (4:3)',
-           'MP4 Pantalla Panorámica (19:9)']),
+           'MP4 Pantalla Panorámica (16:9)']),
          ('VCD',
           ['VCD Alta Calidad']),
          ('WEBM',
           ['WEBM Pantalla Completa (4:3)',
            'WEBM Pantalla Panorámica (16:9)']),
          ('WMV',
-          ['WMV2 Genérico'])])
+          ['WMV Genérico'])])
 
 
 # Tests for _Profile class
@@ -140,10 +143,9 @@ def test_get_quality():
 
 def test_quality():
     """Test quality."""
-    profile.quality = 'WMV2 Generic'
-    print(profile)
-    assert profile.params == '-vcodec wmv2 -acodec wmav2 -b:v 1000k -b:a ' \
-                             '160k -r 25 -ac 2'
+    profile.quality = 'WMV Generic'
+    assert profile.params == '-vcodec wmv2 -acodec wmav2 -b:v 1000k ' \
+                             '-b:a 160k -r 25'
     assert profile.extension == '.wmv'
 
 

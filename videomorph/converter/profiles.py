@@ -22,7 +22,7 @@
 
 import re
 from os import sep
-from os.path import expanduser, join, exists
+from os.path import expanduser, join, exists, getsize
 from collections import OrderedDict
 from distutils.file_util import copy_file
 from distutils.errors import DistutilsFileError
@@ -30,8 +30,6 @@ from xml.etree import ElementTree
 
 from videomorph import LINUX_PATHS
 from videomorph import VM_PATHS
-from videomorph import CONV_LIB
-from videomorph import PROBER
 
 
 class ProfileError(Exception):
@@ -109,11 +107,10 @@ class XMLProfile:
                 self._xml_root[i].insert(0, xml_preset)
                 self.save_tree()
                 break
-            else:
-                xml_profile.insert(0, xml_preset)
-                self._xml_root.insert(0, xml_profile)
-                self.save_tree()
-                break
+        else:
+            xml_profile.insert(0, xml_preset)
+            self._xml_root.insert(0, xml_profile)
+            self.save_tree()
 
     def export_profile_xml_file(self, dst_dir):
         """Export a file with the conversion profiles."""
@@ -132,14 +129,14 @@ class XMLProfile:
 
     def get_conversion_profile(self, profile_name,
                                target_quality,
-                               conv_lib=CONV_LIB.ffmpeg):
+                               prober):
         """Return a Profile objects."""
         for element in self._xml_root:
             if element.tag == profile_name:
                 for item in element:
                     if (item[0].text == target_quality or
                             item[3].text == target_quality):
-                        return _Profile(conv_lib=conv_lib,
+                        return _Profile(prober=prober,
                                         quality=target_quality,
                                         extension=item[2].text,
                                         xml_profile=self)
@@ -174,19 +171,20 @@ class XMLProfile:
 
     def save_tree(self):
         """Save xml tree."""
-        with open(self.profiles_xml_path, 'wb') as _file:
-            ElementTree.ElementTree(self._xml_root).write(_file)
+        with open(self.profiles_xml_path, 'wb') as xml_file:
+            xml_file.write(b'<?xml version="1.0"?>\n')
+            ElementTree.ElementTree(self._xml_root).write(xml_file)
 
     @property
     def profiles_xml_path(self):
         """Return the path to the profiles file."""
         return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
 
-    def create_profiles_xml_file(self):
+    def create_profiles_xml_file(self, restore=False):
         """Create a xml file with the conversion profiles."""
         profiles_xml = self.profiles_xml_path
 
-        if not exists(profiles_xml):
+        if not exists(profiles_xml) or not getsize(profiles_xml) or restore:
             if exists(LINUX_PATHS['profiles'] + '/profiles.xml'):
                 # if VideoMorph is installed
                 copy_file(LINUX_PATHS['profiles'] + '/profiles.xml',
@@ -205,20 +203,18 @@ class XMLProfile:
 class _Profile:
     """Base class for a Video Profile."""
 
-    def __init__(self, conv_lib=CONV_LIB.ffmpeg,
-                 quality=None, extension=None, xml_profile=None):
+    def __init__(self, quality=None, extension=None,
+                 xml_profile=None, prober=None):
         """Class initializer."""
         self.xml_profile = xml_profile
         self.params = None
         self._quality = None
-        self.conv_lib = conv_lib
+
+        self.prober = prober
+
         # Set self.quality and also self.params
         self.quality = quality
         self.extension = extension
-        if self.conv_lib == CONV_LIB.ffmpeg:
-            self.prober = PROBER.ffprobe
-        else:
-            self.prober = PROBER.avprobe
 
     @property
     def quality(self):
@@ -238,6 +234,6 @@ class _Profile:
     def quality_tag(self):
         """Generate a tag from profile quality string."""
         tag_regex = re.compile(r'[A-Z][0-9]?')
-        tag = ''.join(tag_regex.findall(self.quality))
+        tag = ''.join(tag_regex.findall(self._quality))
 
         return '[' + tag + ']'

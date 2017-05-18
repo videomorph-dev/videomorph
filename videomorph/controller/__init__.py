@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
+
 # File name: __init__.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
@@ -18,21 +18,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module defines the converter package and the needed imports."""
+"""This module defines the controller package and the needed imports."""
 
-from .converter import Converter
-from .converter import ConversionLib
-from .media import InvalidMetadataError
-from .media import MediaFile
-from .media import MediaFileThread
-from .media import media_file_factory
-from .media import media_files_generator
-from .media import MediaList
-from .utils import get_locale
-from .utils import which
-from .utils import write_time
-from .profiles import XMLProfile
-from .profiles import (ProfileBlankNameError,
-                       ProfileBlankPresetError,
-                       ProfileBlankParamsError,
-                       ProfileExtensionError)
+from .console import run_on_console

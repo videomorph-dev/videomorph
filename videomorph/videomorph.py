@@ -25,7 +25,6 @@ import sys
 from collections import OrderedDict
 from functools import partial
 from os import sep
-from os.path import basename
 from os.path import dirname
 from os.path import exists
 from os.path import isdir
@@ -67,13 +66,12 @@ from PyQt5.QtWidgets import (QMainWindow,
 
 from . import APPNAME
 from . import CONV_LIB
-from . import PROBER
 from . import STATUS
 from . import VERSION
 from . import VIDEO_FILTERS
 from . import videomorph_qrc
 from .about import AboutVMDialog
-from .converter import Converter
+from .converter import ConversionLib
 from .converter import get_locale
 from .converter import InvalidMetadataError
 from .converter import media_files_generator
@@ -135,14 +133,8 @@ class VideoMorphMW(QMainWindow):
         # Create actions
         self._create_actions()
 
-        # Default conversion library and prober
-        self.conversion_lib = CONV_LIB.ffmpeg
-
         # Default Source directory
         self.source_dir = QDir.homePath()
-
-        # Create initial Settings if not created
-        self._create_initial_settings()
 
         # XML Profile
         self.xml_profile = XMLProfile()
@@ -152,21 +144,25 @@ class VideoMorphMW(QMainWindow):
         # Populate PROFILES combo box
         self.populate_profiles_combo()
 
-        # Create the conversion profile object only once
-        self.conversion_profile = self.xml_profile.get_conversion_profile(
-            profile_name=self.cb_profiles.currentText(),
-            target_quality=self.cb_presets.currentText(),
-            conv_lib=self.conversion_lib)
+        # Create conversion library
+        self.conversion_lib = ConversionLib()
+        self.conversion_lib.converter.setup_process(
+            reader=self._read_encoding_output,
+            finisher=self._finish_file_encoding,
+            process_channel=QProcess.MergedChannels
+            )
 
         # Read app settings
         self._read_app_settings()
 
-        # Create the converter according to the user selection of
-        # conversion library
-        self.converter = Converter(conversion_lib=self.conversion_lib)
-        self.converter.process.setProcessChannelMode(QProcess.MergedChannels)
-        self.converter.process.readyRead.connect(self._read_encoding_output)
-        self.converter.process.finished.connect(self._finish_file_encoding)
+        # Create the conversion profile object only once
+        self.conversion_profile = self.xml_profile.get_conversion_profile(
+            profile_name=self.cb_profiles.currentText(),
+            target_quality=self.cb_presets.currentText(),
+            prober=self.conversion_lib.prober)
+
+        # Create initial Settings if not created
+        self._create_initial_settings()
 
         # Disable presets and profiles combo boxes
         self.cb_presets.setEnabled(False)
@@ -369,7 +365,7 @@ class VideoMorphMW(QMainWindow):
             text=self.tr('&Add Customized Profile...'),
             shortcut="Ctrl+F",
             tip=self.tr('Add Customized Profile'),
-            callback=self.add_profile)
+            callback=self.add_costume_profile)
 
         self.export_profile_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_ArrowUp),
@@ -384,6 +380,11 @@ class VideoMorphMW(QMainWindow):
             shortcut="Ctrl+I",
             tip=self.tr('Import Conversion Profiles'),
             callback=self.import_profiles)
+
+        self.restore_profile_action = self._action_factory(
+            text=self.tr('&Restore to Default Conversion Profiles'),
+            tip=self.tr('Restore to Default Conversion Profiles'),
+            callback=self.restore_profiles)
 
         self.clear_media_list_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_TrashIcon),
@@ -460,6 +461,7 @@ class VideoMorphMW(QMainWindow):
         self.edit_menu.addAction(self.add_profile_action)
         self.edit_menu.addAction(self.export_profile_action)
         self.edit_menu.addAction(self.import_profile_action)
+        self.edit_menu.addAction(self.restore_profile_action)
         self.edit_menu.addSeparator()
         self.edit_menu.addAction(self.clear_media_list_action)
         self.edit_menu.addAction(self.remove_media_file_action)
@@ -506,7 +508,7 @@ class VideoMorphMW(QMainWindow):
     def _update_edit_triggers(self):
         """Toggle Edit triggers on task table."""
         if (int(self.tb_tasks.currentColumn()) == QUALITY and not
-                self.converter.is_running):
+                self.conversion_lib.converter.is_running):
             self.tb_tasks.setEditTriggers(QAbstractItemView.AllEditTriggers)
         else:
             self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -543,7 +545,8 @@ class VideoMorphMW(QMainWindow):
         if 'source_dir' in settings.allKeys():
             self.source_dir = str(settings.value('source_dir'))
         if 'conversion_lib' in settings.allKeys():
-            self.conversion_lib = settings.value('conversion_lib')
+            self.conversion_lib.name = settings.value(
+                'conversion_lib')
 
     def _write_app_settings(self, **app_settings):
         """Write app settings on exit.
@@ -560,7 +563,7 @@ class VideoMorphMW(QMainWindow):
             preset_index=self.cb_presets.currentIndex(),
             source_dir=self.source_dir,
             output_dir=self.le_output.text(),
-            conv_lib=self.conversion_lib)
+            conv_lib=self.conversion_lib.name)
 
         if app_settings:
             settings.update(app_settings)
@@ -576,7 +579,7 @@ class VideoMorphMW(QMainWindow):
 
     def check_conversion_lib(self):
         """Check if ffmpeg or/and avconv are installed on the system."""
-        if which(CONV_LIB.ffmpeg) or which(CONV_LIB.avconv):
+        if self.conversion_lib.name is not None:
             return True
         else:
             msg_box = QMessageBox(
@@ -597,9 +600,9 @@ class VideoMorphMW(QMainWindow):
     def settings(self):
         """Open a Setting Dialog to define the conversion library to use."""
         settings_dlg = SettingsDialog(parent=self)
-        if self.conversion_lib == CONV_LIB.ffmpeg:
+        if self.conversion_lib.name == CONV_LIB.ffmpeg:
             settings_dlg.radio_btn_ffmpeg.setChecked(True)
-        elif self.conversion_lib == CONV_LIB.avconv:
+        elif self.conversion_lib.name == CONV_LIB.avconv:
             settings_dlg.radio_btn_avconv.setChecked(True)
 
         if not which(CONV_LIB.ffmpeg):
@@ -609,13 +612,9 @@ class VideoMorphMW(QMainWindow):
 
         if settings_dlg.exec_():
             if settings_dlg.radio_btn_ffmpeg.isChecked():
-                self.conversion_lib = CONV_LIB.ffmpeg
-                self.converter.conversion_lib = self.conversion_lib
-                self.conversion_profile.prober = PROBER.ffprobe
+                self.conversion_lib.name = CONV_LIB.ffmpeg
             elif settings_dlg.radio_btn_avconv.isChecked():
-                self.conversion_lib = CONV_LIB.avconv
-                self.converter.conversion_lib = self.conversion_lib
-                self.conversion_profile.prober = PROBER.avprobe
+                self.conversion_lib.name = CONV_LIB.avconv
 
     def populate_profiles_combo(self):
         """Populate profiles combobox."""
@@ -654,11 +653,12 @@ class VideoMorphMW(QMainWindow):
     def closeEvent(self, event):
         """Things to todo on close."""
         # Disconnect the finished signal
-        self.converter.process.finished.disconnect(self._finish_file_encoding)
+        self.conversion_lib.converter.finished_disconnect(
+            self._finish_file_encoding)
         # Close communication and kill the encoding process
-        if self.converter.is_running:
-            self.converter.process.close()
-            self.converter.process.kill()
+        if self.conversion_lib.converter.is_running:
+            self.conversion_lib.converter.close()
+            self.conversion_lib.converter.kill()
         # Save settings
         self._write_app_settings()
 
@@ -756,7 +756,7 @@ class VideoMorphMW(QMainWindow):
         """
         # Update tool buttons so you can convert, or add_file, or clear...
         # only if there is not a conversion process running
-        if self.converter.is_running:
+        if self.conversion_lib.converter.is_running:
             self.update_interface(presets=False,
                                   profiles=False,
                                   subtitles_chb=False,
@@ -810,18 +810,18 @@ class VideoMorphMW(QMainWindow):
             self.media_list.delete_file(file_index=file_row)
             self.total_duration = self.media_list.duration
 
-    def add_profile(self):
+    def add_costume_profile(self):
         """Show dialog for adding conversion profiles."""
         add_profile_dlg = AddProfileDialog(parent=self)
         add_profile_dlg.exec_()
 
-    def _export_import_profiles(self, func, path, msg_error, msg_info):
+    def _export_import_profiles(self, func, path, msg_info):
         try:
             func(path)
         except PermissionError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
-                msg_error)
+                self.tr('Access Denied for Writing to Selected Directory'))
         else:
             QMessageBox.information(
                 self, self.tr('Information!'),
@@ -837,22 +837,18 @@ class VideoMorphMW(QMainWindow):
             options=options)
 
         if directory:
-            msg_error = self.tr("Access Denied for Writing to: {dir}".format(
-                dir=directory))
-            msg_info = self.tr('Conversion Profiles Successfully '
-                               'Exported to: {dir}/profiles.xml'.format(
-                                   dir=directory))
+            msg_info = self.tr('Conversion Profiles Successfully Exported')
 
             self._export_import_profiles(
                 func=self.xml_profile.export_profile_xml_file,
-                path=directory, msg_error=msg_error, msg_info=msg_info)
+                path=directory, msg_info=msg_info)
 
     def import_profiles(self):
         """Import conversion profiles."""
         # Dialog title
         title = self.tr('Select a Profiles File')
         # Media filters
-        profile_filters = (self.tr('Profiles Files') + '(*.xml)')
+        profile_filters = (self.tr('Profiles Files ') + '(*.xml)')
 
         # Select media files and store their path
         file_path, _ = QFileDialog.getOpenFileName(self,
@@ -860,14 +856,16 @@ class VideoMorphMW(QMainWindow):
                                                    QDir.homePath(),
                                                    profile_filters)
         if file_path:
-            msg_error = self.tr("Access Denied for Writing to: {dir}".format(
-                dir=dirname(self.xml_profile.profiles_xml_path)))
-            msg_info = self.tr('Conversion Profiles Successfully '
-                               'Imported from: {file}'.format(file=file_path))
+            msg_info = self.tr('Conversion Profiles Successfully Imported')
 
             self._export_import_profiles(
                 func=self.xml_profile.import_profile_xml,
-                path=file_path, msg_error=msg_error, msg_info=msg_info)
+                path=file_path, msg_info=msg_info)
+
+    def restore_profiles(self):
+        self.xml_profile.create_profiles_xml_file(restore=True)
+        self.xml_profile.set_xml_root()
+        self.populate_profiles_combo()
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
@@ -904,7 +902,7 @@ class VideoMorphMW(QMainWindow):
         self.update_interface(presets=False,
                               profiles=False,
                               subtitles_chb=False,
-                              add_profile=False,
+                              add_costume_profile=False,
                               convert=False,
                               clear=False,
                               remove=False,
@@ -922,7 +920,7 @@ class VideoMorphMW(QMainWindow):
         if (running_media.status != STATUS.done and
                 running_media.status != STATUS.stopped):
             try:
-                self.converter.start_encoding(
+                self.conversion_lib.converter.start_encoding(
                     cmd=running_media.get_conversion_cmd(
                         output_dir=self.le_output.text(),
                         subtitle=bool(self.chb_subtitle.checkState())))
@@ -950,7 +948,7 @@ class VideoMorphMW(QMainWindow):
         self.total_duration = self.media_list.duration
         self._reset_progress_times()
         # Terminate the file encoding
-        self.converter.stop_encoding()
+        self.conversion_lib.converter.stop_encoding()
 
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
@@ -965,7 +963,7 @@ class VideoMorphMW(QMainWindow):
                 self.tb_tasks.item(self.media_list.running_index,
                                    PROGRESS).setText(self.tr('Stopped!'))
 
-        self.converter.stop_encoding()
+        self.conversion_lib.converter.stop_encoding()
 
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
@@ -975,9 +973,10 @@ class VideoMorphMW(QMainWindow):
         """Finish the file encoding process."""
         if self.media_list.get_running_file().status != STATUS.stopped:
             # Close and kill the converter process
-            self.converter.process.close()
+            self.conversion_lib.converter.close()
             # Check if the process finished OK
-            if self.converter.process.exitStatus() == QProcess.NormalExit:
+            if (self.conversion_lib.converter.exit_status() ==
+                    QProcess.NormalExit):
                 # When finished a file conversion...
                 self.tb_tasks.item(self.media_list.running_index,
                                    PROGRESS).setText(self.tr('Done!'))
@@ -989,7 +988,7 @@ class VideoMorphMW(QMainWindow):
             self._end_encoding_process()
         else:
             # If the process was stopped
-            if not self.converter.is_running:
+            if not self.conversion_lib.converter.is_running:
                 self.tb_tasks.item(self.media_list.running_index,
                                    PROGRESS).setText(self.tr('Stopped!'))
             # Attempt to end the conversion process
@@ -998,7 +997,7 @@ class VideoMorphMW(QMainWindow):
     def _end_encoding_process(self):
         """End up the encoding process."""
         # Test if encoding process is finished
-        if self.converter.encoding_done(self.media_list):
+        if self.conversion_lib.converter.encoding_done(self.media_list):
             msg_box = QMessageBox(
                 QMessageBox.Information,
                 self.tr('Information!'),
@@ -1023,9 +1022,9 @@ class VideoMorphMW(QMainWindow):
             self.start_encoding()
 
     def _read_encoding_output(self):
-        """Read the encoding output from the self.converter stdout."""
+        """Read the encoding output from the converter stdout."""
         time_pattern = re.compile(r'time=([0-9.:]+) ')
-        process_output = str(self.converter.process.readAll())
+        process_output = str(self.conversion_lib.converter.process.readAll())
         time_read = time_pattern.findall(process_output)
 
         if not time_read:
@@ -1040,7 +1039,8 @@ class VideoMorphMW(QMainWindow):
             time_in_secs = float(time_read[0])
 
         # Calculate operation progress percent
-        op_time = self.media_list.get_running_file().info.format_duration
+        op_time = self.media_list.get_running_file().get_info(
+            'format_duration')
         operation_progress = int(time_in_secs / float(op_time) * 100)
 
         # Update the table and the operation progress bar
@@ -1084,8 +1084,8 @@ class VideoMorphMW(QMainWindow):
                         ort=operation_remaining_time,
                         trt=total_remaining_time))
 
-        current_file_name = basename(
-            self.media_list.get_running_file().path)
+        current_file_name = self.media_list.get_running_file().get_name(
+            with_extension=True)
 
         self.setWindowTitle(str(operation_progress) + '%' + '-' +
                             '[' + current_file_name + ']' +
@@ -1151,7 +1151,7 @@ class VideoMorphMW(QMainWindow):
                          stop_all=True,
                          presets=True,
                          profiles=True,
-                         add_profile=True,
+                         add_costume_profile=True,
                          output_dir=True,
                          settings=True,
                          subtitles_chb=True,
@@ -1167,7 +1167,7 @@ class VideoMorphMW(QMainWindow):
         self.stop_all_action.setEnabled(variables['stop_all'])
         self.cb_presets.setEnabled(variables['presets'])
         self.cb_profiles.setEnabled(variables['profiles'])
-        self.add_profile_action.setEnabled(variables['add_profile'])
+        self.add_profile_action.setEnabled(variables['add_costume_profile'])
         self.tb_output.setEnabled(variables['output_dir'])
         self.chb_subtitle.setEnabled(variables['subtitles_chb'])
         self.chb_delete.setEnabled(variables['delete_chb'])
@@ -1175,7 +1175,7 @@ class VideoMorphMW(QMainWindow):
         self.tb_tasks.setCurrentItem(None)
 
     def _enable_remove_file_action(self):
-        if not self.converter.is_running:
+        if not self.conversion_lib.converter.is_running:
             self.remove_media_file_action.setEnabled(True)
 
 
@@ -1259,60 +1259,11 @@ def main():
     if main_win.check_conversion_lib():
         # If it is running on console
         if len(sys.argv) > 1:
+            from .controller import run_on_console
             run_on_console(app, main_win)
         else:
             main_win.show()
             sys.exit(app.exec_())
-
-
-def run_on_console(app, main_win):
-    """Provides option to run VideoMorph from the command line."""
-    import argparse
-    from os import walk
-
-    # Add a parser for command line
-    parser = argparse.ArgumentParser(description=APPNAME + ' ' + VERSION)
-
-    # Add options for command line
-    parser.add_argument('-i', '--input_file',
-                        help='take the path to a video file(s) as input',
-                        action='store',
-                        nargs='*',
-                        dest='input_file')
-
-    parser.add_argument('-d', '--input_dir',
-                        help='take a directory as input and find video '
-                             'files recursively',
-                        action='store',
-                        dest='input_dir')
-
-    # Process the command line input
-    args = parser.parse_args()
-
-    files = []
-
-    if args.input_file:
-        for file in args.input_file:
-            if exists(file):
-                files.append(file)
-            else:
-                print("Video File: {0}, doesn't exit".format(file),
-                      file=sys.stderr)
-
-    if args.input_dir:
-        if isdir(args.input_dir):
-            for dir_path, _, file_names in walk(args.input_dir):
-                for file in file_names:
-                    if file.split('.')[-1] in VIDEO_FILTERS:
-                        files.append('{0}'.join([dir_path, file]).format(sep))
-        else:
-            print("Directory: {0}, doesn't exist".format(args.input_dir),
-                  file=sys.stderr)
-
-    if files:
-        main_win.add_media_files(*files)
-        main_win.show()
-        sys.exit(app.exec_())
 
 
 if __name__ == '__main__':

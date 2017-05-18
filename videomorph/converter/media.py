@@ -21,9 +21,12 @@
 """This module provides the definition of MediaList and MediaFile classes."""
 
 import shlex
-import os.path
+from os import access
+from os import remove
+from os import sep
+from os import W_OK
 from os.path import exists
-from os import remove, access
+from os.path import basename
 from threading import Thread
 
 from .utils import which
@@ -67,16 +70,17 @@ class MediaList(list):
         """Add a video file to the list."""
         if self._file_is_added(media_file):
             return
-        elif not media_file.get_info('format_duration'):
-            # 0 duration video file not added
-            raise InvalidMetadataError('File is zero length')
-        else:
-            try:
-                # Invalid metadata
-                float(media_file.get_info('format_duration'))
+
+        try:
+            # Invalid metadata
+            duration = float(media_file.get_info('format_duration'))
+            if duration > 0:
                 self.append(media_file)
-            except:
-                raise InvalidMetadataError('Invalid file duration')
+            else:
+                # 0 duration video file not added
+                raise InvalidMetadataError('File is zero length')
+        except:
+            raise InvalidMetadataError('Invalid file duration')
 
     def delete_file(self, file_index):
         """Delete a video file from the list."""
@@ -146,7 +150,7 @@ class MediaFile:
 
     def get_name(self, with_extension=False):
         """Return the file name."""
-        full_file_name = os.path.basename(self.path)
+        full_file_name = basename(self.path)
         file_name = full_file_name.split('.')[0]
 
         if with_extension:
@@ -159,7 +163,7 @@ class MediaFile:
 
     def get_conversion_cmd(self, output_dir, subtitle=False):
         """Return the conversion command."""
-        if not access(output_dir, os.W_OK):
+        if not access(output_dir, W_OK):
             raise PermissionError('Access denied')
 
         output_file_path = self.get_output_path(output_dir)
@@ -181,7 +185,7 @@ class MediaFile:
     def get_output_path(self, output_dir):
         """Return the the output file path."""
         output_file_path = (output_dir +
-                            os.sep +  # multi-platform path separator
+                            sep +  # multi-platform path separator
                             self.conversion_profile.quality_tag +
                             '-' +
                             self.get_name() +

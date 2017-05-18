@@ -45,7 +45,7 @@ SYS_PATH = None
 if platform == 'linux':
     SYS_PATH = LINUX_PATHS
 elif platform == 'windows':
-    pass
+    pass  # For the future
 
 
 if __name__ == '__main__':
