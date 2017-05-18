@@ -22,7 +22,7 @@
 
 import re
 from os import sep
-from os.path import expanduser, join, exists
+from os.path import expanduser, join, exists, getsize
 from collections import OrderedDict
 from distutils.file_util import copy_file
 from distutils.errors import DistutilsFileError
@@ -107,11 +107,10 @@ class XMLProfile:
                 self._xml_root[i].insert(0, xml_preset)
                 self.save_tree()
                 break
-            else:
-                xml_profile.insert(0, xml_preset)
-                self._xml_root.insert(0, xml_profile)
-                self.save_tree()
-                break
+        else:
+            xml_profile.insert(0, xml_preset)
+            self._xml_root.insert(0, xml_profile)
+            self.save_tree()
 
     def export_profile_xml_file(self, dst_dir):
         """Export a file with the conversion profiles."""
@@ -172,8 +171,9 @@ class XMLProfile:
 
     def save_tree(self):
         """Save xml tree."""
-        with open(self.profiles_xml_path, 'wb') as _file:
-            ElementTree.ElementTree(self._xml_root).write(_file)
+        with open(self.profiles_xml_path, 'wb') as xml_file:
+            xml_file.write(b'<?xml version="1.0"?>\n')
+            ElementTree.ElementTree(self._xml_root).write(xml_file)
 
     @property
     def profiles_xml_path(self):
@@ -184,7 +184,7 @@ class XMLProfile:
         """Create a xml file with the conversion profiles."""
         profiles_xml = self.profiles_xml_path
 
-        if not exists(profiles_xml):
+        if not exists(profiles_xml) or not getsize(profiles_xml):
             if exists(LINUX_PATHS['profiles'] + '/profiles.xml'):
                 # if VideoMorph is installed
                 copy_file(LINUX_PATHS['profiles'] + '/profiles.xml',

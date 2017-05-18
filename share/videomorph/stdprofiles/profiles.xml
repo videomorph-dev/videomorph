@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <video_profiles>
-        <AVI>
+    <AVI>
         <AVIMSCompatible>
             <preset_name>MS Compatible</preset_name>
             <preset_params>-acodec libmp3lame -vcodec msmpeg4 -b:a 192k -b:v 1000k -s 640x480 -ar 44100</preset_params>
