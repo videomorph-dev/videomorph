@@ -66,13 +66,12 @@ from PyQt5.QtWidgets import (QMainWindow,
 
 from . import APPNAME
 from . import CONV_LIB
-from . import PROBER
 from . import STATUS
 from . import VERSION
 from . import VIDEO_FILTERS
 from . import videomorph_qrc
 from .about import AboutVMDialog
-from .converter import Converter
+from .converter import ConversionLib
 from .converter import get_locale
 from .converter import InvalidMetadataError
 from .converter import media_files_generator
@@ -134,14 +133,8 @@ class VideoMorphMW(QMainWindow):
         # Create actions
         self._create_actions()
 
-        # Default conversion library and prober
-        self.conversion_lib = CONV_LIB.ffmpeg
-
         # Default Source directory
         self.source_dir = QDir.homePath()
-
-        # Create initial Settings if not created
-        self._create_initial_settings()
 
         # XML Profile
         self.xml_profile = XMLProfile()
@@ -151,21 +144,25 @@ class VideoMorphMW(QMainWindow):
         # Populate PROFILES combo box
         self.populate_profiles_combo()
 
-        # Create the conversion profile object only once
-        self.conversion_profile = self.xml_profile.get_conversion_profile(
-            profile_name=self.cb_profiles.currentText(),
-            target_quality=self.cb_presets.currentText(),
-            conv_lib=self.conversion_lib)
+        # Create conversion library
+        self.conversion_lib = ConversionLib()
+        self.conversion_lib.converter.setup_process(
+            reader=self._read_encoding_output,
+            finisher=self._finish_file_encoding,
+            process_channel=QProcess.MergedChannels
+            )
 
         # Read app settings
         self._read_app_settings()
 
-        # Create the converter according to the user selection of
-        # conversion library
-        self.converter = Converter(conversion_lib=self.conversion_lib)
-        self.converter.process.setProcessChannelMode(QProcess.MergedChannels)
-        self.converter.process.readyRead.connect(self._read_encoding_output)
-        self.converter.process.finished.connect(self._finish_file_encoding)
+        # Create the conversion profile object only once
+        self.conversion_profile = self.xml_profile.get_conversion_profile(
+            profile_name=self.cb_profiles.currentText(),
+            target_quality=self.cb_presets.currentText(),
+            prober=self.conversion_lib.prober)
+
+        # Create initial Settings if not created
+        self._create_initial_settings()
 
         # Disable presets and profiles combo boxes
         self.cb_presets.setEnabled(False)
@@ -505,7 +502,7 @@ class VideoMorphMW(QMainWindow):
     def _update_edit_triggers(self):
         """Toggle Edit triggers on task table."""
         if (int(self.tb_tasks.currentColumn()) == QUALITY and not
-                self.converter.is_running):
+                self.conversion_lib.converter.is_running):
             self.tb_tasks.setEditTriggers(QAbstractItemView.AllEditTriggers)
         else:
             self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -542,7 +539,8 @@ class VideoMorphMW(QMainWindow):
         if 'source_dir' in settings.allKeys():
             self.source_dir = str(settings.value('source_dir'))
         if 'conversion_lib' in settings.allKeys():
-            self.conversion_lib = settings.value('conversion_lib')
+            self.conversion_lib.name = settings.value(
+                'conversion_lib')
 
     def _write_app_settings(self, **app_settings):
         """Write app settings on exit.
@@ -559,7 +557,7 @@ class VideoMorphMW(QMainWindow):
             preset_index=self.cb_presets.currentIndex(),
             source_dir=self.source_dir,
             output_dir=self.le_output.text(),
-            conv_lib=self.conversion_lib)
+            conv_lib=self.conversion_lib.name)
 
         if app_settings:
             settings.update(app_settings)
@@ -575,7 +573,7 @@ class VideoMorphMW(QMainWindow):
 
     def check_conversion_lib(self):
         """Check if ffmpeg or/and avconv are installed on the system."""
-        if which(CONV_LIB.ffmpeg) or which(CONV_LIB.avconv):
+        if self.conversion_lib.name is not None:
             return True
         else:
             msg_box = QMessageBox(
@@ -596,9 +594,9 @@ class VideoMorphMW(QMainWindow):
     def settings(self):
         """Open a Setting Dialog to define the conversion library to use."""
         settings_dlg = SettingsDialog(parent=self)
-        if self.conversion_lib == CONV_LIB.ffmpeg:
+        if self.conversion_lib.name == CONV_LIB.ffmpeg:
             settings_dlg.radio_btn_ffmpeg.setChecked(True)
-        elif self.conversion_lib == CONV_LIB.avconv:
+        elif self.conversion_lib.name == CONV_LIB.avconv:
             settings_dlg.radio_btn_avconv.setChecked(True)
 
         if not which(CONV_LIB.ffmpeg):
@@ -608,13 +606,9 @@ class VideoMorphMW(QMainWindow):
 
         if settings_dlg.exec_():
             if settings_dlg.radio_btn_ffmpeg.isChecked():
-                self.conversion_lib = CONV_LIB.ffmpeg
-                self.converter.conversion_lib = self.conversion_lib
-                self.conversion_profile.prober = PROBER.ffprobe
+                self.conversion_lib.name = CONV_LIB.ffmpeg
             elif settings_dlg.radio_btn_avconv.isChecked():
-                self.conversion_lib = CONV_LIB.avconv
-                self.converter.conversion_lib = self.conversion_lib
-                self.conversion_profile.prober = PROBER.avprobe
+                self.conversion_lib.name = CONV_LIB.avconv
 
     def populate_profiles_combo(self):
         """Populate profiles combobox."""
@@ -653,11 +647,12 @@ class VideoMorphMW(QMainWindow):
     def closeEvent(self, event):
         """Things to todo on close."""
         # Disconnect the finished signal
-        self.converter.process.finished.disconnect(self._finish_file_encoding)
+        self.conversion_lib.converter.finished_disconnect(
+            self._finish_file_encoding)
         # Close communication and kill the encoding process
-        if self.converter.is_running:
-            self.converter.process.close()
-            self.converter.process.kill()
+        if self.conversion_lib.converter.is_running:
+            self.conversion_lib.converter.close()
+            self.conversion_lib.converter.kill()
         # Save settings
         self._write_app_settings()
 
@@ -755,7 +750,7 @@ class VideoMorphMW(QMainWindow):
         """
         # Update tool buttons so you can convert, or add_file, or clear...
         # only if there is not a conversion process running
-        if self.converter.is_running:
+        if self.conversion_lib.converter.is_running:
             self.update_interface(presets=False,
                                   profiles=False,
                                   subtitles_chb=False,
@@ -914,7 +909,7 @@ class VideoMorphMW(QMainWindow):
         if (running_media.status != STATUS.done and
                 running_media.status != STATUS.stopped):
             try:
-                self.converter.start_encoding(
+                self.conversion_lib.converter.start_encoding(
                     cmd=running_media.get_conversion_cmd(
                         output_dir=self.le_output.text(),
                         subtitle=bool(self.chb_subtitle.checkState())))
@@ -942,7 +937,7 @@ class VideoMorphMW(QMainWindow):
         self.total_duration = self.media_list.duration
         self._reset_progress_times()
         # Terminate the file encoding
-        self.converter.stop_encoding()
+        self.conversion_lib.converter.stop_encoding()
 
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
@@ -957,7 +952,7 @@ class VideoMorphMW(QMainWindow):
                 self.tb_tasks.item(self.media_list.running_index,
                                    PROGRESS).setText(self.tr('Stopped!'))
 
-        self.converter.stop_encoding()
+        self.conversion_lib.converter.stop_encoding()
 
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
@@ -967,9 +962,10 @@ class VideoMorphMW(QMainWindow):
         """Finish the file encoding process."""
         if self.media_list.get_running_file().status != STATUS.stopped:
             # Close and kill the converter process
-            self.converter.process.close()
+            self.conversion_lib.converter.close()
             # Check if the process finished OK
-            if self.converter.process.exitStatus() == QProcess.NormalExit:
+            if (self.conversion_lib.converter.exit_status() ==
+                    QProcess.NormalExit):
                 # When finished a file conversion...
                 self.tb_tasks.item(self.media_list.running_index,
                                    PROGRESS).setText(self.tr('Done!'))
@@ -981,7 +977,7 @@ class VideoMorphMW(QMainWindow):
             self._end_encoding_process()
         else:
             # If the process was stopped
-            if not self.converter.is_running:
+            if not self.conversion_lib.converter.is_running:
                 self.tb_tasks.item(self.media_list.running_index,
                                    PROGRESS).setText(self.tr('Stopped!'))
             # Attempt to end the conversion process
@@ -990,7 +986,7 @@ class VideoMorphMW(QMainWindow):
     def _end_encoding_process(self):
         """End up the encoding process."""
         # Test if encoding process is finished
-        if self.converter.encoding_done(self.media_list):
+        if self.conversion_lib.converter.encoding_done(self.media_list):
             msg_box = QMessageBox(
                 QMessageBox.Information,
                 self.tr('Information!'),
@@ -1015,9 +1011,9 @@ class VideoMorphMW(QMainWindow):
             self.start_encoding()
 
     def _read_encoding_output(self):
-        """Read the encoding output from the self.converter stdout."""
+        """Read the encoding output from the converter stdout."""
         time_pattern = re.compile(r'time=([0-9.:]+) ')
-        process_output = str(self.converter.process.readAll())
+        process_output = str(self.conversion_lib.converter.process.readAll())
         time_read = time_pattern.findall(process_output)
 
         if not time_read:
@@ -1168,7 +1164,7 @@ class VideoMorphMW(QMainWindow):
         self.tb_tasks.setCurrentItem(None)
 
     def _enable_remove_file_action(self):
-        if not self.converter.is_running:
+        if not self.conversion_lib.converter.is_running:
             self.remove_media_file_action.setEnabled(True)
 
 

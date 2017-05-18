@@ -26,12 +26,14 @@ from collections import OrderedDict
 import nose
 
 from videomorph.converter import XMLProfile
+from videomorph.converter import ConversionLib
 from videomorph.converter.profiles import _Profile
 from videomorph import PROBER
 
 
 profile = None
 xml_profile = None
+conv = ConversionLib()
 
 
 def setup():
@@ -43,7 +45,8 @@ def setup():
 
     profile = xml_profile.get_conversion_profile(
         profile_name='MP4',
-        target_quality='MP4 Widescreen (16:9)')
+        target_quality='MP4 Widescreen (16:9)',
+        prober=conv.prober)
 
 
 # Tests for XMLProfile class
@@ -57,7 +60,8 @@ def test_get_conversion_profile():
     """Test get_conversion_profile."""
     profile_ = xml_profile.get_conversion_profile(
         profile_name='MP4',
-        target_quality='MP4 Fullscreen (4:3)')
+        target_quality='MP4 Fullscreen (4:3)',
+        prober=conv.prober)
 
     assert isinstance(profile_, _Profile)
     assert profile_.params == '-f mp4 -r 29.97 -vcodec libx264 -s 640x480 ' \

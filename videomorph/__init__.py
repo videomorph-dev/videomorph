@@ -30,8 +30,8 @@ CODENAME = 'traveler'
 PACKAGE_NAME = APPNAME.lower()
 MAINTAINER = APPNAME + ' ' + 'Development Team'
 
-ConversionLib = namedtuple('ConversionLib', 'ffmpeg avconv')
-CONV_LIB = ConversionLib('ffmpeg', 'avconv')
+ConvLib = namedtuple('ConvLib', 'ffmpeg avconv')
+CONV_LIB = ConvLib('ffmpeg', 'avconv')
 
 VIDEO_FILTERS = ('*.mkv *.ogg *.mp4 *.mpg *.dat '
                  '*.f4v *.flv *.wv *.3gp *.avi *.webm '

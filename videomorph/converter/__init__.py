@@ -21,6 +21,7 @@
 """This module defines the converter package and the needed imports."""
 
 from .converter import Converter
+from .converter import ConversionLib
 from .media import InvalidMetadataError
 from .media import MediaFile
 from .media import MediaFileThread

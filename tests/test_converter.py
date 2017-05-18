@@ -24,11 +24,14 @@ import nose
 
 from PyQt5.QtCore import QProcess
 
-from videomorph.converter import converter
+from videomorph import CONV_LIB
+from videomorph import PROBER
 from videomorph.converter import media
 from videomorph.converter import XMLProfile
+from videomorph.converter import ConversionLib
+from videomorph.converter.converter import get_conversion_lib
 
-conv = None
+conv_lib = ConversionLib()
 
 
 # Set of test for Converter class
@@ -44,23 +47,39 @@ def setup():
         file_path='Dad.mpg',
         conversion_profile=xml_profile.get_conversion_profile(
             profile_name='DVD',
-            target_quality='DVD Fullscreen (4:3)'))
+            target_quality='DVD Fullscreen (4:3)',
+            prober=conv_lib.prober))
 
     media_list.add_file(media_file)
-    global conv
-    conv = converter.Converter()
-    conv.start_encoding(cmd=media_file.get_conversion_cmd(output_dir='.'))
+
+    conv_lib.converter.start_encoding(cmd=media_file.get_conversion_cmd(
+        output_dir='.'))
 
 
 def teardown():
     """Function to clean after tests are done."""
-    conv.process.close()
-    conv.process.kill()
+    conv_lib.converter.close()
+    conv_lib.converter.kill()
+
+
+def test_conversion_lib():
+    """Test the conversion library name."""
+    assert conv_lib.name == CONV_LIB.ffmpeg
+
+
+def test_prober():
+    """Test the prober name."""
+    assert conv_lib.prober == PROBER.ffprobe
 
 
 def test_is_running():
     """Test is_running."""
-    assert conv.process.state() == QProcess.Starting
+    assert conv_lib.converter.state() == QProcess.Starting
+
+
+def test_get_conversion_lib():
+    """Test the conversion library installed on the system."""
+    assert get_conversion_lib() == CONV_LIB.ffmpeg
 
 
 if __name__ == '__main__':

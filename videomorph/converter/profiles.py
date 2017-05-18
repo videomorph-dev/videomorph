@@ -30,8 +30,6 @@ from xml.etree import ElementTree
 
 from videomorph import LINUX_PATHS
 from videomorph import VM_PATHS
-from videomorph import CONV_LIB
-from videomorph import PROBER
 
 
 class ProfileError(Exception):
@@ -132,14 +130,14 @@ class XMLProfile:
 
     def get_conversion_profile(self, profile_name,
                                target_quality,
-                               conv_lib=CONV_LIB.ffmpeg):
+                               prober):
         """Return a Profile objects."""
         for element in self._xml_root:
             if element.tag == profile_name:
                 for item in element:
                     if (item[0].text == target_quality or
                             item[3].text == target_quality):
-                        return _Profile(conv_lib=conv_lib,
+                        return _Profile(prober=prober,
                                         quality=target_quality,
                                         extension=item[2].text,
                                         xml_profile=self)
@@ -205,20 +203,18 @@ class XMLProfile:
 class _Profile:
     """Base class for a Video Profile."""
 
-    def __init__(self, conv_lib=CONV_LIB.ffmpeg,
-                 quality=None, extension=None, xml_profile=None):
+    def __init__(self, quality=None, extension=None,
+                 xml_profile=None, prober=None):
         """Class initializer."""
         self.xml_profile = xml_profile
         self.params = None
         self._quality = None
-        self.conv_lib = conv_lib
+
+        self.prober = prober
+
         # Set self.quality and also self.params
         self.quality = quality
         self.extension = extension
-        if self.conv_lib == CONV_LIB.ffmpeg:
-            self.prober = PROBER.ffprobe
-        else:
-            self.prober = PROBER.avprobe
 
     @property
     def quality(self):
