@@ -142,8 +142,9 @@ class AddProfileDialog(QDialog):
         except ProfileExtensionError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
-                self.tr("Output File Extension Can't Be Left Blank and "
-                        "Must Begin with a \".\"")
+                self.tr("Output File Extension Can't Be Left Blank, it "
+                        "Must Begin with a \".\" and Should Be a Valid Video "
+                        "Extension")
             )
             self.le_extension.setFocus()
         else:
