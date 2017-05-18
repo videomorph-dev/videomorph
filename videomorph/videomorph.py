@@ -381,6 +381,11 @@ class VideoMorphMW(QMainWindow):
             tip=self.tr('Import Conversion Profiles'),
             callback=self.import_profiles)
 
+        self.restore_profile_action = self._action_factory(
+            text=self.tr('&Restore to Default Conversion Profiles'),
+            tip=self.tr('Restore to Default Conversion Profiles'),
+            callback=self.restore_profiles)
+
         self.clear_media_list_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_TrashIcon),
             text=self.tr('Clear &List'),
@@ -456,6 +461,7 @@ class VideoMorphMW(QMainWindow):
         self.edit_menu.addAction(self.add_profile_action)
         self.edit_menu.addAction(self.export_profile_action)
         self.edit_menu.addAction(self.import_profile_action)
+        self.edit_menu.addAction(self.restore_profile_action)
         self.edit_menu.addSeparator()
         self.edit_menu.addAction(self.clear_media_list_action)
         self.edit_menu.addAction(self.remove_media_file_action)
@@ -855,6 +861,11 @@ class VideoMorphMW(QMainWindow):
             self._export_import_profiles(
                 func=self.xml_profile.import_profile_xml,
                 path=file_path, msg_info=msg_info)
+
+    def restore_profiles(self):
+        self.xml_profile.create_profiles_xml_file(restore=True)
+        self.xml_profile.set_xml_root()
+        self.populate_profiles_combo()
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""

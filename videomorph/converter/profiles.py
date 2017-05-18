@@ -180,11 +180,11 @@ class XMLProfile:
         """Return the path to the profiles file."""
         return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
 
-    def create_profiles_xml_file(self):
+    def create_profiles_xml_file(self, restore=False):
         """Create a xml file with the conversion profiles."""
         profiles_xml = self.profiles_xml_path
 
-        if not exists(profiles_xml) or not getsize(profiles_xml):
+        if not exists(profiles_xml) or not getsize(profiles_xml) or restore:
             if exists(LINUX_PATHS['profiles'] + '/profiles.xml'):
                 # if VideoMorph is installed
                 copy_file(LINUX_PATHS['profiles'] + '/profiles.xml',
