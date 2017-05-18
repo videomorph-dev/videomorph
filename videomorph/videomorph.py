@@ -1248,60 +1248,11 @@ def main():
     if main_win.check_conversion_lib():
         # If it is running on console
         if len(sys.argv) > 1:
+            from .controller import run_on_console
             run_on_console(app, main_win)
         else:
             main_win.show()
             sys.exit(app.exec_())
-
-
-def run_on_console(app, main_win):
-    """Provides option to run VideoMorph from the command line."""
-    import argparse
-    from os import walk
-
-    # Add a parser for command line
-    parser = argparse.ArgumentParser(description=APPNAME + ' ' + VERSION)
-
-    # Add options for command line
-    parser.add_argument('-i', '--input_file',
-                        help='take the path to a video file(s) as input',
-                        action='store',
-                        nargs='*',
-                        dest='input_file')
-
-    parser.add_argument('-d', '--input_dir',
-                        help='take a directory as input and find video '
-                             'files recursively',
-                        action='store',
-                        dest='input_dir')
-
-    # Process the command line input
-    args = parser.parse_args()
-
-    files = []
-
-    if args.input_file:
-        for file in args.input_file:
-            if exists(file):
-                files.append(file)
-            else:
-                print("Video File: {0}, doesn't exit".format(file),
-                      file=sys.stderr)
-
-    if args.input_dir:
-        if isdir(args.input_dir):
-            for dir_path, _, file_names in walk(args.input_dir):
-                for file in file_names:
-                    if file.split('.')[-1] in VIDEO_FILTERS:
-                        files.append('{0}'.join([dir_path, file]).format(sep))
-        else:
-            print("Directory: {0}, doesn't exist".format(args.input_dir),
-                  file=sys.stderr)
-
-    if files:
-        main_win.add_media_files(*files)
-        main_win.show()
-        sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
