@@ -27,9 +27,11 @@ from collections import OrderedDict
 from distutils.file_util import copy_file
 from distutils.errors import DistutilsFileError
 from xml.etree import ElementTree
+from xml.etree.ElementTree import ParseError
 
 from videomorph import LINUX_PATHS
 from videomorph import VM_PATHS
+from videomorph import VIDEO_FILTERS
 
 
 class ProfileError(Exception):
@@ -80,7 +82,7 @@ class XMLProfile:
         if not params:
             raise ProfileBlankParamsError
 
-        if not extension.startswith('.'):
+        if not extension.startswith('.') or extension not in VIDEO_FILTERS:
             raise ProfileExtensionError
 
         extension = extension.lower()
@@ -127,10 +129,8 @@ class XMLProfile:
         except DistutilsFileError:
             raise PermissionError
 
-    def get_conversion_profile(self, profile_name,
-                               target_quality,
-                               prober):
-        """Return a Profile objects."""
+    def get_conversion_profile(self, profile_name, target_quality, prober):
+        """Return a _Profile objects."""
         for element in self._xml_root:
             if element.tag == profile_name:
                 for item in element:
@@ -196,15 +196,18 @@ class XMLProfile:
 
     def _get_xml_root(self):
         """Returns the profiles.xml root."""
-        tree = ElementTree.parse(self.profiles_xml_path)
+        try:
+            tree = ElementTree.parse(self.profiles_xml_path)
+        except ParseError:
+            self.create_profiles_xml_file(restore=True)
+            tree = ElementTree.parse(self.profiles_xml_path)
         return tree.getroot()
 
 
 class _Profile:
     """Base class for a Video Profile."""
 
-    def __init__(self, quality=None, extension=None,
-                 xml_profile=None, prober=None):
+    def __init__(self, prober, quality, extension, xml_profile):
         """Class initializer."""
         self.xml_profile = xml_profile
         self.params = None

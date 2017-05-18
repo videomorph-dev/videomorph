@@ -5,6 +5,7 @@ Next version or later:
     - Improve the Artwork, mainly the icons theme
     - Improve the performance of videomorph._fill_media_list method
     - Pack in .rpm format
+    - Add the option to play a video using ffplay
     - Create a CONTROLLER to handle communication among VideoMorphMW and the models. Some methods to move:
         * check_conversion_lib
         * _fill_media_list

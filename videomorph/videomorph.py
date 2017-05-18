@@ -149,8 +149,7 @@ class VideoMorphMW(QMainWindow):
         self.conversion_lib.converter.setup_process(
             reader=self._read_encoding_output,
             finisher=self._finish_file_encoding,
-            process_channel=QProcess.MergedChannels
-            )
+            process_channel=QProcess.MergedChannels)
 
         # Read app settings
         self._read_app_settings()
@@ -516,8 +515,7 @@ class VideoMorphMW(QMainWindow):
     @staticmethod
     def _get_settings_file():
         return QSettings('{0}{1}.videomorph{2}config.ini'.format(
-            QDir.homePath(), sep, sep),
-                         QSettings.IniFormat)
+            QDir.homePath(), sep, sep), QSettings.IniFormat)
 
     def _create_initial_settings(self):
         """Create initial settings file."""
@@ -863,6 +861,7 @@ class VideoMorphMW(QMainWindow):
                 path=file_path, msg_info=msg_info)
 
     def restore_profiles(self):
+        """Restore default profiles."""
         self.xml_profile.create_profiles_xml_file(restore=True)
         self.xml_profile.set_xml_root()
         self.populate_profiles_combo()
@@ -913,7 +912,7 @@ class VideoMorphMW(QMainWindow):
         # Increment the the MediaList index
         self.media_list.running_index += 1
 
-        running_media = self.media_list.get_running_file()
+        running_media = self.media_list.running_file
         running_media.conversion_profile.quality = self.tb_tasks.item(
             self.media_list.running_index, QUALITY).text()
 
@@ -941,9 +940,9 @@ class VideoMorphMW(QMainWindow):
     def stop_file_encoding(self):
         """Stop file encoding process and continue with the list."""
         # Set MediaFile.status attribute
-        self.media_list.get_running_file().status = STATUS.stopped
+        self.media_list.running_file.status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
-        self.media_list.get_running_file().delete_output(self.le_output.text())
+        self.media_list.running_file.delete_output(self.le_output.text())
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
         self._reset_progress_times()
@@ -953,7 +952,7 @@ class VideoMorphMW(QMainWindow):
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
         # Delete the file when conversion is stopped by the user
-        self.media_list.get_running_file().delete_output(self.le_output.text())
+        self.media_list.running_file.delete_output(self.le_output.text())
         for media_file in self.media_list:
             # Set MediaFile.status attribute
             if media_file.status != STATUS.done:
@@ -971,19 +970,18 @@ class VideoMorphMW(QMainWindow):
 
     def _finish_file_encoding(self):
         """Finish the file encoding process."""
-        if self.media_list.get_running_file().status != STATUS.stopped:
+        if self.media_list.running_file.status != STATUS.stopped:
             # Close and kill the converter process
             self.conversion_lib.converter.close()
             # Check if the process finished OK
-            if (self.conversion_lib.converter.exit_status() ==
-                    QProcess.NormalExit):
+            if (self.conversion_lib.converter.exit_status() == QProcess.NormalExit):
                 # When finished a file conversion...
                 self.tb_tasks.item(self.media_list.running_index,
                                    PROGRESS).setText(self.tr('Done!'))
-                self.media_list.get_running_file().status = STATUS.done
+                self.media_list.running_file.status = STATUS.done
                 self.pb_progress.setProperty("value", 0)
                 if self.chb_delete.checkState():
-                    self.media_list.get_running_file().delete_input()
+                    self.media_list.running_file.delete_input()
             # Attempt to end the conversion process
             self._end_encoding_process()
         else:
@@ -1024,7 +1022,7 @@ class VideoMorphMW(QMainWindow):
     def _read_encoding_output(self):
         """Read the encoding output from the converter stdout."""
         time_pattern = re.compile(r'time=([0-9.:]+) ')
-        process_output = str(self.conversion_lib.converter.process.readAll())
+        process_output = str(self.conversion_lib.converter.read_all())
         time_read = time_pattern.findall(process_output)
 
         if not time_read:
@@ -1039,8 +1037,7 @@ class VideoMorphMW(QMainWindow):
             time_in_secs = float(time_read[0])
 
         # Calculate operation progress percent
-        op_time = self.media_list.get_running_file().get_info(
-            'format_duration')
+        op_time = self.media_list.running_file.get_info('format_duration')
         operation_progress = int(time_in_secs / float(op_time) * 100)
 
         # Update the table and the operation progress bar
@@ -1080,11 +1077,11 @@ class VideoMorphMW(QMainWindow):
             self.tr('Converting: {m}\t\t\t '
                     'Operation Remaining Time: {ort}\t\t\t '
                     'Total Remaining Time: {trt}').format(
-                        m=self.media_list.get_running_file().get_name(True),
+                        m=self.media_list.running_file.get_name(True),
                         ort=operation_remaining_time,
                         trt=total_remaining_time))
 
-        current_file_name = self.media_list.get_running_file().get_name(
+        current_file_name = self.media_list.running_file.get_name(
             with_extension=True)
 
         self.setWindowTitle(str(operation_progress) + '%' + '-' +
@@ -1259,7 +1256,7 @@ def main():
     if main_win.check_conversion_lib():
         # If it is running on console
         if len(sys.argv) > 1:
-            from .controller import run_on_console
+            from .converter import run_on_console
             run_on_console(app, main_win)
         else:
             main_win.show()

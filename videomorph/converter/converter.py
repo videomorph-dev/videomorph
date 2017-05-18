@@ -41,7 +41,7 @@ class ConversionLib:
     def __init__(self):
         self._name = get_conversion_lib()
         self.player = None  # To play videos in a future
-        self.converter = Converter(self._name)
+        self.converter = Converter(conversion_lib_name=self._name)
 
     @property
     def name(self):
@@ -67,13 +67,11 @@ class ConversionLib:
 class Converter:
     """Converter class to provide conversion functionality."""
 
-    def __init__(self, conversion_lib):
+    def __init__(self, conversion_lib_name):
         """Class initializer."""
-        self.conversion_lib = conversion_lib
+        self.conversion_lib = conversion_lib_name
 
         self.process = QProcess()
-
-        # self.setup_process()
 
     def setup_process(self, reader=None, finisher=None, process_channel=None):
         """Set up the QProcess object."""
@@ -96,23 +94,23 @@ class Converter:
         self.process.finished.disconnect(connected)
 
     def finished(self):
-        """Calling QProcess.finished method"""
+        """Calling QProcess.finished method."""
         self.process.finished()
 
     def close(self):
-        """Calling QProcess.close method"""
+        """Calling QProcess.close method."""
         self.process.close()
 
     def kill(self):
-        """Calling QProcess.kill method"""
+        """Calling QProcess.kill method."""
         self.process.kill()
 
     def state(self):
-        """Calling QProcess.state method"""
+        """Calling QProcess.state method."""
         return self.process.state()
 
     def exit_status(self):
-        """Calling QProcess.exit_status method"""
+        """Calling QProcess.exit_status method."""
         return self.process.exitStatus()
 
     @property
@@ -124,3 +122,7 @@ class Converter:
     def encoding_done(media_list):
         """Return True if media list is done."""
         return media_list.running_index + 1 >= media_list.length
+
+    def read_all(self):
+        """Calling QProcess.readAll method"""
+        return self.process.readAll()

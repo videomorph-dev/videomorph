@@ -22,6 +22,7 @@
 
 from .converter import Converter
 from .converter import ConversionLib
+from .console import run_on_console
 from .media import InvalidMetadataError
 from .media import MediaFile
 from .media import MediaFileThread

@@ -102,10 +102,6 @@ class MediaList(list):
         """Return the target quality of a file."""
         return self[file_index].target_quality
 
-    def get_running_file(self):
-        """Return the file that is currently running."""
-        return self.get_file(file_index=self.running_index)
-
     def get_file_status(self, file_index):
         """Return the video file status."""
         return self[file_index].status
@@ -117,6 +113,11 @@ class MediaList(list):
     def get_file_info(self, file_index, info_param):
         """Return general streaming info from a video file."""
         return self[file_index].get_info(info_param)
+
+    @property
+    def running_file(self):
+        """Return the file that is currently running."""
+        return self.get_file(file_index=self.running_index)
 
     @property
     def length(self):
@@ -136,7 +137,6 @@ class MediaFile:
 
     __slots__ = ('path',
                  'conversion_profile',
-                 'prober',
                  'status',
                  'info')
 
@@ -144,7 +144,6 @@ class MediaFile:
         """Class initializer."""
         self.path = file_path
         self.conversion_profile = conversion_profile
-        self.prober = self.conversion_profile.prober
         self.status = STATUS.todo
         self.info = self._parse_probe()
 
@@ -214,7 +213,7 @@ class MediaFile:
 
     def _probe(self):
         """Return the prober output as a file like object."""
-        prober_run = spawn_process([which(self.prober),
+        prober_run = spawn_process([which(self.conversion_profile.prober),
                                     '-show_format',
                                     self.path])
 
