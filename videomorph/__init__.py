@@ -1,3 +1,3 @@
 APPNAME = 'VideoMorph'
-VERSION = '0.8'
+VERSION = '0.8.1'
 CODENAME = 'argonaut'
