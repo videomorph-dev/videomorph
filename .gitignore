@@ -69,7 +69,10 @@ tests/Dad.mpg
 # DEB packages
 *.deb
 build_deb.sh
-videomorph_0.8a_xenial_all/
+*_all/dist
 
 # .ui files
 *.ui
+
+# Temporary directory
+Temp/
