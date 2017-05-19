@@ -1,6 +1,43 @@
 videomorph (1.0) xenial; urgency=medium
 
-    * Desciption of changes here
-      (it must be a way to automate this using git logs)
+    * Add a man page
 
- -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Sun, 14 May 2017 04:35:55 -0600
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Fri May 19 00:07:34 2017 -0400
+
+
+videomorph (1.0) xenial; urgency=medium
+
+    * New feature: Edit/Restore to Default Conversion Profiles. Just in case
+      the user break the profiles
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Thu May 18 01:58:48 2017 -0400
+
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Accept a video file or a directory with videos in the command line
+      (videomorph -i video.avi and videomorph -d directory). DONE
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Tue May 16 16:18:06 2017 -0400
+
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Include subtitles in the video file: DONE.
+    * Allow the use to decide if the source video file is to be removed: DONE
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Tue May 16 00:34:57 2017 -0400
+
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Import presets from outer source
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Sun May 14 22:52:38 2017 -0400
+
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Use setuptools.setup instead of disutils.core.setup for more options
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Thu May 11 20:24:20 2017 -0400
