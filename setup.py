@@ -79,7 +79,10 @@ if __name__ == '__main__':
               # Documentation files
               (SYS_PATH['doc'],
                ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL',
-                'copyright', 'changelog.gz', 'TODO'])
+                'copyright', 'changelog.gz', 'TODO']),
+              # Man page
+              (SYS_PATH['man'],
+               [VM_PATHS['man'] + '/videomorph.1.gz'])
           ],
 
           scripts=[VM_PATHS['bin'] + '/videomorph']

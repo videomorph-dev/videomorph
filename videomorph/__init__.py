@@ -52,11 +52,13 @@ LINUX_PATHS = {'apps': '/usr/share/applications',
                'icons': '/usr/share/icons',
                'i18n': '/usr/share/videomorph/translations',
                'profiles': '/usr/share/videomorph/stdprofiles',
-               'doc': '/usr/share/doc/videomorph'}
+               'doc': '/usr/share/doc/videomorph',
+               'man': '/usr/share/man/man1'}
 
 VM_PATHS = {'apps': 'share/applications',
             'icons': 'share/icons',
             'i18n': 'share/videomorph/translations',
             'profiles': 'share/videomorph/stdprofiles',
             'doc': 'share/doc/videomorph',
+            'man': 'share/man',
             'bin': 'bin'}

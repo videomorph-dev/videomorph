@@ -39,13 +39,13 @@ def run_on_console(app, main_win):
     parser = argparse.ArgumentParser(description=APPNAME + ' ' + VERSION)
 
     # Add options for command line
-    parser.add_argument('-i', '--input_file',
+    parser.add_argument('-i', '--input-file',
                         help='take the path to a video file(s) as input',
                         action='store',
                         nargs='*',
                         dest='input_file')
 
-    parser.add_argument('-d', '--input_dir',
+    parser.add_argument('-d', '--input-dir',
                         help='take a directory as input and find video '
                              'files recursively',
                         action='store',
