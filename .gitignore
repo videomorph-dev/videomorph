@@ -73,3 +73,6 @@ videomorph_0.8a_xenial_all/
 
 # .ui files
 *.ui
+
+# Temporary directory
+Temp/
