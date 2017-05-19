@@ -113,7 +113,7 @@ class AddProfileDialog(QDialog):
 
     def accept(self):
         try:
-            XMLProfile.add_conversion_profile(
+            self.parent.xml_profile.add_conversion_profile(
                 profile_name=self.le_profile_name.text(),
                 preset=self.le_preset_name.text(),
                 params=self.le_params.text(),

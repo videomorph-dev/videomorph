@@ -22,11 +22,12 @@
 
 import re
 from os import sep
-from os.path import expanduser, join, exists
+from os.path import expanduser, join, exists, getsize
 from collections import OrderedDict
 from distutils.file_util import copy_file
 from distutils.errors import DistutilsFileError
 from xml.etree import ElementTree
+from xml.etree.ElementTree import ParseError
 
 
 class ProfileError(Exception):
@@ -104,11 +105,10 @@ class XMLProfile:
                 self._xml_root[i].insert(0, xml_preset)
                 self.save_tree()
                 break
-            else:
-                xml_profile.insert(0, xml_preset)
-                self._xml_root.insert(0, xml_profile)
-                self.save_tree()
-                break
+        else:
+            xml_profile.insert(0, xml_preset)
+            self._xml_root.insert(0, xml_profile)
+            self.save_tree()
 
     def export_profile_xml_file(self, dst_dir):
         """Export a file with the conversion profiles."""
@@ -166,19 +166,20 @@ class XMLProfile:
 
     def save_tree(self):
         """Save xml tree."""
-        with open(self._profiles_xml_path, 'wb') as _file:
-            ElementTree.ElementTree(self._xml_root).write(_file)
+        with open(self._profiles_xml_path, 'wb') as xml_file:
+            xml_file.write(b'<?xml version="1.0"?>\n')
+            ElementTree.ElementTree(self._xml_root).write(xml_file)
 
     @property
     def _profiles_xml_path(self):
         """Return the path to the profiles file."""
         return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
 
-    def create_profiles_xml_file(self):
+    def create_profiles_xml_file(self, restore=False):
         """Create a xml file with the conversion profiles."""
         profiles_xml = self._profiles_xml_path
 
-        if not exists(profiles_xml):
+        if not exists(profiles_xml) or not getsize(profiles_xml) or restore:
             if exists('/usr/share/videomorph/stdprofiles/profiles.xml'):
                 # if VideoMorph is installed
                 copy_file('/usr/share/videomorph/stdprofiles/profiles.xml',
@@ -190,11 +191,12 @@ class XMLProfile:
 
     def _get_xml_root(self):
         """Returns the profiles.xml root."""
-        tree = ElementTree.parse(self._profiles_xml_path)
+        try:
+            tree = ElementTree.parse(self._profiles_xml_path)
+        except ParseError:
+            self.create_profiles_xml_file(restore=True)
+            tree = ElementTree.parse(self._profiles_xml_path)
         return tree.getroot()
-
-
-# XMLProfile = _XMLProfile()
 
 
 class _Profile:
@@ -229,6 +231,6 @@ class _Profile:
     def quality_tag(self):
         """Generate a tag from profile quality string."""
         tag_regex = re.compile(r'[A-Z][0-9]?')
-        tag = ''.join(tag_regex.findall(self.quality))
+        tag = ''.join(tag_regex.findall(self._quality))
 
         return '[' + tag + ']'
