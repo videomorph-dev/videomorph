@@ -68,8 +68,6 @@ tests/Dad.mpg
 
 # DEB packages
 *.deb
-build_deb.sh
-*_all/dist
 
 # .ui files
 *.ui
