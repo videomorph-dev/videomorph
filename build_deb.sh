@@ -26,16 +26,16 @@ rm -rfv $(find videomorph_deb/ -path "*__pycache__*")
 
 # Build the DEB package
 dpkg-deb --build videomorph_deb/ "videomorph_""$version""_""$ubuntu""_all.deb"
-mv -v "videomorph_""$version""_""$ubuntu""_all.deb" dist
-rm -rfv changelog.gz
-
-# Build a tar.gz to be install with python3 setup.py install command
-python3 setup.py sdist
 
 # Some clean up
 rm -rfv build videomorph_deb/usr
+mv -v "videomorph_""$version""_""$ubuntu""_all.deb" dist
+rm -rfv changelog.gz
 
-# Include the install.sh an uninstall.sh scritp
+# Build a standard python dist to be install with python3 setup.py install command
+python3 setup.py sdist
+
+# Include the install.sh an uninstall.sh scritps into the dist
 tar -xvf dist/"videomorph-""$version"".tar.gz" --directory dist
 rm -rfv dist/"videomorph-""$version"".tar.gz"
 cp -v -a install.sh uninstall.sh dist/"videomorph-""$version"
