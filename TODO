@@ -5,12 +5,12 @@ Next version or later:
     - Improve the Artwork, mainly the icons theme
     - Improve the performance of videomorph._fill_media_list method
     - Pack in .rpm format
-    - Add the option to play a video using ffplay
 
 BugFix:
     -
 
 Someday:
+    - Add the option to play a video using ffplay
     - Implement model/view/controller pattern
     - Gnome integration
     - Make it run on Windows
