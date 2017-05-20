@@ -29,10 +29,10 @@ from videomorph import PROBER
 def get_conversion_lib():
     """Return the name of the conversion library installed on the system."""
     if which(CONV_LIB.ffmpeg):
-        return CONV_LIB.ffmpeg
+        return CONV_LIB.ffmpeg  # Default library
     elif which(CONV_LIB.avconv):
-        return CONV_LIB.avconv
-    return None
+        return CONV_LIB.avconv  # Alternative library
+    return None  # Not available library
 
 
 class ConversionLib:
@@ -62,6 +62,10 @@ class ConversionLib:
         else:
             return None
 
+    def setup_converter(self, reader, finisher, process_channel):
+        """Setup converter."""
+        self.converter.setup(reader, finisher, process_channel)
+
 
 class Converter:
     """Converter class to provide conversion functionality."""
@@ -72,7 +76,7 @@ class Converter:
 
         self.process = QProcess()
 
-    def setup_process(self, reader=None, finisher=None, process_channel=None):
+    def setup(self, reader, finisher, process_channel):
         """Set up the QProcess object."""
         self.process.setProcessChannelMode(process_channel)
         self.process.readyRead.connect(reader)

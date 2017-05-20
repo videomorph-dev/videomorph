@@ -145,7 +145,7 @@ class VideoMorphMW(QMainWindow):
 
         # Create conversion library
         self.conversion_lib = ConversionLib()
-        self.conversion_lib.converter.setup_process(
+        self.conversion_lib.setup_converter(
             reader=self._read_encoding_output,
             finisher=self._finish_file_encoding,
             process_channel=QProcess.MergedChannels)
