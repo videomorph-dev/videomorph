@@ -510,6 +510,9 @@ class VideoMorphMW(QMainWindow):
             self.tb_tasks.setEditTriggers(QAbstractItemView.AllEditTriggers)
         else:
             self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
+            if int(self.tb_tasks.currentColumn()) == NAME:
+                row = self.tb_tasks.currentIndex().row()
+                self._play_media_file(position=row)
 
     @staticmethod
     def _get_settings_file():
@@ -744,6 +747,15 @@ class VideoMorphMW(QMainWindow):
 
             self._insert_table_item(item_text=self.tr('To Convert'),
                                     row=row, column=PROGRESS)
+
+    def _play_media_file(self, position):
+        try:
+            self.conversion_lib.player.play(
+                file_path=self.media_list.get_file(position).path)
+        except AttributeError:
+            QMessageBox.critical(
+                self, self.tr('Error!'),
+                self.tr('The Conversion Library in Use has no Player'))
 
     def add_media_files(self, *files):
         """Add video files to conversion list.

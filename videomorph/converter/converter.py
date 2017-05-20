@@ -22,6 +22,7 @@
 from PyQt5.QtCore import QProcess
 
 from .utils import which
+from .utils import spawn_process
 from videomorph import CONV_LIB
 from videomorph import PROBER
 
@@ -39,8 +40,8 @@ class ConversionLib:
     """Conversion Library class."""
     def __init__(self):
         self._name = get_conversion_lib()
-        self.player = None  # To play videos in a future
-        self.converter = Converter(conversion_lib_name=self._name)
+        self.player = Player(conversion_lib_name=self.name)
+        self.converter = Converter(conversion_lib_name=self.name)
 
     @property
     def name(self):
@@ -129,3 +130,17 @@ class Converter:
     def read_all(self):
         """Calling QProcess.readAll method"""
         return self.process.readAll()
+
+
+class Player:
+    def __init__(self, conversion_lib_name):
+        if conversion_lib_name == CONV_LIB.ffmpeg:
+            self.name = 'ffplay'
+        else:
+            self.name = None
+
+    def play(self, file_path):
+        if self.name is not None:
+            spawn_process([which(self.name), file_path])
+        else:
+            raise AttributeError('Payer not available')

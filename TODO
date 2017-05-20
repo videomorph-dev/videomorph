@@ -10,7 +10,6 @@ BugFix:
     -
 
 Someday:
-    - Add the option to play a video using ffplay
     - Implement model/view/controller pattern
     - Gnome integration
     - Make it run on Windows
