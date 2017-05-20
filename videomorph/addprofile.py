@@ -123,27 +123,27 @@ class AddProfileDialog(QDialog):
         except ProfileBlankNameError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
-                self.tr("Profile Name Can't Be Left Blank.")
+                self.tr("Profile Name can't be Left Blank")
             )
             self.le_profile_name.setFocus()
         except ProfileBlankPresetError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
-                self.tr("Target Quality Name Can't Be Left Blank.")
+                self.tr("Target Quality Name can't be Left Blank")
             )
             self.le_preset_name.setFocus()
         except ProfileBlankParamsError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
-                self.tr("Command Line Parameters Can't Be Left Blank.")
+                self.tr("Command Line Parameters can't be Left Blank")
             )
             self.le_params.setFocus()
         except ProfileExtensionError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
-                self.tr("Output File Extension Can't Be Left Blank, it "
-                        "Must Begin with a \".\" and Should Be a Valid Video "
-                        "Extension")
+                self.tr("Output File Extension can't be Left Blank, it "
+                        "must start with a dot (.) and should be a Valid "
+                        "Video Extension")
             )
             self.le_extension.setFocus()
         else:
