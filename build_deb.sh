@@ -1,56 +1,49 @@
 #!/bin/bash
 
+version="1.0"
+ubuntu="xenial"
+
 gzip -n -k --best changelog changelog.gz
 
-if [ -d videomorph_1.0_xenial_all/dist ]
+if [ -d dist ]
 then
-    rm -rfv videomorph_1.0_xenial_all/dist
+    rm -rfv dist/*
+else
+    mkdir dist
 fi
 
+# Create a binary linux distribution
 python3 setup.py bdist
 
-cd dist
+# Untar it to videomorph_deb
+tar -xvf dist/videomorph*.tar.gz --directory videomorph_deb
 
-tar -xvf ./videomorph*.tar.gz
+# Clean
+rm -rfv dist/*
 
-cp -v -a ./usr ../videomorph_1.0_xenial_all
-
-cd ..
+# Remove __pycache__ directories so they are not put into .deb package
+rm -rfv $(find videomorph_deb/ -path "*__pycache__*")
 
 # Build the DEB package
-dpkg -b videomorph_1.0_xenial_all/
-cp -v -a videomorph_1.0_xenial_all.deb dist
+dpkg-deb --build videomorph_deb/ "videomorph_""$version""_""$ubuntu""_all.deb"
+mv -v "videomorph_""$version""_""$ubuntu""_all.deb" dist
+rm -rfv changelog.gz
 
 # Build a tar.gz to be install with python3 setup.py install command
 python3 setup.py sdist
 
+# Some clean up
+rm -rfv build videomorph_deb/usr
 
-# Clean
-rm -rfv build
-rm videomorph_1.0_xenial_all.deb
-cd videomorph_1.0_xenial_all
-rm -rfv usr
-cd ../dist
-rm -rfv usr
-rm videomorph-1.0.linux*
+# Include the install.sh an uninstall.sh scritp
+tar -xvf dist/"videomorph-""$version"".tar.gz" --directory dist
+rm -rfv dist/"videomorph-""$version"".tar.gz"
+cp -v -a install.sh uninstall.sh dist/"videomorph-""$version"
+cd dist
+tar -cvf "videomorph-""$version".tar.gz "videomorph-""$version"
 cd ..
-cp -v -a dist videomorph_1.0_xenial_all
-rm -rfv dist
-cd videomorph_1.0_xenial_all/dist
-echo "This is" $PWD
-tar -xvf videomorph-1.0.tar.gz
-rm -rfv videomorph-1.0.tar.gz
-cd ..
-cd ..
-cp -v -a install.sh videomorph_1.0_xenial_all/dist/videomorph-1.0
-cp -v -a uninstall.sh videomorph_1.0_xenial_all/dist/videomorph-1.0
-cd videomorph_1.0_xenial_all/dist
-tar -cvf videomorph-1.0.tar.gz videomorph-1.0
-rm -rfv videomorph-1.0
+rm -rfv dist/"videomorph-""$version"
 
 # Runnin lintian
-lintian -i videomorph_1.0_xenial_all.deb >lintian.log
-
-cd ..
-cd ..
-rm -rfv changelog.gz
+lintian -i dist/"videomorph_""$version""_""$ubuntu""_all.deb" >dist/lintian.log
+/opt/sublime_text/sublime_text dist/lintian.log
