@@ -789,23 +789,34 @@ class VideoMorphMW(QMainWindow):
     def remove_media_file(self):
         """Remove selected media file from the list."""
         file_row = self.tb_tasks.currentItem().row()
-        if file_row is not None:
+
+        msg_box = QMessageBox(
+            QMessageBox.Warning,
+            self.tr('Warning!'),
+            self.tr('Remove Video File from the List of Tasks?'),
+            QMessageBox.NoButton, self)
+
+        msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
+        msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
+
+        if msg_box.exec_() == QMessageBox.AcceptRole:
             # Delete file from table
             self.tb_tasks.removeRow(file_row)
-            # If all files are deleted... update the interface
-            if not self.tb_tasks.rowCount():
-                self.update_interface(convert=False,
-                                      clear=False,
-                                      remove=False,
-                                      stop=False,
-                                      stop_all=False,
-                                      presets=False,
-                                      profiles=False,
-                                      subtitles_chb=False,
-                                      delete_chb=False)
-            # Remove file from MediaList
+            # Remove file from self.media_list
             self.media_list.delete_file(file_index=file_row)
             self.total_duration = self.media_list.duration
+
+        # If all files are deleted... update the interface
+        if not self.tb_tasks.rowCount():
+            self.update_interface(convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  stop=False,
+                                  stop_all=False,
+                                  presets=False,
+                                  profiles=False,
+                                  subtitles_chb=False,
+                                  delete_chb=False)
 
     def add_costume_profile(self):
         """Show dialog for adding conversion profiles."""

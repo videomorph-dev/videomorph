@@ -11,7 +11,6 @@ Next version or later:
 BugFix:
     - When user stops all the conversion tasks, the message is: 'Encoding Process Successfully Finished!'
       and must be: 'Encoding Process Stopped' or something
-    - Removing a single file don't ask user confirmation
 
 Someday:
     - Implement model/view/controller pattern
