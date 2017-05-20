@@ -133,6 +133,8 @@ class Converter:
 
 
 class Player:
+    """Player class to provide a video player using ffplay."""
+
     def __init__(self, conversion_lib_name):
         if conversion_lib_name == CONV_LIB.ffmpeg:
             self.name = 'ffplay'
@@ -140,6 +142,7 @@ class Player:
             self.name = None
 
     def play(self, file_path):
+        """Play a video file with ffplay."""
         if self.name is not None:
             spawn_process([which(self.name), file_path])
         else:
