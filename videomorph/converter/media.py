@@ -51,12 +51,12 @@ class MediaList(list):
         """Class initializer."""
         super(MediaList, self).__init__()
         # -1 represent no item running, 0, the first item, 1, second...
-        self.running_index = -1
+        self.position = -1
 
     def clear(self):
         """Clear the list of videos."""
         super(MediaList, self).clear()
-        self.running_index = -1
+        self.position = -1
 
     def _file_is_added(self, media_file):
         """Determine if a video file is in the list already."""
@@ -116,7 +116,17 @@ class MediaList(list):
     @property
     def running_file(self):
         """Return the file that is currently running."""
-        return self.get_file(file_index=self.running_index)
+        return self.get_file(file_index=self.position)
+
+    @property
+    def all_stopped(self):
+        """Check if all files in the lists have been stopped."""
+        all_stopped = True
+        for file in self:
+            if file.status != STATUS.stopped:
+                all_stopped = False
+
+        return all_stopped
 
     @property
     def length(self):

@@ -766,7 +766,7 @@ class VideoMorphMW(QMainWindow):
         else:
             # This rewind the encoding list if the encoding process is
             # not running
-            self.media_list.running_index = -1
+            self.media_list.position = -1
             # Update ui
             self.update_interface(stop=False, stop_all=False, remove=False)
 
@@ -920,11 +920,11 @@ class VideoMorphMW(QMainWindow):
                               delete_chb=False)
 
         # Increment the the MediaList index
-        self.media_list.running_index += 1
+        self.media_list.position += 1
 
         running_media = self.media_list.running_file
         running_media.conversion_profile.quality = self.tb_tasks.item(
-            self.media_list.running_index, QUALITY).text()
+            self.media_list.position, QUALITY).text()
 
         if (running_media.status != STATUS.done and
                 running_media.status != STATUS.stopped):
@@ -941,7 +941,7 @@ class VideoMorphMW(QMainWindow):
                     QMessageBox.Ok,
                     self)
                 msg_box.show()
-                self.media_list.running_index = -1
+                self.media_list.position = -1
                 self.update_interface(convert=False, stop=False,
                                       stop_all=False, remove=False)
         else:
@@ -952,7 +952,8 @@ class VideoMorphMW(QMainWindow):
         # Set MediaFile.status attribute
         self.media_list.running_file.status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
-        self.media_list.running_file.delete_output(self.le_output.text())
+        self.media_list.running_file.delete_output(
+            output_path=self.le_output.text())
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
         self._reset_progress_times()
@@ -967,9 +968,9 @@ class VideoMorphMW(QMainWindow):
             # Set MediaFile.status attribute
             if media_file.status != STATUS.done:
                 media_file.status = STATUS.stopped
-                self.media_list.running_index = self.media_list.index(
+                self.media_list.position = self.media_list.index(
                     media_file)
-                self.tb_tasks.item(self.media_list.running_index,
+                self.tb_tasks.item(self.media_list.position,
                                    PROGRESS).setText(self.tr('Stopped!'))
 
         self.conversion_lib.converter.stop_encoding()
@@ -984,9 +985,10 @@ class VideoMorphMW(QMainWindow):
             # Close and kill the converter process
             self.conversion_lib.converter.close()
             # Check if the process finished OK
-            if (self.conversion_lib.converter.exit_status() == QProcess.NormalExit):
+            if (self.conversion_lib.converter.exit_status() ==
+                    QProcess.NormalExit):
                 # When finished a file conversion...
-                self.tb_tasks.item(self.media_list.running_index,
+                self.tb_tasks.item(self.media_list.position,
                                    PROGRESS).setText(self.tr('Done!'))
                 self.media_list.running_file.status = STATUS.done
                 self.pb_progress.setProperty("value", 0)
@@ -997,7 +999,7 @@ class VideoMorphMW(QMainWindow):
         else:
             # If the process was stopped
             if not self.conversion_lib.converter.is_running:
-                self.tb_tasks.item(self.media_list.running_index,
+                self.tb_tasks.item(self.media_list.position,
                                    PROGRESS).setText(self.tr('Stopped!'))
             # Attempt to end the conversion process
             self._end_encoding_process()
@@ -1006,13 +1008,22 @@ class VideoMorphMW(QMainWindow):
         """End up the encoding process."""
         # Test if encoding process is finished
         if self.conversion_lib.converter.encoding_done(self.media_list):
-            msg_box = QMessageBox(
-                QMessageBox.Information,
-                self.tr('Information!'),
-                self.tr('Encoding Process Successfully Finished!'),
-                QMessageBox.Ok,
-                self)
-            msg_box.show()
+            if not self.media_list.all_stopped:
+                msg_box = QMessageBox(
+                    QMessageBox.Information,
+                    self.tr('Information!'),
+                    self.tr('Encoding Process Successfully Finished!'),
+                    QMessageBox.Ok,
+                    self)
+                msg_box.show()
+            else:
+                msg_box = QMessageBox(
+                    QMessageBox.Information,
+                    self.tr('Information!'),
+                    self.tr('Encoding Process Stopped by the User!'),
+                    QMessageBox.Ok,
+                    self)
+                msg_box.show()
             self.setWindowTitle(APPNAME + ' ' + VERSION)
             self.statusBar().showMessage(self.tr('Ready'))
             self.chb_delete.setChecked(False)
@@ -1021,8 +1032,8 @@ class VideoMorphMW(QMainWindow):
             self.pb_total_progress.setProperty("value", 0)
             self._reset_progress_times()
             self.total_duration = self.media_list.duration
-            # Reset the running_index
-            self.media_list.running_index = -1
+            # Reset the position
+            self.media_list.position = -1
             # Update tool buttons
             self.update_interface(convert=False, stop=False,
                                   stop_all=False, remove=False)
@@ -1052,7 +1063,7 @@ class VideoMorphMW(QMainWindow):
 
         # Update the table and the operation progress bar
         self.pb_progress.setProperty("value", operation_progress)
-        self.tb_tasks.item(self.media_list.running_index, 3).setText(
+        self.tb_tasks.item(self.media_list.position, 3).setText(
             str(operation_progress) + "%")
 
         # Calculate total time
@@ -1142,7 +1153,7 @@ class VideoMorphMW(QMainWindow):
         """Update media files state of conversion."""
         for media_file in self.media_list:
             media_file.status = STATUS.todo
-        self.media_list.running_index = -1
+        self.media_list.position = -1
 
     def update_interface(self, **i_vars):
         """Update the interface status.

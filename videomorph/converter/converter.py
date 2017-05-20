@@ -120,7 +120,7 @@ class Converter:
     @staticmethod
     def encoding_done(media_list):
         """Return True if media list is done."""
-        return media_list.running_index + 1 >= media_list.length
+        return media_list.position + 1 >= media_list.length
 
     def read_all(self):
         """Calling QProcess.readAll method"""

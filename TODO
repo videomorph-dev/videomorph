@@ -7,10 +7,8 @@ Next version or later:
     - Pack in .rpm format
     - Add the option to play a video using ffplay
 
-
 BugFix:
-    - When user stops all the conversion tasks, the message is: 'Encoding Process Successfully Finished!'
-      and must be: 'Encoding Process Stopped' or something
+    -
 
 Someday:
     - Implement model/view/controller pattern
