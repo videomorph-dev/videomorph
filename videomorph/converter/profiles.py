@@ -140,13 +140,18 @@ class XMLProfile:
                                         extension=item[2].text,
                                         xml_profile=self)
 
-    def get_preset_attr(self, target_quality, attr_index=1):
+    def get_preset_attr(self, target_quality, attr_name='preset_params'):
         """Return a dict of preset/params."""
+        param_map = {'preset_name': 0,
+                     'preset_params': 1,
+                     'file_extension': 2,
+                     'preset_name_es': 3}
+
         for element in self._xml_root:
             for item in element:
                 if (item[0].text == target_quality or
                         item[3].text == target_quality):
-                    return item[attr_index].text
+                    return item[param_map[attr_name]].text
 
     def get_qualities_per_profile(self, locale):
         """Return a list of available Qualities per conversion profile."""
@@ -208,20 +213,23 @@ class _Profile:
 
     def __init__(self, prober, quality, extension, xml_profile):
         """Class initializer."""
-        self.xml_profile = xml_profile
         self.prober = prober
-
-        self.quality = None
-        self.params = None
+        self.quality = quality
         self.extension = extension
+        self.xml_profile = xml_profile
+
+        self.params = self.xml_profile.get_preset_attr(self.quality)
 
     def update(self, new_quality):
         """Set the target Quality and other parameters needed to get it."""
         self.quality = new_quality
         # Update the params and extension when the target update change
-        self.params = self.xml_profile.get_preset_attr(self.quality)
-        self.extension = self.xml_profile.get_preset_attr(self.quality,
-                                                          attr_index=2)
+        self.params = self.xml_profile.get_preset_attr(
+            target_quality=self.quality,
+            attr_name='preset_params')
+        self.extension = self.xml_profile.get_preset_attr(
+            target_quality=self.quality,
+            attr_name='file_extension')
 
     @property
     def quality_tag(self):

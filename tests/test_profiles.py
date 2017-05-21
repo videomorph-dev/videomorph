@@ -80,7 +80,7 @@ def test_get_conversion_profile():
 def test_get_preset_attr():
     """Test get_preset_attr."""
     attr = xml_profile.get_preset_attr(target_quality='MP4 Fullscreen (4:3)',
-                                       attr_index=1)
+                                       attr_name='preset_params')
 
     assert attr == '-f mp4 -r 29.97 -vcodec libx264 -s 640x480 -b:v 1000k ' \
                    '-aspect 4:3 -flags +loop -cmp +chroma -deblockalpha 0 ' \
@@ -143,7 +143,7 @@ def test_get_quality():
 
 def test_quality():
     """Test update."""
-    profile.quality = 'WMV Generic'
+    profile.update(new_quality='WMV Generic')
     assert profile.params == '-vcodec wmv2 -acodec wmav2 -b:v 1000k ' \
                              '-b:a 160k -r 25'
     assert profile.extension == '.wmv'

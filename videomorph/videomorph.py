@@ -751,7 +751,7 @@ class VideoMorphMW(QMainWindow):
     def _play_media_file(self, position):
         try:
             self.conversion_lib.player.play(
-                file_path=self.media_list.get_file(position).path)
+                file_path=self.media_list.get_file_path(position))
         except AttributeError:
             QMessageBox.critical(
                 self, self.tr('Error!'),
@@ -935,16 +935,17 @@ class VideoMorphMW(QMainWindow):
         self.media_list.position += 1
 
         running_file = self.media_list.running_file
-        running_file.conversion_profile.update(
-            new_quality=self.tb_tasks.item(self.media_list.position,
-                                           QUALITY).text())
 
         if (running_file.status != STATUS.done and
                 running_file.status != STATUS.stopped):
             try:
+                # Fist build the conversion command
                 conversion_cmd = running_file.build_conversion_cmd(
+                    target_quality=self.tb_tasks.item(self.media_list.position,
+                                                      QUALITY).text(),
                     output_dir=self.le_output.text(),
                     subtitle=bool(self.chb_subtitle.checkState()))
+                # Then pass it to the converter
                 self.conversion_lib.converter.start(cmd=conversion_cmd)
             except PermissionError:
                 msg_box = QMessageBox(
@@ -966,7 +967,7 @@ class VideoMorphMW(QMainWindow):
         self.media_list.running_file.status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
         self.media_list.running_file.delete_output(
-            output_path=self.le_output.text())
+            output_dir=self.le_output.text())
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
         self._reset_progress_times()
@@ -1107,16 +1108,16 @@ class VideoMorphMW(QMainWindow):
         except ValueError:
             operation_remaining_time = write_time(0)
 
+        current_file_name = self.media_list.running_file.get_name(
+            with_extension=True)
+
         self.statusBar().showMessage(
             self.tr('Converting: {m}\t\t\t '
                     'Operation Remaining Time: {ort}\t\t\t '
                     'Total Remaining Time: {trt}').format(
-                        m=self.media_list.running_file.get_name(True),
+                        m=current_file_name,
                         ort=operation_remaining_time,
                         trt=total_remaining_time))
-
-        current_file_name = self.media_list.running_file.get_name(
-            with_extension=True)
 
         self.setWindowTitle(str(operation_progress) + '%' + '-' +
                             '[' + current_file_name + ']' +
