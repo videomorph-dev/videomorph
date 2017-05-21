@@ -110,12 +110,11 @@ class MediaList(list):
     @property
     def all_stopped(self):
         """Check if all files in the lists have been stopped."""
-        all_stopped = True
         for file in self:
             if file.status != STATUS.stopped:
-                all_stopped = False
+                return False
 
-        return all_stopped
+        return True
 
     @property
     def length(self):

@@ -389,7 +389,7 @@ class VideoMorphMW(QMainWindow):
             text=self.tr('Clear &List'),
             shortcut="Ctrl+Del",
             enabled=False,
-            tip=self.tr('Clear the Video Files List'),
+            tip=self.tr('Remove All Video Files from the List'),
             callback=self.clear_media_list)
 
         self.remove_media_file_action = self._action_factory(
@@ -577,6 +577,9 @@ class VideoMorphMW(QMainWindow):
         self.partial_time = 0.0
         self.total_time = 0.0
 
+    def _show_message_box(self, type, title, msg):
+        QMessageBox(type, title, msg, QMessageBox.Ok, self).show()
+
     def check_conversion_lib(self):
         """Check if ffmpeg or/and avconv are installed on the system."""
         if self.conversion_lib.name is not None:
@@ -673,16 +676,15 @@ class VideoMorphMW(QMainWindow):
             try:
                 self.media_list.add_file(file)
             except InvalidMetadataError:
-                msg_box = QMessageBox(
-                    QMessageBox.Critical,
-                    self.tr('Error!'),
-                    self.tr('Invalid Video File Information for: {fn}. '
-                            'File not Added to Conversion List'.format(
-                                fn=file.get_name(
-                                    with_extension=True))),
-                    QMessageBox.Ok,
-                    self)
-                msg_box.show()
+                self._show_message_box(
+                    type=QMessageBox.Critical,
+                    title=self.tr('Error!'),
+                    msg=self.tr('Invalid Video File Information for: %s. '
+                                'File not Added to Conversion List' %
+                                file.get_name(with_extension=True)))
+                # msg = self.tr('Invalid Video File Information for: {fn}. '
+                #               'File not Added to Conversion List'.format(
+                #     fn=file.get_name(with_extension=True)))
                 # An error occurred, so interface get initial state back, but
                 # only if the list is empty
                 if not self.media_list.length:
@@ -753,9 +755,10 @@ class VideoMorphMW(QMainWindow):
             self.conversion_lib.player.play(
                 file_path=self.media_list.get_file_path(position))
         except AttributeError:
-            QMessageBox.critical(
-                self, self.tr('Error!'),
-                self.tr('The Conversion Library in Use has no Player'))
+            self._show_message_box(
+                type=QMessageBox.critical,
+                title=self.tr('Error!'),
+                msg=self.tr('The Conversion Library in Use has no Player'))
 
     def add_media_files(self, *files):
         """Add video files to conversion list.
@@ -839,13 +842,14 @@ class VideoMorphMW(QMainWindow):
         try:
             func(path)
         except PermissionError:
-            QMessageBox.critical(
-                self, self.tr('Error!'),
-                self.tr('Access Denied for Writing to Selected Directory'))
+            self._show_message_box(
+                type=QMessageBox.critical,
+                title=self.tr('Error!'),
+                msg=self.tr('Access Denied for Writing to Selected Directory'))
         else:
-            QMessageBox.information(
-                self, self.tr('Information!'),
-                msg_info)
+            self._show_message_box(type=QMessageBox.information,
+                                   title=self.tr('Information!'),
+                                   msg=msg_info)
 
     def export_profiles(self):
         """Export conversion profiles."""
@@ -893,7 +897,7 @@ class VideoMorphMW(QMainWindow):
         msg_box = QMessageBox(
             QMessageBox.Warning,
             self.tr('Warning!'),
-            self.tr('Clear All Tasks?'),
+            self.tr('Remove All Conversion Tasks?'),
             QMessageBox.NoButton, self)
 
         msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
@@ -948,13 +952,11 @@ class VideoMorphMW(QMainWindow):
                 # Then pass it to the converter
                 self.conversion_lib.converter.start(cmd=conversion_cmd)
             except PermissionError:
-                msg_box = QMessageBox(
-                    QMessageBox.Critical,
-                    self.tr('Error!'),
-                    self.tr('Can not Write to Selected Output Directory'),
-                    QMessageBox.Ok,
-                    self)
-                msg_box.show()
+                self._show_message_box(
+                    type=QMessageBox.Critical,
+                    title=self.tr('Error!'),
+                    msg=self.tr('Can not Write to Selected Output Directory'))
+
                 self.media_list.position = -1
                 self.update_interface(convert=False, stop=False,
                                       stop_all=False, remove=False)
@@ -1023,21 +1025,16 @@ class VideoMorphMW(QMainWindow):
         # Test if encoding process is finished
         if self.conversion_lib.converter.encoding_done(self.media_list):
             if not self.media_list.all_stopped:
-                msg_box = QMessageBox(
-                    QMessageBox.Information,
-                    self.tr('Information!'),
-                    self.tr('Encoding Process Successfully Finished!'),
-                    QMessageBox.Ok,
-                    self)
-                msg_box.show()
+                self._show_message_box(
+                    type=QMessageBox.Information,
+                    title=self.tr('Information!'),
+                    msg=self.tr('Encoding Process Successfully Finished!'))
             else:
-                msg_box = QMessageBox(
-                    QMessageBox.Information,
-                    self.tr('Information!'),
-                    self.tr('Encoding Process Stopped by the User!'),
-                    QMessageBox.Ok,
-                    self)
-                msg_box.show()
+                self._show_message_box(
+                    type=QMessageBox.Information,
+                    title=self.tr('Information!'),
+                    msg=self.tr('Encoding Process Stopped by the User!'))
+
             self.setWindowTitle(APPNAME + ' ' + VERSION)
             self.statusBar().showMessage(self.tr('Ready'))
             self.chb_delete.setChecked(False)
