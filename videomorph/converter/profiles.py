@@ -209,33 +209,24 @@ class _Profile:
     def __init__(self, prober, quality, extension, xml_profile):
         """Class initializer."""
         self.xml_profile = xml_profile
-        self.params = None
-        self._quality = None
-
         self.prober = prober
 
-        # Set self.quality and also self.params
-        self.quality = quality
+        self.quality = None
+        self.params = None
         self.extension = extension
 
-    @property
-    def quality(self):
-        """Return the target Quality."""
-        return self._quality
-
-    @quality.setter
-    def quality(self, value):
+    def update(self, new_quality):
         """Set the target Quality and other parameters needed to get it."""
-        self._quality = value
-        # Update the params and extension when the target quality change
-        self.params = self.xml_profile.get_preset_attr(self._quality)
-        self.extension = self.xml_profile.get_preset_attr(self._quality,
+        self.quality = new_quality
+        # Update the params and extension when the target update change
+        self.params = self.xml_profile.get_preset_attr(self.quality)
+        self.extension = self.xml_profile.get_preset_attr(self.quality,
                                                           attr_index=2)
 
     @property
     def quality_tag(self):
         """Generate a tag from profile quality string."""
         tag_regex = re.compile(r'[A-Z][0-9]?')
-        tag = ''.join(tag_regex.findall(self._quality))
+        tag = ''.join(tag_regex.findall(self.quality))
 
         return '[' + tag + ']'

@@ -142,7 +142,7 @@ def test_get_quality():
 
 
 def test_quality():
-    """Test quality."""
+    """Test update."""
     profile.quality = 'WMV Generic'
     assert profile.params == '-vcodec wmv2 -acodec wmav2 -b:v 1000k ' \
                              '-b:a 160k -r 25'

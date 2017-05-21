@@ -52,7 +52,7 @@ def setup():
 
     media_list.add_file(media_file)
 
-    conv_lib.converter.start_encoding(cmd=media_file.get_conversion_cmd(
+    conv_lib.converter.start(cmd=media_file.build_conversion_cmd(
         output_dir='.'))
 
 

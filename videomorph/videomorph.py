@@ -271,7 +271,7 @@ class VideoMorphMW(QMainWindow):
              self.tr('Target Quality'),
              self.tr('Progress')])
         self.tb_tasks.cellClicked.connect(self._enable_remove_file_action)
-        # Create a combo box for Target quality
+        # Create a combo box for Target update
         self.tb_tasks.setItemDelegate(TargetQualityDelegate(parent=self))
         horizontal_layout.addWidget(self.tb_tasks)
         self.vertical_layout_2.addWidget(gb_tasks)
@@ -935,16 +935,17 @@ class VideoMorphMW(QMainWindow):
         self.media_list.position += 1
 
         running_file = self.media_list.running_file
-        running_file.conversion_profile.quality = self.tb_tasks.item(
-            self.media_list.position, QUALITY).text()
+        running_file.conversion_profile.update(
+            new_quality=self.tb_tasks.item(self.media_list.position,
+                                           QUALITY).text())
 
         if (running_file.status != STATUS.done and
                 running_file.status != STATUS.stopped):
             try:
-                self.conversion_lib.converter.start_encoding(
-                    cmd=running_file.get_conversion_cmd(
-                        output_dir=self.le_output.text(),
-                        subtitle=bool(self.chb_subtitle.checkState())))
+                conversion_cmd = running_file.build_conversion_cmd(
+                    output_dir=self.le_output.text(),
+                    subtitle=bool(self.chb_subtitle.checkState()))
+                self.conversion_lib.converter.start(cmd=conversion_cmd)
             except PermissionError:
                 msg_box = QMessageBox(
                     QMessageBox.Critical,
@@ -970,7 +971,7 @@ class VideoMorphMW(QMainWindow):
         self.total_duration = self.media_list.duration
         self._reset_progress_times()
         # Terminate the file encoding
-        self.conversion_lib.converter.stop_encoding()
+        self.conversion_lib.converter.stop()
 
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
@@ -985,7 +986,7 @@ class VideoMorphMW(QMainWindow):
                 self.tb_tasks.item(self.media_list.position,
                                    PROGRESS).setText(self.tr('Stopped!'))
 
-        self.conversion_lib.converter.stop_encoding()
+        self.conversion_lib.converter.stop()
 
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration

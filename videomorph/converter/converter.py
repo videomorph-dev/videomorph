@@ -49,9 +49,9 @@ class ConversionLib:
         return self._name
 
     @name.setter
-    def name(self, name):
-        """Set the name of the conversion library."""
-        self._name = name
+    def name(self, library_name):
+        """Set the library_name of the conversion library."""
+        self._name = library_name
 
     @property
     def prober(self):
@@ -83,11 +83,11 @@ class Converter:
         self.process.readyRead.connect(reader)
         self.process.finished.connect(finisher)
 
-    def start_encoding(self, cmd):
+    def start(self, cmd):
         """Start the encoding process."""
         self.process.start(which(self.conversion_lib), cmd)
 
-    def stop_encoding(self):
+    def stop(self):
         """Terminate encoding process."""
         self.process.terminate()
         if self.is_running:
