@@ -174,7 +174,7 @@ class MediaFile:
         if not access(output_dir, W_OK):
             raise PermissionError('Access denied')
 
-        output_file_path = self.get_output_path(output_dir)
+        output_file_path = self._get_output_path(output_dir)
 
         if subtitle and self.subtitle_path:
             subtitle_opt = ['-vf', "subtitles={0}:force_style='Fontsize=24'"
@@ -190,7 +190,7 @@ class MediaFile:
 
         return cmd
 
-    def get_output_path(self, output_dir):
+    def _get_output_path(self, output_dir):
         """Return the the output file path."""
         output_file_path = (output_dir +
                             sep +  # multi-platform path separator
@@ -202,8 +202,8 @@ class MediaFile:
 
     def delete_output(self, output_path):
         """Delete the output file if conversion is stoped."""
-        if exists(self.get_output_path(output_path)):
-            remove(self.get_output_path(output_path))
+        if exists(self._get_output_path(output_path)):
+            remove(self._get_output_path(output_path))
 
     def delete_input(self):
         """Delete the input file when conversion is finished."""

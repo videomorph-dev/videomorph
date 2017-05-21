@@ -934,15 +934,15 @@ class VideoMorphMW(QMainWindow):
         # Increment the the MediaList index
         self.media_list.position += 1
 
-        running_media = self.media_list.running_file
-        running_media.conversion_profile.quality = self.tb_tasks.item(
+        running_file = self.media_list.running_file
+        running_file.conversion_profile.quality = self.tb_tasks.item(
             self.media_list.position, QUALITY).text()
 
-        if (running_media.status != STATUS.done and
-                running_media.status != STATUS.stopped):
+        if (running_file.status != STATUS.done and
+                running_file.status != STATUS.stopped):
             try:
                 self.conversion_lib.converter.start_encoding(
-                    cmd=running_media.get_conversion_cmd(
+                    cmd=running_file.get_conversion_cmd(
                         output_dir=self.le_output.text(),
                         subtitle=bool(self.chb_subtitle.checkState())))
             except PermissionError:
