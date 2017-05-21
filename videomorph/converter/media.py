@@ -169,7 +169,7 @@ class MediaFile:
         """Return an info attribute from a given file: media_file."""
         return self.info.get(info_param)
 
-    def get_conversion_cmd(self, output_dir, subtitle=False):
+    def build_conversion_cmd(self, output_dir, subtitle=False):
         """Return the conversion command."""
         if not access(output_dir, W_OK):
             raise PermissionError('Access denied')

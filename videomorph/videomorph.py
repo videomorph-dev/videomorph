@@ -941,10 +941,10 @@ class VideoMorphMW(QMainWindow):
         if (running_file.status != STATUS.done and
                 running_file.status != STATUS.stopped):
             try:
-                self.conversion_lib.converter.start_encoding(
-                    cmd=running_file.get_conversion_cmd(
-                        output_dir=self.le_output.text(),
-                        subtitle=bool(self.chb_subtitle.checkState())))
+                conversion_cmd = running_file.build_conversion_cmd(
+                    output_dir=self.le_output.text(),
+                    subtitle=bool(self.chb_subtitle.checkState()))
+                self.conversion_lib.converter.start(cmd=conversion_cmd)
             except PermissionError:
                 msg_box = QMessageBox(
                     QMessageBox.Critical,
@@ -970,7 +970,7 @@ class VideoMorphMW(QMainWindow):
         self.total_duration = self.media_list.duration
         self._reset_progress_times()
         # Terminate the file encoding
-        self.conversion_lib.converter.stop_encoding()
+        self.conversion_lib.converter.stop()
 
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
@@ -985,7 +985,7 @@ class VideoMorphMW(QMainWindow):
                 self.tb_tasks.item(self.media_list.position,
                                    PROGRESS).setText(self.tr('Stopped!'))
 
-        self.conversion_lib.converter.stop_encoding()
+        self.conversion_lib.converter.stop()
 
         # Update the list duration and partial time for total progress bar
         self.total_duration = self.media_list.duration
