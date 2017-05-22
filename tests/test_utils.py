@@ -32,8 +32,8 @@ def test_convert_none():
 
 
 @nose.tools.raises(ValueError)
-def test_convert_wrong_data_type():
-    """Convert None."""
+def test_convert_wrong_data_types():
+    """Convert wrong data types."""
     assert utils.write_time('string')
     assert utils.write_time((1, 2))
     assert utils.write_time([1, 2])

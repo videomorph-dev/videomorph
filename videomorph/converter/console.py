@@ -39,7 +39,7 @@ def run_on_console(app, main_win):
 
     # Add options for command line
     parser.add_argument('-i', '--input-file',
-                        help='take the path to a video file(s) as input',
+                        help='take the input_path to a video file(s) as input',
                         action='store',
                         nargs='*',
                         dest='input_file')

@@ -53,7 +53,7 @@ def setup():
     media_list.add_file(media_file)
 
     conv_lib.converter.start(cmd=media_file.build_conversion_cmd(
-        output_dir='.'))
+        output_dir='.', target_quality='DVD Fullscreen (4:3)'))
 
 
 def teardown():
