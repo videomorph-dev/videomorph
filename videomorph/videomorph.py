@@ -235,7 +235,7 @@ class VideoMorphMW(QMainWindow):
         self.chb_subtitle.setEnabled(False)
         vertical_layout.addWidget(self.chb_subtitle)
         self.chb_delete = QCheckBox(self.tr('Delete Input Video '
-                                            'Files When Finished'),
+                                            'Files when Finished'),
                                     statusTip=self.tr(
                                         'Delete Input Video '
                                         'Files when Finished'),
@@ -398,7 +398,7 @@ class VideoMorphMW(QMainWindow):
             text=self.tr('&Remove File'),
             shortcut="Del",
             enabled=False,
-            tip=self.tr('Remove a Video File from the '
+            tip=self.tr('Remove Selected Video File from the '
                         'List of Conversion Tasks'),
             callback=self.remove_media_file)
 
@@ -428,9 +428,9 @@ class VideoMorphMW(QMainWindow):
 
         self.about_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_MessageBoxInformation),
-            text=self.tr('&About') + ' ' + APPNAME + '...',
+            text=self.tr('&About') + ' ' + APPNAME + ' ' + VERSION + '...',
             shortcut="Ctrl+H",
-            tip=self.tr('&About') + ' ' + APPNAME + ' ' + VERSION + '...',
+            tip=self.tr('&About') + ' ' + APPNAME + ' ' + VERSION,
             callback=self.about)
 
         self.exit_action = self._action_factory(
@@ -444,8 +444,7 @@ class VideoMorphMW(QMainWindow):
             icon=self.style().standardIcon(QStyle.SP_FileDialogDetailedView),
             text=self.tr('&Settings...'),
             shortcut="Ctrl+S",
-            tip=self.tr('Open') + ' ' + APPNAME + ' ' + VERSION + ' ' +
-            self.tr('Settings Dialog'),
+            tip=self.tr('Open Settings Dialog'),
             callback=self.settings)
 
     def _create_main_menu(self):
