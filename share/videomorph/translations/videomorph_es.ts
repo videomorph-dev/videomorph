@@ -341,7 +341,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TargetQualityDelegate</name>
     <message>
-        <location filename="videomorph.py" line="1249"/>
+        <location filename="videomorph.py" line="1248"/>
         <source>To Convert</source>
         <translation>Convertir</translation>
     </message>
@@ -544,12 +544,12 @@ p, li { white-space: pre-wrap; }
         <translation>A&amp;yuda</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1039"/>
+        <location filename="videomorph.py" line="1038"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="955"/>
+        <location filename="videomorph.py" line="954"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
@@ -559,67 +559,67 @@ p, li { white-space: pre-wrap; }
         <translation>Las Librerías Ffmpeg o Avconv no se Encuentran e su Sistema</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="708"/>
+        <location filename="videomorph.py" line="707"/>
         <source>Select Video Files</source>
         <translation>Seleccione Archivos de Video</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="710"/>
+        <location filename="videomorph.py" line="709"/>
         <source>Video Files</source>
         <translation>Archivos de Video</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1155"/>
+        <location filename="videomorph.py" line="1154"/>
         <source>To Convert</source>
         <translation>Convertir</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="857"/>
+        <location filename="videomorph.py" line="856"/>
         <source>Export to Directory</source>
         <translation>Exportar al Directorio</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1033"/>
+        <location filename="videomorph.py" line="1032"/>
         <source>Information!</source>
         <translation>Información!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="897"/>
+        <location filename="videomorph.py" line="896"/>
         <source>Warning!</source>
         <translation>Advertencia!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="903"/>
+        <location filename="videomorph.py" line="902"/>
         <source>&amp;Yes</source>
         <translation>&amp;Sí</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="904"/>
+        <location filename="videomorph.py" line="903"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="955"/>
+        <location filename="videomorph.py" line="954"/>
         <source>Can not Write to Selected Output Directory</source>
         <translation>No se Puede Escribir en el Directorio Seleccionado</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1019"/>
+        <location filename="videomorph.py" line="1018"/>
         <source>Stopped!</source>
         <translation>Detenido!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1008"/>
+        <location filename="videomorph.py" line="1007"/>
         <source>Done!</source>
         <translation>Hecho!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1028"/>
+        <location filename="videomorph.py" line="1027"/>
         <source>Encoding Process Successfully Finished!</source>
         <translation>Proceso de Conversión Concluido Exitosamente!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1111"/>
+        <location filename="videomorph.py" line="1110"/>
         <source>Converting: {m}			 Operation Remaining Time: {ort}			 Total Remaining Time: {trt}</source>
         <translation>Convirtiendo: {m}			 Tiempo Restante de la Operación: {ort}			 Tiempo Restante Total: {trt}</translation>
     </message>
@@ -634,7 +634,7 @@ p, li { white-space: pre-wrap; }
         <translation>Importar Perfiles de Conversión</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="873"/>
+        <location filename="videomorph.py" line="872"/>
         <source>Select a Profiles File</source>
         <translation>Seleccionar Archivo de Perfiles</translation>
     </message>
@@ -654,22 +654,22 @@ p, li { white-space: pre-wrap; }
         <translation>Incrustar Subtítulos si están Disponibles en el Directorio Fuente</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="845"/>
+        <location filename="videomorph.py" line="844"/>
         <source>Access Denied for Writing to Selected Directory</source>
         <translation>Acceso Denegado para Escribir en el Directorio Seleccionado</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="864"/>
+        <location filename="videomorph.py" line="863"/>
         <source>Conversion Profiles Successfully Exported</source>
         <translation>Perfiles de Conversión Exportados Exitosamente</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="875"/>
+        <location filename="videomorph.py" line="874"/>
         <source>Profiles Files </source>
         <translation>Archivo de Perfiles </translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="883"/>
+        <location filename="videomorph.py" line="882"/>
         <source>Conversion Profiles Successfully Imported</source>
         <translation>Perfiles de Conversión Importados Exitosamente</translation>
     </message>
@@ -689,29 +689,34 @@ p, li { white-space: pre-wrap; }
         <translation>Eliminar Todos los Videos de la Lista</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="679"/>
-        <source>Invalid Video File Information for: %s. File not Added to Conversion List</source>
-        <translation>Información de Archivo de Video no Válida para: %s. Archivo no Añadido a la Lista de Conversión</translation>
-    </message>
-    <message>
-        <location filename="videomorph.py" line="758"/>
+        <location filename="videomorph.py" line="757"/>
         <source>The Conversion Library in Use has no Player</source>
         <translation>La Librería de Conversión en Uso no tiene Reproductor de Videos</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="808"/>
+        <location filename="videomorph.py" line="807"/>
         <source>Remove Video File from the List of Tasks?</source>
         <translation>Eliminar el Video de la Lista de Tareas?</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="897"/>
+        <location filename="videomorph.py" line="896"/>
         <source>Remove All Conversion Tasks?</source>
         <translation>Eliminar Todas las Tareas de Conversión?</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1033"/>
+        <location filename="videomorph.py" line="1032"/>
         <source>Encoding Process Stopped by the User!</source>
         <translation>Proceso de Conversión Detenido por el Usuario!</translation>
+    </message>
+    <message>
+        <location filename="videomorph.py" line="679"/>
+        <source>Invalid Video File Information for:</source>
+        <translation>Información de Formato de Archivo de Video no Válida para:</translation>
+    </message>
+    <message>
+        <location filename="videomorph.py" line="681"/>
+        <source>File not Added to Conversion List</source>
+        <translation>Archivo no Añadido a la Lista</translation>
     </message>
 </context>
 </TS>
