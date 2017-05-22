@@ -191,32 +191,30 @@ class VideoMorphMW(QMainWindow):
         horizontal_layout = QHBoxLayout(gb_settings)
         vertical_layout = QVBoxLayout()
         horizontal_layout_1 = QHBoxLayout()
-        label = QLabel(self.tr('Convert to:'))
-        horizontal_layout_1.addWidget(label)
+        label_convert = QLabel(self.tr('Convert to:'))
+        horizontal_layout_1.addWidget(label_convert)
         spacer_item = QSpacerItem(40,
                                   20,
                                   QSizePolicy.Expanding,
                                   QSizePolicy.Minimum)
         horizontal_layout_1.addItem(spacer_item)
         vertical_layout.addLayout(horizontal_layout_1)
-        self.cb_profiles = QComboBox(
-            gb_settings,
-            statusTip=self.tr('Select a Video Format'),
-            toolTip=self.tr('Select a Video Format'))
+        profile_tip = self.tr('Select a Video Format')
+        self.cb_profiles = QComboBox(gb_settings, statusTip=profile_tip,
+            toolTip=profile_tip)
         self.cb_profiles.setMinimumSize(QSize(200, 0))
         vertical_layout.addWidget(self.cb_profiles)
         horizontal_layout_2 = QHBoxLayout()
-        label = QLabel(self.tr('Target Quality:'))
-        horizontal_layout_2.addWidget(label)
+        label_quality = QLabel(self.tr('Target Quality:'))
+        horizontal_layout_2.addWidget(label_quality)
         spacer_item_1 = QSpacerItem(40, 20,
                                     QSizePolicy.Expanding,
                                     QSizePolicy.Minimum)
         horizontal_layout_2.addItem(spacer_item_1)
         vertical_layout.addLayout(horizontal_layout_2)
-        self.cb_presets = QComboBox(
-            gb_settings,
-            statusTip=self.tr('Select a Video Target Quality'),
-            toolTip=self.tr('Select a Video Target Quality'))
+        preset_tip = self.tr('Select a Video Target Quality')
+        self.cb_presets = QComboBox(gb_settings, statusTip=preset_tip,
+            toolTip=preset_tip)
         self.cb_presets.setMinimumSize(QSize(200, 0))
 
         self.cb_profiles.currentIndexChanged.connect(partial(
@@ -225,23 +223,19 @@ class VideoMorphMW(QMainWindow):
         self.cb_presets.activated.connect(self._update_media_files_status)
 
         vertical_layout.addWidget(self.cb_presets)
+        self.label_other_options = QLabel(self.tr('Other Options:'))
+        sub_tip = self.tr('Insert Subtitles if Available in Source Directory')
         self.chb_subtitle = QCheckBox(self.tr('Insert Subtitles if Available'),
-                                      statusTip=self.tr(
-                                          'Insert Subtitles if Available '
-                                          'in Source Directory'),
-                                      toolTip=self.tr(
-                                          'Insert Subtitles if Available '
-                                          'in Source Directory'))
+                                      statusTip=sub_tip,
+                                      toolTip=sub_tip)
         self.chb_subtitle.setEnabled(False)
+        vertical_layout.addWidget(self.label_other_options)
         vertical_layout.addWidget(self.chb_subtitle)
-        self.chb_delete = QCheckBox(self.tr('Delete Input Video '
-                                            'Files when Finished'),
-                                    statusTip=self.tr(
-                                        'Delete Input Video '
-                                        'Files when Finished'),
-                                    toolTip=self.tr(
-                                        'Delete Input Video '
-                                        'Files when Finished'))
+        del_text = self.tr('Delete Input Video Files when Finished')
+
+        self.chb_delete = QCheckBox(del_text,
+                                    statusTip=del_text,
+                                    toolTip=del_text)
         self.chb_delete.setEnabled(False)
         vertical_layout.addWidget(self.chb_delete)
         horizontal_layout.addLayout(vertical_layout)
@@ -250,7 +244,8 @@ class VideoMorphMW(QMainWindow):
     def _group_tasks_list(self):
         """Define the Tasks Group arrangement."""
         gb_tasks = QGroupBox(self.central_widget)
-        gb_tasks.setTitle(self.tr('List of Conversion Tasks'))
+        tasks_ext = self.tr('List of Conversion Tasks')
+        gb_tasks.setTitle(tasks_ext)
         size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
@@ -270,6 +265,8 @@ class VideoMorphMW(QMainWindow):
              self.tr('Duration'),
              self.tr('Target Quality'),
              self.tr('Progress')])
+        self.tb_tasks.setStatusTip(tasks_ext)
+        self.tb_tasks.setToolTip(tasks_ext)
         self.tb_tasks.cellClicked.connect(self._enable_remove_file_action)
         # Create a combo box for Target update
         self.tb_tasks.setItemDelegate(TargetQualityDelegate(parent=self))
@@ -284,16 +281,18 @@ class VideoMorphMW(QMainWindow):
         vertical_layout = QVBoxLayout(gb_output_dir)
         vertical_layout_1 = QVBoxLayout()
         horizontal_layout = QHBoxLayout()
+        outputdir_tip = self.tr('Choose Output Directory')
         self.le_output = QLineEdit(
             str(QDir.homePath()),
-            statusTip=self.tr('Choose Output Directory'),
-            toolTip=self.tr('Choose Output Directory'))
+            statusTip= outputdir_tip,
+            toolTip=outputdir_tip)
         self.le_output.setReadOnly(True)
         horizontal_layout.addWidget(self.le_output)
+        outputbtn_tip = self.tr('Choose Output Directory')
         self.tb_output = QToolButton(
             gb_output_dir,
-            statusTip=self.tr('Choose Output Directory'),
-            toolTip=self.tr('Choose Output Directory'))
+            statusTip= outputbtn_tip,
+            toolTip=outputbtn_tip)
         self.tb_output.setText('...')
         self.tb_output.clicked.connect(self.output_directory)
         horizontal_layout.addWidget(self.tb_output)
