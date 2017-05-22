@@ -42,6 +42,7 @@ class ConversionLib:
         self._name = get_conversion_lib()
         self.player = Player(conversion_lib_name=self.name)
         self.converter = Converter(conversion_lib_name=self.name)
+        self.library_error = None
 
     @property
     def name(self):

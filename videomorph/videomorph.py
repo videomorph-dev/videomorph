@@ -1025,7 +1025,15 @@ class VideoMorphMW(QMainWindow):
         """End up the encoding process."""
         # Test if encoding process is finished
         if self.conversion_lib.converter.encoding_done(self.media_list):
-            if not self.media_list.all_stopped:
+            if self.conversion_lib.library_error is not None:
+                self._show_message_box(
+                    type=QMessageBox.Critical,
+                    title='Error!',
+                    msg=self.tr('The Conversion Library has '
+                                'failed with error:') + ' ' +
+                    self.conversion_lib.library_error)
+                self.conversion_lib.library_error = None
+            elif not self.media_list.all_stopped:
                 self._show_message_box(
                     type=QMessageBox.Information,
                     title=self.tr('Information!'),
@@ -1056,6 +1064,14 @@ class VideoMorphMW(QMainWindow):
         """Read the encoding output from the converter stdout."""
         time_pattern = re.compile(r'time=([0-9.:]+) ')
         process_output = str(self.conversion_lib.converter.read_all())
+
+        # Here we go with the library errors. I have only this two for now,
+        # there will be others in the future, I think...
+        if 'Unknown encoder' in process_output:
+            self.conversion_lib.library_error = 'Unknown encoder'
+        if 'Unrecognized option':
+            self.conversion_lib.library_error = 'Unrecognized option'
+
         time_read = time_pattern.findall(process_output)
 
         if not time_read:
