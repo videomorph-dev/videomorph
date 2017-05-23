@@ -862,34 +862,39 @@ class VideoMorphMW(QMainWindow):
                                    title=self.tr('Information!'),
                                    msg=msg_info)
 
+    def _select_directory(self, dialog_title, source_dir=QDir.homePath()):
+        options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
+        directory = QFileDialog.getExistingDirectory(self, dialog_title,
+                                                     source_dir,
+                                                     options=options)
+        return directory
+
     def export_profiles(self):
         """Export conversion profiles."""
-        options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
-        directory = QFileDialog.getExistingDirectory(
-            self,
-            self.tr('Export to Directory'),
-            QDir.homePath(),
-            options=options)
+        directory = self._select_directory(
+            dialog_title=self.tr('Export to Directory'))
 
         if directory:
             msg_info = self.tr('Conversion Profiles Successfully Exported!')
-
             self._export_import_profiles(
                 func=self.xml_profile.export_profile_xml_file,
                 path=directory, msg_info=msg_info)
 
+    def _select_files(self, dialog_title, files_filter,
+                      source_dir=QDir.homePath()):
+        # Select media files and store their path
+        files_paths, _ = QFileDialog.getOpenFileName(self,
+                                                     dialog_title,
+                                                     source_dir,
+                                                     files_filter)
+        return files_paths
+
     def import_profiles(self):
         """Import conversion profiles."""
-        # Dialog title
-        title = self.tr('Select a Profiles File')
-        # Media filters
-        profile_filters = (self.tr('Profiles Files ') + '(*.xml)')
+        file_path = self._select_files(
+            dialog_title=self.tr('Select a Profiles File'),
+            files_filter=self.tr('Profiles Files ') + '(*.xml)')
 
-        # Select media files and store their path
-        file_path, _ = QFileDialog.getOpenFileName(self,
-                                                   title,
-                                                   QDir.homePath(),
-                                                   profile_filters)
         if file_path:
             msg_info = self.tr('Conversion Profiles Successfully Imported!')
 
