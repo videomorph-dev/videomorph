@@ -65,19 +65,20 @@ def run_on_console(app, main_win):
 
     if args.input_dir:
         try:
-            add_directory_recursively(directory=args.input_dir, files=files)
+            files = search_directory_recursively(directory=args.input_dir,
+                                                 files=files)
         except IsADirectoryError as error:
+            print(error, file=sys.stderr)
+        except FileNotFoundError as error:
             print(error, file=sys.stderr)
 
     if files:
         main_win.add_media_files(*files)
         main_win.show()
         sys.exit(app.exec_())
-    else:
-        print("No Video File found", file=sys.stderr)
 
 
-def add_directory_recursively(directory, files=None):
+def search_directory_recursively(directory, files=None):
     if files is None:
         files = []
 
@@ -86,6 +87,12 @@ def add_directory_recursively(directory, files=None):
             for file in file_names:
                 if file.split('.')[-1] in VIDEO_FILTERS:
                     files.append('{0}'.join([dir_path, file]).format(sep))
+
+        if not files:
+            raise FileNotFoundError("No Video Files Found in: {0}".format(
+                directory))
+
+        return files
     else:
         raise IsADirectoryError("Directory: {0}, doesn't exist".format(
             directory))

@@ -71,6 +71,7 @@ from . import VERSION
 from . import VIDEO_FILTERS
 from . import videomorph_qrc
 from .about import AboutVMDialog
+from .converter import search_directory_recursively
 from .converter import ConversionLib
 from .converter import get_locale
 from .converter import InvalidMetadataError
@@ -133,11 +134,11 @@ class VideoMorphMW(QMainWindow):
         # Set central widget
         self.setCentralWidget(self.central_widget)
 
-        # Create actions
-        self._create_actions()
-
         # Default Source directory
         self.source_dir = QDir.homePath()
+
+        # Create actions
+        self._create_actions()
 
         # XML Profile
         self.xml_profile = XMLProfile()
@@ -356,10 +357,18 @@ class VideoMorphMW(QMainWindow):
         """Create actions."""
         self.open_media_file_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_DialogOpenButton),
-            text=self.tr('&Open'),
+            text=self.tr('&Open Files...'),
             shortcut="Ctrl+O",
             tip=self.tr('Add Video Files to the List of Conversion Tasks'),
             callback=self.open_media_files)
+
+        self.open_media_dir_action = self._action_factory(
+            icon=self.style().standardIcon(QStyle.SP_DirOpenIcon),
+            text=self.tr('Open &Directory...'),
+            shortcut="Ctrl+D",
+            tip=self.tr('Add all the Video Files in a Directory '
+                        'to the List of Conversion Tasks'),
+            callback=self.open_media_dir)
 
         self.add_profile_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_DialogApplyButton),
@@ -455,6 +464,7 @@ class VideoMorphMW(QMainWindow):
         # File menu
         self.file_menu = self.menuBar().addMenu(self.tr('&File'))
         self.file_menu.addAction(self.open_media_file_action)
+        self.file_menu.addAction(self.open_media_dir_action)
         self.file_menu.addSeparator()
         self.file_menu.addAction(self.settings_action)
         self.file_menu.addSeparator()
@@ -812,6 +822,23 @@ class VideoMorphMW(QMainWindow):
 
         self.add_media_files(*files_paths)
 
+    def open_media_dir(self):
+        directory = self._select_directory(
+            dialog_title=self.tr('Select Directory'),
+            source_dir=self.source_dir)
+
+        if not directory:
+            return
+
+        try:
+            media_files = search_directory_recursively(directory)
+            self.add_media_files(*media_files)
+        except FileNotFoundError:
+            self._show_message_box(
+                type=QMessageBox.Critical,
+                title=self.tr('Error!'),
+                msg=self.tr('No Video Files Found in:' + ' ' + directory))
+
     def remove_media_file(self):
         """Remove selected media file from the list."""
         file_row = self.tb_tasks.currentItem().row()
@@ -864,7 +891,9 @@ class VideoMorphMW(QMainWindow):
 
     def _select_directory(self, dialog_title, source_dir=QDir.homePath()):
         options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
-        directory = QFileDialog.getExistingDirectory(self, dialog_title,
+
+        directory = QFileDialog.getExistingDirectory(self,
+                                                     dialog_title,
                                                      source_dir,
                                                      options=options)
         return directory
