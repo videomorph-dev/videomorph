@@ -21,6 +21,7 @@
 
 import re
 import sys
+import time
 from collections import OrderedDict
 from functools import partial
 from os import sep
@@ -99,7 +100,10 @@ class VideoMorphMW(QMainWindow):
         self.time_jump = 0.0
         self.partial_time = 0.0
         self.total_time = 0.0
-        self.total_duration = 0.0
+
+        self.media_list_duration = 0.0
+        self.process_initial_time = 0.0
+        self.operation_initial_time = 0.0
 
         # App interface setup
         # Window size
@@ -577,6 +581,8 @@ class VideoMorphMW(QMainWindow):
         self.time_jump = 0.0
         self.partial_time = 0.0
         self.total_time = 0.0
+        self.operation_initial_time = 0.0
+        self.media_list_duration = self.media_list.duration
 
     def _show_message_box(self, type, title, msg):
         QMessageBox(type, title, msg, QMessageBox.Ok, self).show()
@@ -791,7 +797,7 @@ class VideoMorphMW(QMainWindow):
         self._create_table()
 
         # After adding files to the list, recalculate the list duration
-        self.total_duration = self.media_list.duration
+        self.media_list_duration = self.media_list.duration
 
     def open_media_files(self):
         """Add media files to the list of conversion tasks."""
@@ -820,7 +826,7 @@ class VideoMorphMW(QMainWindow):
             self.tb_tasks.removeRow(file_row)
             # Remove file from self.media_list
             self.media_list.delete_file(file_index=file_row)
-            self.total_duration = self.media_list.duration
+            self.media_list_duration = self.media_list.duration
 
         # If all files are deleted... update the interface
         if not self.tb_tasks.rowCount():
@@ -939,6 +945,9 @@ class VideoMorphMW(QMainWindow):
         # Increment the the MediaList index
         self.media_list.position += 1
 
+        # Reset the operation initial time
+        self.operation_initial_time = 0.0
+
         running_file = self.media_list.running_file
 
         if (running_file.status != STATUS.done and
@@ -972,7 +981,6 @@ class VideoMorphMW(QMainWindow):
         self.media_list.running_file.delete_output(
             output_dir=self.le_output.text())
         # Update the list duration and partial time for total progress bar
-        self.total_duration = self.media_list.duration
         self._reset_progress_times()
         # Terminate the file encoding
         self.conversion_lib.converter.stop()
@@ -993,7 +1001,6 @@ class VideoMorphMW(QMainWindow):
         self.conversion_lib.converter.stop()
 
         # Update the list duration and partial time for total progress bar
-        self.total_duration = self.media_list.duration
         self._reset_progress_times()
 
     def _finish_file_encoding(self):
@@ -1030,7 +1037,7 @@ class VideoMorphMW(QMainWindow):
                     type=QMessageBox.Critical,
                     title='Error!',
                     msg=self.tr('The Conversion Library has '
-                                'failed with error:') + ' ' +
+                                'Failed with Error:') + ' ' +
                     self.conversion_lib.library_error)
                 self.conversion_lib.library_error = None
             elif not self.media_list.all_stopped:
@@ -1051,7 +1058,7 @@ class VideoMorphMW(QMainWindow):
             self.pb_progress.setProperty("value", 0)
             self.pb_total_progress.setProperty("value", 0)
             self._reset_progress_times()
-            self.total_duration = self.media_list.duration
+            self.process_initial_time = 0.0
             # Reset the position
             self.media_list.position = -1
             # Update tool buttons
@@ -1062,79 +1069,97 @@ class VideoMorphMW(QMainWindow):
 
     def _read_encoding_output(self):
         """Read the encoding output from the converter stdout."""
-        time_pattern = re.compile(r'time=([0-9.:]+) ')
+        # Getting the process output
         process_output = str(self.conversion_lib.converter.read_all())
 
         # Here we go with the library errors. I have only this two for now,
         # there will be others in the future, I think...
         if 'Unknown encoder' in process_output:
             self.conversion_lib.library_error = 'Unknown encoder'
-        if 'Unrecognized option':
+        if 'Unrecognized option' in process_output:
             self.conversion_lib.library_error = 'Unrecognized option'
 
+        # Reading time from library output
+        time_pattern = re.compile(r'time=([0-9.:]+) ')
         time_read = time_pattern.findall(process_output)
 
+        # Reading bit rate
+        bit_rate_pattern = re.compile(
+            r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*')
+        bit_rate_read = bit_rate_pattern.findall(process_output)
+
+        # Return if no time read
         if not time_read:
             return
 
-        # Convert time to seconds
-        if ':' in time_read[0]:
-            time_in_secs = 0.0
-            for part in time_read[0].split(':'):
-                time_in_secs = 60 * time_in_secs + float(part)
-        else:
-            time_in_secs = float(time_read[0])
+        # Initialize the process time
+        if not self.process_initial_time:
+            # Grab the initial time
+            self.process_initial_time = time.time()
+
+        # Initialize the operation time
+        if not self.operation_initial_time:
+            self.operation_initial_time = time.time()
+
+        # Convert time read to seconds
+        operation_time_read = 0.0
+        for time_part in time_read[0].split(':'):
+            operation_time_read = 60 * operation_time_read + float(time_part)
+
+        # Conversion bit rate
+        bit_rate = bit_rate_read[0].split('=')[-1].strip()
+
+        # Real time computation
+        operation_cum_time = time.time() - self.operation_initial_time
+        process_cum_time = time.time() - self.process_initial_time
+
+        # Estimating time
+        file_duration = float(self.media_list.running_file.get_info(
+            'format_duration'))
+        time_variation_coefficient = operation_cum_time / operation_time_read
+
+        operation_estimated_time = file_duration * time_variation_coefficient
+        operation_left_time = operation_estimated_time - operation_cum_time
 
         # Calculate operation progress percent
-        op_time = self.media_list.running_file.get_info('format_duration')
-        operation_progress = int(time_in_secs / float(op_time) * 100)
+        operation_progress = int(operation_time_read /
+                                 file_duration * 100)
 
         # Update the table and the operation progress bar
         self.pb_progress.setProperty("value", operation_progress)
         self.tb_tasks.item(self.media_list.position, 3).setText(
             str(operation_progress) + "%")
 
-        # Calculate total time
-        if self.partial_time > time_in_secs:
-            self.time_jump += self.partial_time
-            self.total_time = self.time_jump + time_in_secs
-            self.partial_time = time_in_secs
-        else:
-            self.total_time = self.time_jump + time_in_secs
-            self.partial_time = time_in_secs
-
         # Calculate total progress percent
-        total_progress = int(self.total_time /
-                             float(self.total_duration) * 100)
+        if self.partial_time > operation_time_read:
+            self.time_jump += self.partial_time
+            self.total_time = self.time_jump + operation_time_read
+            self.partial_time = operation_time_read
+        else:
+            self.total_time = self.time_jump + operation_time_read
+            self.partial_time = operation_time_read
+
+        process_progress = int(self.total_time /
+                               float(self.media_list_duration) * 100)
+
         # Update the total progress bar
-        self.pb_total_progress.setProperty("value", total_progress)
+        self.pb_total_progress.setProperty("value", process_progress)
 
-        # Avoid negative total_remaining_time
-        try:
-            total_remaining_time = write_time(self.total_duration -
-                                              self.total_time)
-        except ValueError:
-            total_remaining_time = write_time(0)
-        # Avoid negative operation_remaining_time
-        try:
-            operation_remaining_time = write_time(float(op_time) -
-                                                  time_in_secs)
-        except ValueError:
-            operation_remaining_time = write_time(0)
-
-        current_file_name = self.media_list.running_file.get_name(
+        running_file_name = self.media_list.running_file.get_name(
             with_extension=True)
 
         self.statusBar().showMessage(
             self.tr('Converting: {m}\t\t\t '
+                    'At: {sp}\t\t\t '
                     'Operation Remaining Time: {ort}\t\t\t '
-                    'Total Remaining Time: {trt}').format(
-                        m=current_file_name,
-                        ort=operation_remaining_time,
-                        trt=total_remaining_time))
+                    'Total Elapsed Time: {trt}').format(
+                        m=running_file_name,
+                        sp=bit_rate,
+                        ort=write_time(operation_left_time),
+                        trt=write_time(process_cum_time)))
 
         self.setWindowTitle(str(operation_progress) + '%' + '-' +
-                            '[' + current_file_name + ']' +
+                            '[' + running_file_name + ']' +
                             ' - ' + APPNAME + ' ' + VERSION)
 
     def _update_media_files_status(self):
@@ -1155,7 +1180,7 @@ class VideoMorphMW(QMainWindow):
             self.media_list.set_file_status(file_index=item.row(),
                                             status=STATUS.todo)
             # Update total duration of the new tasks list
-            self.total_duration = self.media_list.duration
+            self.media_list_duration = self.media_list.duration
             # Update the interface
             self.update_interface(clear=False, stop=False,
                                   stop_all=False, remove=False)
@@ -1175,7 +1200,7 @@ class VideoMorphMW(QMainWindow):
                 self.update_interface(clear=False, stop=False,
                                       stop_all=False, remove=False)
             self._set_media_status()
-            self.total_duration = self.media_list.duration
+            self.media_list_duration = self.media_list.duration
 
     def _set_media_status(self):
         """Update media files state of conversion."""
