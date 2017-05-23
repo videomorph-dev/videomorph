@@ -659,12 +659,9 @@ class VideoMorphMW(QMainWindow):
 
     def output_directory(self):
         """Choose output directory."""
-        options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
-        directory = QFileDialog.getExistingDirectory(
-            self,
-            self.tr('Choose Output Directory'),
-            QDir.homePath(),
-            options=options)
+        directory = self._select_directory(
+            dialog_title=self.tr('Choose Output Directory'),
+            source_dir=QDir.homePath())
 
         if directory:
             self.le_output.setText(directory)
@@ -722,26 +719,11 @@ class VideoMorphMW(QMainWindow):
 
     def _load_files(self, source_dir=QDir.homePath()):
         """Load video files."""
-        source_dir = source_dir if isdir(source_dir) else QDir.homePath()
-
-        # Dialog title
-        title = self.tr('Select Video Files')
-        # Media filters
-        video_filters = (self.tr('Video Files') + ' ' +
-                         '(' + VIDEO_FILTERS + ')')
-
-        # Select media files and store their path
-        files_paths, _ = QFileDialog.getOpenFileNames(self,
-                                                      title,
-                                                      source_dir,
-                                                      video_filters)
-
-        if not files_paths:
-            self.source_dir = source_dir
-            return None
-        else:
-            # Update the source directory
-            self.source_dir = dirname(files_paths[0])
+        files_paths = self._select_files(
+            dialog_title=self.tr('Select Video Files'),
+            files_filter=self.tr('Video Files') + ' ' +
+                         '(' + VIDEO_FILTERS + ')',
+            source_dir=source_dir)
 
         return files_paths
 
@@ -910,19 +892,38 @@ class VideoMorphMW(QMainWindow):
                 path=directory, msg_info=msg_info)
 
     def _select_files(self, dialog_title, files_filter,
-                      source_dir=QDir.homePath()):
+                      source_dir=QDir.homePath(), single_file=False):
+        # Validate source_dir
+        source_dir = source_dir if isdir(source_dir) else QDir.homePath()
+
         # Select media files and store their path
-        files_paths, _ = QFileDialog.getOpenFileName(self,
-                                                     dialog_title,
-                                                     source_dir,
-                                                     files_filter)
+        if single_file:
+            files_paths, _ = QFileDialog.getOpenFileName(self,
+                                                          dialog_title,
+                                                          source_dir,
+                                                          files_filter)
+        else:
+            files_paths, _ = QFileDialog.getOpenFileNames(self,
+                                                          dialog_title,
+                                                          source_dir,
+                                                          files_filter)
+
+        if not files_paths:
+            # Update the source directory
+            self.source_dir = source_dir
+            return None
+        else:
+            # Update the source directory
+            self.source_dir = dirname(files_paths[0])
+
         return files_paths
 
     def import_profiles(self):
         """Import conversion profiles."""
         file_path = self._select_files(
             dialog_title=self.tr('Select a Profiles File'),
-            files_filter=self.tr('Profiles Files ') + '(*.xml)')
+            files_filter=self.tr('Profiles Files ') + '(*.xml)',
+            single_file=True)
 
         if file_path:
             msg_info = self.tr('Conversion Profiles Successfully Imported!')
