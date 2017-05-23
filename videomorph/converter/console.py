@@ -77,3 +77,5 @@ def run_on_console(app, main_win):
         main_win.add_media_files(*files)
         main_win.show()
         sys.exit(app.exec_())
+    else:
+        print("No Video File found", file=sys.stderr)

@@ -1067,10 +1067,16 @@ class VideoMorphMW(QMainWindow):
         else:
             self.start_encoding()
 
+    @staticmethod
+    def _read_param(param_regex, process_output):
+        pattern = re.compile(param_regex)
+        read = pattern.findall(process_output)
+        return read
+
     def _read_encoding_output(self):
         """Read the encoding output from the converter stdout."""
         # Getting the process output
-        process_output = str(self.conversion_lib.converter.read_all())
+        process_output = str(self.conversion_lib.converter.read_output())
 
         # Here we go with the library errors. I have only this two for now,
         # there will be others in the future, I think...
@@ -1080,13 +1086,7 @@ class VideoMorphMW(QMainWindow):
             self.conversion_lib.library_error = 'Unrecognized option'
 
         # Reading time from library output
-        time_pattern = re.compile(r'time=([0-9.:]+) ')
-        time_read = time_pattern.findall(process_output)
-
-        # Reading bit rate
-        bit_rate_pattern = re.compile(
-            r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*')
-        bit_rate_read = bit_rate_pattern.findall(process_output)
+        time_read = self._read_param(r'time=([0-9.:]+) ', process_output)
 
         # Return if no time read
         if not time_read:
@@ -1101,17 +1101,19 @@ class VideoMorphMW(QMainWindow):
         if not self.operation_initial_time:
             self.operation_initial_time = time.time()
 
+        # Real time computation
+        operation_cum_time = time.time() - self.operation_initial_time
+        process_cum_time = time.time() - self.process_initial_time
+
         # Convert time read to seconds
         operation_time_read = 0.0
         for time_part in time_read[0].split(':'):
             operation_time_read = 60 * operation_time_read + float(time_part)
 
-        # Conversion bit rate
+        # Reading bit rate
+        bit_rate_read = self._read_param(
+            r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*', process_output)
         bit_rate = bit_rate_read[0].split('=')[-1].strip()
-
-        # Real time computation
-        operation_cum_time = time.time() - self.operation_initial_time
-        process_cum_time = time.time() - self.process_initial_time
 
         # Estimating time
         file_duration = float(self.media_list.running_file.get_info(
