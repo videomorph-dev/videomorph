@@ -354,7 +354,7 @@ class VideoMorphMW(QMainWindow):
 
     def _create_actions(self):
         """Create actions."""
-        self.add_media_file_action = self._action_factory(
+        self.open_media_file_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_DialogOpenButton),
             text=self.tr('&Open'),
             shortcut="Ctrl+O",
@@ -454,7 +454,7 @@ class VideoMorphMW(QMainWindow):
         """Create main app menu."""
         # File menu
         self.file_menu = self.menuBar().addMenu(self.tr('&File'))
-        self.file_menu.addAction(self.add_media_file_action)
+        self.file_menu.addAction(self.open_media_file_action)
         self.file_menu.addSeparator()
         self.file_menu.addAction(self.settings_action)
         self.file_menu.addSeparator()
@@ -482,7 +482,7 @@ class VideoMorphMW(QMainWindow):
         """Create a toolbar and add it to the interface."""
         self.tool_bar = QToolBar(self)
         # Add actions to the tool bar
-        self.tool_bar.addAction(self.add_media_file_action)
+        self.tool_bar.addAction(self.open_media_file_action)
         self.tool_bar.addSeparator()
         self.tool_bar.addAction(self.clear_media_list_action)
         self.tool_bar.addAction(self.remove_media_file_action)
@@ -703,6 +703,10 @@ class VideoMorphMW(QMainWindow):
                                           profiles=False,
                                           subtitles_chb=False,
                                           delete_chb=False)
+                else:
+                    # Update ui
+                    self.update_interface(stop=False, stop_all=False,
+                                          remove=False)
 
         return self.media_list
 
@@ -1232,7 +1236,7 @@ class VideoMorphMW(QMainWindow):
 
         variables.update(i_vars)
 
-        self.add_media_file_action.setEnabled(variables['add'])
+        self.open_media_file_action.setEnabled(variables['add'])
         self.convert_action.setEnabled(variables['convert'])
         self.clear_media_list_action.setEnabled(variables['clear'])
         self.remove_media_file_action.setEnabled(variables['remove'])
