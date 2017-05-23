@@ -1323,6 +1323,8 @@ class TargetQualityDelegate(QItemDelegate):
         else:
             QItemDelegate.setEditorData(self, editor, index)
 
+        self.parent.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
     def update(self, editor, index):
         """Update several things in the interface."""
         # Update table Progress field if file is: Done or Stopped
