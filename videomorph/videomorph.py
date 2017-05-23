@@ -1037,7 +1037,7 @@ class VideoMorphMW(QMainWindow):
                     type=QMessageBox.Critical,
                     title='Error!',
                     msg=self.tr('The Conversion Library has '
-                                'failed with error:') + ' ' +
+                                'Failed with Error:') + ' ' +
                     self.conversion_lib.library_error)
                 self.conversion_lib.library_error = None
             elif not self.media_list.all_stopped:
