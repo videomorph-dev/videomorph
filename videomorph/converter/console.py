@@ -79,6 +79,7 @@ def run_on_console(app, main_win):
 
 
 def search_directory_recursively(directory, files=None):
+    """Search a directory for video files."""
     if files is None:
         files = []
 

@@ -206,7 +206,7 @@ class VideoMorphMW(QMainWindow):
         vertical_layout.addLayout(horizontal_layout_1)
         profile_tip = self.tr('Select a Video Format')
         self.cb_profiles = QComboBox(gb_settings, statusTip=profile_tip,
-            toolTip=profile_tip)
+                                     toolTip=profile_tip)
         self.cb_profiles.setMinimumSize(QSize(200, 0))
         vertical_layout.addWidget(self.cb_profiles)
         horizontal_layout_2 = QHBoxLayout()
@@ -219,7 +219,7 @@ class VideoMorphMW(QMainWindow):
         vertical_layout.addLayout(horizontal_layout_2)
         preset_tip = self.tr('Select a Video Target Quality')
         self.cb_presets = QComboBox(gb_settings, statusTip=preset_tip,
-            toolTip=preset_tip)
+                                    toolTip=preset_tip)
         self.cb_presets.setMinimumSize(QSize(200, 0))
 
         self.cb_profiles.currentIndexChanged.connect(partial(
@@ -289,14 +289,14 @@ class VideoMorphMW(QMainWindow):
         outputdir_tip = self.tr('Choose Output Directory')
         self.le_output = QLineEdit(
             str(QDir.homePath()),
-            statusTip= outputdir_tip,
+            statusTip=outputdir_tip,
             toolTip=outputdir_tip)
         self.le_output.setReadOnly(True)
         horizontal_layout.addWidget(self.le_output)
         outputbtn_tip = self.tr('Choose Output Directory')
         self.tb_output = QToolButton(
             gb_output_dir,
-            statusTip= outputbtn_tip,
+            statusTip=outputbtn_tip,
             toolTip=outputbtn_tip)
         self.tb_output.setText('...')
         self.tb_output.clicked.connect(self.output_directory)
@@ -594,8 +594,8 @@ class VideoMorphMW(QMainWindow):
         self.operation_initial_time = 0.0
         self.media_list_duration = self.media_list.duration
 
-    def _show_message_box(self, type, title, msg):
-        QMessageBox(type, title, msg, QMessageBox.Ok, self).show()
+    def _show_message_box(self, type_, title, msg):
+        QMessageBox(type_, title, msg, QMessageBox.Ok, self).show()
 
     def check_conversion_lib(self):
         """Check if ffmpeg or/and avconv are installed on the system."""
@@ -694,7 +694,7 @@ class VideoMorphMW(QMainWindow):
                     file.get_name(with_extension=True) + '. ' + \
                     self.tr('File not Added to the List of Conversion Tasks')
                 self._show_message_box(
-                    type=QMessageBox.Critical,
+                    type_=QMessageBox.Critical,
                     title=self.tr('Error!'),
                     msg=msg)
 
@@ -722,7 +722,7 @@ class VideoMorphMW(QMainWindow):
         files_paths = self._select_files(
             dialog_title=self.tr('Select Video Files'),
             files_filter=self.tr('Video Files') + ' ' +
-                         '(' + VIDEO_FILTERS + ')',
+            '(' + VIDEO_FILTERS + ')',
             source_dir=source_dir)
 
         return files_paths
@@ -758,7 +758,7 @@ class VideoMorphMW(QMainWindow):
                 file_path=self.media_list.get_file_path(position))
         except AttributeError:
             self._show_message_box(
-                type=QMessageBox.critical,
+                type_=QMessageBox.critical,
                 title=self.tr('Error!'),
                 msg=self.tr('The Conversion Library in Use '
                             'has no Video Player'))
@@ -805,6 +805,7 @@ class VideoMorphMW(QMainWindow):
         self.add_media_files(*files_paths)
 
     def open_media_dir(self):
+        """Add media files from a directory recursively."""
         directory = self._select_directory(
             dialog_title=self.tr('Select Directory'),
             source_dir=self.source_dir)
@@ -817,7 +818,7 @@ class VideoMorphMW(QMainWindow):
             self.add_media_files(*media_files)
         except FileNotFoundError:
             self._show_message_box(
-                type=QMessageBox.Critical,
+                type_=QMessageBox.Critical,
                 title=self.tr('Error!'),
                 msg=self.tr('No Video Files Found in:' + ' ' + directory))
 
@@ -863,11 +864,11 @@ class VideoMorphMW(QMainWindow):
             func(path)
         except PermissionError:
             self._show_message_box(
-                type=QMessageBox.critical,
+                type_=QMessageBox.critical,
                 title=self.tr('Error!'),
                 msg=self.tr('Can not Write to Selected Directory'))
         else:
-            self._show_message_box(type=QMessageBox.information,
+            self._show_message_box(type_=QMessageBox.information,
                                    title=self.tr('Information!'),
                                    msg=msg_info)
 
@@ -899,9 +900,9 @@ class VideoMorphMW(QMainWindow):
         # Select media files and store their path
         if single_file:
             files_paths, _ = QFileDialog.getOpenFileName(self,
-                                                          dialog_title,
-                                                          source_dir,
-                                                          files_filter)
+                                                         dialog_title,
+                                                         source_dir,
+                                                         files_filter)
         else:
             files_paths, _ = QFileDialog.getOpenFileNames(self,
                                                           dialog_title,
@@ -1002,7 +1003,7 @@ class VideoMorphMW(QMainWindow):
                 self.conversion_lib.converter.start(cmd=conversion_cmd)
             except PermissionError:
                 self._show_message_box(
-                    type=QMessageBox.Critical,
+                    type_=QMessageBox.Critical,
                     title=self.tr('Error!'),
                     msg=self.tr('Can not Write to Selected Directory'))
 
@@ -1073,7 +1074,7 @@ class VideoMorphMW(QMainWindow):
         if self.conversion_lib.converter.encoding_done(self.media_list):
             if self.conversion_lib.library_error is not None:
                 self._show_message_box(
-                    type=QMessageBox.Critical,
+                    type_=QMessageBox.Critical,
                     title='Error!',
                     msg=self.tr('The Conversion Library has '
                                 'Failed with Error:') + ' ' +
@@ -1081,12 +1082,12 @@ class VideoMorphMW(QMainWindow):
                 self.conversion_lib.library_error = None
             elif not self.media_list.all_stopped:
                 self._show_message_box(
-                    type=QMessageBox.Information,
+                    type_=QMessageBox.Information,
                     title=self.tr('Information!'),
                     msg=self.tr('Encoding Process Successfully Finished!'))
             else:
                 self._show_message_box(
-                    type=QMessageBox.Information,
+                    type_=QMessageBox.Information,
                     title=self.tr('Information!'),
                     msg=self.tr('Encoding Process Stopped by the User!'))
 
