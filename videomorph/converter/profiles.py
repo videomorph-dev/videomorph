@@ -177,7 +177,8 @@ class XMLProfile:
         """Save xml tree."""
         with open(self.profiles_xml_path, 'wb') as xml_file:
             xml_file.write(b'<?xml version="1.0"?>\n')
-            ElementTree.ElementTree(self._xml_root).write(xml_file)
+            ElementTree.ElementTree(self._xml_root).write(xml_file,
+                                                          encoding='UTF-8')
 
     @property
     def profiles_xml_path(self):
