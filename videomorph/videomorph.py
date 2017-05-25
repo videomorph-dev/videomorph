@@ -1128,10 +1128,6 @@ class VideoMorphMW(QMainWindow):
         # Reading time from library output
         time_read = self._read_param(r'time=([0-9.:]+) ', process_output)
 
-        # Return if no time read
-        if not time_read:
-            return
-
         # Initialize the process time
         if not self.process_initial_time:
             # Grab the initial time
@@ -1140,6 +1136,10 @@ class VideoMorphMW(QMainWindow):
         # Initialize the operation time
         if not self.operation_initial_time:
             self.operation_initial_time = time.time()
+
+        # Return if no time read
+        if not time_read:
+            return
 
         # Real time computation
         operation_cum_time = time.time() - self.operation_initial_time
@@ -1162,6 +1162,16 @@ class VideoMorphMW(QMainWindow):
 
         operation_estimated_time = file_duration * time_variation_coefficient
         operation_left_time = operation_estimated_time - operation_cum_time
+
+        process_estimated_time = (self.media_list_duration *
+                                  time_variation_coefficient)
+
+        process_left_time = process_estimated_time - process_cum_time
+
+        print('process cum', process_cum_time)
+        print('process estimated ', process_estimated_time)
+        print('rate ', time_variation_coefficient)
+        print('process left ', process_left_time)
 
         # Calculate operation progress percent
         operation_progress = int(operation_time_read /
