@@ -128,7 +128,7 @@ class Converter:
         """Return True if media list is done."""
         return media_list.position + 1 >= media_list.length
 
-    def read_all(self):
+    def read_output(self):
         """Calling QProcess.readAll method"""
         return self.process.readAll()
 
