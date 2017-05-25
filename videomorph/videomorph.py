@@ -1158,20 +1158,17 @@ class VideoMorphMW(QMainWindow):
         # Estimating time
         file_duration = float(self.media_list.running_file.get_info(
             'format_duration'))
-        time_variation_coefficient = operation_cum_time / operation_time_read
 
-        operation_estimated_time = file_duration * time_variation_coefficient
-        operation_left_time = operation_estimated_time - operation_cum_time
+        adjustment_coefficient = operation_cum_time / operation_time_read
 
-        process_estimated_time = (self.media_list_duration *
-                                  time_variation_coefficient)
+        operation_estimated_time = file_duration * adjustment_coefficient
 
-        process_left_time = process_estimated_time - process_cum_time
-
-        print('process cum', process_cum_time)
-        print('process estimated ', process_estimated_time)
-        print('rate ', time_variation_coefficient)
-        print('process left ', process_left_time)
+        # Avoid negative time
+        try:
+            operation_left_time = write_time(operation_estimated_time -
+                                             operation_cum_time)
+        except ValueError:
+            operation_left_time = write_time(0)
 
         # Calculate operation progress percent
         operation_progress = int(operation_time_read /
@@ -1202,13 +1199,13 @@ class VideoMorphMW(QMainWindow):
 
         self.statusBar().showMessage(
             self.tr('Converting: {m}\t\t\t '
-                    'At: {sp}\t\t\t '
+                    'At: {br}\t\t\t '
                     'Operation Remaining Time: {ort}\t\t\t '
-                    'Total Elapsed Time: {trt}').format(
+                    'Total Elapsed Time: {tet}').format(
                         m=running_file_name,
-                        sp=bit_rate,
-                        ort=write_time(operation_left_time),
-                        trt=write_time(process_cum_time)))
+                        br=bit_rate,
+                        ort=operation_left_time,
+                        tet=write_time(process_cum_time)))
 
         self.setWindowTitle(str(operation_progress) + '%' + '-' +
                             '[' + running_file_name + ']' +
