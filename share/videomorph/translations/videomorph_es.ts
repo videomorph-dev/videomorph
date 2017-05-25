@@ -341,7 +341,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TargetQualityDelegate</name>
     <message>
-        <location filename="videomorph.py" line="1342"/>
+        <location filename="videomorph.py" line="1353"/>
         <source>To Convert</source>
         <translation>Convertir</translation>
     </message>
@@ -504,12 +504,12 @@ p, li { white-space: pre-wrap; }
         <translation>A&amp;yuda</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1095"/>
+        <location filename="videomorph.py" line="1106"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1005"/>
+        <location filename="videomorph.py" line="1016"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
@@ -529,7 +529,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivos de Video</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1246"/>
+        <location filename="videomorph.py" line="1257"/>
         <source>To Convert</source>
         <translation>Convertir</translation>
     </message>
@@ -539,37 +539,37 @@ p, li { white-space: pre-wrap; }
         <translation>Exportar al Directorio</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1089"/>
+        <location filename="videomorph.py" line="1100"/>
         <source>Information!</source>
         <translation>Información!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="944"/>
+        <location filename="videomorph.py" line="955"/>
         <source>Warning!</source>
         <translation>Advertencia!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="950"/>
+        <location filename="videomorph.py" line="961"/>
         <source>&amp;Yes</source>
         <translation>&amp;Sí</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="951"/>
+        <location filename="videomorph.py" line="962"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1067"/>
+        <location filename="videomorph.py" line="1078"/>
         <source>Stopped!</source>
         <translation>Detenido!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1056"/>
+        <location filename="videomorph.py" line="1067"/>
         <source>Done!</source>
         <translation>Hecho!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1084"/>
+        <location filename="videomorph.py" line="1095"/>
         <source>Encoding Process Successfully Finished!</source>
         <translation>Proceso de Conversión Concluido Exitosamente!</translation>
     </message>
@@ -604,17 +604,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivo de Perfiles </translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="394"/>
-        <source>&amp;Restore to Default Conversion Profiles</source>
-        <translation>&amp;Restablecer los Perfiles de Conversión por Defecto</translation>
-    </message>
-    <message>
-        <location filename="videomorph.py" line="394"/>
-        <source>Restore to Default Conversion Profiles</source>
-        <translation>Restablecer los Perfiles de Conversión por Defecto</translation>
-    </message>
-    <message>
-        <location filename="videomorph.py" line="1089"/>
+        <location filename="videomorph.py" line="1100"/>
         <source>Encoding Process Stopped by the User!</source>
         <translation>Proceso de Conversión Detenido por el Usuario!</translation>
     </message>
@@ -669,7 +659,7 @@ p, li { white-space: pre-wrap; }
         <translation>Eliminar el Archivo de Video de la Lista de Tareas de Conversión?</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1005"/>
+        <location filename="videomorph.py" line="1016"/>
         <source>Can not Write to Selected Directory</source>
         <translation>No se puede Escribir en el Directorio Seleccionado</translation>
     </message>
@@ -684,7 +674,7 @@ p, li { white-space: pre-wrap; }
         <translation>Perfiles de Conversión Importados Exitosamente!</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="944"/>
+        <location filename="videomorph.py" line="955"/>
         <source>Remove all Conversion Tasks from the List?</source>
         <translation>Eliminar todas las Tareas de Conversión de la Lista?</translation>
     </message>
@@ -704,7 +694,7 @@ p, li { white-space: pre-wrap; }
         <translation>Otras Opciones:</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1076"/>
+        <location filename="videomorph.py" line="1087"/>
         <source>The Conversion Library has Failed with Error:</source>
         <translation>La Librería de Conversión ha Fallado con Error:</translation>
     </message>
@@ -734,9 +724,24 @@ p, li { white-space: pre-wrap; }
         <translation>No se Encontraron Archivos de Video en:</translation>
     </message>
     <message>
-        <location filename="videomorph.py" line="1200"/>
+        <location filename="videomorph.py" line="1211"/>
         <source>Converting: {m}			 At: {br}			 Operation Remaining Time: {ort}			 Total Elapsed Time: {tet}</source>
         <translation>Convirtiendo: {m}			 A: {br}			 Tiempo Restante de la Operación: {ort}			 Tiempo Total Transcurrido: {tet}</translation>
+    </message>
+    <message>
+        <location filename="videomorph.py" line="394"/>
+        <source>&amp;Restore the Default Conversion Profiles</source>
+        <translation>&amp;Restablecer los Perfiles de Conversión por Defecto</translation>
+    </message>
+    <message>
+        <location filename="videomorph.py" line="394"/>
+        <source>Restore the Default Conversion Profiles</source>
+        <translation>Restablecer los Perfiles de Conversión por Defecto</translation>
+    </message>
+    <message>
+        <location filename="videomorph.py" line="938"/>
+        <source>Do you Really Want to Restore the Default Conversion Profiles?</source>
+        <translation>Realmente Desea Restablecer los Perfiles de Conversión por Defecto?</translation>
     </message>
 </context>
 </TS>

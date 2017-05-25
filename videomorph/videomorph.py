@@ -392,8 +392,8 @@ class VideoMorphMW(QMainWindow):
             callback=self.import_profiles)
 
         self.restore_profile_action = self._action_factory(
-            text=self.tr('&Restore to Default Conversion Profiles'),
-            tip=self.tr('Restore to Default Conversion Profiles'),
+            text=self.tr('&Restore the Default Conversion Profiles'),
+            tip=self.tr('Restore the Default Conversion Profiles'),
             callback=self.restore_profiles)
 
         self.clear_media_list_action = self._action_factory(
@@ -935,9 +935,20 @@ class VideoMorphMW(QMainWindow):
 
     def restore_profiles(self):
         """Restore default profiles."""
-        self.xml_profile.create_profiles_xml_file(restore=True)
-        self.xml_profile.set_xml_root()
-        self.populate_profiles_combo()
+        msg_box = QMessageBox(
+            QMessageBox.Warning,
+            self.tr('Warning!'),
+            self.tr('Do you Really Want to Restore the '
+                    'Default Conversion Profiles?'),
+            QMessageBox.NoButton, self)
+
+        msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
+        msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
+
+        if msg_box.exec_() == QMessageBox.AcceptRole:
+            self.xml_profile.create_profiles_xml_file(restore=True)
+            self.xml_profile.set_xml_root()
+            self.populate_profiles_combo()
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
