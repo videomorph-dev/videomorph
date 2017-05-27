@@ -760,8 +760,7 @@ class VideoMorphMW(QMainWindow):
             self._show_message_box(
                 type_=QMessageBox.critical,
                 title=self.tr('Error!'),
-                msg=self.tr('The Conversion Library in Use '
-                            'has no Video Player'))
+                msg=self.tr('No Video Player Found in your System'))
 
     def add_media_files(self, *files):
         """Add video files to conversion list.

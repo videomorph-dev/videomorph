@@ -25,6 +25,7 @@ from .utils import which
 from .utils import spawn_process
 from videomorph import CONV_LIB
 from videomorph import PROBER
+from videomorph import PLAYERS
 
 
 def get_conversion_lib():
@@ -137,14 +138,20 @@ class Player:
     """Player class to provide a video player using ffplay."""
 
     def __init__(self, conversion_lib_name):
-        if conversion_lib_name == CONV_LIB.ffmpeg:
-            self.name = 'ffplay'
-        else:
-            self.name = None
+        self.name = None
 
     def play(self, file_path):
-        """Play a video file with ffplay."""
+        """Play a video file."""
+        if self.name is None:
+            self._get_player()
+
         if self.name is not None:
             spawn_process([which(self.name), file_path])
         else:
-            raise AttributeError('Payer not available')
+            raise AttributeError('No Payer Available')
+
+    def _get_player(self):
+        for player in PLAYERS:
+            if which(player):
+                self.name = player
+                break
