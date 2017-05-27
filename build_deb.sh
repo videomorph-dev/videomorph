@@ -1,7 +1,8 @@
 #!/bin/bash
 
 version="1.0"
-ubuntu="xenial"
+ubuntu="-xenial"
+package_name="videomorph_""$version""_all.deb"
 python_version=$(python3 --version | cut -f2 -d " " | cut --fields=1,2 -d ".")
 
 gzip -n --keep --force --best changelog
@@ -38,8 +39,8 @@ sudo chown -c --recursive root:root videomorph_deb/DEBIAN/postinst
 sudo --remove-timestamp
 
 # Build the DEB package
-dpkg-deb --build videomorph_deb/ "videomorph_""$version""_""$ubuntu""_all.deb"
-mv -v "videomorph_""$version""_""$ubuntu""_all.deb" dist
+dpkg-deb --build videomorph_deb/ "$package_name"
+mv -v "$package_name" dist
 
 # Some clean up
 sudo rm -rfv build videomorph_deb/usr
@@ -59,5 +60,5 @@ cd ..
 rm -rfv dist/"videomorph-""$version"
 
 # Runnin lintian
-lintian -i dist/"videomorph_""$version""_""$ubuntu""_all.deb" >dist/lintian.log
+lintian -i dist/"$package_name" >dist/lintian.log
 /opt/sublime_text/sublime_text dist/lintian.log
