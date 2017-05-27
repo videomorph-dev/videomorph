@@ -5,6 +5,7 @@ Next version or later:
     - Improve the Artwork, mainly the icons theme
     - Improve the performance of videomorph._fill_media_list method
     - Pack in .rpm format
+    - Play the videos with the system default video player
 
 BugFix:
     -

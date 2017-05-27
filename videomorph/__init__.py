@@ -61,3 +61,17 @@ VM_PATHS = {'apps': 'share/applications',
             'doc': 'share/doc/videomorph',
             'man': 'share/man',
             'bin': 'bin'}
+
+PLAYERS = ['xplayer',
+           'vlc',
+           'totem',
+           'kmplayer',
+           'smplayer',
+           'mplayer',
+           'banshee',
+           'ffplay',
+           'mpv',
+           'gxine',
+           'xine-ui',
+           'gmlive',
+           'dragonplayer']

@@ -2,10 +2,10 @@ Package: videomorph
 Version: 1.0
 Architecture: all
 Maintainer: VideoMorph Development Team <codeshard@openmailbox.org>
-Installed-Size: 1405.9
+Installed-Size: 2106
 Section: video
 Priority: optional
-Depends: ffmpeg (>=2.8.10), python3-pyqt5 (>=5.5.1), python3:any (>=3.5.1-3)
+Depends: ffmpeg | libav-tools, python3-pyqt5, python3 (>=3.4)
 Homepage: https://github.com/codeshard/videomorph
 Description: Small Video Converter based on ffmpeg, Python 3 and Qt5.
  Unlike other video converters, VideoMorph focuses on a single task,
