@@ -41,7 +41,7 @@ class ConversionLib:
     """Conversion Library class."""
     def __init__(self):
         self._name = get_conversion_lib()
-        self.player = Player(conversion_lib_name=self.name)
+        self.player = Player()
         self.converter = Converter(conversion_lib_name=self.name)
         self.library_error = None
 
@@ -135,9 +135,9 @@ class Converter:
 
 
 class Player:
-    """Player class to provide a video player using ffplay."""
+    """Player class to provide a video player."""
 
-    def __init__(self, conversion_lib_name):
+    def __init__(self):
         self.name = None
 
     def play(self, file_path):
