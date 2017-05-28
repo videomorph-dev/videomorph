@@ -1297,8 +1297,7 @@ class VideoMorphMW(QMainWindow):
             # Update total duration of the new tasks list
             self.media_list_duration = self.media_list.duration
             # Update the interface
-            self.update_interface(clear=False, stop=False,
-                                  stop_all=False, remove=False,
+            self.update_interface(stop=False, stop_all=False, remove=False,
                                   play_input=False, play_output=False)
         else:
             rows = self.tb_tasks.rowCount()
@@ -1313,8 +1312,7 @@ class VideoMorphMW(QMainWindow):
                         self.tb_tasks.item(row, PROGRESS).setText(
                             self.tr('To Convert'))
 
-                self.update_interface(clear=False, stop=False,
-                                      stop_all=False, remove=False,
+                self.update_interface(stop=False, stop_all=False, remove=False,
                                       play_input=False, play_output=False)
             self._set_media_status()
             self.media_list_duration = self.media_list.duration
