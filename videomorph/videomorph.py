@@ -1042,7 +1042,9 @@ class VideoMorphMW(QMainWindow):
                               remove=False,
                               output_dir=False,
                               settings=False,
-                              delete_chb=False)
+                              delete_chb=False,
+                              play_input=False,
+                              play_output=False)
 
         # Increment the the MediaList index
         self.media_list.position += 1
