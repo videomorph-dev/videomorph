@@ -62,8 +62,8 @@ VM_PATHS = {'apps': 'share/applications',
             'man': 'share/man',
             'bin': 'bin'}
 
-PLAYERS = ['xplayer',
-           'vlc',
+PLAYERS = ['vlc',
+           'xplayer',
            'totem',
            'kmplayer',
            'smplayer',

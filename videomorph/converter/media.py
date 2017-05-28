@@ -178,7 +178,7 @@ class MediaFile:
         else:
             subtitle_opt = []
         # Get the output path
-        output_path = self._get_output_path(output_dir)
+        output_path = self.get_output_path(output_dir)
         # Build the conversion command
         cmd = ['-i', self.input_path] + subtitle_opt + \
             shlex.split(self.conversion_profile.params) + \
@@ -189,15 +189,15 @@ class MediaFile:
 
     def delete_output(self, output_dir):
         """Delete the output file if conversion is stopped."""
-        if exists(self._get_output_path(output_dir)):
-            remove(self._get_output_path(output_dir))
+        if exists(self.get_output_path(output_dir)):
+            remove(self.get_output_path(output_dir))
 
     def delete_input(self):
         """Delete the input file when conversion is finished."""
         remove(self.input_path)
         remove(self._subtitle_path)
 
-    def _get_output_path(self, output_dir):
+    def get_output_path(self, output_dir):
         """Return the the output file input_path."""
         output_file_path = (output_dir +
                             sep +  # multi-platform input_path separator
