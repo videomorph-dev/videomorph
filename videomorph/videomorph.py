@@ -37,7 +37,7 @@ from PyQt5.QtCore import (QSize,
                           QProcess,
                           QTranslator,
                           QLibraryInfo)
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtGui import QPixmap, QIcon, QContextMenuEvent
 from PyQt5.QtWidgets import (QMainWindow,
                              QApplication,
                              QWidget,
@@ -51,6 +51,7 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QCheckBox,
                              QProgressBar,
                              QToolBar,
+                             QMenu,
                              QTableWidget,
                              QTableWidgetItem,
                              QLineEdit,
@@ -174,6 +175,9 @@ class VideoMorphMW(QMainWindow):
         # Create app main menu bar
         self._create_main_menu()
 
+        # Create context menu
+        self.create_context_menu()
+
         # Create the toolbar
         self._create_toolbar()
 
@@ -272,7 +276,7 @@ class VideoMorphMW(QMainWindow):
              self.tr('Progress')])
         self.tb_tasks.setStatusTip(tasks_ext)
         self.tb_tasks.setToolTip(tasks_ext)
-        self.tb_tasks.cellClicked.connect(self._enable_remove_file_action)
+        self.tb_tasks.cellPressed.connect(self._enable_context_menu_action)
         # Create a combo box for Target update
         self.tb_tasks.setItemDelegate(TargetQualityDelegate(parent=self))
         horizontal_layout.addWidget(self.tb_tasks)
@@ -396,6 +400,16 @@ class VideoMorphMW(QMainWindow):
             tip=self.tr('Restore the Default Conversion Profiles'),
             callback=self.restore_profiles)
 
+        self.play_input_media_file_action = self._action_factory(
+            text=self.tr('Play Input Video File'),
+            enabled=False,
+            callback=self.play_input_media_file)
+
+        self.play_output_media_file_action = self._action_factory(
+            text=self.tr('Play Output Video File'),
+            enabled=False,
+            callback=self.play_output_media_file)
+
         self.clear_media_list_action = self._action_factory(
             icon=self.style().standardIcon(QStyle.SP_TrashIcon),
             text=self.tr('Clear &List'),
@@ -458,6 +472,21 @@ class VideoMorphMW(QMainWindow):
             shortcut="Ctrl+S",
             tip=self.tr('Open Settings Dialog'),
             callback=self.settings)
+
+    def create_context_menu(self):
+        first_separator = QAction(self)
+        first_separator.setSeparator(True)
+        second_separator = QAction(self)
+        second_separator.setSeparator(True)
+        self.tb_tasks.setContextMenuPolicy(Qt.ActionsContextMenu)
+        self.tb_tasks.addAction(self.open_media_file_action)
+        self.tb_tasks.addAction(self.open_media_dir_action)
+        self.tb_tasks.addAction(first_separator)
+        self.tb_tasks.addAction(self.remove_media_file_action)
+        self.tb_tasks.addAction(self.clear_media_list_action)
+        self.tb_tasks.addAction(second_separator)
+        self.tb_tasks.addAction(self.play_input_media_file_action)
+        self.tb_tasks.addAction(self.play_output_media_file_action)
 
     def _create_main_menu(self):
         """Create main app menu."""
@@ -526,8 +555,8 @@ class VideoMorphMW(QMainWindow):
         else:
             self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
             if int(self.tb_tasks.currentColumn()) == NAME:
-                row = self.tb_tasks.currentIndex().row()
-                self._play_media_file(position=row)
+                self.play_input_media_file()
+
 
     @staticmethod
     def _get_settings_file():
@@ -665,7 +694,6 @@ class VideoMorphMW(QMainWindow):
 
         if directory:
             self.le_output.setText(directory)
-            self.update_interface(stop=False, stop_all=False, remove=False)
 
     def closeEvent(self, event):
         """Things to todo on close."""
@@ -709,7 +737,9 @@ class VideoMorphMW(QMainWindow):
                                           presets=False,
                                           profiles=False,
                                           subtitles_chb=False,
-                                          delete_chb=False)
+                                          delete_chb=False,
+                                          play_input=False,
+                                          play_output=False)
                 else:
                     # Update ui
                     self.update_interface(stop=False, stop_all=False,
@@ -752,13 +782,28 @@ class VideoMorphMW(QMainWindow):
             self._insert_table_item(item_text=self.tr('To Convert'),
                                     row=row, column=PROGRESS)
 
-    def _play_media_file(self, position):
+    def play_input_media_file(self):
+        row = self.tb_tasks.currentIndex().row()
+        self.play_media_file(file_path=self.media_list.get_file_path(row))
+
+    def play_output_media_file(self):
+        row = self.tb_tasks.currentIndex().row()
+        path = self.media_list.get_file(row).get_output_path(
+            self.le_output.text())
+        if exists(path):
+            self.play_media_file(file_path=path)
+        else:
+            self._show_message_box(
+                type_=QMessageBox.Critical,
+                title=self.tr('Error!'),
+                msg=self.tr("There is no Output for Selected Video File"))
+
+    def play_media_file(self, file_path):
         try:
-            self.conversion_lib.player.play(
-                file_path=self.media_list.get_file_path(position))
+            self.conversion_lib.player.play(file_path=file_path)
         except AttributeError:
             self._show_message_box(
-                type_=QMessageBox.critical,
+                type_=QMessageBox.Critical,
                 title=self.tr('Error!'),
                 msg=self.tr('No Video Player Found in your System'))
 
@@ -779,13 +824,16 @@ class VideoMorphMW(QMainWindow):
                                   remove=False,
                                   output_dir=False,
                                   settings=False,
-                                  delete_chb=False)
+                                  delete_chb=False,
+                                  play_input=False,
+                                  play_output=False)
         else:
             # This rewind the encoding list if the encoding process is
             # not running
             self.media_list.position = -1
             # Update ui
-            self.update_interface(stop=False, stop_all=False, remove=False)
+            self.update_interface(stop=False, stop_all=False, remove=False,
+                                  play_input=False, play_output=False)
 
         self._fill_media_list(files)
 
@@ -851,7 +899,9 @@ class VideoMorphMW(QMainWindow):
                                   presets=False,
                                   profiles=False,
                                   subtitles_chb=False,
-                                  delete_chb=False)
+                                  delete_chb=False,
+                                  play_input=False,
+                                  play_output=False)
 
     def add_costume_profile(self):
         """Show dialog for adding conversion profiles."""
@@ -863,7 +913,7 @@ class VideoMorphMW(QMainWindow):
             func(path)
         except PermissionError:
             self._show_message_box(
-                type_=QMessageBox.critical,
+                type_=QMessageBox.Critical,
                 title=self.tr('Error!'),
                 msg=self.tr('Can not Write to Selected Directory'))
         else:
@@ -976,7 +1026,9 @@ class VideoMorphMW(QMainWindow):
                                   presets=False,
                                   profiles=False,
                                   subtitles_chb=False,
-                                  delete_chb=False)
+                                  delete_chb=False,
+                                  play_input=False,
+                                  play_output=False)
 
     def start_encoding(self):
         """Start the encoding process."""
@@ -990,7 +1042,9 @@ class VideoMorphMW(QMainWindow):
                               remove=False,
                               output_dir=False,
                               settings=False,
-                              delete_chb=False)
+                              delete_chb=False,
+                              play_input=False,
+                              play_output=False)
 
         # Increment the the MediaList index
         self.media_list.position += 1
@@ -1019,7 +1073,8 @@ class VideoMorphMW(QMainWindow):
 
                 self.media_list.position = -1
                 self.update_interface(convert=False, stop=False,
-                                      stop_all=False, remove=False)
+                                      stop_all=False, remove=False,
+                                      play_input=False, play_output=False)
         else:
             self._end_encoding_process()
 
@@ -1113,7 +1168,8 @@ class VideoMorphMW(QMainWindow):
             self.media_list.position = -1
             # Update tool buttons
             self.update_interface(convert=False, stop=False,
-                                  stop_all=False, remove=False)
+                                  stop_all=False, remove=False,
+                                  play_input=False, play_output=False)
         else:
             self.start_encoding()
 
@@ -1242,7 +1298,8 @@ class VideoMorphMW(QMainWindow):
             self.media_list_duration = self.media_list.duration
             # Update the interface
             self.update_interface(clear=False, stop=False,
-                                  stop_all=False, remove=False)
+                                  stop_all=False, remove=False,
+                                  play_input=False, play_output=False)
         else:
             rows = self.tb_tasks.rowCount()
             if rows:
@@ -1257,7 +1314,8 @@ class VideoMorphMW(QMainWindow):
                             self.tr('To Convert'))
 
                 self.update_interface(clear=False, stop=False,
-                                      stop_all=False, remove=False)
+                                      stop_all=False, remove=False,
+                                      play_input=False, play_output=False)
             self._set_media_status()
             self.media_list_duration = self.media_list.duration
 
@@ -1285,7 +1343,9 @@ class VideoMorphMW(QMainWindow):
                          output_dir=True,
                          settings=True,
                          subtitles_chb=True,
-                         delete_chb=True)
+                         delete_chb=True,
+                         play_input=True,
+                         play_output=True)
 
         variables.update(i_vars)
 
@@ -1301,12 +1361,17 @@ class VideoMorphMW(QMainWindow):
         self.tb_output.setEnabled(variables['output_dir'])
         self.chb_subtitle.setEnabled(variables['subtitles_chb'])
         self.chb_delete.setEnabled(variables['delete_chb'])
+        self.play_input_media_file_action.setEnabled(variables['play_input'])
+        self.play_output_media_file_action.setEnabled(variables['play_output'])
         self.settings_action.setEnabled(variables['settings'])
         self.tb_tasks.setCurrentItem(None)
 
-    def _enable_remove_file_action(self):
+    def _enable_context_menu_action(self):
         if not self.conversion_lib.converter.is_running:
+            # self.update_interface(stop=False, stop_all=False)
             self.remove_media_file_action.setEnabled(True)
+        self.play_input_media_file_action.setEnabled(True)
+        self.play_output_media_file_action.setEnabled(True)
 
 
 class TargetQualityDelegate(QItemDelegate):
@@ -1360,7 +1425,9 @@ class TargetQualityDelegate(QItemDelegate):
         self.parent.update_interface(clear=False,
                                      stop=False,
                                      stop_all=False,
-                                     remove=False)
+                                     remove=False,
+                                     play_input=False,
+                                     play_output=False)
 
         self.parent.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
