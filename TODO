@@ -10,6 +10,8 @@ BugFix:
     -
 
 Someday:
+    - Allow drag and drop video files into the List of Conversion Tasks
+    - Play the videos with the system default video player
     - Implement model/view/controller pattern
     - Gnome integration
     - Make it run on Windows

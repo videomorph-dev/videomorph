@@ -75,18 +75,21 @@ def test_get_info_with_ffprobe():
 def test_get_conversion_cmd():
     """Test get_conversion_cmd."""
     media_file = _get_media_file_obj()
-    assert media_file.get_conversion_cmd('.') == ['-i', 'Dad.mpg', '-f',
-                                                  'dvd', '-target',
-                                                  'ntsc-dvd', '-vcodec',
-                                                  'mpeg2video', '-r',
-                                                  '29.97', '-s', '352x480',
-                                                  '-aspect', '4:3', '-b:v',
-                                                  '4000k', '-mbd', 'rd',
-                                                  '-cmp', '2', '-subcmp', '2',
-                                                  '-acodec', 'mp2', '-b:a',
-                                                  '192k', '-ar', '48000',
-                                                  '-ac', '2', '-threads', '3',
-                                                  '-y', './[DVDF]-Dad.mpg']
+    assert media_file.build_conversion_cmd(
+        output_dir='.',
+        target_quality='DVD Fullscreen (4:3)') == ['-i', 'Dad.mpg', '-f',
+                                                   'dvd', '-target',
+                                                   'ntsc-dvd', '-vcodec',
+                                                   'mpeg2video', '-r',
+                                                   '29.97', '-s', '352x480',
+                                                   '-aspect', '4:3', '-b:v',
+                                                   '4000k', '-mbd', 'rd',
+                                                   '-cmp', '2', '-subcmp',
+                                                   '2', '-acodec', 'mp2',
+                                                   '-b:a', '192k', '-ar',
+                                                   '48000', '-ac', '2',
+                                                   '-threads', '3', '-y',
+                                                   './[DVDF]-Dad.mpg']
 
 
 def test_profile():
@@ -166,6 +169,12 @@ def test_get_file():
 def test_get_file_name():
     """Test get_file_name."""
     media_list = _get_media_list_obj()
+    media_list.position = 0
+    name = media_list.running_file.get_name()
+    assert name == 'Dad'
+
+    name = media_list.running_file.get_name(with_extension=True)
+    assert name == 'Dad.mpg'
 
     name = media_list.get_file_name(file_index=0)
     assert name == 'Dad'

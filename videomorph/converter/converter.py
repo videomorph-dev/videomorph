@@ -25,6 +25,7 @@ from .utils import which
 from .utils import spawn_process
 from videomorph import CONV_LIB
 from videomorph import PROBER
+from videomorph import PLAYERS
 
 
 def get_conversion_lib():
@@ -40,8 +41,9 @@ class ConversionLib:
     """Conversion Library class."""
     def __init__(self):
         self._name = get_conversion_lib()
-        self.player = Player(conversion_lib_name=self.name)
+        self.player = Player()
         self.converter = Converter(conversion_lib_name=self.name)
+        self.library_error = None
 
     @property
     def name(self):
@@ -49,9 +51,9 @@ class ConversionLib:
         return self._name
 
     @name.setter
-    def name(self, name):
-        """Set the name of the conversion library."""
-        self._name = name
+    def name(self, library_name):
+        """Set the library_name of the conversion library."""
+        self._name = library_name
 
     @property
     def prober(self):
@@ -83,11 +85,11 @@ class Converter:
         self.process.readyRead.connect(reader)
         self.process.finished.connect(finisher)
 
-    def start_encoding(self, cmd):
+    def start(self, cmd):
         """Start the encoding process."""
         self.process.start(which(self.conversion_lib), cmd)
 
-    def stop_encoding(self):
+    def stop(self):
         """Terminate encoding process."""
         self.process.terminate()
         if self.is_running:
@@ -127,20 +129,29 @@ class Converter:
         """Return True if media list is done."""
         return media_list.position + 1 >= media_list.length
 
-    def read_all(self):
+    def read_output(self):
         """Calling QProcess.readAll method"""
         return self.process.readAll()
 
 
 class Player:
-    def __init__(self, conversion_lib_name):
-        if conversion_lib_name == CONV_LIB.ffmpeg:
-            self.name = 'ffplay'
-        else:
-            self.name = None
+    """Player class to provide a video player."""
+
+    def __init__(self):
+        self.name = None
 
     def play(self, file_path):
+        """Play a video file."""
+        if self.name is None:
+            self._get_player()
+
         if self.name is not None:
             spawn_process([which(self.name), file_path])
         else:
-            raise AttributeError('Payer not available')
+            raise AttributeError('No Payer Available')
+
+    def _get_player(self):
+        for player in PLAYERS:
+            if which(player):
+                self.name = player
+                break

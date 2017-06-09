@@ -58,13 +58,6 @@ class MediaList(list):
         super(MediaList, self).clear()
         self.position = -1
 
-    def _file_is_added(self, media_file):
-        """Determine if a video file is in the list already."""
-        for media in self:
-            if media.path == media_file.path:
-                return True
-        return False
-
     def add_file(self, media_file):
         """Add a video file to the list."""
         if self._file_is_added(media_file):
@@ -94,12 +87,8 @@ class MediaList(list):
         return self[file_index].get_name(with_extension)
 
     def get_file_path(self, file_index):
-        """Return the path to a video file."""
-        return self[file_index].path
-
-    def get_target_quality(self, file_index):
-        """Return the target quality of a file."""
-        return self[file_index].target_quality
+        """Return the input_path to a video file."""
+        return self[file_index].input_path
 
     def get_file_status(self, file_index):
         """Return the video file status."""
@@ -121,12 +110,11 @@ class MediaList(list):
     @property
     def all_stopped(self):
         """Check if all files in the lists have been stopped."""
-        all_stopped = True
         for file in self:
             if file.status != STATUS.stopped:
-                all_stopped = False
+                return False
 
-        return all_stopped
+        return True
 
     @property
     def length(self):
@@ -140,25 +128,32 @@ class MediaList(list):
                    media in self if media.status != STATUS.done and
                    media.status != STATUS.stopped)
 
+    def _file_is_added(self, media_file):
+        """Determine if a video file is in the list already."""
+        for file in self:
+            if file.input_path == media_file.input_path:
+                return True
+        return False
+
 
 class MediaFile:
     """Class representing a video file."""
 
-    __slots__ = ('path',
+    __slots__ = ('input_path',
                  'conversion_profile',
                  'status',
                  'info')
 
     def __init__(self, file_path, conversion_profile):
         """Class initializer."""
-        self.path = file_path
+        self.input_path = file_path
         self.conversion_profile = conversion_profile
         self.status = STATUS.todo
         self.info = self._parse_probe()
 
     def get_name(self, with_extension=False):
         """Return the file name."""
-        full_file_name = basename(self.path)
+        full_file_name = basename(self.input_path)
         file_name = full_file_name.split('.')[0]
 
         if with_extension:
@@ -169,51 +164,54 @@ class MediaFile:
         """Return an info attribute from a given file: media_file."""
         return self.info.get(info_param)
 
-    def get_conversion_cmd(self, output_dir, subtitle=False):
+    def build_conversion_cmd(self, output_dir, target_quality, subtitle=False):
         """Return the conversion command."""
         if not access(output_dir, W_OK):
             raise PermissionError('Access denied')
-
-        output_file_path = self.get_output_path(output_dir)
-
-        if subtitle and self.subtitle_path:
+        # Ensure the conversion_profile is up to date
+        self.conversion_profile.update(new_quality=target_quality)
+        # Process subtitles if available
+        if subtitle and self._subtitle_path:
             subtitle_opt = ['-vf', "subtitles={0}:force_style='Fontsize=24'"
                                    ":charenc=cp1252".format(
-                                       self.subtitle_path)]
+                                       self._subtitle_path)]
         else:
             subtitle_opt = []
-
-        cmd = ['-i', self.path] + subtitle_opt + \
+        # Get the output path
+        output_path = self.get_output_path(output_dir)
+        # Build the conversion command
+        cmd = ['-i', self.input_path] + subtitle_opt + \
             shlex.split(self.conversion_profile.params) + \
             ['-threads', str(CPU_CORES)] + \
-            ['-y', output_file_path]
+            ['-y', output_path]
 
         return cmd
 
+    def delete_output(self, output_dir):
+        """Delete the output file if conversion is stopped."""
+        if exists(self.get_output_path(output_dir)):
+            remove(self.get_output_path(output_dir))
+
+    def delete_input(self):
+        """Delete the input file when conversion is finished."""
+        remove(self.input_path)
+        remove(self._subtitle_path)
+
     def get_output_path(self, output_dir):
-        """Return the the output file path."""
+        """Return the the output file input_path."""
         output_file_path = (output_dir +
-                            sep +  # multi-platform path separator
+                            sep +  # multi-platform input_path separator
                             self.conversion_profile.quality_tag +
                             '-' +
                             self.get_name() +
                             self.conversion_profile.extension)
         return output_file_path
 
-    def delete_output(self, output_path):
-        """Delete the output file if conversion is stoped."""
-        if exists(self.get_output_path(output_path)):
-            remove(self.get_output_path(output_path))
-
-    def delete_input(self):
-        """Delete the input file when conversion is finished."""
-        remove(self.path)
-
     @property
-    def subtitle_path(self):
-        """Returns the subtitle path if exit."""
-        extension = self.path.split('.')[-1]
-        subtitle_path = self.path.strip('.' + extension) + '.srt'
+    def _subtitle_path(self):
+        """Returns the subtitle input_path if exit."""
+        extension = self.input_path.split('.')[-1]
+        subtitle_path = self.input_path.strip('.' + extension) + '.srt'
 
         if exists(subtitle_path):
             return subtitle_path
@@ -224,7 +222,7 @@ class MediaFile:
         """Return the prober output as a file like object."""
         prober_run = spawn_process([which(self.conversion_profile.prober),
                                     '-show_format',
-                                    self.path])
+                                    self.input_path])
 
         return prober_run.stdout
 
