@@ -253,8 +253,8 @@ class VideoMorphMW(QMainWindow):
     def _group_tasks_list(self):
         """Define the Tasks Group arrangement."""
         gb_tasks = QGroupBox(self.central_widget)
-        tasks_ext = self.tr('List of Conversion Tasks')
-        gb_tasks.setTitle(tasks_ext)
+        tasks_text = self.tr('List of Conversion Tasks')
+        gb_tasks.setTitle(tasks_text)
         size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
@@ -274,8 +274,8 @@ class VideoMorphMW(QMainWindow):
              self.tr('Duration'),
              self.tr('Target Quality'),
              self.tr('Progress')])
-        self.tb_tasks.setStatusTip(tasks_ext)
-        self.tb_tasks.setToolTip(tasks_ext)
+        self.tb_tasks.setStatusTip(tasks_text)
+        self.tb_tasks.setToolTip(tasks_text)
         self.tb_tasks.cellPressed.connect(self._enable_context_menu_action)
         # Create a combo box for Target update
         self.tb_tasks.setItemDelegate(TargetQualityDelegate(parent=self))
@@ -1098,8 +1098,7 @@ class VideoMorphMW(QMainWindow):
             # Set MediaFile.status attribute
             if media_file.status != STATUS.done:
                 media_file.status = STATUS.stopped
-                self.media_list.position = self.media_list.index(
-                    media_file)
+                self.media_list.position = self.media_list.index(media_file)
                 self.tb_tasks.item(self.media_list.position,
                                    PROGRESS).setText(self.tr('Stopped!'))
 
