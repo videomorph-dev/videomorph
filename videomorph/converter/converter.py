@@ -69,6 +69,46 @@ class ConversionLib:
         """Setup converter."""
         self.converter.setup(reader, finisher, process_channel)
 
+    def start_converter(self, cmd):
+        """Start the converter."""
+        self.converter.start(cmd=cmd)
+
+    def stop_converter(self):
+        """Stop the converter."""
+        self.converter.stop()
+
+    def close_converter(self):
+        """Close the converter."""
+        self.converter.close()
+
+    def kill_converter(self):
+        """Kill the converter process."""
+        self.converter.kill()
+
+    def read_converter_output(self):
+        """Read the converter output."""
+        return self.converter.read_output()
+
+    def converter_state(self):
+        """Return the converter state."""
+        return self.converter.state()
+
+    def converter_exit_status(self):
+        return self.converter.exit_status()
+
+    def converter_finished_disconnect(self, connected):
+        """Disconnect the QProcess.finished method."""
+        self.converter.finished_disconnect(connected=connected)
+
+    @property
+    def converter_is_running(self):
+        """Return the converter running state."""
+        return self.converter.is_running
+
+    def run_player(self, file_path):
+        """Run the player."""
+        self.player.play(file_path=file_path)
+
 
 class Converter:
     """Converter class to provide conversion functionality."""
@@ -99,10 +139,6 @@ class Converter:
         """Disconnect the QProcess.finished method."""
         self.process.finished.disconnect(connected)
 
-    def finished(self):
-        """Calling QProcess.finished method."""
-        self.process.finished()
-
     def close(self):
         """Calling QProcess.close method."""
         self.process.close()
@@ -121,16 +157,11 @@ class Converter:
 
     @property
     def is_running(self):
-        """Return the individual file encoding process state."""
+        """Return converter running state."""
         return self.process.state() == QProcess.Running
 
-    @staticmethod
-    def encoding_done(media_list):
-        """Return True if media list is done."""
-        return media_list.position + 1 >= media_list.length
-
     def read_output(self):
-        """Calling QProcess.readAll method"""
+        """Calling QProcess.readAll method."""
         return self.process.readAll()
 
 

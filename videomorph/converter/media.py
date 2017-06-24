@@ -108,6 +108,11 @@ class MediaList(list):
         return self.get_file(file_index=self.position)
 
     @property
+    def is_processed(self):
+        """Return True if all file in media list are processed."""
+        return self.position + 1 >= self.length
+
+    @property
     def all_stopped(self):
         """Check if all files in the lists have been stopped."""
         for file in self:
