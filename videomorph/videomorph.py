@@ -141,6 +141,16 @@ class VideoMorphMW(QMainWindow):
         # Create actions
         self._create_actions()
 
+        # Create conversion library
+        self.conversion_lib = ConversionLib()
+        self.conversion_lib.setup_converter(
+            reader=self._read_encoding_output,
+            finisher=self._finish_file_encoding,
+            process_channel=QProcess.MergedChannels)
+
+        # Create initial Settings if not created
+        self._create_initial_settings()
+
         # XML Profile
         self.xml_profile = XMLProfile()
         self.xml_profile.create_profiles_xml_file()
@@ -148,13 +158,6 @@ class VideoMorphMW(QMainWindow):
 
         # Populate PROFILES combo box
         self.populate_profiles_combo()
-
-        # Create conversion library
-        self.conversion_lib = ConversionLib()
-        self.conversion_lib.setup_converter(
-            reader=self._read_encoding_output,
-            finisher=self._finish_file_encoding,
-            process_channel=QProcess.MergedChannels)
 
         # Read app settings
         self._read_app_settings()
