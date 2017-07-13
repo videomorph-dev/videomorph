@@ -52,14 +52,14 @@ def setup():
 
     media_list.add_file(media_file)
 
-    conv_lib.converter.start(cmd=media_file.build_conversion_cmd(
+    conv_lib.start_converter(cmd=media_file.build_conversion_cmd(
         output_dir='.', target_quality='DVD Fullscreen (4:3)'))
 
 
 def teardown():
     """Function to clean after tests are done."""
-    conv_lib.converter.close()
-    conv_lib.converter.kill()
+    conv_lib.close_converter()
+    conv_lib.kill_converter()
 
 
 def test_conversion_lib():
@@ -74,7 +74,7 @@ def test_prober():
 
 def test_is_running():
     """Test is_running."""
-    assert conv_lib.converter.state() == QProcess.Starting
+    assert conv_lib.converter_state() == QProcess.Starting
 
 
 def test_get_conversion_lib():
