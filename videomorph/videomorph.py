@@ -179,7 +179,7 @@ class VideoMorphMW(QMainWindow):
         self._create_main_menu()
 
         # Create context menu
-        self.create_context_menu()
+        self._create_context_menu()
 
         # Create the toolbar
         self._create_toolbar()
@@ -476,7 +476,7 @@ class VideoMorphMW(QMainWindow):
             tip=self.tr('Open Settings Dialog'),
             callback=self.settings)
 
-    def create_context_menu(self):
+    def _create_context_menu(self):
         first_separator = QAction(self)
         first_separator.setSeparator(True)
         second_separator = QAction(self)
