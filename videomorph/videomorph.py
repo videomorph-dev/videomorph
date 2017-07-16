@@ -560,7 +560,6 @@ class VideoMorphMW(QMainWindow):
             if int(self.tb_tasks.currentColumn()) == NAME:
                 self.play_input_media_file()
 
-
     @staticmethod
     def _get_settings_file():
         return QSettings('{0}{1}.videomorph{2}config.ini'.format(
