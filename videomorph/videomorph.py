@@ -363,14 +363,14 @@ class VideoMorphMW(QMainWindow):
     def _create_actions(self):
         """Create actions."""
         self.open_media_file_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_DialogOpenButton),
+            icon=QIcon(':/icons/video-file.png'),
             text=self.tr('&Open Files...'),
             shortcut="Ctrl+O",
             tip=self.tr('Add Video Files to the List of Conversion Tasks'),
             callback=self.open_media_files)
 
         self.open_media_dir_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_DirOpenIcon),
+            icon=QIcon(':/icons/folder.png'),
             text=self.tr('Open &Directory...'),
             shortcut="Ctrl+D",
             tip=self.tr('Add all the Video Files in a Directory '
@@ -378,43 +378,46 @@ class VideoMorphMW(QMainWindow):
             callback=self.open_media_dir)
 
         self.add_profile_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_DialogApplyButton),
+            icon=QIcon(':/icons/add-profile.png'),
             text=self.tr('&Add Customized Profile...'),
             shortcut="Ctrl+F",
             tip=self.tr('Add Customized Profile'),
             callback=self.add_costume_profile)
 
         self.export_profile_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_ArrowUp),
+            icon=QIcon(':/icons/send.png'),
             text=self.tr('&Export Conversion Profiles...'),
             shortcut="Ctrl+E",
             tip=self.tr('Export Conversion Profiles'),
             callback=self.export_profiles)
 
         self.import_profile_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_DialogSaveButton),
+            icon=QIcon(':/icons/incoming.png'),
             text=self.tr('&Import Conversion Profiles...'),
             shortcut="Ctrl+I",
             tip=self.tr('Import Conversion Profiles'),
             callback=self.import_profiles)
 
         self.restore_profile_action = self._action_factory(
+            icon=QIcon(':/icons/default.png'),
             text=self.tr('&Restore the Default Conversion Profiles'),
             tip=self.tr('Restore the Default Conversion Profiles'),
             callback=self.restore_profiles)
 
         self.play_input_media_file_action = self._action_factory(
+            icon=QIcon(':/icons/video-player-input.png'),
             text=self.tr('Play Input Video File'),
             enabled=False,
             callback=self.play_input_media_file)
 
         self.play_output_media_file_action = self._action_factory(
+            icon=QIcon(':/icons/video-player-output.png'),
             text=self.tr('Play Output Video File'),
             enabled=False,
             callback=self.play_output_media_file)
 
         self.clear_media_list_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_TrashIcon),
+            icon=QIcon(':/icons/garbage.png'),
             text=self.tr('Clear &List'),
             shortcut="Ctrl+Del",
             enabled=False,
@@ -423,7 +426,7 @@ class VideoMorphMW(QMainWindow):
             callback=self.clear_media_list)
 
         self.remove_media_file_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_BrowserStop),
+            icon=QIcon(':/icons/minus.png'),
             text=self.tr('&Remove File'),
             shortcut="Del",
             enabled=False,
@@ -432,7 +435,7 @@ class VideoMorphMW(QMainWindow):
             callback=self.remove_media_file)
 
         self.convert_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_MediaPlay),
+            icon=QIcon(':/icons/play.png'),
             text=self.tr('&Convert'),
             shortcut="Ctrl+R",
             enabled=False,
@@ -440,7 +443,7 @@ class VideoMorphMW(QMainWindow):
             callback=self.start_encoding)
 
         self.stop_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_MediaStop),
+            icon=QIcon(':/icons/stop.png'),
             text=self.tr('&Stop'),
             shortcut="Ctrl+P",
             enabled=False,
@@ -448,7 +451,7 @@ class VideoMorphMW(QMainWindow):
             callback=self.stop_file_encoding)
 
         self.stop_all_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_DialogCancelButton),
+            icon=QIcon(':/icons/stop-all.png'),
             text=self.tr('S&top All'),
             shortcut="Ctrl+A",
             enabled=False,
@@ -456,21 +459,21 @@ class VideoMorphMW(QMainWindow):
             callback=self.stop_all_files_encoding)
 
         self.about_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_MessageBoxInformation),
+            icon=QIcon(':/icons/info.png'),
             text=self.tr('&About') + ' ' + APPNAME + ' ' + VERSION + '...',
             shortcut="Ctrl+H",
             tip=self.tr('&About') + ' ' + APPNAME + ' ' + VERSION,
             callback=self.about)
 
         self.exit_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_DialogCloseButton),
+            icon=QIcon(':/icons/exit.png'),
             text=self.tr('E&xit'),
             shortcut="Ctrl+Q",
             tip=self.tr('Exit') + ' ' + APPNAME + ' ' + VERSION,
             callback=self.close)
 
         self.settings_action = self._action_factory(
-            icon=self.style().standardIcon(QStyle.SP_FileDialogDetailedView),
+            icon=QIcon(':/icons/settings.png'),
             text=self.tr('&Settings...'),
             shortcut="Ctrl+S",
             tip=self.tr('Open Settings Dialog'),
