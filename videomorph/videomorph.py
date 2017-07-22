@@ -168,9 +168,6 @@ class VideoMorphMW(QMainWindow):
             target_quality=self.cb_presets.currentText(),
             prober=self.conversion_lib.prober)
 
-        # Create initial Settings if not created
-        self._create_initial_settings()
-
         # Disable presets and profiles combo boxes
         self.cb_presets.setEnabled(False)
         self.cb_profiles.setEnabled(False)
