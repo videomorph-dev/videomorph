@@ -168,9 +168,6 @@ class VideoMorphMW(QMainWindow):
             target_quality=self.cb_presets.currentText(),
             prober=self.conversion_lib.prober)
 
-        # Create initial Settings if not created
-        self._create_initial_settings()
-
         # Disable presets and profiles combo boxes
         self.cb_presets.setEnabled(False)
         self.cb_profiles.setEnabled(False)
@@ -179,7 +176,7 @@ class VideoMorphMW(QMainWindow):
         self._create_main_menu()
 
         # Create context menu
-        self.create_context_menu()
+        self._create_context_menu()
 
         # Create the toolbar
         self._create_toolbar()
@@ -476,7 +473,7 @@ class VideoMorphMW(QMainWindow):
             tip=self.tr('Open Settings Dialog'),
             callback=self.settings)
 
-    def create_context_menu(self):
+    def _create_context_menu(self):
         first_separator = QAction(self)
         first_separator.setSeparator(True)
         second_separator = QAction(self)
@@ -559,7 +556,6 @@ class VideoMorphMW(QMainWindow):
             self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
             if int(self.tb_tasks.currentColumn()) == NAME:
                 self.play_input_media_file()
-
 
     @staticmethod
     def _get_settings_file():
