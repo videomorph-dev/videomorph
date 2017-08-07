@@ -587,7 +587,9 @@ class VideoMorphMW(QMainWindow):
             self.cb_profiles.setCurrentIndex(int(profile))
             self.cb_presets.setCurrentIndex(int(preset))
         if 'output_dir' in settings.allKeys():
-            self.le_output.setText(str(settings.value('output_dir')))
+            dir = str(settings.value('output_dir'))
+            output_dir = dir if isdir(dir) else QDir.homePath()
+            self.le_output.setText(output_dir)
         if 'source_dir' in settings.allKeys():
             self.source_dir = str(settings.value('source_dir'))
         if 'conversion_lib' in settings.allKeys():
