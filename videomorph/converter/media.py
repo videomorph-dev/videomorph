@@ -193,7 +193,7 @@ class MediaFile:
         self.conversion_profile.update(new_quality=target_quality)
         # Process subtitles if available
         if subtitle and self._subtitle_path:
-            subtitle_opt = ['-vf', "subtitles={0}:force_style='Fontsize=24'"
+            subtitle_opt = ['-vf', "subtitles='{0}':force_style='Fontsize=24'"
                                    ":charenc=cp1252".format(
                                        self._subtitle_path)]
         else:
@@ -216,7 +216,10 @@ class MediaFile:
     def delete_input(self):
         """Delete the input file when conversion is finished."""
         remove(self.input_path)
-        remove(self._subtitle_path)
+        try:
+            remove(self._subtitle_path)
+        except:
+            pass
 
     def get_output_path(self, output_dir):
         """Return the the output file input_path."""
@@ -266,6 +269,7 @@ class MediaFile:
 
 class MediaFileThread(Thread):
     """Thread class to handle the creation of MediaFile objects."""
+
     def __init__(self, media_path, conversion_profile):
         super(MediaFileThread, self).__init__()
         self.file_path = media_path
