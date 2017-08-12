@@ -64,6 +64,10 @@ class XMLProfile:
     def __init__(self):
         self._xml_root = None
 
+        # Setup the XMLProfile to be used.
+        self.create_profiles_xml_file()
+        self.set_xml_root()
+
     def set_xml_root(self):
         """Set the XML root."""
         self._xml_root = self._get_xml_root()

@@ -37,7 +37,7 @@ from PyQt5.QtCore import (QSize,
                           QProcess,
                           QTranslator,
                           QLibraryInfo)
-from PyQt5.QtGui import QPixmap, QIcon, QContextMenuEvent
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import (QMainWindow,
                              QApplication,
                              QWidget,
@@ -152,8 +152,6 @@ class VideoMorphMW(QMainWindow):
 
         # XML Profile
         self.xml_profile = XMLProfile()
-        self.xml_profile.create_profiles_xml_file()
-        self.xml_profile.set_xml_root()
 
         # Populate PROFILES combo box
         self.populate_profiles_combo()
