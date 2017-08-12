@@ -17,7 +17,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module provides the definition of the Converter class."""
+"""This module provides the definition of the ConversionLib class."""
 
 from PyQt5.QtCore import QProcess
 
@@ -28,22 +28,22 @@ from videomorph import PROBER
 from videomorph import PLAYERS
 
 
-def get_conversion_lib():
-    """Return the name of the conversion library installed on the system."""
-    if which(CONV_LIB.ffmpeg):
-        return CONV_LIB.ffmpeg  # Default library
-    elif which(CONV_LIB.avconv):
-        return CONV_LIB.avconv  # Alternative library
-    return None  # Not available library
-
-
 class ConversionLib:
     """Conversion Library class."""
     def __init__(self):
-        self._name = get_conversion_lib()
-        self.player = Player()
-        self.converter = Converter(conversion_lib_name=self.name)
+        self._name = self.get_system_library_name()
+        self.player = _Player()
+        self.converter = _Converter(conversion_lib_name=self.name)
         self.library_error = None
+
+    @staticmethod
+    def get_system_library_name():
+        """Return the name of the conversion library installed on system."""
+        if which(CONV_LIB.ffmpeg):
+            return CONV_LIB.ffmpeg  # Default library
+        elif which(CONV_LIB.avconv):
+            return CONV_LIB.avconv  # Alternative library
+        return None  # Not available library
 
     @property
     def name(self):
@@ -110,8 +110,8 @@ class ConversionLib:
         self.player.play(file_path=file_path)
 
 
-class Converter:
-    """Converter class to provide conversion functionality."""
+class _Converter:
+    """_Converter class to provide conversion functionality."""
 
     def __init__(self, conversion_lib_name):
         """Class initializer."""
@@ -165,8 +165,8 @@ class Converter:
         return self.process.readAll()
 
 
-class Player:
-    """Player class to provide a video player."""
+class _Player:
+    """_Player class to provide a video player."""
 
     def __init__(self):
         self.name = None
