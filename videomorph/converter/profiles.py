@@ -110,12 +110,12 @@ class XMLProfile:
         for i, elem in enumerate(self._xml_root[:]):
             if elem.tag == xml_profile.tag:
                 self._xml_root[i].insert(0, xml_preset)
-                self.save_tree()
+                self._save_xml_tree()
                 break
         else:
             xml_profile.insert(0, xml_preset)
             self._xml_root.insert(0, xml_profile)
-            self.save_tree()
+            self._save_xml_tree()
 
     def export_profile_xml_file(self, dst_dir):
         """Export a file with the conversion profiles."""
@@ -177,7 +177,7 @@ class XMLProfile:
 
         return qualities_per_profile
 
-    def save_tree(self):
+    def _save_xml_tree(self):
         """Save xml tree."""
         with open(self.profiles_xml_path, 'wb') as xml_file:
             xml_file.write(b'<?xml version="1.0"?>\n')
