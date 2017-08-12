@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# File name: converter.py
+# File name: conversionlib.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2015-2016 VideoMorph Development Team

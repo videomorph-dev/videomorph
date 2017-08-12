@@ -18,7 +18,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module provides tests for converter.py module."""
+"""This module provides tests for conversionlib.py module."""
 
 import nose
 
@@ -29,7 +29,7 @@ from videomorph import PROBER
 from videomorph.converter import media
 from videomorph.converter import XMLProfile
 from videomorph.converter import ConversionLib
-from videomorph.converter.converter import get_conversion_lib
+from videomorph.converter.conversionlib import get_conversion_lib
 
 conv_lib = ConversionLib()
 

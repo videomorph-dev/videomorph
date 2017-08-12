@@ -19,8 +19,8 @@
 
 """This module defines the converter package and the needed imports."""
 
-from .converter import Converter
-from .converter import ConversionLib
+from .conversionlib import Converter
+from .conversionlib import ConversionLib
 from .console import run_on_console
 from .console import search_directory_recursively
 from .media import InvalidMetadataError
