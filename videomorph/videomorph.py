@@ -76,7 +76,6 @@ from .converter import search_directory_recursively
 from .converter import ConversionLib
 from .converter import get_locale
 from .converter import InvalidMetadataError
-from .converter import media_files_generator
 from .converter import MediaList
 from .converter import which
 from .converter import write_time
@@ -716,7 +715,7 @@ class VideoMorphMW(QMainWindow):
     # @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with MediaFile objects."""
-        for file in media_files_generator(
+        for file in self.media_list.media_files_generator(
                 files_paths=files_paths,
                 conversion_profile=self.conversion_profile):
             try:
