@@ -25,7 +25,6 @@ from .console import search_directory_recursively
 from .media import InvalidMetadataError
 from .media import MediaFile
 from .media import MediaFileThread
-from .media import media_file_factory
 from .media import MediaList
 from .utils import get_locale
 from .utils import which

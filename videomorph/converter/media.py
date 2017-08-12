@@ -271,6 +271,11 @@ class MediaFileThread(Thread):
     """Thread class to handle the creation of MediaFile objects."""
 
     def __init__(self, media_path, conversion_profile):
+        """Class initializer.
+        Args:
+            media_path (str): Path to the media file
+            conversion_profile (object): profile._Profile object
+        """
         super(MediaFileThread, self).__init__()
         self.file_path = media_path
         self.conversion_profile = conversion_profile
@@ -278,18 +283,13 @@ class MediaFileThread(Thread):
 
     def run(self):
         """Create media files to be added to the list."""
-        self.media_file = media_file_factory(self.file_path,
-                                             self.conversion_profile)
+        self.media_file = self.media_file_factory()
 
+    def media_file_factory(self):
+        """Factory function for creating MediaFile objects.
 
-def media_file_factory(file_path, conversion_profile):
-    """Factory function for creating MediaFile objects.
-
-    Args:
-        file_path (str): Path to the media file
-        conversion_profile (object): profile._Profile object
-    Returns:
-        media.MediaFile object
-    """
-    return MediaFile(file_path=file_path,
-                     conversion_profile=conversion_profile)
+        Returns:
+            media.MediaFile object
+        """
+        return MediaFile(file_path=self.file_path,
+                         conversion_profile=self.conversion_profile)
