@@ -24,8 +24,8 @@ from collections import namedtuple
 from os import cpu_count
 
 APPNAME = 'VideoMorph'
-VERSION = '1.0'
-CODENAME = 'traveler'
+VERSION = '1.1'
+CODENAME = 'adventurer'
 PACKAGE_NAME = APPNAME.lower()
 MAINTAINER = APPNAME + ' ' + 'Development Team'
 
