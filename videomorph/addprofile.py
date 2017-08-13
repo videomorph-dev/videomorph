@@ -114,7 +114,7 @@ class AddProfileDialog(QDialog):
     def accept(self):
         """Accept the dialog result."""
         try:
-            self.parent.xml_profile.add_conversion_profile(
+            self.parent.conversion_profile.add_xml_profile(
                 profile_name=self.le_profile_name.text(),
                 preset=self.le_preset_name.text(),
                 params=self.le_params.text(),

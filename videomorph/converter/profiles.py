@@ -58,21 +58,35 @@ class ProfileExtensionError(ProfileError):
     pass
 
 
-class XMLProfile:
+class _XMLProfile:
     """Class to manage the profiles.xml file."""
 
     def __init__(self):
         self._xml_root = None
 
-        # Setup the XMLProfile to be used.
-        self.create_profiles_xml_file()
+        # Setup the _XMLProfile to be used.
+        self.create_xml_profiles_file()
         self.set_xml_root()
 
     def set_xml_root(self):
         """Set the XML root."""
         self._xml_root = self._get_xml_root()
 
-    def add_conversion_profile(self, profile_name, preset, params, extension):
+    def create_xml_profiles_file(self, restore=False):
+        """Create a xml file with the conversion profiles."""
+        profiles_xml = self._xml_profiles_path
+
+        if not exists(profiles_xml) or not getsize(profiles_xml) or restore:
+            if exists(LINUX_PATHS['profiles'] + '/profiles.xml'):
+                # if VideoMorph is installed
+                copy_file(LINUX_PATHS['profiles'] + '/profiles.xml',
+                          profiles_xml)
+            else:
+                # if not installed
+                copy_file('../' + VM_PATHS['profiles'] + '/profiles.xml',
+                          profiles_xml)
+
+    def add_xml_profile(self, profile_name, preset, params, extension):
         """Add a conversion profile."""
         if not profile_name:
             raise ProfileBlankNameError
@@ -117,34 +131,22 @@ class XMLProfile:
             self._xml_root.insert(0, xml_profile)
             self._save_xml_tree()
 
-    def export_profile_xml_file(self, dst_dir):
+    def export_xml_profiles(self, dst_dir):
         """Export a file with the conversion profiles."""
         # Raise PermissionError if user don't have write permission
         try:
-            copy_file(src=self.profiles_xml_path, dst=dst_dir)
+            copy_file(src=self._xml_profiles_path, dst=dst_dir)
         except DistutilsFileError:
             raise PermissionError
 
-    def import_profile_xml(self, src_file):
+    def import_xml_profiles(self, src_file):
         """Import a conversion profile file."""
         try:
-            copy_file(src=src_file, dst=self.profiles_xml_path)
+            copy_file(src=src_file, dst=self._xml_profiles_path)
         except DistutilsFileError:
             raise PermissionError
 
-    def get_conversion_profile(self, profile_name, target_quality, prober):
-        """Return a _Profile objects."""
-        for element in self._xml_root:
-            if element.tag == profile_name:
-                for item in element:
-                    if (item[0].text == target_quality or
-                            item[3].text == target_quality):
-                        return _Profile(prober=prober,
-                                        quality=target_quality,
-                                        extension=item[2].text,
-                                        xml_profile=self)
-
-    def get_preset_attr(self, target_quality, attr_name='preset_params'):
+    def get_xml_profile_attr(self, target_quality, attr_name='preset_params'):
         """Return a dict of preset/params."""
         param_map = {'preset_name': 0,
                      'preset_params': 1,
@@ -157,7 +159,7 @@ class XMLProfile:
                         item[3].text == target_quality):
                     return item[param_map[attr_name]].text
 
-    def get_qualities_per_profile(self, locale):
+    def get_xml_profile_qualities(self, locale):
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
         values = []
@@ -179,60 +181,52 @@ class XMLProfile:
 
     def _save_xml_tree(self):
         """Save xml tree."""
-        with open(self.profiles_xml_path, 'wb') as xml_file:
+        with open(self._xml_profiles_path, 'wb') as xml_file:
             xml_file.write(b'<?xml version="1.0"?>\n')
             ElementTree.ElementTree(self._xml_root).write(xml_file,
                                                           encoding='UTF-8')
 
     @property
-    def profiles_xml_path(self):
+    def _xml_profiles_path(self):
         """Return the path to the profiles file."""
         return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
-
-    def create_profiles_xml_file(self, restore=False):
-        """Create a xml file with the conversion profiles."""
-        profiles_xml = self.profiles_xml_path
-
-        if not exists(profiles_xml) or not getsize(profiles_xml) or restore:
-            if exists(LINUX_PATHS['profiles'] + '/profiles.xml'):
-                # if VideoMorph is installed
-                copy_file(LINUX_PATHS['profiles'] + '/profiles.xml',
-                          profiles_xml)
-            else:
-                # if not installed
-                copy_file('../' + VM_PATHS['profiles'] + '/profiles.xml',
-                          profiles_xml)
 
     def _get_xml_root(self):
         """Returns the profiles.xml root."""
         try:
-            tree = ElementTree.parse(self.profiles_xml_path)
+            tree = ElementTree.parse(self._xml_profiles_path)
         except ParseError:
-            self.create_profiles_xml_file(restore=True)
-            tree = ElementTree.parse(self.profiles_xml_path)
+            self.create_xml_profiles_file(restore=True)
+            tree = ElementTree.parse(self._xml_profiles_path)
         return tree.getroot()
 
 
-class _Profile:
+class ConversionProfile:
     """Base class for a Video Profile."""
 
-    def __init__(self, prober, quality, extension, xml_profile):
+    def __init__(self, prober, quality):
         """Class initializer."""
         self.prober = prober
         self.quality = quality
-        self.extension = extension
-        self.xml_profile = xml_profile
 
-        self.params = self.xml_profile.get_preset_attr(self.quality)
+        self.xml_profile = _XMLProfile()
+        self.extension = self.get_xml_profile_attr(target_quality=self.quality,
+                                                   attr_name='file_extension')
+
+        self.params = self.xml_profile.get_xml_profile_attr(self.quality)
+
+    def __getattr__(self, attr):
+        """Delegate to manage the XMLProfile."""
+        return getattr(self.xml_profile, attr)
 
     def update(self, new_quality):
         """Set the target Quality and other parameters needed to get it."""
         self.quality = new_quality
         # Update the params and extension when the target update change
-        self.params = self.xml_profile.get_preset_attr(
+        self.params = self.xml_profile.get_xml_profile_attr(
             target_quality=self.quality,
             attr_name='preset_params')
-        self.extension = self.xml_profile.get_preset_attr(
+        self.extension = self.xml_profile.get_xml_profile_attr(
             target_quality=self.quality,
             attr_name='file_extension')
 
@@ -243,3 +237,4 @@ class _Profile:
         tag = ''.join(tag_regex.findall(self.quality))
 
         return '[' + tag + ']'
+

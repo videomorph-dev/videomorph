@@ -79,7 +79,7 @@ from .converter import InvalidMetadataError
 from .converter import MediaList
 from .converter import which
 from .converter import write_time
-from .converter import XMLProfile
+from .converter import ConversionProfile
 from .settings import SettingsDialog
 from .addprofile import AddProfileDialog
 # import performance
@@ -150,20 +150,16 @@ class VideoMorphMW(QMainWindow):
         # Create initial Settings if not created
         self._create_initial_settings()
 
-        # XML Profile
-        self.xml_profile = XMLProfile()
+        # Create the conversion profile object only once
+        self.conversion_profile = ConversionProfile(
+            quality=self.cb_presets.currentText(),
+            prober=self.conversion_lib.prober)
 
         # Populate PROFILES combo box
         self.populate_profiles_combo()
 
         # Read app settings
         self._read_app_settings()
-
-        # Create the conversion profile object only once
-        self.conversion_profile = self.xml_profile.get_conversion_profile(
-            profile_name=self.cb_profiles.currentText(),
-            target_quality=self.cb_presets.currentText(),
-            prober=self.conversion_lib.prober)
 
         # Disable presets and profiles combo boxes
         self.cb_presets.setEnabled(False)
@@ -671,8 +667,9 @@ class VideoMorphMW(QMainWindow):
         # Clear combobox content
         self.cb_profiles.clear()
         # Populate the combobox with new data
-        self.cb_profiles.addItems(self.xml_profile.get_qualities_per_profile(
-            locale=get_locale()).keys())
+        self.cb_profiles.addItems(
+            self.conversion_profile.get_xml_profile_qualities(
+                locale=get_locale()).keys())
 
     def populate_presets_combo(self, cb_presets):
         """Populate presets combobox.
@@ -683,8 +680,9 @@ class VideoMorphMW(QMainWindow):
         current_profile = self.cb_profiles.currentText()
         if current_profile != '':
             cb_presets.clear()
-            cb_presets.addItems(self.xml_profile.get_qualities_per_profile(
-                locale=get_locale())[current_profile])
+            cb_presets.addItems(
+                self.conversion_profile.get_xml_profile_qualities(
+                    locale=get_locale())[current_profile])
             self._update_media_files_status()
 
     def output_directory(self):
@@ -939,7 +937,7 @@ class VideoMorphMW(QMainWindow):
         if directory:
             msg_info = self.tr('Conversion Profiles Successfully Exported!')
             self._export_import_profiles(
-                func=self.xml_profile.export_profile_xml_file,
+                func=self.xml_profile.export_xml_profiles,
                 path=directory, msg_info=msg_info)
 
     def _select_files(self, dialog_title, files_filter,
@@ -980,7 +978,7 @@ class VideoMorphMW(QMainWindow):
             msg_info = self.tr('Conversion Profiles Successfully Imported!')
 
             self._export_import_profiles(
-                func=self.xml_profile.import_profile_xml,
+                func=self.xml_profile.import_xml_profiles,
                 path=file_path, msg_info=msg_info)
 
     def restore_profiles(self):
@@ -996,7 +994,7 @@ class VideoMorphMW(QMainWindow):
         msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
 
         if msg_box.exec_() == QMessageBox.AcceptRole:
-            self.xml_profile.create_profiles_xml_file(restore=True)
+            self.xml_profile.create_xml_profiles_file(restore=True)
             self.xml_profile.set_xml_root()
             self.populate_profiles_combo()
 

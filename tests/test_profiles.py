@@ -40,16 +40,16 @@ def setup():
     """Function to setup the test."""
     global profile, xml_profile
     xml_profile = XMLProfile()
-    xml_profile.create_profiles_xml_file()
+    xml_profile.create_xml_profiles_file()
     xml_profile.set_xml_root()
 
-    profile = xml_profile.get_conversion_profile(
+    profile = xml_profile.get_xml_profile(
         profile_name='MP4',
         target_quality='MP4 Widescreen (16:9)',
         prober=conv.prober)
 
 
-# Tests for XMLProfile class
+# Tests for _XMLProfile class
 def test_set_xml_root():
     """Test set_xml_root."""
     xml_profile.set_xml_root()
@@ -57,7 +57,7 @@ def test_set_xml_root():
 
 
 def test_get_conversion_profile():
-    """Test get_conversion_profile."""
+    """Test get_xml_profile."""
     profile_ = xml_profile.get_conversion_profile(
         profile_name='MP4',
         target_quality='MP4 Fullscreen (4:3)',
@@ -78,7 +78,7 @@ def test_get_conversion_profile():
 
 
 def test_get_preset_attr():
-    """Test get_preset_attr."""
+    """Test get_xml_profile_attr."""
     attr = xml_profile.get_preset_attr(target_quality='MP4 Fullscreen (4:3)',
                                        attr_name='preset_params')
 
@@ -93,7 +93,7 @@ def test_get_preset_attr():
 
 
 def test_get_qualities_per_profile():
-    """Test get_qualities_per_profile."""
+    """Test get_xml_profile_qualities."""
     qualities = xml_profile.get_qualities_per_profile(locale='es_ES')
     print(qualities)
     assert qualities == OrderedDict(

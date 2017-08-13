@@ -38,14 +38,14 @@ conv_lib = ConversionLib()
 def setup():
     """Function to setup the test."""
     xml_profile = XMLProfile()
-    xml_profile.create_profiles_xml_file()
+    xml_profile.create_xml_profiles_file()
     xml_profile.set_xml_root()
 
     media_list = media.MediaList()
 
     media_file = media.MediaFile(
         file_path='Dad.mpg',
-        conversion_profile=xml_profile.get_conversion_profile(
+        conversion_profile=xml_profile.get_xml_profile(
             profile_name='DVD',
             target_quality='DVD Fullscreen (4:3)',
             prober=conv_lib.prober))
