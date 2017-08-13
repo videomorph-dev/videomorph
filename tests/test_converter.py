@@ -27,9 +27,8 @@ from PyQt5.QtCore import QProcess
 from videomorph import CONV_LIB
 from videomorph import PROBER
 from videomorph.converter import media
-from videomorph.converter import XMLProfile
 from videomorph.converter import ConversionLib
-from videomorph.converter.conversionlib import get_conversion_lib
+from videomorph.converter import ConversionProfile
 
 conv_lib = ConversionLib()
 
@@ -37,18 +36,15 @@ conv_lib = ConversionLib()
 # Set of test for Converter class
 def setup():
     """Function to setup the test."""
-    xml_profile = XMLProfile()
-    xml_profile.create_xml_profiles_file()
-    xml_profile.set_xml_root()
+    profile = ConversionProfile(quality='DVD Fullscreen (4:3)',
+                                prober=conv_lib.prober)
+    profile.set_xml_root()
 
     media_list = media.MediaList()
 
     media_file = media.MediaFile(
         file_path='Dad.mpg',
-        conversion_profile=xml_profile.get_xml_profile(
-            profile_name='DVD',
-            target_quality='DVD Fullscreen (4:3)',
-            prober=conv_lib.prober))
+        conversion_profile=profile)
 
     media_list.add_file(media_file)
 
@@ -79,7 +75,7 @@ def test_is_running():
 
 def test_get_conversion_lib():
     """Test the conversion library installed on the system."""
-    assert get_conversion_lib() == CONV_LIB.ffmpeg
+    assert conv_lib.name == CONV_LIB.ffmpeg
 
 
 if __name__ == '__main__':

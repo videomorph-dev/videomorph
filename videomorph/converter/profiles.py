@@ -222,7 +222,7 @@ class ConversionProfile:
     def update(self, new_quality):
         """Set the target Quality and other parameters needed to get it."""
         self.quality = new_quality
-        # Update the params and extension when the target update change
+        # Update the params and extension when the target quality change
         self.params = self.xml_profile.get_xml_profile_attr(
             target_quality=self.quality,
             attr_name='preset_params')

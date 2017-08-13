@@ -25,46 +25,34 @@ from collections import OrderedDict
 
 import nose
 
-from videomorph.converter import XMLProfile
+from videomorph.converter import ConversionProfile
 from videomorph.converter import ConversionLib
-from videomorph.converter.profiles import _Profile
 from videomorph import PROBER
 
 
 profile = None
-xml_profile = None
 conv = ConversionLib()
 
 
 def setup():
     """Function to setup the test."""
-    global profile, xml_profile
-    xml_profile = XMLProfile()
-    xml_profile.create_xml_profiles_file()
-    xml_profile.set_xml_root()
-
-    profile = xml_profile.get_xml_profile(
-        profile_name='MP4',
-        target_quality='MP4 Widescreen (16:9)',
-        prober=conv.prober)
+    global profile
+    profile = ConversionProfile(quality='MP4 Fullscreen (4:3)',
+                                prober=conv.prober)
+    profile.set_xml_root()
 
 
 # Tests for _XMLProfile class
 def test_set_xml_root():
     """Test set_xml_root."""
-    xml_profile.set_xml_root()
-    assert xml.etree.ElementTree.iselement(xml_profile._xml_root)
+    profile.set_xml_root()
+    assert xml.etree.ElementTree.iselement(profile._xml_root)
 
 
 def test_get_conversion_profile():
     """Test get_xml_profile."""
-    profile_ = xml_profile.get_conversion_profile(
-        profile_name='MP4',
-        target_quality='MP4 Fullscreen (4:3)',
-        prober=conv.prober)
-
-    assert isinstance(profile_, _Profile)
-    assert profile_.params == '-f mp4 -r 29.97 -vcodec libx264 -s 640x480 ' \
+    assert isinstance(profile, ConversionProfile)
+    assert profile.params == '-f mp4 -r 29.97 -vcodec libx264 -s 640x480 ' \
                               '-b:v 1000k -aspect 4:3 -flags +loop -cmp ' \
                               '+chroma -deblockalpha 0 -deblockbeta 0 ' \
                               '-maxrate 1500k -bufsize 4M -bt 256k -refs 1 ' \
@@ -79,7 +67,7 @@ def test_get_conversion_profile():
 
 def test_get_preset_attr():
     """Test get_xml_profile_attr."""
-    attr = xml_profile.get_preset_attr(target_quality='MP4 Fullscreen (4:3)',
+    attr =profile.get_xml_profile_attr(target_quality='MP4 Fullscreen (4:3)',
                                        attr_name='preset_params')
 
     assert attr == '-f mp4 -r 29.97 -vcodec libx264 -s 640x480 -b:v 1000k ' \
@@ -94,7 +82,7 @@ def test_get_preset_attr():
 
 def test_get_qualities_per_profile():
     """Test get_xml_profile_qualities."""
-    qualities = xml_profile.get_qualities_per_profile(locale='es_ES')
+    qualities = profile.get_xml_profile_qualities(locale='es_ES')
     print(qualities)
     assert qualities == OrderedDict(
         [('AVI',
@@ -122,13 +110,15 @@ def test_get_qualities_per_profile():
           ['WEBM Pantalla Completa (4:3)',
            'WEBM Pantalla Panorámica (16:9)']),
          ('WMV',
-          ['WMV Genérico'])])
+          ['WMV Genérico']),
+         ('MP3',
+          ['Extraer Audio mp3'])])
 
 
 # Tests for _Profile class
 def test_quality_tag():
     """Test quality_tag."""
-    assert profile.quality_tag == '[MP4W]'
+    assert profile.quality_tag == '[MP4F]'
 
 
 def test_prober():
@@ -138,7 +128,7 @@ def test_prober():
 
 def test_get_quality():
     """Test get_quality."""
-    assert profile.quality == 'MP4 Widescreen (16:9)'
+    assert profile.quality == 'MP4 Fullscreen (4:3)'
 
 
 def test_quality():

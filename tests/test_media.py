@@ -24,7 +24,7 @@ import nose
 
 from videomorph.converter import media
 from videomorph.converter import profiles
-from videomorph.converter import XMLProfile
+from videomorph.converter import ConversionProfile
 from videomorph.converter import ConversionLib
 
 
@@ -95,7 +95,8 @@ def test_get_conversion_cmd():
 def test_profile():
     """Test profile."""
     media_file = _get_media_file_obj()
-    assert isinstance(media_file.conversion_profile, profiles._Profile)
+    assert isinstance(media_file.conversion_profile,
+                      profiles.ConversionProfile)
 
 
 # Set of tests for media.MediaList class
@@ -208,13 +209,12 @@ def test_duration():
 # Helper functions
 def _get_media_file_obj(file_path='Dad.mpg'):
     """Helper function to crate a valid file object."""
-    xml_profile = XMLProfile()
-    xml_profile.set_xml_root()
+    profile = ConversionProfile(prober=conv_lib.prober,
+                                quality='DVD Fullscreen (4:3)')
+    profile.set_xml_root()
     return media.MediaFile(
         file_path,
-        conversion_profile=xml_profile.get_xml_profile(
-            profile_name='DVD', target_quality='DVD Fullscreen (4:3)',
-            prober=conv_lib.prober))
+        conversion_profile=profile)
 
 
 def _get_media_list_obj(empty=False):
