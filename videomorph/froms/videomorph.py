@@ -81,7 +81,7 @@ from videomorph.converter import write_time
 
 # Conversion tasks list table columns
 TableColumns = namedtuple('TableColumns', 'NAME DURATION QUALITY PROGRESS')
-table_columns = TableColumns(*range(4))
+COLUMNS = TableColumns(*range(4))
 
 
 class VideoMorphMW(QMainWindow):
@@ -541,12 +541,12 @@ class VideoMorphMW(QMainWindow):
 
     def _update_edit_triggers(self):
         """Toggle Edit triggers on task table."""
-        if (int(self.tb_tasks.currentColumn()) == table_columns.QUALITY and not
+        if (int(self.tb_tasks.currentColumn()) == COLUMNS.QUALITY and not
                 self.conversion_lib.converter_is_running):
             self.tb_tasks.setEditTriggers(QAbstractItemView.AllEditTriggers)
         else:
             self.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
-            if int(self.tb_tasks.currentColumn()) == table_columns.NAME:
+            if int(self.tb_tasks.currentColumn()) == COLUMNS.NAME:
                 self.play_input_media_file()
 
     @staticmethod
@@ -576,8 +576,8 @@ class VideoMorphMW(QMainWindow):
             self.cb_profiles.setCurrentIndex(int(profile))
             self.cb_presets.setCurrentIndex(int(preset))
         if 'output_dir' in settings.allKeys():
-            dir = str(settings.value('output_dir'))
-            output_dir = dir if isdir(dir) else QDir.homePath()
+            directory = str(settings.value('output_dir'))
+            output_dir = directory if isdir(directory) else QDir.homePath()
             self.le_output.setText(output_dir)
         if 'source_dir' in settings.allKeys():
             self.source_dir = str(settings.value('source_dir'))
@@ -748,37 +748,40 @@ class VideoMorphMW(QMainWindow):
         for row, media_file in enumerate(self.media_list):
             self._insert_table_item(
                 item_text=media_file.get_name(with_extension=True),
-                row=row, column=table_columns.NAME)
+                row=row, column=COLUMNS.NAME)
 
             self._insert_table_item(
                 item_text=str(write_time(
                     media_file.get_info('format_duration'))),
-                row=row, column=table_columns.DURATION)
+                row=row, column=COLUMNS.DURATION)
 
             self._insert_table_item(
                 item_text=str(self.cb_presets.currentText()),
-                row=row, column=table_columns.QUALITY)
+                row=row, column=COLUMNS.QUALITY)
 
             self._insert_table_item(item_text=self.tr('To Convert'),
-                                    row=row, column=table_columns.PROGRESS)
+                                    row=row, column=COLUMNS.PROGRESS)
 
     def play_input_media_file(self):
+        """Play the input video using an available video player."""
         row = self.tb_tasks.currentIndex().row()
-        self.play_media_file(file_path=self.media_list.get_file_path(row))
+        self._play_media_file(file_path=self.media_list.get_file_path(row))
 
     def play_output_media_file(self):
+        """Play the output video using an available video player."""
         row = self.tb_tasks.currentIndex().row()
         path = self.media_list.get_file(row).get_output_path(
             self.le_output.text())
         if exists(path):
-            self.play_media_file(file_path=path)
+            self._play_media_file(file_path=path)
         else:
             self._show_message_box(
                 type_=QMessageBox.Critical,
                 title=self.tr('Error!'),
                 msg=self.tr("There is no Output for Selected Video File"))
 
-    def play_media_file(self, file_path):
+    def _play_media_file(self, file_path):
+        """Play a video using an available video player."""
         try:
             self.conversion_lib.run_player(file_path=file_path)
         except AttributeError:
@@ -1041,7 +1044,7 @@ class VideoMorphMW(QMainWindow):
                 conversion_cmd = running_file.build_conversion_cmd(
                     target_quality=self.tb_tasks.item(
                         self.media_list.position,
-                        table_columns.QUALITY).text(),
+                        COLUMNS.QUALITY).text(),
                     output_dir=self.le_output.text(),
                     subtitle=bool(self.chb_subtitle.checkState()))
                 # Then pass it to the converter
@@ -1082,7 +1085,7 @@ class VideoMorphMW(QMainWindow):
                 self.media_list.position = self.media_list.index(media_file)
                 self.tb_tasks.item(
                     self.media_list.position,
-                    table_columns.PROGRESS).setText(self.tr('Stopped!'))
+                    COLUMNS.PROGRESS).setText(self.tr('Stopped!'))
 
         self.conversion_lib.stop_converter()
 
@@ -1100,7 +1103,7 @@ class VideoMorphMW(QMainWindow):
                 # When finished a file conversion...
                 self.tb_tasks.item(
                     self.media_list.position,
-                    table_columns.PROGRESS).setText(self.tr('Done!'))
+                    COLUMNS.PROGRESS).setText(self.tr('Done!'))
                 self.media_list.running_file.status = STATUS.done
                 self.pb_progress.setProperty("value", 0)
                 if self.chb_delete.checkState():
@@ -1112,7 +1115,7 @@ class VideoMorphMW(QMainWindow):
             if not self.conversion_lib.converter_is_running:
                 self.tb_tasks.item(
                     self.media_list.position,
-                    table_columns.PROGRESS).setText(self.tr('Stopped!'))
+                    COLUMNS.PROGRESS).setText(self.tr('Stopped!'))
             # Attempt to end the conversion process
             self._end_encoding_process()
 
@@ -1266,13 +1269,13 @@ class VideoMorphMW(QMainWindow):
         item = self.tb_tasks.currentItem()
         if item is not None:
             # Update target_quality in table
-            self.tb_tasks.item(item.row(), table_columns.QUALITY).setText(
+            self.tb_tasks.item(item.row(), COLUMNS.QUALITY).setText(
                 str(self.cb_presets.currentText()))
             # Update table Progress field if file is: Done or Stopped
             if (self.media_list.get_file_status(item.row()) == STATUS.done or
                     self.media_list.get_file_status(
                         item.row()) == STATUS.stopped):
-                self.tb_tasks.item(item.row(), table_columns.PROGRESS).setText(
+                self.tb_tasks.item(item.row(), COLUMNS.PROGRESS).setText(
                     self.tr('To Convert'))
             # Update file Done or Stopped status
             self.media_list.set_file_status(file_index=item.row(),
@@ -1286,14 +1289,14 @@ class VideoMorphMW(QMainWindow):
             rows = self.tb_tasks.rowCount()
             if rows:
                 for row in range(rows):
-                    self.tb_tasks.item(row, table_columns.QUALITY).setText(
+                    self.tb_tasks.item(row, COLUMNS.QUALITY).setText(
                         str(self.cb_presets.currentText()))
 
                     if (self.media_list.get_file_status(row) == STATUS.done or
                             self.media_list.get_file_status(row) ==
                             STATUS.stopped):
                         self.tb_tasks.item(
-                            row, table_columns.PROGRESS).setText(
+                            row, COLUMNS.PROGRESS).setText(
                                 self.tr('To Convert'))
 
                 self.update_interface(stop=False, stop_all=False, remove=False,
@@ -1366,7 +1369,7 @@ class TargetQualityDelegate(QItemDelegate):
 
     def createEditor(self, parent, option, index):
         """Create a ComboBox to edit the Target Quality."""
-        if index.column() == table_columns.QUALITY:
+        if index.column() == COLUMNS.QUALITY:
             editor = QComboBox(parent)
             self.parent.populate_presets_combo(cb_presets=editor)
             editor.activated.connect(partial(self.update,
@@ -1379,7 +1382,7 @@ class TargetQualityDelegate(QItemDelegate):
     def setEditorData(self, editor, index):
         """Set Target Quality."""
         text = index.model().data(index, Qt.DisplayRole)
-        if index.column() == table_columns.QUALITY:
+        if index.column() == COLUMNS.QUALITY:
             i = editor.findText(text)
             if i == -1:
                 i = 0
@@ -1397,7 +1400,7 @@ class TargetQualityDelegate(QItemDelegate):
                 self.parent.media_list.get_file_status(
                     index.row()) == STATUS.stopped):
             self.parent.tb_tasks.item(index.row(),
-                                      table_columns.PROGRESS).setText(
+                                      COLUMNS.PROGRESS).setText(
                                           self.tr('To Convert'))
         # Update file status
         self.parent.media_list.set_file_status(file_index=index.row(),
