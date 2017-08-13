@@ -623,21 +623,6 @@ class VideoMorphMW(QMainWindow):
     def _show_message_box(self, type_, title, msg):
         QMessageBox(type_, title, msg, QMessageBox.Ok, self).show()
 
-    def check_conversion_lib(self):
-        """Check if ffmpeg or/and avconv are installed on the system."""
-        if self.conversion_lib.name is not None:
-            return True
-        else:
-            msg_box = QMessageBox(
-                QMessageBox.Critical,
-                self.tr('Error!'),
-                self.tr('Ffmpeg or Avconv Libraries not Found in your System'),
-                QMessageBox.NoButton, self)
-            msg_box.addButton("&Ok", QMessageBox.AcceptRole)
-            if msg_box.exec_() == QMessageBox.AcceptRole:
-                qApp.closeAllWindows()
-                return False
-
     def about(self):
         """Show About dialog."""
         about_dlg = AboutVMDialog(parent=self)
@@ -1432,40 +1417,3 @@ class TargetQualityDelegate(QItemDelegate):
                                      play_output=False)
 
         self.parent.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
-
-def main():
-    """Main app function."""
-    # Create the app
-    app = QApplication(sys.argv)
-    # Set app translator
-    locale = get_locale()
-    app_translator = QTranslator()
-    if exists('..{0}share{1}videomorph{2}translations'.format(sep, sep, sep)):
-        app_translator.load(
-            "..{0}share{1}videomorph{2}translations{3}videomorph_{4}".format(
-                sep, sep, sep, sep, locale))
-    else:
-        app_translator.load(
-            "{0}usr{1}share{2}videomorph{3}translations"
-            "{4}videomorph_{5}".format(sep, sep, sep, sep, sep, locale))
-
-    app.installTranslator(app_translator)
-    qt_translator = QTranslator()
-    qt_translator.load("qt_" + locale,
-                       QLibraryInfo.location(QLibraryInfo.TranslationsPath))
-    app.installTranslator(qt_translator)
-
-    main_win = VideoMorphMW()
-    if main_win.check_conversion_lib():
-        # If it is running on console
-        if len(sys.argv) > 1:
-            from .converter import run_on_console
-            run_on_console(app, main_win)
-        else:
-            main_win.show()
-            sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-    main()
