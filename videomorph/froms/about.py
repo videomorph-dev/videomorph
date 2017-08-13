@@ -33,8 +33,8 @@ from PyQt5.QtWidgets import (QDialog,
                              QLabel,
                              QSpacerItem)
 
-from . import APPNAME
-from . import VERSION
+from videomorph import APPNAME
+from videomorph import VERSION
 
 
 class AboutVMDialog(QDialog):

@@ -20,7 +20,6 @@
 """This module defines the VideoMorph main window that holds the UI."""
 
 import re
-import sys
 import time
 from collections import OrderedDict
 from collections import namedtuple
@@ -35,12 +34,9 @@ from PyQt5.QtCore import (QSize,
                           QSettings,
                           QDir,
                           QPoint,
-                          QProcess,
-                          QTranslator,
-                          QLibraryInfo)
+                          QProcess)
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import (QMainWindow,
-                             QApplication,
                              QWidget,
                              QVBoxLayout,
                              QHBoxLayout,
@@ -61,26 +57,26 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QMessageBox,
                              QHeaderView,
                              QToolButton,
-                             QItemDelegate,
-                             qApp)
+                             QItemDelegate)
 
-from . import APPNAME
-from . import CONV_LIB
-from . import STATUS
-from . import VERSION
-from . import VIDEO_FILTERS
 from . import videomorph_qrc
-from .about import AboutVMDialog
-from .converter import search_directory_recursively
-from .converter import ConversionLib
-from .converter import get_locale
-from .converter import InvalidMetadataError
-from .converter import MediaList
-from .converter import which
-from .converter import write_time
-from .converter import ConversionProfile
-from .settings import SettingsDialog
 from .addprofile import AddProfileDialog
+from .about import AboutVMDialog
+from .settings import SettingsDialog
+from videomorph import APPNAME
+from videomorph import CONV_LIB
+from videomorph import STATUS
+from videomorph import VERSION
+from videomorph import VIDEO_FILTERS
+from videomorph.converter import ConversionLib
+from videomorph.converter import ConversionProfile
+from videomorph.converter import InvalidMetadataError
+from videomorph.converter import MediaList
+from videomorph.converter import get_locale
+from videomorph.converter import search_directory_recursively
+from videomorph.converter import which
+from videomorph.converter import write_time
+
 # import performance
 
 # Conversion tasks list table columns

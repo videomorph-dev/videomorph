@@ -25,13 +25,13 @@ import sys
 from os import sep
 from os.path import exists
 
+from PyQt5.QtCore import QLibraryInfo
+from PyQt5.QtCore import QTranslator
+from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import qApp
-from PyQt5.QtCore import QTranslator
-from PyQt5.QtCore import QLibraryInfo
-from PyQt5.QtWidgets import QApplication
 
-from .videomorph import VideoMorphMW
+from .froms import VideoMorphMW
 from .converter import get_locale
 
 
