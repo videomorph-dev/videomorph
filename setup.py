@@ -58,7 +58,7 @@ if __name__ == '__main__':
           author='Ozkar L. Garcell',
           author_email='codeshard@openmailbox.org',
           maintainer='Leodanis Pozo Ramos',
-          maintainer_email='lpozo@openmailbox.org',
+          maintainer_email='lpozor78@gmail.com',
           url='https://github.com/codeshard/videomorph',
           license='Apache License, Version 2.0',
           packages=find_packages(exclude=['tests', 'docs']),
