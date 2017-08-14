@@ -70,14 +70,13 @@ from videomorph import VERSION
 from videomorph import VIDEO_FILTERS
 from videomorph.converter import ConversionLib
 from videomorph.converter import ConversionProfile
-from videomorph.converter import InvalidMetadataError
 from videomorph.converter import MediaList
 from videomorph.converter import get_locale
 from videomorph.converter import search_directory_recursively
 from videomorph.converter import which
 from videomorph.converter import write_time
 
-# import performance
+import performance
 
 # Conversion tasks list table columns
 TableColumns = namedtuple('TableColumns', 'NAME DURATION QUALITY PROGRESS')
@@ -689,7 +688,7 @@ class VideoMorphMW(QMainWindow):
 
         event.accept()
 
-    # @performance.measure_exec_time
+    @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with MediaFile objects."""
         invalid_files = self.media_list.populate(files_paths)
