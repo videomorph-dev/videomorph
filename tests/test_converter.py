@@ -44,7 +44,7 @@ def setup():
 
     media_file = media.MediaFile(
         file_path='Dad.mpg',
-        conversion_profile=profile)
+        profile=profile)
 
     media_list._add_file(media_file)
 

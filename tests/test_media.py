@@ -95,7 +95,7 @@ def test_get_conversion_cmd():
 def test_profile():
     """Test profile."""
     media_file = _get_media_file_obj()
-    assert isinstance(media_file.conversion_profile,
+    assert isinstance(media_file._profile,
                       profile.ConversionProfile)
 
 
@@ -214,7 +214,7 @@ def _get_media_file_obj(file_path='Dad.mpg'):
     profile.set_xml_root()
     return media.MediaFile(
         file_path,
-        conversion_profile=profile)
+        profile=profile)
 
 
 def _get_media_list_obj(empty=False):
