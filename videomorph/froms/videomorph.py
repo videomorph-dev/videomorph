@@ -77,7 +77,7 @@ from videomorph.converter import search_directory_recursively
 from videomorph.converter import which
 from videomorph.converter import write_time
 
-# import performance
+import performance
 
 # Conversion tasks list table columns
 TableColumns = namedtuple('TableColumns', 'NAME DURATION QUALITY PROGRESS')
@@ -689,7 +689,7 @@ class VideoMorphMW(QMainWindow):
 
         event.accept()
 
-    # @performance.measure_exec_time
+    @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with MediaFile objects."""
         for file in self.media_list.media_files_generator(
