@@ -101,12 +101,12 @@ def test_profile():
 
 # Set of tests for media.MediaList class
 def test_add_file():
-    """Test add_file."""
+    """Test _add_file."""
     media_file = _get_media_file_obj()
     media_list = _get_media_list_obj(empty=True)
 
     # testing...
-    media_list.add_file(media_file)
+    media_list._add_file(media_file)
 
     assert len(media_list) == 1
     assert isinstance(media_list[0], media.MediaFile)
@@ -115,14 +115,14 @@ def test_add_file():
 
 @nose.tools.raises(media.InvalidMetadataError)
 def test_add_file_invalid_metadata():
-    """Test add_file invalid metadata."""
+    """Test _add_file invalid metadata."""
     media_file = _get_media_file_obj()
     media_list = _get_media_list_obj(empty=True)
 
     media_file.info['format_duration'] = 'wrong'
-    media_list.add_file(media_file)
+    media_list._add_file(media_file)
     media_file.info['format_duration'] = 0
-    media_list.add_file(media_file)
+    media_list._add_file(media_file)
 
 
 def test_add_file_twice():
@@ -131,8 +131,8 @@ def test_add_file_twice():
     media_list = _get_media_list_obj(empty=True)
 
     # test adding the same file twice
-    media_list.add_file(media_file)
-    media_list.add_file(media_file)
+    media_list._add_file(media_file)
+    media_list._add_file(media_file)
     assert media_list.length == 1
 
 
@@ -222,7 +222,7 @@ def _get_media_list_obj(empty=False):
     media_list = media.MediaList()
 
     if not empty:
-        media_list.add_file(_get_media_file_obj())
+        media_list._add_file(_get_media_file_obj())
 
     return media_list
 

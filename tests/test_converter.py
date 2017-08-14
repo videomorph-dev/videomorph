@@ -46,7 +46,7 @@ def setup():
         file_path='Dad.mpg',
         conversion_profile=profile)
 
-    media_list.add_file(media_file)
+    media_list._add_file(media_file)
 
     conv_lib.start_converter(cmd=media_file.build_conversion_cmd(
         output_dir='.', target_quality='DVD Fullscreen (4:3)'))
