@@ -36,6 +36,15 @@ class ConversionLib:
         self.converter = _Converter(conversion_lib_name=self.name)
         self.library_error = None
 
+    def __getattr__(self, attr):
+        try:
+            return getattr(self.converter, attr)
+        except AttributeError:
+            try:
+                return getattr(self.player, attr)
+            except AttributeError:
+                raise AttributeError('Attribute not found')
+
     @staticmethod
     def get_system_library_name():
         """Return the name of the conversion library installed on system."""
@@ -65,50 +74,6 @@ class ConversionLib:
         else:
             return None
 
-    def setup_converter(self, reader, finisher, process_channel):
-        """Setup converter."""
-        self.converter.setup(reader, finisher, process_channel)
-
-    def start_converter(self, cmd):
-        """Start the converter."""
-        self.converter.start(cmd=cmd)
-
-    def stop_converter(self):
-        """Stop the converter."""
-        self.converter.stop()
-
-    def close_converter(self):
-        """Close the converter."""
-        self.converter.close()
-
-    def kill_converter(self):
-        """Kill the converter process."""
-        self.converter.kill()
-
-    def read_converter_output(self):
-        """Read the converter output."""
-        return self.converter.read_output()
-
-    def converter_state(self):
-        """Return the converter state."""
-        return self.converter.state()
-
-    def converter_exit_status(self):
-        return self.converter.exit_status()
-
-    def converter_finished_disconnect(self, connected):
-        """Disconnect the QProcess.finished method."""
-        self.converter.finished_disconnect(connected=connected)
-
-    @property
-    def converter_is_running(self):
-        """Return the converter running state."""
-        return self.converter.is_running
-
-    def run_player(self, file_path):
-        """Run the player."""
-        self.player.play(file_path=file_path)
-
 
 class _Converter:
     """_Converter class to provide conversion functionality."""
@@ -119,48 +84,48 @@ class _Converter:
 
         self.process = QProcess()
 
-    def setup(self, reader, finisher, process_channel):
+    def setup_converter(self, reader, finisher, process_channel):
         """Set up the QProcess object."""
         self.process.setProcessChannelMode(process_channel)
         self.process.readyRead.connect(reader)
         self.process.finished.connect(finisher)
 
-    def start(self, cmd):
+    def start_converter(self, cmd):
         """Start the encoding process."""
         self.process.start(which(self.conversion_lib), cmd)
 
-    def stop(self):
+    def stop_converter(self):
         """Terminate encoding process."""
         self.process.terminate()
-        if self.is_running:
+        if self.converter_is_running:
             self.process.kill()
 
-    def finished_disconnect(self, connected):
+    def converter_finished_disconnect(self, connected):
         """Disconnect the QProcess.finished method."""
         self.process.finished.disconnect(connected)
 
-    def close(self):
+    def close_converter(self):
         """Calling QProcess.close method."""
         self.process.close()
 
-    def kill(self):
+    def kill_converter(self):
         """Calling QProcess.kill method."""
         self.process.kill()
 
-    def state(self):
+    def converter_state(self):
         """Calling QProcess.state method."""
         return self.process.state()
 
-    def exit_status(self):
+    def converter_exit_status(self):
         """Calling QProcess.exit_status method."""
         return self.process.exitStatus()
 
     @property
-    def is_running(self):
+    def converter_is_running(self):
         """Return converter running state."""
         return self.process.state() == QProcess.Running
 
-    def read_output(self):
+    def read_converter_output(self):
         """Calling QProcess.readAll method."""
         return self.process.readAll()
 
@@ -171,7 +136,7 @@ class _Player:
     def __init__(self):
         self.name = None
 
-    def play(self, file_path):
+    def run_player(self, file_path):
         """Play a video file."""
         if self.name is None:
             self._get_player()
