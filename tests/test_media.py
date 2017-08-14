@@ -154,7 +154,7 @@ def test_delete_file():
     # Be sure there is one element in the list
     assert len(media_list) == 1
 
-    media_list.delete_file(file_index=0)
+    media_list.delete_file(position=0)
     assert len(media_list) == 0
 
 
@@ -162,7 +162,7 @@ def test_get_file():
     """Test get_file."""
     media_list = _get_media_list_obj()
 
-    file = media_list.get_file(file_index=0)
+    file = media_list.get_file(position=0)
     assert isinstance(file, media.MediaFile)
     assert file is media_list[0]
 
@@ -177,10 +177,10 @@ def test_get_file_name():
     name = media_list.running_file.get_name(with_extension=True)
     assert name == 'Dad.mpg'
 
-    name = media_list.get_file_name(file_index=0)
+    name = media_list.get_file_name(position=0)
     assert name == 'Dad'
 
-    name = media_list.get_file_name(file_index=0, with_extension=True)
+    name = media_list.get_file_name(position=0, with_extension=True)
     assert name == 'Dad.mpg'
 
 
@@ -188,7 +188,7 @@ def test_get_file_path():
     """Test get_file_path."""
     media_list = _get_media_list_obj()
 
-    assert media_list.get_file_path(file_index=0) == 'Dad.mpg'
+    assert media_list.get_file_path(position=0) == 'Dad.mpg'
 
 
 def test_lenght():

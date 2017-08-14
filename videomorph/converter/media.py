@@ -47,9 +47,10 @@ class InvalidMetadataError(MediaError):
 class MediaList(list):
     """Class to store the list of video files to convert."""
 
-    def __init__(self):
+    def __init__(self, profile):
         """Class initializer."""
         super(MediaList, self).__init__()
+        self.profile = profile
         # -1 represent no item running, 0, the first item, 1, second...
         self.position = -1
 
@@ -70,41 +71,43 @@ class MediaList(list):
             else:
                 # 0 duration video file not added
                 raise InvalidMetadataError('File is zero length')
-        except:
+        except ValueError:
             raise InvalidMetadataError('Invalid file duration')
+        except InvalidMetadataError:
+            raise InvalidMetadataError('File is zero length')
 
-    def delete_file(self, file_index):
+    def delete_file(self, position):
         """Delete a video file from the list."""
-        del self[file_index]
+        del self[position]
 
-    def get_file(self, file_index):
+    def get_file(self, position):
         """Return a file object."""
-        return self[file_index]
+        return self[position]
 
-    def get_file_name(self, file_index, with_extension=False):
+    def get_file_name(self, position, with_extension=False):
         """Return the name of a video file."""
-        return self[file_index].get_name(with_extension)
+        return self[position].get_name(with_extension)
 
-    def get_file_path(self, file_index):
+    def get_file_path(self, position):
         """Return the input_path to a video file."""
-        return self[file_index].input_path
+        return self[position].input_path
 
-    def get_file_status(self, file_index):
+    def get_file_status(self, position):
         """Return the video file status."""
-        return self[file_index].status
+        return self[position].status
 
-    def set_file_status(self, file_index, status=STATUS.todo):
+    def set_file_status(self, position, status):
         """Set the video file status."""
-        self[file_index].status = status
+        self[position].status = status
 
-    def get_file_info(self, file_index, info_param):
+    def get_file_info(self, position, info_param):
         """Return general streaming info from a video file."""
-        return self[file_index].get_info(info_param)
+        return self[position].get_info(info_param)
 
     @property
     def running_file(self):
         """Return the file that is currently running."""
-        return self.get_file(file_index=self.position)
+        return self[self.position]
 
     @property
     def is_processed(self):
@@ -127,10 +130,9 @@ class MediaList(list):
 
     @property
     def duration(self):
-        """Return the duration time of MediaList counting undone files only."""
+        """Return the duration time of MediaList counting files todo only."""
         return sum(float(media.get_info('format_duration')) for
-                   media in self if media.status != STATUS.done and
-                   media.status != STATUS.stopped)
+                   media in self if media.status == STATUS.todo)
 
     def _file_is_added(self, media_file):
         """Determine if a video file is in the list already."""
@@ -139,14 +141,13 @@ class MediaList(list):
                 return True
         return False
 
-    @staticmethod
-    def media_files_generator(files_paths, conversion_profile):
+    def media_files_generator(self, files_paths):
         """Yield MediaFile objects to be added to MediaList."""
         threads = []
         for file_path in files_paths:
-            thread = MediaFileThread(
+            thread = _MediaFileThread(
                 media_path=file_path,
-                conversion_profile=conversion_profile)
+                conversion_profile=self.profile)
             thread.start()
             threads.append(thread)
 
@@ -267,7 +268,7 @@ class MediaFile:
         return info
 
 
-class MediaFileThread(Thread):
+class _MediaFileThread(Thread):
     """Thread class to handle the creation of MediaFile objects."""
 
     def __init__(self, media_path, conversion_profile):
@@ -276,7 +277,7 @@ class MediaFileThread(Thread):
             media_path (str): Path to the media file
             conversion_profile (object): profile._Profile object
         """
-        super(MediaFileThread, self).__init__()
+        super(_MediaFileThread, self).__init__()
         self.file_path = media_path
         self.conversion_profile = conversion_profile
         self.media_file = None

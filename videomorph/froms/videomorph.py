@@ -90,9 +90,6 @@ class VideoMorphMW(QMainWindow):
     def __init__(self):
         """Class initializer."""
         super(VideoMorphMW, self).__init__()
-        # App data structures
-        # Create the Media list object
-        self.media_list = MediaList()
         # Variables for calculating total progress
         self.time_jump = 0.0
         self.partial_time = 0.0
@@ -147,9 +144,12 @@ class VideoMorphMW(QMainWindow):
         self._create_initial_settings()
 
         # Create the conversion profile object only once
-        self.conversion_profile = ConversionProfile(
+        self._profile = ConversionProfile(
             quality=self.cb_presets.currentText(),
             prober=self.conversion_lib.prober)
+
+        # Create the Media list object
+        self.media_list = MediaList(profile=self._profile)
 
         # Populate PROFILES combo box
         self.populate_profiles_combo()
@@ -649,7 +649,7 @@ class VideoMorphMW(QMainWindow):
         self.cb_profiles.clear()
         # Populate the combobox with new data
         self.cb_profiles.addItems(
-            self.conversion_profile.get_xml_profile_qualities(
+            self._profile.get_xml_profile_qualities(
                 locale=get_locale()).keys())
 
     def populate_presets_combo(self, cb_presets):
@@ -662,7 +662,7 @@ class VideoMorphMW(QMainWindow):
         if current_profile != '':
             cb_presets.clear()
             cb_presets.addItems(
-                self.conversion_profile.get_xml_profile_qualities(
+                self._profile.get_xml_profile_qualities(
                     locale=get_locale())[current_profile])
             self._update_media_files_status()
 
@@ -693,8 +693,7 @@ class VideoMorphMW(QMainWindow):
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with MediaFile objects."""
         for file in self.media_list.media_files_generator(
-                files_paths=files_paths,
-                conversion_profile=self.conversion_profile):
+                files_paths=files_paths):
             try:
                 self.media_list.add_file(file)
             except InvalidMetadataError:
@@ -869,7 +868,7 @@ class VideoMorphMW(QMainWindow):
             # Delete file from table
             self.tb_tasks.removeRow(file_row)
             # Remove file from self.media_list
-            self.media_list.delete_file(file_index=file_row)
+            self.media_list.delete_file(position=file_row)
             self.media_list_duration = self.media_list.duration
 
         # If all files are deleted... update the interface
@@ -1278,7 +1277,7 @@ class VideoMorphMW(QMainWindow):
                 self.tb_tasks.item(item.row(), COLUMNS.PROGRESS).setText(
                     self.tr('To Convert'))
             # Update file Done or Stopped status
-            self.media_list.set_file_status(file_index=item.row(),
+            self.media_list.set_file_status(position=item.row(),
                                             status=STATUS.todo)
             # Update total duration of the new tasks list
             self.media_list_duration = self.media_list.duration
@@ -1403,7 +1402,7 @@ class TargetQualityDelegate(QItemDelegate):
                                       COLUMNS.PROGRESS).setText(
                                           self.tr('To Convert'))
         # Update file status
-        self.parent.media_list.set_file_status(file_index=index.row(),
+        self.parent.media_list.set_file_status(position=index.row(),
                                                status=STATUS.todo)
         # Update total duration of the new tasks list
         self.parent.total_duration = self.parent.media_list.duration
