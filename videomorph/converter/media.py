@@ -218,7 +218,7 @@ class MediaFile:
         remove(self.input_path)
         try:
             remove(self._subtitle_path)
-        except:
+        except FileNotFoundError:
             pass
 
     def get_output_path(self, output_dir):

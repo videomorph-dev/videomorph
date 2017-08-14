@@ -67,8 +67,8 @@ def test_get_conversion_profile():
 
 def test_get_preset_attr():
     """Test get_xml_profile_attr."""
-    attr =profile.get_xml_profile_attr(target_quality='MP4 Fullscreen (4:3)',
-                                       attr_name='preset_params')
+    attr = profile.get_xml_profile_attr(target_quality='MP4 Fullscreen (4:3)',
+                                        attr_name='preset_params')
 
     assert attr == '-f mp4 -r 29.97 -vcodec libx264 -s 640x480 -b:v 1000k ' \
                    '-aspect 4:3 -flags +loop -cmp +chroma -deblockalpha 0 ' \
