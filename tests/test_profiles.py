@@ -18,7 +18,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module provides tests for profiles.py module."""
+"""This module provides tests for profile.py module."""
 
 import xml
 from collections import OrderedDict

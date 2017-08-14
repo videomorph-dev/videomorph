@@ -51,18 +51,47 @@ class MediaList(list):
         """Class initializer."""
         super(MediaList, self).__init__()
         self.profile = profile
-        # -1 represent no item running, 0, the first item, 1, second...
-        self.position = -1
+        self.position = -1  # -1 no item running, 0, the first item,...
+        self.file_paths = set()
 
     def clear(self):
         """Clear the list of videos."""
         super(MediaList, self).clear()
         self.position = -1
+        self.file_paths.clear()
+
+    def _files_paths_to_add(self, files_paths):
+        if self.file_paths:
+            not_added_files = set(files_paths).difference(self.file_paths)
+            self.file_paths.update(not_added_files)
+        else:
+            self.file_paths.update(files_paths)
+            # print(len(self.file_paths))
+            not_added_files = self.file_paths
+
+        return not_added_files
+
+    def populate(self, files_paths):
+        """Populate MediaList object with MediaFile objects.
+
+        Args:
+            files_paths (iterable): list of files paths
+        Returns:
+            not_added_files (list): list of files not added to MediaList
+        """
+        files_paths = self._files_paths_to_add(files_paths)
+        not_added_files = []
+
+        for file in self.media_files_generator(files_paths):
+            try:
+                self.add_file(file)
+            except InvalidMetadataError:
+                not_added_files.append(file.get_name(with_extension=True))
+
+        return not_added_files
 
     def add_file(self, media_file):
         """Add a video file to the list."""
-        if self._file_is_added(media_file):
-            return
         try:
             # Invalid metadata
             duration = float(media_file.get_info('format_duration'))
@@ -71,9 +100,11 @@ class MediaList(list):
             else:
                 # 0 duration video file not added
                 raise InvalidMetadataError('File is zero length')
-        except ValueError:
+        except (TypeError, ValueError):
+            self.file_paths.remove(media_file.input_path)
             raise InvalidMetadataError('Invalid file duration')
         except InvalidMetadataError:
+            self.file_paths.remove(media_file.input_path)
             raise InvalidMetadataError('File is zero length')
 
     def delete_file(self, position):
@@ -133,13 +164,6 @@ class MediaList(list):
         """Return the duration time of MediaList counting files todo only."""
         return sum(float(media.get_info('format_duration')) for
                    media in self if media.status == STATUS.todo)
-
-    def _file_is_added(self, media_file):
-        """Determine if a video file is in the list already."""
-        for file in self:
-            if file.input_path == media_file.input_path:
-                return True
-        return False
 
     def media_files_generator(self, files_paths):
         """Yield MediaFile objects to be added to MediaList."""

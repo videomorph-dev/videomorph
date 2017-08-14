@@ -692,39 +692,34 @@ class VideoMorphMW(QMainWindow):
     # @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with MediaFile objects."""
-        for file in self.media_list.media_files_generator(
-                files_paths=files_paths):
-            try:
-                self.media_list.add_file(file)
-            except InvalidMetadataError:
-                msg = self.tr('Invalid Video File Information for:') + ' ' + \
-                    file.get_name(with_extension=True) + '. ' + \
-                    self.tr('File not Added to the List of Conversion Tasks')
-                self._show_message_box(
-                    type_=QMessageBox.Critical,
-                    title=self.tr('Error!'),
-                    msg=msg)
+        invalid_files = self.media_list.populate(files_paths)
 
-                # An error occurred, so interface get initial state back, but
-                # only if the list is empty
-                if not self.media_list.length:
-                    self.update_interface(convert=False,
-                                          clear=False,
-                                          remove=False,
-                                          stop=False,
-                                          stop_all=False,
-                                          presets=False,
-                                          profiles=False,
-                                          subtitles_chb=False,
-                                          delete_chb=False,
-                                          play_input=False,
-                                          play_output=False)
-                else:
-                    # Update ui
-                    self.update_interface(stop=False, stop_all=False,
-                                          remove=False)
+        if invalid_files:
+            msg = self.tr('Invalid Video File Information for:') + ' \n - ' + \
+                  '\n - '.join(invalid_files) + '\n' + \
+                  self.tr('File not Added to the List of Conversion Tasks')
+            self._show_message_box(
+                type_=QMessageBox.Critical,
+                title=self.tr('Error!'),
+                msg=msg)
 
-        return self.media_list
+        # if the list is empty
+        if not self.media_list.length:
+            self.update_interface(convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  stop=False,
+                                  stop_all=False,
+                                  presets=False,
+                                  profiles=False,
+                                  subtitles_chb=False,
+                                  delete_chb=False,
+                                  play_input=False,
+                                  play_output=False)
+        else:
+            # Update ui
+            self.update_interface(stop=False, stop_all=False,
+                                  remove=False)
 
     def _load_files(self, source_dir=QDir.homePath()):
         """Load video files."""
@@ -761,34 +756,6 @@ class VideoMorphMW(QMainWindow):
             self._insert_table_item(item_text=self.tr('To Convert'),
                                     row=row, column=COLUMNS.PROGRESS)
 
-    def play_input_media_file(self):
-        """Play the input video using an available video player."""
-        row = self.tb_tasks.currentIndex().row()
-        self._play_media_file(file_path=self.media_list.get_file_path(row))
-
-    def play_output_media_file(self):
-        """Play the output video using an available video player."""
-        row = self.tb_tasks.currentIndex().row()
-        path = self.media_list.get_file(row).get_output_path(
-            self.le_output.text())
-        if exists(path):
-            self._play_media_file(file_path=path)
-        else:
-            self._show_message_box(
-                type_=QMessageBox.Critical,
-                title=self.tr('Error!'),
-                msg=self.tr("There is no Output for Selected Video File"))
-
-    def _play_media_file(self, file_path):
-        """Play a video using an available video player."""
-        try:
-            self.conversion_lib.run_player(file_path=file_path)
-        except AttributeError:
-            self._show_message_box(
-                type_=QMessageBox.Critical,
-                title=self.tr('Error!'),
-                msg=self.tr('No Video Player Found in your System'))
-
     def add_media_files(self, *files):
         """Add video files to conversion list.
 
@@ -823,6 +790,34 @@ class VideoMorphMW(QMainWindow):
 
         # After adding files to the list, recalculate the list duration
         self.media_list_duration = self.media_list.duration
+
+    def play_input_media_file(self):
+        """Play the input video using an available video player."""
+        row = self.tb_tasks.currentIndex().row()
+        self._play_media_file(file_path=self.media_list.get_file_path(row))
+
+    def play_output_media_file(self):
+        """Play the output video using an available video player."""
+        row = self.tb_tasks.currentIndex().row()
+        path = self.media_list.get_file(row).get_output_path(
+            self.le_output.text())
+        if exists(path):
+            self._play_media_file(file_path=path)
+        else:
+            self._show_message_box(
+                type_=QMessageBox.Critical,
+                title=self.tr('Error!'),
+                msg=self.tr("There is no Output for Selected Video File"))
+
+    def _play_media_file(self, file_path):
+        """Play a video using an available video player."""
+        try:
+            self.conversion_lib.run_player(file_path=file_path)
+        except AttributeError:
+            self._show_message_box(
+                type_=QMessageBox.Critical,
+                title=self.tr('Error!'),
+                msg=self.tr('No Video Player Found in your System'))
 
     def open_media_files(self):
         """Add media files to the list of conversion tasks."""
