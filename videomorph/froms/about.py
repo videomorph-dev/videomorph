@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# File _name: about.py
+# File name: about.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2016-2017 VideoMorph Development Team
@@ -106,7 +106,7 @@ class AboutVMDialog(QDialog):
 
         self.text_edit_2.setHtml(self.tr(
             "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-            "<html><head><meta _name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">Developers:</span></p>\n"
@@ -126,12 +126,12 @@ class AboutVMDialog(QDialog):
 
         self.text_edit_3.setHtml(self.tr(
             "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-            "<html><head><meta _name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
             "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">A simple and lightweight video transcoder.</span></p>\n"
             "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;\"><br /></p>\n"
-            "<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">VideoMorph</span><span style=\" font-size:11pt;\"> is a small GUI front-end for </span><a href=\"http://ffmpeg.org/\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">ffmpeg</span></a><span style=\" font-size:11pt;\"> and avconv, based on code from </span><a href=\"https://github.com/senko/python-video-_converter\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">python-video-_converter</span></a><span style=\" font-size:11pt;\"> and presets idea from </span><a href=\"http://qwinff.github.io/\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">QWinFF</span></a><span style=\" font-size:11pt;\">.</span></p>\n"
+            "<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">VideoMorph</span><span style=\" font-size:11pt;\"> is a small GUI front-end for </span><a href=\"http://ffmpeg.org/\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">ffmpeg</span></a><span style=\" font-size:11pt;\"> and avconv, based on code from </span><a href=\"https://github.com/senko/python-video-converter\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">python-video-converter</span></a><span style=\" font-size:11pt;\"> and presets idea from </span><a href=\"http://qwinff.github.io/\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">QWinFF</span></a><span style=\" font-size:11pt;\">.</span></p>\n"
             "<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;\"><br /></p>\n"
             "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://github.com/codeshard/videomorph\"><span style=\" text-decoration: underline; color:#2980b9;\">https://github.com/codeshard/videomorph</span></a></p></body></html>"
         ))
@@ -181,7 +181,7 @@ class AboutVMDialog(QDialog):
             "      editorial revisions, annotations, elaborations, or other modifications\n"
             "      represent, as a whole, an original work of authorship. For the purposes\n"
             "      of this License, Derivative Works shall not include works that remain\n"
-            "      separable from, or merely link (or bind by _name) to the interfaces of,\n"
+            "      separable from, or merely link (or bind by name) to the interfaces of,\n"
             "      the Work and Derivative Works thereof.\n"
             "\n"
             "      \"Contribution\" shall mean any work of authorship, including\n"

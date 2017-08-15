@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# File _name: utils.py
+# File name: utils.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2016-2017 VideoMorph Development Team
@@ -44,7 +44,7 @@ def spawn_process(cmd):
 def which(app):
     """Detect if an app is installed in your system."""
     if app == '':
-        raise ValueError('Invalid app _name')
+        raise ValueError('Invalid app name')
 
     path = os.environ.get('PATH', os.defpath)
     for directory in path.split(':'):

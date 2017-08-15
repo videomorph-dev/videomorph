@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# File _name: __init__.py
+# File name: __init__.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2016-2017 VideoMorph Development Team

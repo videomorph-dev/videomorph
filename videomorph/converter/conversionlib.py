@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# File _name: conversionlib.py
+# File name: conversionlib.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2016-2017 VideoMorph Development Team
@@ -32,12 +32,14 @@ class ConversionLib:
     """Conversion Library class."""
 
     def __init__(self):
+        """Class initializer."""
         self._name = self.get_system_library_name()
         self._player = _Player()
         self._converter = _Converter(conversion_lib_name=self.name)
         self.library_error = None
 
     def __getattr__(self, attr):
+        """Delegate to manage _Player and _Converter objects."""
         try:
             return getattr(self._converter, attr)
         except AttributeError:
@@ -48,7 +50,7 @@ class ConversionLib:
 
     @staticmethod
     def get_system_library_name():
-        """Return the _name of the conversion library installed on system."""
+        """Return the name of the conversion library installed on system."""
         if which(CONV_LIB.ffmpeg):
             return CONV_LIB.ffmpeg  # Default library
         elif which(CONV_LIB.avconv):
@@ -57,17 +59,17 @@ class ConversionLib:
 
     @property
     def name(self):
-        """Return the _name of the conversion library."""
+        """Return the name of the conversion library."""
         return self._name
 
     @name.setter
     def name(self, library_name):
-        """Set the library_name of the conversion library."""
+        """Set the name of the conversion library."""
         self._name = library_name
 
     @property
     def prober(self):
-        """Return the probe of the conversion library."""
+        """Return the prober of the conversion library."""
         if self._name == CONV_LIB.ffmpeg:
             return PROBER.ffprobe
         elif self._name == CONV_LIB.avconv:
@@ -95,7 +97,7 @@ class _Converter:
         self._process.start(which(self._conversion_lib), cmd)
 
     def stop_converter(self):
-        """Terminate encoding process."""
+        """Terminate the encoding process."""
         self._process.terminate()
         if self.converter_is_running:
             self._process.kill()
@@ -105,33 +107,33 @@ class _Converter:
         self._process.finished.disconnect(connected)
 
     def close_converter(self):
-        """Calling QProcess.close method."""
+        """Call QProcess.close method."""
         self._process.close()
 
     def kill_converter(self):
-        """Calling QProcess.kill method."""
+        """Call QProcess.kill method."""
         self._process.kill()
 
     def converter_state(self):
-        """Calling QProcess.state method."""
+        """Call QProcess.state method."""
         return self._process.state()
 
     def converter_exit_status(self):
-        """Calling QProcess.exit_status method."""
+        """Call QProcess.exit_status method."""
         return self._process.exitStatus()
 
     @property
     def converter_is_running(self):
-        """Return _converter running state."""
+        """Return QProcess state."""
         return self._process.state() == QProcess.Running
 
     def read_converter_output(self):
-        """Calling QProcess.readAll method."""
+        """Call QProcess.readAll method."""
         return self._process.readAll()
 
 
 class _Player:
-    """_Player class to provide a video _player."""
+    """_Player class to provide a video player."""
 
     def __init__(self):
         self._name = None

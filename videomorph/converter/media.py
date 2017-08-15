@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# File _name: media.py
+# File name: media.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2016-2017 VideoMorph Development Team
@@ -88,7 +88,7 @@ class MediaList(list):
         return self[position]
 
     def get_file_name(self, position, with_extension=False):
-        """Return the _name of a video file."""
+        """Return the name of a video file."""
         return self[position].get_name(with_extension)
 
     def get_file_path(self, position):
@@ -193,7 +193,7 @@ class _MediaFile:
         self.info = self._parse_probe()
 
     def get_name(self, with_extension=False):
-        """Return the file _name."""
+        """Return the file name."""
         full_file_name = basename(self.input_path)
         file_name = full_file_name.split('.')[0]
 

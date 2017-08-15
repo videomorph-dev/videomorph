@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# File _name: settings.py
+# File name: settings.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2016-2017 VideoMorph Development Team
