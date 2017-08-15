@@ -702,23 +702,23 @@ class VideoMorphMW(QMainWindow):
                 title=self.tr('Error!'),
                 msg=msg)
 
-        # if the list is empty
-        if not self.media_list.length:
-            self.update_interface(convert=False,
-                                  clear=False,
-                                  remove=False,
-                                  stop=False,
-                                  stop_all=False,
-                                  presets=False,
-                                  profiles=False,
-                                  subtitles_chb=False,
-                                  delete_chb=False,
-                                  play_input=False,
-                                  play_output=False)
-        else:
-            # Update ui
-            self.update_interface(stop=False, stop_all=False,
-                                  remove=False)
+            # if the list is empty
+            if not self.media_list.length:
+                self.update_interface(convert=False,
+                                      clear=False,
+                                      remove=False,
+                                      stop=False,
+                                      stop_all=False,
+                                      presets=False,
+                                      profiles=False,
+                                      subtitles_chb=False,
+                                      delete_chb=False,
+                                      play_input=False,
+                                      play_output=False)
+            else:
+                # Update ui
+                self.update_interface(stop=False, stop_all=False,
+                                      remove=False)
 
     def _load_files(self, source_dir=QDir.homePath()):
         """Load video files."""
@@ -752,8 +752,13 @@ class VideoMorphMW(QMainWindow):
                 item_text=str(self.cb_presets.currentText()),
                 row=row, column=COLUMNS.QUALITY)
 
-            self._insert_table_item(item_text=self.tr('To Convert'),
-                                    row=row, column=COLUMNS.PROGRESS)
+            if self.conversion_lib.converter_is_running:
+                if row > self.media_list.position:
+                    self._insert_table_item(item_text=self.tr('To Convert'),
+                                            row=row, column=COLUMNS.PROGRESS)
+            else:
+                self._insert_table_item(item_text=self.tr('To Convert'),
+                                        row=row, column=COLUMNS.PROGRESS)
 
     def add_media_files(self, *files):
         """Add video files to conversion list.
@@ -776,9 +781,8 @@ class VideoMorphMW(QMainWindow):
                                   play_input=False,
                                   play_output=False)
         else:
-            # This rewind the encoding list if the encoding process is
-            # not running
-            self.media_list.position = -1
+            # Update the files status
+            self._set_media_status()
             # Update ui
             self.update_interface(stop=False, stop_all=False, remove=False,
                                   play_input=False, play_output=False)
@@ -863,6 +867,7 @@ class VideoMorphMW(QMainWindow):
             self.tb_tasks.removeRow(file_row)
             # Remove file from self.media_list
             self.media_list.delete_file(position=file_row)
+            self.media_list.position = None
             self.media_list_duration = self.media_list.duration
 
         # If all files are deleted... update the interface
@@ -1030,8 +1035,7 @@ class VideoMorphMW(QMainWindow):
 
         running_file = self.media_list.running_file
 
-        if (running_file.status != STATUS.done and
-                running_file.status != STATUS.stopped):
+        if running_file.status == STATUS.todo:
             try:
                 # Fist build the conversion command
                 conversion_cmd = running_file.build_conversion_cmd(
@@ -1048,7 +1052,7 @@ class VideoMorphMW(QMainWindow):
                     title=self.tr('Error!'),
                     msg=self.tr('Can not Write to Selected Directory'))
 
-                self.media_list.position = -1
+                self.media_list.position = None
                 self.update_interface(convert=False, stop=False,
                                       stop_all=False, remove=False,
                                       play_input=False, play_output=False)
@@ -1144,7 +1148,7 @@ class VideoMorphMW(QMainWindow):
             self._reset_progress_times()
             self.process_initial_time = 0.0
             # Reset the position
-            self.media_list.position = -1
+            self.media_list.position = None
             # Update tool buttons
             self.update_interface(convert=False, stop=False,
                                   stop_all=False, remove=False,
@@ -1264,17 +1268,20 @@ class VideoMorphMW(QMainWindow):
             # Update target_quality in table
             self.tb_tasks.item(item.row(), COLUMNS.QUALITY).setText(
                 str(self.cb_presets.currentText()))
+
             # Update table Progress field if file is: Done or Stopped
-            if (self.media_list.get_file_status(item.row()) == STATUS.done or
-                    self.media_list.get_file_status(
-                        item.row()) == STATUS.stopped):
-                self.tb_tasks.item(item.row(), COLUMNS.PROGRESS).setText(
-                    self.tr('To Convert'))
+            if self.media_list.get_file_status(item.row()) != STATUS.todo:
+                self.tb_tasks.item(
+                    item.row(),
+                    COLUMNS.PROGRESS).setText(self.tr('To Convert'))
+
             # Update file Done or Stopped status
             self.media_list.set_file_status(position=item.row(),
                                             status=STATUS.todo)
+
             # Update total duration of the new tasks list
             self.media_list_duration = self.media_list.duration
+
             # Update the interface
             self.update_interface(stop=False, stop_all=False, remove=False,
                                   play_input=False, play_output=False)
@@ -1285,15 +1292,14 @@ class VideoMorphMW(QMainWindow):
                     self.tb_tasks.item(row, COLUMNS.QUALITY).setText(
                         str(self.cb_presets.currentText()))
 
-                    if (self.media_list.get_file_status(row) == STATUS.done or
-                            self.media_list.get_file_status(row) ==
-                            STATUS.stopped):
+                    if self.media_list.get_file_status(row) != STATUS.todo:
                         self.tb_tasks.item(
-                            row, COLUMNS.PROGRESS).setText(
-                                self.tr('To Convert'))
+                            row,
+                            COLUMNS.PROGRESS).setText(self.tr('To Convert'))
 
                 self.update_interface(stop=False, stop_all=False, remove=False,
                                       play_input=False, play_output=False)
+
             self._set_media_status()
             self.media_list_duration = self.media_list.duration
 
@@ -1301,7 +1307,7 @@ class VideoMorphMW(QMainWindow):
         """Update media files state of conversion."""
         for media_file in self.media_list:
             media_file.status = STATUS.todo
-        self.media_list.position = -1
+        self.media_list.position = None
 
     def update_interface(self, **i_vars):
         """Update the interface status.
