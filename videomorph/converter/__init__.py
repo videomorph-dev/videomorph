@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-# File name: __init__.py
+# File _name: __init__.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -17,13 +17,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module defines the converter package and the needed imports."""
+"""This module defines the _converter package and the needed imports."""
 
 from .conversionlib import ConversionLib
 from .console import run_on_console
 from .console import search_directory_recursively
-from .media import InvalidMetadataError
-from .media import MediaFile
 from .media import MediaList
 from .utils import get_locale
 from .utils import which

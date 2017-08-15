@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# File name: test_converter.py
+# File _name: test_converter.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2015-2016 VideoMorph Development Team
@@ -42,7 +42,7 @@ def setup():
 
     media_list = media.MediaList()
 
-    media_file = media.MediaFile(
+    media_file = media._MediaFile(
         file_path='Dad.mpg',
         profile=profile)
 

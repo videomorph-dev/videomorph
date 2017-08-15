@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-# File name: videomorph.py
+# File _name: videomorph.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -390,13 +390,13 @@ class VideoMorphMW(QMainWindow):
             callback=self.restore_profiles)
 
         self.play_input_media_file_action = self._action_factory(
-            icon=QIcon(':/icons/video-player-input.png'),
+            icon=QIcon(':/icons/video-_player-input.png'),
             text=self.tr('Play Input Video File'),
             enabled=False,
             callback=self.play_input_media_file)
 
         self.play_output_media_file_action = self._action_factory(
-            icon=QIcon(':/icons/video-player-output.png'),
+            icon=QIcon(':/icons/video-_player-output.png'),
             text=self.tr('Play Output Video File'),
             enabled=False,
             callback=self.play_output_media_file)
@@ -690,7 +690,7 @@ class VideoMorphMW(QMainWindow):
 
     @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
-        """Fill MediaList object with MediaFile objects."""
+        """Fill MediaList object with _MediaFile objects."""
         invalid_files = self.media_list.populate(files_paths)
 
         if invalid_files:
@@ -791,12 +791,12 @@ class VideoMorphMW(QMainWindow):
         self.media_list_duration = self.media_list.duration
 
     def play_input_media_file(self):
-        """Play the input video using an available video player."""
+        """Play the input video using an available video _player."""
         row = self.tb_tasks.currentIndex().row()
         self._play_media_file(file_path=self.media_list.get_file_path(row))
 
     def play_output_media_file(self):
-        """Play the output video using an available video player."""
+        """Play the output video using an available video _player."""
         row = self.tb_tasks.currentIndex().row()
         path = self.media_list.get_file(row).get_output_path(
             self.le_output.text())
@@ -809,7 +809,7 @@ class VideoMorphMW(QMainWindow):
                 msg=self.tr("There is no Output for Selected Video File"))
 
     def _play_media_file(self, file_path):
-        """Play a video using an available video player."""
+        """Play a video using an available video _player."""
         try:
             self.conversion_lib.run_player(file_path=file_path)
         except AttributeError:
@@ -1040,7 +1040,7 @@ class VideoMorphMW(QMainWindow):
                         COLUMNS.QUALITY).text(),
                     output_dir=self.le_output.text(),
                     subtitle=bool(self.chb_subtitle.checkState()))
-                # Then pass it to the converter
+                # Then pass it to the _converter
                 self.conversion_lib.start_converter(cmd=conversion_cmd)
             except PermissionError:
                 self._show_message_box(
@@ -1057,7 +1057,7 @@ class VideoMorphMW(QMainWindow):
 
     def stop_file_encoding(self):
         """Stop file encoding process and continue with the list."""
-        # Set MediaFile.status attribute
+        # Set _MediaFile.status attribute
         self.media_list.running_file.status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
         self.media_list.running_file.delete_output(
@@ -1072,7 +1072,7 @@ class VideoMorphMW(QMainWindow):
         # Delete the file when conversion is stopped by the user
         self.media_list.running_file.delete_output(self.le_output.text())
         for media_file in self.media_list:
-            # Set MediaFile.status attribute
+            # Set _MediaFile.status attribute
             if media_file.status != STATUS.done:
                 media_file.status = STATUS.stopped
                 self.media_list.position = self.media_list.index(media_file)
@@ -1088,7 +1088,7 @@ class VideoMorphMW(QMainWindow):
     def _finish_file_encoding(self):
         """Finish the file encoding process."""
         if self.media_list.running_file.status != STATUS.stopped:
-            # Close and kill the converter process
+            # Close and kill the _converter process
             self.conversion_lib.close_converter()
             # Check if the process finished OK
             if (self.conversion_lib.converter_exit_status() ==
@@ -1159,7 +1159,7 @@ class VideoMorphMW(QMainWindow):
         return read
 
     def _read_encoding_output(self):
-        """Read the encoding output from the converter stdout."""
+        """Read the encoding output from the _converter stdout."""
         # Getting the process output
         process_output = str(self.conversion_lib.read_converter_output())
 

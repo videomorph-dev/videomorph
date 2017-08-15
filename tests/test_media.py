@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# File name: test_media.py
+# File _name: test_media.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2015-2016 VideoMorph Development Team
@@ -31,7 +31,7 @@ from videomorph.converter import ConversionLib
 conv_lib = ConversionLib()
 
 
-# Set of tests for media.MediaFile class
+# Set of tests for media._MediaFile class
 def test_get_name():
     """Test get_name."""
     media_file = _get_media_file_obj()
@@ -109,7 +109,7 @@ def test_add_file():
     media_list._add_file(media_file)
 
     assert len(media_list) == 1
-    assert isinstance(media_list[0], media.MediaFile)
+    assert isinstance(media_list[0], media._MediaFile)
     assert media_file is media_list[0]
 
 
@@ -163,7 +163,7 @@ def test_get_file():
     media_list = _get_media_list_obj()
 
     file = media_list.get_file(position=0)
-    assert isinstance(file, media.MediaFile)
+    assert isinstance(file, media._MediaFile)
     assert file is media_list[0]
 
 
@@ -212,7 +212,7 @@ def _get_media_file_obj(file_path='Dad.mpg'):
     profile = ConversionProfile(prober=conv_lib.prober,
                                 quality='DVD Fullscreen (4:3)')
     profile.set_xml_root()
-    return media.MediaFile(
+    return media._MediaFile(
         file_path,
         profile=profile)
 

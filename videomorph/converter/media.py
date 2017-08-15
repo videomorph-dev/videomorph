@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-# File name: media.py
+# File _name: media.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module provides the definition of MediaList and MediaFile classes."""
+"""This module provides the definition of MediaList and _MediaFile classes."""
 
 import shlex
 from os import access
@@ -61,7 +61,7 @@ class MediaList(list):
         self._file_paths.clear()
 
     def populate(self, files_paths):
-        """Populate MediaList object with MediaFile objects.
+        """Populate MediaList object with _MediaFile objects.
 
         Args:
             files_paths (iterable): list of files paths
@@ -88,7 +88,7 @@ class MediaList(list):
         return self[position]
 
     def get_file_name(self, position, with_extension=False):
-        """Return the name of a video file."""
+        """Return the _name of a video file."""
         return self[position].get_name(with_extension)
 
     def get_file_path(self, position):
@@ -161,7 +161,7 @@ class MediaList(list):
             raise InvalidMetadataError('File is zero length')
 
     def _media_files_generator(self, files_paths):
-        """Yield MediaFile objects to be added to MediaList."""
+        """Yield _MediaFile objects to be added to MediaList."""
         threads = []
         for file_path in files_paths:
             thread = _MediaFileThread(
@@ -177,7 +177,7 @@ class MediaList(list):
             yield thread.media_file
 
 
-class MediaFile:
+class _MediaFile:
     """Class representing a video file."""
 
     __slots__ = ('input_path',
@@ -193,7 +193,7 @@ class MediaFile:
         self.info = self._parse_probe()
 
     def get_name(self, with_extension=False):
-        """Return the file name."""
+        """Return the file _name."""
         full_file_name = basename(self.input_path)
         file_name = full_file_name.split('.')[0]
 
@@ -288,7 +288,7 @@ class MediaFile:
 
 
 class _MediaFileThread(Thread):
-    """Thread class to handle the creation of MediaFile objects."""
+    """Thread class to handle the creation of _MediaFile objects."""
 
     def __init__(self, media_path, profile):
         """Class initializer.
@@ -306,10 +306,10 @@ class _MediaFileThread(Thread):
         self.media_file = self._media_file_factory()
 
     def _media_file_factory(self):
-        """Factory function for creating MediaFile objects.
+        """Factory function for creating _MediaFile objects.
 
         Returns:
-            media.MediaFile object
+            media._MediaFile object
         """
-        return MediaFile(file_path=self._file_path,
-                         profile=self._profile)
+        return _MediaFile(file_path=self._file_path,
+                          profile=self._profile)
