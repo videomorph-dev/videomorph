@@ -1270,10 +1270,7 @@ class VideoMorphMW(QMainWindow):
                 str(self.cb_presets.currentText()))
 
             # Update table Progress field if file is: Done or Stopped
-            if self.media_list.get_file_status(item.row()) != STATUS.todo:
-                self.tb_tasks.item(
-                    item.row(),
-                    COLUMNS.PROGRESS).setText(self.tr('To Convert'))
+            self.update_table_progress_column(row=item.row())
 
             # Update file Done or Stopped status
             self.media_list.set_file_status(position=item.row(),
@@ -1291,17 +1288,19 @@ class VideoMorphMW(QMainWindow):
                 for row in range(rows):
                     self.tb_tasks.item(row, COLUMNS.QUALITY).setText(
                         str(self.cb_presets.currentText()))
-
-                    if self.media_list.get_file_status(row) != STATUS.todo:
-                        self.tb_tasks.item(
-                            row,
-                            COLUMNS.PROGRESS).setText(self.tr('To Convert'))
+                    self.update_table_progress_column(row)
 
                 self.update_interface(stop=False, stop_all=False, remove=False,
                                       play_input=False, play_output=False)
 
             self._set_media_status()
             self.media_list_duration = self.media_list.duration
+
+    def update_table_progress_column(self, row):
+        if self.media_list.get_file_status(row) != STATUS.todo:
+            self.tb_tasks.item(
+                row,
+                COLUMNS.PROGRESS).setText(self.tr('To Convert'))
 
     def _set_media_status(self):
         """Update media files state of conversion."""
@@ -1394,18 +1393,14 @@ class TargetQualityDelegate(QItemDelegate):
     def update(self, editor, index):
         """Update several things in the interface."""
         # Update table Progress field if file is: Done or Stopped
-        if (self.parent.media_list.get_file_status(
-                index.row()) == STATUS.done or
-                self.parent.media_list.get_file_status(
-                    index.row()) == STATUS.stopped):
-            self.parent.tb_tasks.item(index.row(),
-                                      COLUMNS.PROGRESS).setText(
-                                          self.tr('To Convert'))
+        self.parent.update_table_progress_column(row=index.row())
+
         # Update file status
         self.parent.media_list.set_file_status(position=index.row(),
                                                status=STATUS.todo)
         # Update total duration of the new tasks list
         self.parent.total_duration = self.parent.media_list.duration
+
         # Update the interface
         self.parent.update_interface(clear=False,
                                      stop=False,
