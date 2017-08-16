@@ -143,6 +143,7 @@ class AboutVMDialog(QDialog):
 
     @staticmethod
     def get_license_text():
+        """Get the license text from the license file."""
         license_path = (LINUX_PATHS['doc'] + '/LICENSE' if
                         isfile(LINUX_PATHS['doc'] + '/LICENSE') else
                         '../LICENSE')
