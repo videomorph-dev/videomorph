@@ -19,6 +19,7 @@
 
 """This module provides the definition of MediaList and _MediaFile classes."""
 
+from collections import deque
 import shlex
 from os import access
 from os import remove
@@ -66,8 +67,13 @@ class MediaList(list):
         Returns:
             not_added_files (list): list of files not added to MediaList
         """
-        files_paths = self._files_paths_to_add(files_paths)
-        not_added_files = []
+        if self.length:
+            files_paths = [file_path for file_path in files_paths if
+                           self._file_not_added(file_path)]
+            if not files_paths:
+                return
+
+        not_added_files = deque()
 
         for file in self._media_files_generator(files_paths):
             try:
@@ -148,11 +154,6 @@ class MediaList(list):
         return sum(float(media.get_info('format_duration')) for
                    media in self if media.status == STATUS.todo)
 
-    def _files_paths_to_add(self, files_paths):
-        current_files_paths = {file.input_path for file in self}
-        not_added_files = set(files_paths).difference(current_files_paths)
-        return not_added_files
-
     def _add_file(self, media_file):
         """Add a video file to the list."""
         try:
@@ -183,6 +184,13 @@ class MediaList(list):
 
         for thread in threads:
             yield thread.media_file
+
+    def _file_not_added(self, file_path):
+        """Determine if a video file is in the list already."""
+        for file in self:
+            if file.input_path == file_path:
+                return False
+        return True
 
 
 class _MediaFile:
