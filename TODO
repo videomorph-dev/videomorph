@@ -4,8 +4,6 @@ TODO List:
 Next version or later:
     - Improve the Artwork, mainly the icons theme
     - Pack in .rpm format
-    - Disable the Play Output File context menu if the file doesn't exist,
-      and in MP4 formats cause file can't be play until conversion is finished
 
 BugFix:
     -

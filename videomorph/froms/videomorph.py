@@ -800,18 +800,12 @@ class VideoMorphMW(QMainWindow):
         row = self.tb_tasks.currentIndex().row()
         self._play_media_file(file_path=self.media_list.get_file_path(row))
 
-    def play_output_media_file(self):
+    def play_output_media_file(self, path):
         """Play the output video using an available video player."""
         row = self.tb_tasks.currentIndex().row()
         path = self.media_list.get_file(row).get_output_path(
             self.le_output.text())
-        if exists(path):
-            self._play_media_file(file_path=path)
-        else:
-            self._show_message_box(
-                type_=QMessageBox.Critical,
-                title=self.tr('Error!'),
-                msg=self.tr("There is no Output for Selected Video File"))
+        self._play_media_file(file_path=path)
 
     def _play_media_file(self, file_path):
         """Play a video using an available video player."""
@@ -1356,11 +1350,13 @@ class VideoMorphMW(QMainWindow):
 
         self.play_input_media_file_action.setEnabled(True)
 
-        # row = self.tb_tasks.currentIndex().row()
-        # path = self.media_list.get_file(row).get_output_path(
-        #     self.le_output.text())
-        # if exists(path):
-        self.play_output_media_file_action.setEnabled(True)
+        row = self.tb_tasks.currentIndex().row()
+        path = self.media_list.get_file(row).get_output_path(
+            self.le_output.text())
+        # Only enable the menu if output file exist and if it not .mp4,
+        # cause .mp4 files doesn't run until conversion is finished
+        if exists(path) and not self.cb_profiles.currentText() == 'MP4':
+            self.play_output_media_file_action.setEnabled(True)
 
 
 class TargetQualityDelegate(QItemDelegate):
