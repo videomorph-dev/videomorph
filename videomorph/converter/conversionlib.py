@@ -141,6 +141,15 @@ class _Converter:
 
         return pattern.findall(process_output)
 
+    @staticmethod
+    def time_read_to_seconds(time_read):
+        """Convert time read to seconds."""
+        seconds = 0.0
+        for time_part in time_read[0].split(':'):
+            seconds = 60 * seconds + float(time_part)
+
+        return seconds
+
     @property
     def converter_is_running(self):
         """Return QProcess state."""

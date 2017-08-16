@@ -37,8 +37,8 @@ conv = ConversionLib()
 def setup():
     """Function to setup the test."""
     global profile
-    profile = ConversionProfile(quality='MP4 Fullscreen (4:3)',
-                                prober=conv.prober)
+    profile = ConversionProfile(prober=conv.prober)
+    profile.update(new_quality='MP4 Fullscreen (4:3)')
 
 
 # Tests for _XMLProfile class

@@ -1157,8 +1157,6 @@ class VideoMorphMW(QMainWindow):
         # Getting the process output
         process_output = self.conversion_lib.read_converter_output()
 
-        self.conversion_lib.process_conversion_errors(process_output)
-
         # Reading time from library output
         time_read = self.conversion_lib.read_conversion_param(
             param='time',
@@ -1166,7 +1164,6 @@ class VideoMorphMW(QMainWindow):
 
         # Initialize the process time
         if not self.process_initial_time:
-            # Grab the initial time
             self.process_initial_time = time.time()
 
         # Initialize the operation time
@@ -1175,6 +1172,8 @@ class VideoMorphMW(QMainWindow):
 
         # Return if no time read
         if not time_read:
+            # Catch the library errors only before time_read
+            self.conversion_lib.process_conversion_errors(process_output)
             return
 
         # Real time computation
@@ -1182,15 +1181,8 @@ class VideoMorphMW(QMainWindow):
         process_cum_time = time.time() - self.process_initial_time
 
         # Convert time read to seconds
-        operation_time_read = 0.0
-        for time_part in time_read[0].split(':'):
-            operation_time_read = 60 * operation_time_read + float(time_part)
-
-        # Reading bit rate
-        bit_rate_read = self.conversion_lib.read_conversion_param(
-            param='bitrate',
-            process_output=process_output)
-        bit_rate = bit_rate_read[0].split('=')[-1].strip()
+        operation_time_read = self.conversion_lib.time_read_to_seconds(
+            time_read=time_read)
 
         # Estimating time
         file_duration = float(self.media_list.running_file.get_info(
@@ -1206,6 +1198,12 @@ class VideoMorphMW(QMainWindow):
                                              operation_cum_time)
         except ValueError:
             operation_left_time = write_time(0)
+
+        # Reading bit rate
+        bit_rate_read = self.conversion_lib.read_conversion_param(
+            param='bitrate',
+            process_output=process_output)
+        bit_rate = bit_rate_read[0].split('=')[-1].strip()
 
         # Calculate operation progress percent
         operation_progress = int(operation_time_read /

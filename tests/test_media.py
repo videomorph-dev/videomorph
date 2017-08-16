@@ -28,8 +28,8 @@ from videomorph import PROBER
 from videomorph import STATUS
 
 
-profile = ConversionProfile(prober=PROBER.ffprobe,
-                            quality='DVD Fullscreen (4:3)')
+profile = ConversionProfile(prober=PROBER.ffprobe)
+profile.update(new_quality='DVD Fullscreen (4:3)')
 
 media_list = MediaList(profile=profile)
 
@@ -96,7 +96,8 @@ def test_duration():
 def test_add_file_twice():
     """Testing adding the same file twice."""
     media_list.clear()
-    media_list.populate(('Dad.mpg','Dad.mpg'))
+    media_list.populate(('Dad.mpg',))
+    media_list.populate(('Dad.mpg',))
     assert media_list.length == 1
 
 

@@ -31,8 +31,8 @@ from videomorph.converter import ConversionProfile
 
 conv_lib = ConversionLib()
 
-profile = ConversionProfile(quality='DVD Fullscreen (4:3)',
-                            prober=conv_lib.prober)
+profile = ConversionProfile(prober=conv_lib.prober)
+profile.update(new_quality='DVD Fullscreen (4:3)')
 
 media_list = media.MediaList(profile)
 
