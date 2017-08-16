@@ -156,7 +156,7 @@ class VideoMorphMW(QMainWindow):
         self._read_app_settings()
 
         # Disable presets and profiles combo boxes
-        self.cb_presets.setEnabled(False)
+        self.cb_quality.setEnabled(False)
         self.cb_profiles.setEnabled(False)
 
         # Create app main menu bar
@@ -209,16 +209,16 @@ class VideoMorphMW(QMainWindow):
         horizontal_layout_2.addItem(spacer_item_1)
         vertical_layout.addLayout(horizontal_layout_2)
         preset_tip = self.tr('Select a Video Target Quality')
-        self.cb_presets = QComboBox(gb_settings, statusTip=preset_tip,
+        self.cb_quality = QComboBox(gb_settings, statusTip=preset_tip,
                                     toolTip=preset_tip)
-        self.cb_presets.setMinimumSize(QSize(200, 0))
+        self.cb_quality.setMinimumSize(QSize(200, 0))
 
         self.cb_profiles.currentIndexChanged.connect(partial(
-            self.populate_presets_combo, self.cb_presets))
+            self.populate_quality_combo, self.cb_quality))
 
-        self.cb_presets.activated.connect(self._update_media_files_status)
+        self.cb_quality.activated.connect(self._update_media_files_status)
 
-        vertical_layout.addWidget(self.cb_presets)
+        vertical_layout.addWidget(self.cb_quality)
         self.label_other_options = QLabel(self.tr('Other Options:'))
         sub_tip = self.tr('Insert Subtitles if Available in Source Directory')
         self.chb_subtitle = QCheckBox(self.tr('Insert Subtitles if Available'),
@@ -572,7 +572,7 @@ class VideoMorphMW(QMainWindow):
             profile = settings.value('profile_index')
             preset = settings.value('preset_index')
             self.cb_profiles.setCurrentIndex(int(profile))
-            self.cb_presets.setCurrentIndex(int(preset))
+            self.cb_quality.setCurrentIndex(int(preset))
         if 'output_dir' in settings.allKeys():
             directory = str(settings.value('output_dir'))
             output_dir = directory if isdir(directory) else QDir.homePath()
@@ -595,7 +595,7 @@ class VideoMorphMW(QMainWindow):
             pos=self.pos(),
             size=self.size(),
             profile_index=self.cb_profiles.currentIndex(),
-            preset_index=self.cb_presets.currentIndex(),
+            preset_index=self.cb_quality.currentIndex(),
             source_dir=self.source_dir,
             output_dir=self.le_output.text(),
             conv_lib=self.conversion_lib.name)
@@ -650,21 +650,21 @@ class VideoMorphMW(QMainWindow):
             self._profile.get_xml_profile_qualities(
                 locale=get_locale()).keys())
 
-    def populate_presets_combo(self, cb_presets):
-        """Populate presets combobox.
+    def populate_quality_combo(self, combo):
+        """Populate target quality combobox.
 
         Args:
-            cb_presets (QComboBox): List all available presets
+            combo (QComboBox): List all available presets
         """
         current_profile = self.cb_profiles.currentText()
         if current_profile != '':
-            cb_presets.clear()
-            cb_presets.addItems(
+            combo.clear()
+            combo.addItems(
                 self._profile.get_xml_profile_qualities(
                     locale=get_locale())[current_profile])
 
             self._update_media_files_status()
-            self._profile.update(new_quality=self.cb_presets.currentText())
+            self._profile.update(new_quality=self.cb_quality.currentText())
 
     def output_directory(self):
         """Choose output directory."""
@@ -750,7 +750,7 @@ class VideoMorphMW(QMainWindow):
                 row=row, column=COLUMNS.DURATION)
 
             self._insert_table_item(
-                item_text=str(self.cb_presets.currentText()),
+                item_text=str(self.cb_quality.currentText()),
                 row=row, column=COLUMNS.QUALITY)
 
             if self.conversion_lib.converter_is_running:
@@ -1262,7 +1262,7 @@ class VideoMorphMW(QMainWindow):
         if item is not None:
             # Update target_quality in table
             self.tb_tasks.item(item.row(), COLUMNS.QUALITY).setText(
-                str(self.cb_presets.currentText()))
+                str(self.cb_quality.currentText()))
 
             # Update table Progress field if file is: Done or Stopped
             self.update_table_progress_column(row=item.row())
@@ -1282,7 +1282,7 @@ class VideoMorphMW(QMainWindow):
             if rows:
                 for row in range(rows):
                     self.tb_tasks.item(row, COLUMNS.QUALITY).setText(
-                        str(self.cb_presets.currentText()))
+                        str(self.cb_quality.currentText()))
                     self.update_table_progress_column(row)
 
                 self.update_interface(stop=False, stop_all=False, remove=False,
@@ -1333,7 +1333,7 @@ class VideoMorphMW(QMainWindow):
         self.remove_media_file_action.setEnabled(variables['remove'])
         self.stop_action.setEnabled(variables['stop'])
         self.stop_all_action.setEnabled(variables['stop_all'])
-        self.cb_presets.setEnabled(variables['presets'])
+        self.cb_quality.setEnabled(variables['presets'])
         self.cb_profiles.setEnabled(variables['profiles'])
         self.add_profile_action.setEnabled(variables['add_costume_profile'])
         self.tb_output.setEnabled(variables['output_dir'])
@@ -1371,7 +1371,7 @@ class TargetQualityDelegate(QItemDelegate):
         """Create a ComboBox to edit the Target Quality."""
         if index.column() == COLUMNS.QUALITY:
             editor = QComboBox(parent)
-            self.parent.populate_presets_combo(cb_presets=editor)
+            self.parent.populate_quality_combo(combo=editor)
             editor.activated.connect(partial(self.update,
                                              editor,
                                              index))
