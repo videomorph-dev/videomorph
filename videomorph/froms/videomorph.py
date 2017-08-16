@@ -1116,14 +1116,14 @@ class VideoMorphMW(QMainWindow):
         """End up the encoding process."""
         # Test if encoding process is finished
         if self.media_list.is_exhausted:
-            if self.conversion_lib.library_error is not None:
+            if self.conversion_lib.current_library_error is not None:
                 self._show_message_box(
                     type_=QMessageBox.Critical,
                     title='Error!',
                     msg=self.tr('The Conversion Library has '
                                 'Failed with Error:') + ' ' +
-                    self.conversion_lib.library_error)
-                self.conversion_lib.library_error = None
+                    self.conversion_lib.current_library_error)
+                self.conversion_lib.current_library_error = None
             elif not self.media_list.all_stopped:
                 self._show_message_box(
                     type_=QMessageBox.Information,
@@ -1152,26 +1152,17 @@ class VideoMorphMW(QMainWindow):
         else:
             self.start_encoding()
 
-    @staticmethod
-    def _read_param(param_regex, process_output):
-        pattern = re.compile(param_regex)
-        read = pattern.findall(process_output)
-        return read
-
     def _read_encoding_output(self):
-        """Read the encoding output from the converterstdout."""
+        """Read the encoding output from the converter stdout."""
         # Getting the process output
-        process_output = str(self.conversion_lib.read_converter_output())
+        process_output = self.conversion_lib.read_converter_output()
 
-        # Here we go with the library errors. I have only this two for now,
-        # there will be others in the future, I think...
-        if 'Unknown encoder' in process_output:
-            self.conversion_lib.library_error = 'Unknown encoder'
-        if 'Unrecognized option' in process_output:
-            self.conversion_lib.library_error = 'Unrecognized option'
+        self.conversion_lib.process_conversion_errors(process_output)
 
         # Reading time from library output
-        time_read = self._read_param(r'time=([0-9.:]+) ', process_output)
+        time_read = self.conversion_lib.read_conversion_param(
+            param='time',
+            process_output=process_output)
 
         # Initialize the process time
         if not self.process_initial_time:
@@ -1196,8 +1187,9 @@ class VideoMorphMW(QMainWindow):
             operation_time_read = 60 * operation_time_read + float(time_part)
 
         # Reading bit rate
-        bit_rate_read = self._read_param(
-            r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*', process_output)
+        bit_rate_read = self.conversion_lib.read_conversion_param(
+            param='bitrate',
+            process_output=process_output)
         bit_rate = bit_rate_read[0].split('=')[-1].strip()
 
         # Estimating time
@@ -1293,6 +1285,7 @@ class VideoMorphMW(QMainWindow):
             self.media_list_duration = self.media_list.duration
 
     def update_table_progress_column(self, row):
+        """Update the progress column of conversion task list."""
         if self.media_list.get_file_status(row) != STATUS.todo:
             self.tb_tasks.item(
                 row,
@@ -1356,7 +1349,7 @@ class VideoMorphMW(QMainWindow):
             self.le_output.text())
         # Only enable the menu if output file exist and if it not .mp4,
         # cause .mp4 files doesn't run until conversion is finished
-        if exists(path) and not self.cb_profiles.currentText() == 'MP4':
+        if exists(path) and self.cb_profiles.currentText() != 'MP4':
             self.play_output_media_file_action.setEnabled(True)
 
 

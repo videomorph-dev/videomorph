@@ -19,6 +19,8 @@
 
 """This module provides the definition of the ConversionLib class."""
 
+import re
+
 from PyQt5.QtCore import QProcess
 
 from .utils import which
@@ -36,7 +38,6 @@ class ConversionLib:
         self._name = self.get_system_library_name()
         self._player = _Player()
         self._converter = _Converter(conversion_lib_name=self.name)
-        self.library_error = None
 
     def __getattr__(self, attr):
         """Delegate to manage _Player and _Converter objects."""
@@ -85,6 +86,12 @@ class _Converter:
         """Class initializer."""
         self._conversion_lib = conversion_lib_name
         self._process = QProcess()
+        self._library_errors = ('Unknown encoder', 'Unrecognized option')
+        self.current_library_error = None
+        self._params_regex = {'bitrate':
+                                  r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
+                              'time':
+                                  r'time=([0-9.:]+) '}
 
     def setup_converter(self, reader, finisher, process_channel):
         """Set up the QProcess object."""
@@ -122,6 +129,18 @@ class _Converter:
         """Call QProcess.exit_status method."""
         return self._process.exitStatus()
 
+    def process_conversion_errors(self, process_output):
+        """Process the library errors."""
+        for error in self._library_errors:
+            if error in process_output:
+                self.current_library_error = error
+
+    def read_conversion_param(self, param, process_output):
+        """Read library output looking for some parameters."""
+        pattern = re.compile(self._params_regex[param])
+
+        return pattern.findall(process_output)
+
     @property
     def converter_is_running(self):
         """Return QProcess state."""
@@ -129,7 +148,7 @@ class _Converter:
 
     def read_converter_output(self):
         """Call QProcess.readAll method."""
-        return self._process.readAll()
+        return str(self._process.readAll())
 
 
 class _Player:
