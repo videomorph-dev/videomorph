@@ -719,7 +719,8 @@ class VideoMorphMW(QMainWindow):
             else:
                 # Update ui
                 self.update_interface(stop=False, stop_all=False,
-                                      remove=False)
+                                      remove=False, play_input=False,
+                                      play_output=False)
 
     def _load_files(self, source_dir=QDir.homePath()):
         """Load video files."""
