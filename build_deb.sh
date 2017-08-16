@@ -1,11 +1,12 @@
 #!/bin/bash
 
-version="1.0"
+version="1.1"
 ubuntu="-xenial"
 package_name="videomorph_""$version""_all.deb"
 python_version=$(python3 --version | cut -f2 -d " " | cut --fields=1,2 -d ".")
 
 gzip -n --keep --force --best changelog
+gzip -n --keep --force --best "share/man/videomorph.1"
 
 if [ -d dist ]
 then
