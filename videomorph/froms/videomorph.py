@@ -144,7 +144,6 @@ class VideoMorphMW(QMainWindow):
 
         # Create the conversion profile object only once
         self._profile = ConversionProfile(
-            quality=self.cb_presets.currentText(),
             prober=self.conversion_lib.prober)
 
         # Create the Media list object
@@ -663,7 +662,9 @@ class VideoMorphMW(QMainWindow):
             cb_presets.addItems(
                 self._profile.get_xml_profile_qualities(
                     locale=get_locale())[current_profile])
+
             self._update_media_files_status()
+            self._profile.update(new_quality=self.cb_presets.currentText())
 
     def output_directory(self):
         """Choose output directory."""
@@ -1351,9 +1352,14 @@ class VideoMorphMW(QMainWindow):
 
     def _enable_context_menu_action(self):
         if not self.conversion_lib.converter_is_running:
-            # self.update_interface(stop=False, stop_all=False)
             self.remove_media_file_action.setEnabled(True)
+
         self.play_input_media_file_action.setEnabled(True)
+
+        # row = self.tb_tasks.currentIndex().row()
+        # path = self.media_list.get_file(row).get_output_path(
+        #     self.le_output.text())
+        # if exists(path):
         self.play_output_media_file_action.setEnabled(True)
 
 

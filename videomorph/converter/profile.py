@@ -204,16 +204,13 @@ class _XMLProfile:
 class ConversionProfile:
     """Base class for a Video Profile."""
 
-    def __init__(self, prober, quality):
+    def __init__(self, prober):
         """Class initializer."""
         self.prober = prober
-        self.quality = quality
-
         self.xml_profile = _XMLProfile()
-        self.extension = self.get_xml_profile_attr(target_quality=self.quality,
-                                                   attr_name='file_extension')
-
-        self.params = self.xml_profile.get_xml_profile_attr(self.quality)
+        self.quality = None
+        self.extension = None
+        self.params = None
 
     def __getattr__(self, attr):
         """Delegate to manage the XMLProfile."""
