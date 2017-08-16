@@ -3,7 +3,7 @@
 # File name: conversionlib.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -30,18 +30,21 @@ from videomorph import PLAYERS
 
 class ConversionLib:
     """Conversion Library class."""
+
     def __init__(self):
+        """Class initializer."""
         self._name = self.get_system_library_name()
-        self.player = _Player()
-        self.converter = _Converter(conversion_lib_name=self.name)
+        self._player = _Player()
+        self._converter = _Converter(conversion_lib_name=self.name)
         self.library_error = None
 
     def __getattr__(self, attr):
+        """Delegate to manage _Player and _Converter objects."""
         try:
-            return getattr(self.converter, attr)
+            return getattr(self._converter, attr)
         except AttributeError:
             try:
-                return getattr(self.player, attr)
+                return getattr(self._player, attr)
             except AttributeError:
                 raise AttributeError('Attribute not found')
 
@@ -61,12 +64,12 @@ class ConversionLib:
 
     @name.setter
     def name(self, library_name):
-        """Set the library_name of the conversion library."""
+        """Set the name of the conversion library."""
         self._name = library_name
 
     @property
     def prober(self):
-        """Return the probe of the conversion library."""
+        """Return the prober of the conversion library."""
         if self._name == CONV_LIB.ffmpeg:
             return PROBER.ffprobe
         elif self._name == CONV_LIB.avconv:
@@ -80,74 +83,73 @@ class _Converter:
 
     def __init__(self, conversion_lib_name):
         """Class initializer."""
-        self.conversion_lib = conversion_lib_name
-
-        self.process = QProcess()
+        self._conversion_lib = conversion_lib_name
+        self._process = QProcess()
 
     def setup_converter(self, reader, finisher, process_channel):
         """Set up the QProcess object."""
-        self.process.setProcessChannelMode(process_channel)
-        self.process.readyRead.connect(reader)
-        self.process.finished.connect(finisher)
+        self._process.setProcessChannelMode(process_channel)
+        self._process.readyRead.connect(reader)
+        self._process.finished.connect(finisher)
 
     def start_converter(self, cmd):
         """Start the encoding process."""
-        self.process.start(which(self.conversion_lib), cmd)
+        self._process.start(which(self._conversion_lib), cmd)
 
     def stop_converter(self):
-        """Terminate encoding process."""
-        self.process.terminate()
+        """Terminate the encoding process."""
+        self._process.terminate()
         if self.converter_is_running:
-            self.process.kill()
+            self._process.kill()
 
     def converter_finished_disconnect(self, connected):
         """Disconnect the QProcess.finished method."""
-        self.process.finished.disconnect(connected)
+        self._process.finished.disconnect(connected)
 
     def close_converter(self):
-        """Calling QProcess.close method."""
-        self.process.close()
+        """Call QProcess.close method."""
+        self._process.close()
 
     def kill_converter(self):
-        """Calling QProcess.kill method."""
-        self.process.kill()
+        """Call QProcess.kill method."""
+        self._process.kill()
 
     def converter_state(self):
-        """Calling QProcess.state method."""
-        return self.process.state()
+        """Call QProcess.state method."""
+        return self._process.state()
 
     def converter_exit_status(self):
-        """Calling QProcess.exit_status method."""
-        return self.process.exitStatus()
+        """Call QProcess.exit_status method."""
+        return self._process.exitStatus()
 
     @property
     def converter_is_running(self):
-        """Return converter running state."""
-        return self.process.state() == QProcess.Running
+        """Return QProcess state."""
+        return self._process.state() == QProcess.Running
 
     def read_converter_output(self):
-        """Calling QProcess.readAll method."""
-        return self.process.readAll()
+        """Call QProcess.readAll method."""
+        return self._process.readAll()
 
 
 class _Player:
     """_Player class to provide a video player."""
 
     def __init__(self):
-        self.name = None
+        self._name = None
 
     def run_player(self, file_path):
         """Play a video file."""
-        if self.name is None:
+        if self._name is None:
             self._get_player()
 
-        if self.name is not None:
-            spawn_process([which(self.name), file_path])
+        if self._name is not None:
+            spawn_process([which(self._name), file_path])
         else:
             raise AttributeError('No Payer Available')
 
     def _get_player(self):
         for player in PLAYERS:
             if which(player):
-                self.name = player
+                self._name = player
                 break

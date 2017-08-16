@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# File name: setup.py
+# File _name: setup.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ choose from a list of popular video formats.
 
 VideoMorph UI is simple and clean focused on usability, eliminating
 annoying options rarely used.
-Videomorph is a video converter, just that. If you want a video
+VideoMorph is a video converter, just that. If you want a video
 editor, VideoMorph isn't for you.
 """
 
@@ -86,4 +86,4 @@ if __name__ == '__main__':
           ],
 
           scripts=[VM_PATHS['bin'] + '/videomorph']
-         )
+          )

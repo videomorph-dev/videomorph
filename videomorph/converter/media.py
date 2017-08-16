@@ -3,7 +3,7 @@
 # File name: media.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module provides the definition of MediaList and MediaFile classes."""
+"""This module provides the definition of MediaList and _MediaFile classes."""
 
 import shlex
 from os import access
@@ -50,31 +50,32 @@ class MediaList(list):
     def __init__(self, profile):
         """Class initializer."""
         super(MediaList, self).__init__()
-        self.profile = profile
-        # -1 represent no item running, 0, the first item, 1, second...
-        self.position = -1
+        self._profile = profile
+        self._position = None  # None, no item running, 0, the first item,...
 
     def clear(self):
         """Clear the list of videos."""
         super(MediaList, self).clear()
-        self.position = -1
+        self.position = None
 
-    def add_file(self, media_file):
-        """Add a video file to the list."""
-        if self._file_is_added(media_file):
-            return
-        try:
-            # Invalid metadata
-            duration = float(media_file.get_info('format_duration'))
-            if duration > 0:
-                self.append(media_file)
-            else:
-                # 0 duration video file not added
-                raise InvalidMetadataError('File is zero length')
-        except ValueError:
-            raise InvalidMetadataError('Invalid file duration')
-        except InvalidMetadataError:
-            raise InvalidMetadataError('File is zero length')
+    def populate(self, files_paths):
+        """Populate MediaList object with _MediaFile objects.
+
+        Args:
+            files_paths (iterable): list of files paths
+        Returns:
+            not_added_files (list): list of files not added to MediaList
+        """
+        files_paths = self._files_paths_to_add(files_paths)
+        not_added_files = []
+
+        for file in self._media_files_generator(files_paths):
+            try:
+                self._add_file(file)
+            except InvalidMetadataError:
+                not_added_files.append(file.get_name(with_extension=True))
+
+        return not_added_files
 
     def delete_file(self, position):
         """Delete a video file from the list."""
@@ -105,12 +106,25 @@ class MediaList(list):
         return self[position].get_info(info_param)
 
     @property
+    def position(self):
+        """self._position getter."""
+        if self._position is None:
+            return -1
+        else:
+            return self._position
+
+    @position.setter
+    def position(self, value):
+        """self._position setter."""
+        self._position = value
+
+    @property
     def running_file(self):
         """Return the file that is currently running."""
         return self[self.position]
 
     @property
-    def is_processed(self):
+    def is_exhausted(self):
         """Return True if all file in media list are processed."""
         return self.position + 1 >= self.length
 
@@ -134,20 +148,33 @@ class MediaList(list):
         return sum(float(media.get_info('format_duration')) for
                    media in self if media.status == STATUS.todo)
 
-    def _file_is_added(self, media_file):
-        """Determine if a video file is in the list already."""
-        for file in self:
-            if file.input_path == media_file.input_path:
-                return True
-        return False
+    def _files_paths_to_add(self, files_paths):
+        current_files_paths = {file.input_path for file in self}
+        not_added_files = set(files_paths).difference(current_files_paths)
+        return not_added_files
 
-    def media_files_generator(self, files_paths):
-        """Yield MediaFile objects to be added to MediaList."""
+    def _add_file(self, media_file):
+        """Add a video file to the list."""
+        try:
+            # Invalid metadata
+            duration = float(media_file.get_info('format_duration'))
+            if duration > 0:
+                self.append(media_file)
+            else:
+                # 0 duration video file not added
+                raise InvalidMetadataError('File is zero length')
+        except (TypeError, ValueError):
+            raise InvalidMetadataError('Invalid file duration')
+        except InvalidMetadataError:
+            raise InvalidMetadataError('File is zero length')
+
+    def _media_files_generator(self, files_paths):
+        """Yield _MediaFile objects to be added to MediaList."""
         threads = []
         for file_path in files_paths:
             thread = _MediaFileThread(
                 media_path=file_path,
-                conversion_profile=self.profile)
+                profile=self._profile)
             thread.start()
             threads.append(thread)
 
@@ -158,18 +185,18 @@ class MediaList(list):
             yield thread.media_file
 
 
-class MediaFile:
+class _MediaFile:
     """Class representing a video file."""
 
     __slots__ = ('input_path',
-                 'conversion_profile',
+                 '_profile',
                  'status',
                  'info')
 
-    def __init__(self, file_path, conversion_profile):
+    def __init__(self, file_path, profile):
         """Class initializer."""
         self.input_path = file_path
-        self.conversion_profile = conversion_profile
+        self._profile = profile
         self.status = STATUS.todo
         self.info = self._parse_probe()
 
@@ -191,7 +218,7 @@ class MediaFile:
         if not access(output_dir, W_OK):
             raise PermissionError('Access denied')
         # Ensure the conversion_profile is up to date
-        self.conversion_profile.update(new_quality=target_quality)
+        self._profile.update(new_quality=target_quality)
         # Process subtitles if available
         if subtitle and self._subtitle_path:
             subtitle_opt = ['-vf', "subtitles='{0}':force_style='Fontsize=24'"
@@ -203,8 +230,8 @@ class MediaFile:
         output_path = self.get_output_path(output_dir)
         # Build the conversion command
         cmd = ['-i', self.input_path] + subtitle_opt + \
-            shlex.split(self.conversion_profile.params) + \
-            ['-threads', str(CPU_CORES)] + \
+            shlex.split(self._profile.params) + \
+              ['-threads', str(CPU_CORES)] + \
             ['-y', output_path]
 
         return cmd
@@ -226,10 +253,10 @@ class MediaFile:
         """Return the the output file input_path."""
         output_file_path = (output_dir +
                             sep +  # multi-platform input_path separator
-                            self.conversion_profile.quality_tag +
+                            self._profile.quality_tag +
                             '-' +
                             self.get_name() +
-                            self.conversion_profile.extension)
+                            self._profile.extension)
         return output_file_path
 
     @property
@@ -245,7 +272,7 @@ class MediaFile:
 
     def _probe(self):
         """Return the prober output as a file like object."""
-        prober_run = spawn_process([which(self.conversion_profile.prober),
+        prober_run = spawn_process([which(self._profile.prober),
                                     '-show_format',
                                     self.input_path])
 
@@ -269,28 +296,28 @@ class MediaFile:
 
 
 class _MediaFileThread(Thread):
-    """Thread class to handle the creation of MediaFile objects."""
+    """Thread class to handle the creation of _MediaFile objects."""
 
-    def __init__(self, media_path, conversion_profile):
+    def __init__(self, media_path, profile):
         """Class initializer.
         Args:
-            media_path (str): Path to the media file
-            conversion_profile (object): profile._Profile object
+            media_path (str): Path to the media file in the file system
+            profile (object): profile.ConversionProfile object
         """
         super(_MediaFileThread, self).__init__()
-        self.file_path = media_path
-        self.conversion_profile = conversion_profile
+        self._file_path = media_path
+        self._profile = profile
         self.media_file = None
 
     def run(self):
         """Create media files to be added to the list."""
-        self.media_file = self.media_file_factory()
+        self.media_file = self._media_file_factory()
 
-    def media_file_factory(self):
-        """Factory function for creating MediaFile objects.
+    def _media_file_factory(self):
+        """Factory function for creating _MediaFile objects.
 
         Returns:
-            media.MediaFile object
+            media._MediaFile object
         """
-        return MediaFile(file_path=self.file_path,
-                         conversion_profile=self.conversion_profile)
+        return _MediaFile(file_path=self._file_path,
+                          profile=self._profile)

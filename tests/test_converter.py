@@ -4,7 +4,7 @@
 # File name: test_converter.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 """This module provides tests for conversionlib.py module."""
 
 import nose
-
 from PyQt5.QtCore import QProcess
 
 from videomorph import CONV_LIB
@@ -32,34 +31,26 @@ from videomorph.converter import ConversionProfile
 
 conv_lib = ConversionLib()
 
+profile = ConversionProfile(quality='DVD Fullscreen (4:3)',
+                            prober=conv_lib.prober)
 
-# Set of test for Converter class
-def setup():
-    """Function to setup the test."""
-    profile = ConversionProfile(quality='DVD Fullscreen (4:3)',
-                                prober=conv_lib.prober)
-    profile.set_xml_root()
-
-    media_list = media.MediaList()
-
-    media_file = media.MediaFile(
-        file_path='Dad.mpg',
-        conversion_profile=profile)
-
-    media_list.add_file(media_file)
-
-    conv_lib.start_converter(cmd=media_file.build_conversion_cmd(
-        output_dir='.', target_quality='DVD Fullscreen (4:3)'))
+media_list = media.MediaList(profile)
 
 
 def teardown():
-    """Function to clean after tests are done."""
-    conv_lib.close_converter()
-    conv_lib.kill_converter()
+    media_list.clear()
+    media_list.populate(('Dad.mpg',))
+    media_list.get_file(0).delete_output('.')
 
 
-def test_conversion_lib():
-    """Test the conversion library name."""
+# Set of test for converter module
+def test_get_system_lib():
+    """Test the system library."""
+    assert conv_lib.get_system_library_name() == CONV_LIB.ffmpeg
+
+
+def test_name():
+    """Test conversion library name."""
     assert conv_lib.name == CONV_LIB.ffmpeg
 
 
@@ -68,14 +59,24 @@ def test_prober():
     assert conv_lib.prober == PROBER.ffprobe
 
 
-def test_is_running():
-    """Test is_running."""
+def test_start_converter():
+    """Test start converter."""
+
+    media_list.populate(('Dad.mpg',))
+
+    cmd = media_list.get_file(position=0).build_conversion_cmd(
+        output_dir='.',
+        target_quality='DVD Fullscreen (4:3)')
+
+    conv_lib.start_converter(cmd)
+
     assert conv_lib.converter_state() == QProcess.Starting
 
 
-def test_get_conversion_lib():
-    """Test the conversion library installed on the system."""
-    assert conv_lib.name == CONV_LIB.ffmpeg
+def test_stop_converter():
+    """Test stop converter."""
+    conv_lib.stop_converter()
+    assert not conv_lib.converter_is_running
 
 
 if __name__ == '__main__':

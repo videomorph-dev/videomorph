@@ -4,7 +4,7 @@
 # File name: test_utils.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ def test_raise_value_error():
 
 def test_which_existing_app():
     """Test for an existing app."""
-    assert utils.which('ls') == '/bin/ls' # Depends on your system
+    assert utils.which('ls') == '/bin/ls'  # Depends on your system
 
 
 def test_which_non_existing_app():

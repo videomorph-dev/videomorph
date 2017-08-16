@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-# File name: profiles.py
+# File name: profile.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -192,7 +192,7 @@ class _XMLProfile:
         return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
 
     def _get_xml_root(self):
-        """Returns the profiles.xml root."""
+        """Return the profiles.xml root."""
         try:
             tree = ElementTree.parse(self._xml_profiles_path)
         except ParseError:
