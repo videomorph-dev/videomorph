@@ -739,7 +739,8 @@ class VideoMorphMW(QMainWindow):
 
     def _create_table(self):
         self.tb_tasks.setRowCount(self.media_list.length)
-
+        # Call converter_is_running only once
+        converter_is_running = self.conversion_lib.converter_is_running
         for row, media_file in enumerate(self.media_list):
             self._insert_table_item(
                 item_text=media_file.get_name(with_extension=True),
@@ -754,7 +755,7 @@ class VideoMorphMW(QMainWindow):
                 item_text=str(self.cb_quality.currentText()),
                 row=row, column=COLUMNS.QUALITY)
 
-            if self.conversion_lib.converter_is_running:
+            if converter_is_running:
                 if row > self.media_list.position:
                     self._insert_table_item(item_text=self.tr('To Convert'),
                                             row=row, column=COLUMNS.PROGRESS)
