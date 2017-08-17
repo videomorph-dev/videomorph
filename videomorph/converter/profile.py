@@ -29,7 +29,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
 from . import VIDEO_FILTERS
-from .utils import get_locale
+from videomorph import LOCALE
 from videomorph import LINUX_PATHS
 from videomorph import VM_PATHS
 
@@ -164,11 +164,10 @@ class _XMLProfile:
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
         values = []
-        locale = get_locale()
 
         for element in self._xml_root:
             for item in element:
-                if locale == 'es_ES':
+                if LOCALE == 'es_ES':
                     # Create the dict with values in spanish
                     values.append(item[3].text)
                 else:

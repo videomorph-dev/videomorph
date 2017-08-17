@@ -27,8 +27,8 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import qApp
 
+from . import LOCALE
 from .froms.videomorph import VideoMorphMW
-from .converter.utils import get_locale
 
 
 def main():
@@ -37,20 +37,19 @@ def main():
     app = QApplication(sys.argv)
 
     # Setup app translator
-    locale = get_locale()
     app_translator = QTranslator()
     if exists('..{0}share{1}videomorph{2}translations'.format(sep, sep, sep)):
         app_translator.load(
             "..{0}share{1}videomorph{2}translations{3}videomorph_{4}".format(
-                sep, sep, sep, sep, locale))
+                sep, sep, sep, sep, LOCALE))
     else:
         app_translator.load(
             "{0}usr{1}share{2}videomorph{3}translations"
-            "{4}videomorph_{5}".format(sep, sep, sep, sep, sep, locale))
+            "{4}videomorph_{5}".format(sep, sep, sep, sep, sep, LOCALE))
 
     app.installTranslator(app_translator)
     qt_translator = QTranslator()
-    qt_translator.load("qt_" + locale,
+    qt_translator.load("qt_" + LOCALE,
                        QLibraryInfo.location(QLibraryInfo.TranslationsPath))
     app.installTranslator(qt_translator)
 

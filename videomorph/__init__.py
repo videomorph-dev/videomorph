@@ -19,8 +19,11 @@
 
 """This module defines the videomorph package and the needed constants."""
 
+from videomorph.converter.utils import get_locale
+
 APPNAME = 'VideoMorph'
 VERSION = '1.1'
+LOCALE = get_locale()
 CODENAME = 'adventurer'
 PACKAGE_NAME = APPNAME.lower()
 MAINTAINER = APPNAME + ' ' + 'Development Team'
