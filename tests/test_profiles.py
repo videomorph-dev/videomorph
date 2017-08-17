@@ -65,7 +65,7 @@ def test_get_xml_profile_attr():
 
 def test_get_xml_profile_qualities():
     """Test get_xml_profile_qualities."""
-    qualities = profile.get_xml_profile_qualities(locale='es_ES')
+    qualities = profile.get_xml_profile_qualities()
     assert qualities == OrderedDict(
         [('AVI',
           ['Compatible MS',

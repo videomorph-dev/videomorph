@@ -141,11 +141,11 @@ class VideoMorphMW(QMainWindow):
         self._create_initial_settings()
 
         # Create the conversion profile object only once
-        self._profile = ConversionProfile(
+        self.profile = ConversionProfile(
             prober=self.conversion_lib.prober)
 
         # Create the Media list object
-        self.media_list = MediaList(profile=self._profile)
+        self.media_list = MediaList(profile=self.profile)
 
         # Populate PROFILES combo box
         self.populate_profiles_combo()
@@ -645,7 +645,7 @@ class VideoMorphMW(QMainWindow):
         self.cb_profiles.clear()
         # Populate the combobox with new data
         self.cb_profiles.addItems(
-            self._profile.get_xml_profile_qualities().keys())
+            self.profile.get_xml_profile_qualities().keys())
 
     def populate_quality_combo(self, combo):
         """Populate target quality combobox.
@@ -657,10 +657,10 @@ class VideoMorphMW(QMainWindow):
         if current_profile != '':
             combo.clear()
             combo.addItems(
-                self._profile.get_xml_profile_qualities()[current_profile])
+                self.profile.get_xml_profile_qualities()[current_profile])
 
             self._update_media_files_status()
-            self._profile.update(new_quality=self.cb_quality.currentText())
+            self.profile.update(new_quality=self.cb_quality.currentText())
 
     def output_directory(self):
         """Choose output directory."""

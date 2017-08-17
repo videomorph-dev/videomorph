@@ -17,7 +17,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module defines the _converter package and the needed imports."""
+"""This module defines the converter package and the needed imports."""
 
 from .conversionlib import ConversionLib
 from .console import run_on_console
