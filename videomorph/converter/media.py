@@ -27,7 +27,6 @@ from os import remove
 from os import sep
 from os.path import basename
 from os.path import exists
-from threading import Thread
 
 from . import CPU_CORES
 from . import STATUS
@@ -53,6 +52,7 @@ class MediaList(list):
         super(MediaList, self).__init__()
         self._profile = profile
         self._position = None  # None, no item running, 0, the first item,...
+        self.not_added_files = deque()
 
     def clear(self):
         """Clear the list of videos."""
@@ -64,24 +64,25 @@ class MediaList(list):
 
         Args:
             files_paths (iterable): list of files paths
-        Returns:
-            not_added_files (list): list of files not added to MediaList
+        Yield:
+            Element 1: Total number of video files to process
+            Element 2,...: file path for the video file processed
         """
         if self.length:
             files_paths = [file_path for file_path in files_paths if
                            self._file_not_added(file_path)]
             if not files_paths:
                 return
-
-        not_added_files = deque()
+        # First it yield the total number of video files to process
+        yield len(files_paths)
 
         for file in self._media_files_generator(files_paths):
             try:
                 self._add_file(file)
+                yield file.get_name(with_extension=True)
             except InvalidMetadataError:
-                not_added_files.append(file.get_name(with_extension=True))
-
-        return not_added_files
+                self.not_added_files.append(file.get_name(with_extension=True))
+                yield file.get_name(with_extension=True)
 
     def delete_file(self, position):
         """Delete a video file from the list."""
@@ -171,19 +172,21 @@ class MediaList(list):
 
     def _media_files_generator(self, files_paths):
         """Yield _MediaFile objects to be added to MediaList."""
-        threads = []
         for file_path in files_paths:
-            thread = _MediaFileThread(
-                media_path=file_path,
-                profile=self._profile)
-            thread.start()
-            threads.append(thread)
-
-        for thread in threads:
-            thread.join()
-
-        for thread in threads:
-            yield thread.media_file
+            yield _MediaFile(file_path, self._profile)
+        # threads = []
+        # for file_path in files_paths:
+        #     thread = _MediaFileThread(
+        #         media_path=file_path,
+        #         profile=self._profile)
+        #     thread.start()
+        #     threads.append(thread)
+        #
+        # for thread in threads:
+        #     thread.join()
+        #
+        # for thread in threads:
+        #     yield thread.media_file
 
     def _file_not_added(self, file_path):
         """Determine if a video file is in the list already."""
@@ -301,31 +304,3 @@ class _MediaFile:
                     info['format_duration'] = __get_value(format_line)
                     break
         return info
-
-
-class _MediaFileThread(Thread):
-    """Thread class to handle the creation of _MediaFile objects."""
-
-    def __init__(self, media_path, profile):
-        """Class initializer.
-        Args:
-            media_path (str): Path to the media file in the file system
-            profile (object): profile.ConversionProfile object
-        """
-        super(_MediaFileThread, self).__init__()
-        self._file_path = media_path
-        self._profile = profile
-        self.media_file = None
-
-    def run(self):
-        """Create media files to be added to the list."""
-        self.media_file = self._media_file_factory()
-
-    def _media_file_factory(self):
-        """Factory function for creating _MediaFile objects.
-
-        Returns:
-            media._MediaFile object
-        """
-        return _MediaFile(file_path=self._file_path,
-                          profile=self._profile)

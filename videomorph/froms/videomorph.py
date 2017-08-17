@@ -55,6 +55,7 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QAbstractItemView,
                              QFileDialog,
                              QMessageBox,
+                             QProgressDialog,
                              QHeaderView,
                              QToolButton,
                              QItemDelegate)
@@ -684,14 +685,39 @@ class VideoMorphMW(QMainWindow):
 
         event.accept()
 
+    def _create_progress_dialog(self):
+        label = QLabel()
+        label.setAlignment(Qt.AlignLeft)
+        progress_dlg = QProgressDialog(parent=self)
+        progress_dlg.children()[3].hide()
+        progress_dlg.setFixedSize(500, 100)
+        progress_dlg.setWindowTitle(self.tr('Adding Video Files...'))
+        progress_dlg.setLabel(label)
+        progress_dlg.setModal(True)
+        progress_dlg.setMinimum(0)
+        progress_dlg.setMinimumDuration(0)
+        progress_dlg.setMaximum(0)
+        progress_dlg.setValue(0)
+
+        return progress_dlg
+
     @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with _MediaFile objects."""
-        invalid_files = self.media_list.populate(files_paths)
+        progress_dlg = self._create_progress_dialog()
 
-        if invalid_files:
+        for i, element in enumerate(self.media_list.populate(files_paths)):
+            if not i:  # First element yielded
+                progress_dlg.setMaximum(element)
+            else:  # Second and on...
+                progress_dlg.setLabelText(self.tr('Adding File: ') + element)
+                progress_dlg.setValue(i)
+
+        progress_dlg.close()
+
+        if self.media_list.not_added_files:
             msg = self.tr('Invalid Video File Information for:') + ' \n - ' + \
-                  '\n - '.join(invalid_files) + '\n' + \
+                  '\n - '.join(self.media_list.not_added_files) + '\n' + \
                   self.tr('File not Added to the List of Conversion Tasks')
             self._show_message_box(
                 type_=QMessageBox.Critical,

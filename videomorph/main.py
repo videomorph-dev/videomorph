@@ -28,6 +28,7 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import qApp
 
 from . import LOCALE
+from .converter.console import run_on_console
 from .froms.videomorph import VideoMorphMW
 
 
@@ -64,7 +65,6 @@ def run_app(app):
     # Check for conversion library and run
     if main_win.conversion_lib.get_system_library_name() is not None:
         if len(sys.argv) > 1:  # If it is running from console
-            from .converter import run_on_console
             run_on_console(app, main_win)
         else:  # Or is running on GUI
             main_win.show()

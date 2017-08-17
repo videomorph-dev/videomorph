@@ -203,7 +203,7 @@ class _XMLProfile:
 
 
 class ConversionProfile:
-    """Base class for a Video Profile."""
+    """Base class for a Conversion Profile."""
 
     def __init__(self, prober):
         """Class initializer."""
