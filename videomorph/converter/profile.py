@@ -175,7 +175,7 @@ class _XMLProfile:
 
             qualities_per_profile[element.tag] = values
             # Reinitialize values
-            values = []
+            values.clear()
 
         return qualities_per_profile
 
