@@ -23,11 +23,11 @@ import re
 
 from PyQt5.QtCore import QProcess
 
-from .utils import which
-from .utils import spawn_process
 from . import CONV_LIB
-from . import PROBER
 from . import PLAYERS
+from . import PROBER
+from .utils import spawn_process
+from .utils import which
 
 
 class ConversionLib:

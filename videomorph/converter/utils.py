@@ -20,9 +20,8 @@
 """This module contains some utilities and functions."""
 
 import os
-from locale import getdefaultlocale
-from subprocess import Popen
 from subprocess import PIPE
+from subprocess import Popen
 
 
 def get_locale():

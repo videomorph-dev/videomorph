@@ -19,20 +19,20 @@
 
 """This module provides the definition of MediaList and _MediaFile classes."""
 
-from collections import deque
 import shlex
+from collections import deque
+from os import W_OK
 from os import access
 from os import remove
 from os import sep
-from os import W_OK
-from os.path import exists
 from os.path import basename
+from os.path import exists
 from threading import Thread
 
 from . import CPU_CORES
 from . import STATUS
-from .utils import which
 from .utils import spawn_process
+from .utils import which
 
 
 class MediaError(Exception):

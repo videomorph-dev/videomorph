@@ -20,18 +20,18 @@
 """This module contains the PRESETS for encoding different video formats."""
 
 import re
+from collections import OrderedDict
+from distutils.errors import DistutilsFileError
+from distutils.file_util import copy_file
 from os import sep
 from os.path import expanduser, join, exists, getsize
-from collections import OrderedDict
-from distutils.file_util import copy_file
-from distutils.errors import DistutilsFileError
 from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
-from . import VIDEO_FILTERS
-from videomorph import LOCALE
 from videomorph import LINUX_PATHS
+from videomorph import LOCALE
 from videomorph import VM_PATHS
+from . import VIDEO_FILTERS
 
 
 class ProfileError(Exception):

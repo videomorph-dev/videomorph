@@ -28,6 +28,7 @@ from os.path import dirname
 from os.path import exists
 from os.path import isdir
 
+import performance
 from PyQt5.QtCore import (QSize,
                           Qt,
                           QSettings,
@@ -59,22 +60,20 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QItemDelegate)
 
 from . import videomorph_qrc
-from .addprofile import AddProfileDialog
-from .about import AboutVMDialog
-from .settings import SettingsDialog
 from videomorph import APPNAME
 from videomorph import VERSION
 from videomorph.converter import CONV_LIB
 from videomorph.converter import STATUS
 from videomorph.converter import VIDEO_FILTERS
-from videomorph.converter.conversionlib import ConversionLib
-from videomorph.converter.profile import ConversionProfile
-from videomorph.converter.media import MediaList
 from videomorph.converter.console import search_directory_recursively
+from videomorph.converter.conversionlib import ConversionLib
+from videomorph.converter.media import MediaList
+from videomorph.converter.profile import ConversionProfile
 from videomorph.converter.utils import which
 from videomorph.converter.utils import write_time
-
-import performance
+from .about import AboutVMDialog
+from .addprofile import AddProfileDialog
+from .settings import SettingsDialog
 
 # Conversion tasks list table columns
 TableColumns = namedtuple('TableColumns', 'NAME DURATION QUALITY PROGRESS')
