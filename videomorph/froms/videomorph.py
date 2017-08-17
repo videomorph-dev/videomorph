@@ -19,7 +19,6 @@
 
 """This module defines the VideoMorph main window that holds the UI."""
 
-import re
 import time
 from collections import OrderedDict
 from collections import namedtuple
@@ -71,7 +70,6 @@ from videomorph import VIDEO_FILTERS
 from videomorph.converter import ConversionLib
 from videomorph.converter import ConversionProfile
 from videomorph.converter import MediaList
-from videomorph.converter import get_locale
 from videomorph.converter import search_directory_recursively
 from videomorph.converter import which
 from videomorph.converter import write_time
@@ -647,8 +645,7 @@ class VideoMorphMW(QMainWindow):
         self.cb_profiles.clear()
         # Populate the combobox with new data
         self.cb_profiles.addItems(
-            self._profile.get_xml_profile_qualities(
-                locale=get_locale()).keys())
+            self._profile.get_xml_profile_qualities().keys())
 
     def populate_quality_combo(self, combo):
         """Populate target quality combobox.
@@ -660,8 +657,7 @@ class VideoMorphMW(QMainWindow):
         if current_profile != '':
             combo.clear()
             combo.addItems(
-                self._profile.get_xml_profile_qualities(
-                    locale=get_locale())[current_profile])
+                self._profile.get_xml_profile_qualities()[current_profile])
 
             self._update_media_files_status()
             self._profile.update(new_quality=self.cb_quality.currentText())

@@ -31,7 +31,8 @@ from xml.etree.ElementTree import ParseError
 from videomorph import LINUX_PATHS
 from videomorph import VM_PATHS
 from videomorph import VIDEO_FILTERS
-import performance
+from videomorph.converter import get_locale
+
 
 class ProfileError(Exception):
     """Base Exception."""
@@ -158,11 +159,12 @@ class _XMLProfile:
                 if (item[0].text == target_quality or
                         item[3].text == target_quality):
                     return item[param_map[attr_name]].text
-    @performance.measure_exec_time
-    def get_xml_profile_qualities(self, locale):
+
+    def get_xml_profile_qualities(self):
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
         values = []
+        locale = get_locale()
 
         for element in self._xml_root:
             for item in element:
