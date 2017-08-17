@@ -27,8 +27,8 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import qApp
 
-from .froms import VideoMorphMW
-from .converter import get_locale
+from .froms.videomorph import VideoMorphMW
+from .converter.utils import get_locale
 
 
 def main():

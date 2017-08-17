@@ -18,5 +18,3 @@
 #   limitations under the License.
 
 """This module defines the forms package."""
-
-from .videomorph import VideoMorphMW

@@ -29,10 +29,10 @@ from os.path import exists
 from os.path import basename
 from threading import Thread
 
+from . import CPU_CORES
+from . import STATUS
 from .utils import which
 from .utils import spawn_process
-from videomorph import CPU_CORES
-from videomorph import STATUS
 
 
 class MediaError(Exception):

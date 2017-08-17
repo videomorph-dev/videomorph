@@ -28,10 +28,10 @@ from distutils.errors import DistutilsFileError
 from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
+from . import VIDEO_FILTERS
+from .utils import get_locale
 from videomorph import LINUX_PATHS
 from videomorph import VM_PATHS
-from videomorph import VIDEO_FILTERS
-from videomorph.converter import get_locale
 
 
 class ProfileError(Exception):

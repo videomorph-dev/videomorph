@@ -28,7 +28,7 @@ from os.path import sep
 
 from videomorph import APPNAME
 from videomorph import VERSION
-from videomorph import VIDEO_FILTERS
+from videomorph.converter import VIDEO_FILTERS
 
 
 def run_on_console(app, main_win):

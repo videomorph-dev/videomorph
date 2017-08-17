@@ -63,16 +63,16 @@ from .addprofile import AddProfileDialog
 from .about import AboutVMDialog
 from .settings import SettingsDialog
 from videomorph import APPNAME
-from videomorph import CONV_LIB
-from videomorph import STATUS
 from videomorph import VERSION
-from videomorph import VIDEO_FILTERS
-from videomorph.converter import ConversionLib
-from videomorph.converter import ConversionProfile
-from videomorph.converter import MediaList
-from videomorph.converter import search_directory_recursively
-from videomorph.converter import which
-from videomorph.converter import write_time
+from videomorph.converter import CONV_LIB
+from videomorph.converter import STATUS
+from videomorph.converter import VIDEO_FILTERS
+from videomorph.converter.conversionlib import ConversionLib
+from videomorph.converter.profile import ConversionProfile
+from videomorph.converter.media import MediaList
+from videomorph.converter.console import search_directory_recursively
+from videomorph.converter.utils import which
+from videomorph.converter.utils import write_time
 
 import performance
 

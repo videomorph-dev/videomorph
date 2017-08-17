@@ -25,9 +25,9 @@ from PyQt5.QtCore import QProcess
 
 from .utils import which
 from .utils import spawn_process
-from videomorph import CONV_LIB
-from videomorph import PROBER
-from videomorph import PLAYERS
+from . import CONV_LIB
+from . import PROBER
+from . import PLAYERS
 
 
 class ConversionLib:
