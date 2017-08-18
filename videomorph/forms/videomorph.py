@@ -690,6 +690,7 @@ class VideoMorphMW(QMainWindow):
         progress_dlg = QProgressDialog(parent=self)
         progress_dlg.setFixedSize(500, 100)
         progress_dlg.setWindowTitle(self.tr('Adding Video Files...'))
+        progress_dlg.setCancelButtonText(self.tr('Cancel'))
         progress_dlg.setLabel(label)
         progress_dlg.setModal(True)
         progress_dlg.setMinimum(0)
