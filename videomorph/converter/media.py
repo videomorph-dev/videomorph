@@ -174,19 +174,6 @@ class MediaList(list):
         """Yield _MediaFile objects to be added to MediaList."""
         for file_path in files_paths:
             yield _MediaFile(file_path, self._profile)
-        # threads = []
-        # for file_path in files_paths:
-        #     thread = _MediaFileThread(
-        #         media_path=file_path,
-        #         profile=self._profile)
-        #     thread.start()
-        #     threads.append(thread)
-        #
-        # for thread in threads:
-        #     thread.join()
-        #
-        # for thread in threads:
-        #     yield thread.media_file
 
     def _file_not_added(self, file_path):
         """Determine if a video file is in the list already."""

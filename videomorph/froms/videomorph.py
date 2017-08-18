@@ -28,7 +28,6 @@ from os.path import dirname
 from os.path import exists
 from os.path import isdir
 
-import performance
 from PyQt5.QtCore import (QSize,
                           Qt,
                           QSettings,
@@ -701,7 +700,6 @@ class VideoMorphMW(QMainWindow):
 
         return progress_dlg
 
-    @performance.measure_exec_time
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with _MediaFile objects."""
         progress_dlg = self._create_progress_dialog()
