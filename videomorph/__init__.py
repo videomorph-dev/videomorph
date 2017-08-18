@@ -20,6 +20,8 @@
 """This module defines the videomorph package and the needed constants."""
 
 from videomorph.converter.utils import get_locale
+from os.path import expanduser
+from os.path import join as join_path
 
 APPNAME = 'VideoMorph'
 VERSION = '1.1'
@@ -29,6 +31,7 @@ PACKAGE_NAME = APPNAME.lower()
 MAINTAINER = APPNAME + ' ' + 'Development Team'
 
 LINUX_PATHS = {'apps': '/usr/share/applications',
+               'config': join_path(expanduser('~'), '.videomorph'),
                'icons': '/usr/share/icons',
                'i18n': '/usr/share/videomorph/translations',
                'profiles': '/usr/share/videomorph/stdprofiles',

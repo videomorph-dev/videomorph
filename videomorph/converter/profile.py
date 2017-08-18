@@ -24,7 +24,7 @@ from collections import OrderedDict
 from distutils.errors import DistutilsFileError
 from distutils.file_util import copy_file
 from os import sep
-from os.path import expanduser, join, exists, getsize
+from os.path import exists, getsize
 from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
@@ -190,7 +190,7 @@ class _XMLProfile:
     @property
     def _xml_profiles_path(self):
         """Return the path to the profiles file."""
-        return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
+        return LINUX_PATHS['config'] + '{0}profiles.xml'.format(sep)
 
     def _get_xml_root(self):
         """Return the profiles.xml root."""
