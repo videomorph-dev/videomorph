@@ -1175,6 +1175,37 @@ class VideoMorphMW(QMainWindow):
         else:
             self.start_encoding()
 
+    def _calculate_total_progress(self, operation_time):
+        """"Calculate total progress percent."""
+        if self.partial_time > operation_time:
+            self.time_jump += self.partial_time
+            self.total_time = self.time_jump + operation_time
+            self.partial_time = operation_time
+        else:
+            self.total_time = self.time_jump + operation_time
+            self.partial_time = operation_time
+
+        return int(self.total_time / float(self.media_list_duration) * 100)
+
+    def _calculate_operation_time(self, op_cum_time, op_time_read):
+        """Estimating operation time."""
+        file_duration = float(self.media_list.running_file.get_info(
+            'format_duration'))
+        adjustment_coefficient = op_cum_time / op_time_read
+
+        return file_duration * adjustment_coefficient
+
+    def _calculate_operation_remaining_time(self, op_cum_time, op_time_read):
+        op_time = self._calculate_operation_time(op_cum_time=op_cum_time,
+                                                 op_time_read=op_time_read)
+        # Avoid negative time
+        try:
+            operation_remaining_time = write_time(op_time - op_cum_time)
+        except ValueError:
+            operation_remaining_time = write_time(0)
+
+        return operation_remaining_time
+
     def _read_encoding_output(self):
         """Read the encoding output from the converter stdout."""
         # Getting the process output
@@ -1200,27 +1231,18 @@ class VideoMorphMW(QMainWindow):
             return
 
         # Real time computation
-        operation_cum_time = time.time() - self.operation_initial_time
-        process_cum_time = time.time() - self.process_initial_time
+        sys_time = time.time()
+        operation_cum_time = sys_time - self.operation_initial_time
+        process_cum_time = sys_time - self.process_initial_time
 
         # Convert time read to seconds
         operation_time_read = self.conversion_lib.time_read_to_seconds(
             time_read=time_read)
 
-        # Estimating time
-        file_duration = float(self.media_list.running_file.get_info(
-            'format_duration'))
-
-        adjustment_coefficient = operation_cum_time / operation_time_read
-
-        operation_estimated_time = file_duration * adjustment_coefficient
-
         # Avoid negative time
-        try:
-            operation_left_time = write_time(operation_estimated_time -
-                                             operation_cum_time)
-        except ValueError:
-            operation_left_time = write_time(0)
+        operation_remaining_time = self._calculate_operation_remaining_time(
+            op_cum_time=operation_cum_time,
+            op_time_read=operation_time_read)
 
         # Reading bit rate
         bit_rate_read = self.conversion_lib.read_conversion_param(
@@ -1229,6 +1251,8 @@ class VideoMorphMW(QMainWindow):
         bit_rate = bit_rate_read[0].split('=')[-1].strip()
 
         # Calculate operation progress percent
+        file_duration = float(self.media_list.running_file.get_info(
+            'format_duration'))
         operation_progress = int(operation_time_read /
                                  file_duration * 100)
 
@@ -1237,19 +1261,8 @@ class VideoMorphMW(QMainWindow):
         self.tb_tasks.item(self.media_list.position, 3).setText(
             str(operation_progress) + "%")
 
-        # Calculate total progress percent
-        if self.partial_time > operation_time_read:
-            self.time_jump += self.partial_time
-            self.total_time = self.time_jump + operation_time_read
-            self.partial_time = operation_time_read
-        else:
-            self.total_time = self.time_jump + operation_time_read
-            self.partial_time = operation_time_read
-
-        process_progress = int(self.total_time /
-                               float(self.media_list_duration) * 100)
-
         # Update the total progress bar
+        process_progress = self._calculate_total_progress(operation_time_read)
         self.pb_total_progress.setProperty("value", process_progress)
 
         running_file_name = self.media_list.running_file.get_name(
@@ -1262,7 +1275,7 @@ class VideoMorphMW(QMainWindow):
                     'Total Elapsed Time: {tet}').format(
                         m=running_file_name,
                         br=bit_rate,
-                        ort=operation_left_time,
+                        ort=operation_remaining_time,
                         tet=write_time(process_cum_time)))
 
         self.setWindowTitle(str(operation_progress) + '%' + '-' +
