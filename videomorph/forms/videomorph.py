@@ -525,6 +525,22 @@ class VideoMorphMW(QMainWindow):
         """Create app status bar."""
         self.statusBar().showMessage(self.tr('Ready'))
 
+    def _create_progress_dialog(self):
+        label = QLabel()
+        label.setAlignment(Qt.AlignLeft)
+        progress_dlg = QProgressDialog(parent=self)
+        progress_dlg.setFixedSize(500, 100)
+        progress_dlg.setWindowTitle(self.tr('Adding Video Files...'))
+        progress_dlg.setCancelButtonText(self.tr('Cancel'))
+        progress_dlg.setLabel(label)
+        progress_dlg.setModal(True)
+        progress_dlg.setMinimum(0)
+        progress_dlg.setMinimumDuration(0)
+        progress_dlg.setMaximum(0)
+        progress_dlg.setValue(0)
+
+        return progress_dlg
+
     def _fix_layout(self):
         """Fix widgets layout."""
         spacer_item = QSpacerItem(20,
@@ -683,22 +699,6 @@ class VideoMorphMW(QMainWindow):
         self._write_app_settings()
 
         event.accept()
-
-    def _create_progress_dialog(self):
-        label = QLabel()
-        label.setAlignment(Qt.AlignLeft)
-        progress_dlg = QProgressDialog(parent=self)
-        progress_dlg.setFixedSize(500, 100)
-        progress_dlg.setWindowTitle(self.tr('Adding Video Files...'))
-        progress_dlg.setCancelButtonText(self.tr('Cancel'))
-        progress_dlg.setLabel(label)
-        progress_dlg.setModal(True)
-        progress_dlg.setMinimum(0)
-        progress_dlg.setMinimumDuration(0)
-        progress_dlg.setMaximum(0)
-        progress_dlg.setValue(0)
-
-        return progress_dlg
 
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with _MediaFile objects."""
