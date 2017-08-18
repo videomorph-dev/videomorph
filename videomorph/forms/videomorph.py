@@ -688,7 +688,6 @@ class VideoMorphMW(QMainWindow):
         label = QLabel()
         label.setAlignment(Qt.AlignLeft)
         progress_dlg = QProgressDialog(parent=self)
-        progress_dlg.children()[3].hide()
         progress_dlg.setFixedSize(500, 100)
         progress_dlg.setWindowTitle(self.tr('Adding Video Files...'))
         progress_dlg.setLabel(label)
@@ -710,6 +709,9 @@ class VideoMorphMW(QMainWindow):
             else:  # Second and on...
                 progress_dlg.setLabelText(self.tr('Adding File: ') + element)
                 progress_dlg.setValue(i)
+
+            if progress_dlg.wasCanceled():
+                break
 
         progress_dlg.close()
 
