@@ -25,9 +25,8 @@ from collections import OrderedDict
 
 import nose
 
-from videomorph.converter import ConversionProfile
-from videomorph.converter import ConversionLib
-from videomorph import PROBER
+from videomorph.converter.profile import ConversionProfile
+from videomorph.converter.conversionlib import ConversionLib
 
 
 profile = None

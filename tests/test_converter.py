@@ -23,11 +23,11 @@
 import nose
 from PyQt5.QtCore import QProcess
 
-from videomorph import CONV_LIB
-from videomorph import PROBER
+from videomorph.converter import CONV_LIB
+from videomorph.converter import PROBER
 from videomorph.converter import media
-from videomorph.converter import ConversionLib
-from videomorph.converter import ConversionProfile
+from videomorph.converter.conversionlib import ConversionLib
+from videomorph.converter.profile import ConversionProfile
 
 conv_lib = ConversionLib()
 
@@ -39,7 +39,9 @@ media_list = media.MediaList(profile)
 
 def teardown():
     media_list.clear()
-    media_list.populate(('Dad.mpg',))
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
     media_list.get_file(0).delete_output('.')
 
 
@@ -62,7 +64,9 @@ def test_prober():
 def test_start_converter():
     """Test start converter."""
 
-    media_list.populate(('Dad.mpg',))
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
 
     cmd = media_list.get_file(position=0).build_conversion_cmd(
         output_dir='.',
