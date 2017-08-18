@@ -81,7 +81,7 @@ COLUMNS = TableColumns(*range(4))
 
 
 class VideoMorphMW(QMainWindow):
-    """Video Morph Main Window class."""
+    """VideoMorph Main Window class."""
 
     def __init__(self):
         """Class initializer."""

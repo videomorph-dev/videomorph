@@ -29,7 +29,7 @@ from PyQt5.QtWidgets import qApp
 
 from . import LOCALE
 from .converter.console import run_on_console
-from .froms.videomorph import VideoMorphMW
+from .forms.videomorph import VideoMorphMW
 
 
 def main():
