@@ -25,9 +25,8 @@ from collections import OrderedDict
 
 import nose
 
-from videomorph.converter import ConversionProfile
-from videomorph.converter import ConversionLib
-from videomorph import PROBER
+from videomorph.converter.profile import ConversionProfile
+from videomorph.converter.conversionlib import ConversionLib
 
 
 profile = None
@@ -37,8 +36,8 @@ conv = ConversionLib()
 def setup():
     """Function to setup the test."""
     global profile
-    profile = ConversionProfile(quality='MP4 Fullscreen (4:3)',
-                                prober=conv.prober)
+    profile = ConversionProfile(prober=conv.prober)
+    profile.update(new_quality='MP4 Fullscreen (4:3)')
 
 
 # Tests for _XMLProfile class
@@ -65,7 +64,7 @@ def test_get_xml_profile_attr():
 
 def test_get_xml_profile_qualities():
     """Test get_xml_profile_qualities."""
-    qualities = profile.get_xml_profile_qualities(locale='es_ES')
+    qualities = profile.get_xml_profile_qualities()
     assert qualities == OrderedDict(
         [('AVI',
           ['Compatible MS',

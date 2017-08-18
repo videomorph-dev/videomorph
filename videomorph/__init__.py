@@ -19,35 +19,19 @@
 
 """This module defines the videomorph package and the needed constants."""
 
-
-from collections import namedtuple
-from os import cpu_count
+from videomorph.converter.utils import get_locale
+from os.path import expanduser
+from os.path import join as join_path
 
 APPNAME = 'VideoMorph'
 VERSION = '1.1'
+LOCALE = get_locale()
 CODENAME = 'adventurer'
 PACKAGE_NAME = APPNAME.lower()
 MAINTAINER = APPNAME + ' ' + 'Development Team'
 
-ConvLib = namedtuple('ConvLib', 'ffmpeg avconv')
-CONV_LIB = ConvLib('ffmpeg', 'avconv')
-
-VIDEO_FILTERS = ('*.mkv *.ogg *.mp4 *.mpg *.dat '
-                 '*.f4v *.flv *.wv *.3gp *.avi *.webm '
-                 '*.wmv *.mov *.vob *.ogv *.ts')
-
-Prober = namedtuple('Prober', 'ffprobe avprobe')
-PROBER = Prober('ffprobe', 'avprobe')
-
-MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
-STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
-
-
-CPU_CORES = (cpu_count() - 1 if
-             cpu_count() is not None
-             else 0)
-
 LINUX_PATHS = {'apps': '/usr/share/applications',
+               'config': join_path(expanduser('~'), '.videomorph'),
                'icons': '/usr/share/icons',
                'i18n': '/usr/share/videomorph/translations',
                'profiles': '/usr/share/videomorph/stdprofiles',
@@ -61,17 +45,3 @@ VM_PATHS = {'apps': 'share/applications',
             'doc': 'share/doc/videomorph',
             'man': 'share/man',
             'bin': 'bin'}
-
-PLAYERS = ['vlc',
-           'xplayer',
-           'totem',
-           'kmplayer',
-           'smplayer',
-           'mplayer',
-           'banshee',
-           'ffplay',
-           'mpv',
-           'gxine',
-           'xine-ui',
-           'gmlive',
-           'dragonplayer']

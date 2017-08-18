@@ -86,4 +86,4 @@ if __name__ == '__main__':
           ],
 
           scripts=[VM_PATHS['bin'] + '/videomorph']
-          )
+         )

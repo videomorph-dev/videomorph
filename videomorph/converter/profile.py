@@ -20,17 +20,18 @@
 """This module contains the PRESETS for encoding different video formats."""
 
 import re
-from os import sep
-from os.path import expanduser, join, exists, getsize
 from collections import OrderedDict
-from distutils.file_util import copy_file
 from distutils.errors import DistutilsFileError
+from distutils.file_util import copy_file
+from os import sep
+from os.path import exists, getsize
 from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
 from videomorph import LINUX_PATHS
+from videomorph import LOCALE
 from videomorph import VM_PATHS
-from videomorph import VIDEO_FILTERS
+from . import VIDEO_FILTERS
 
 
 class ProfileError(Exception):
@@ -159,14 +160,14 @@ class _XMLProfile:
                         item[3].text == target_quality):
                     return item[param_map[attr_name]].text
 
-    def get_xml_profile_qualities(self, locale):
+    def get_xml_profile_qualities(self):
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
         values = []
 
         for element in self._xml_root:
             for item in element:
-                if locale == 'es_ES':
+                if LOCALE == 'es_ES':
                     # Create the dict with values in spanish
                     values.append(item[3].text)
                 else:
@@ -189,7 +190,7 @@ class _XMLProfile:
     @property
     def _xml_profiles_path(self):
         """Return the path to the profiles file."""
-        return join(expanduser("~"), '.videomorph{0}profiles.xml'.format(sep))
+        return LINUX_PATHS['config'] + '{0}profiles.xml'.format(sep)
 
     def _get_xml_root(self):
         """Return the profiles.xml root."""
@@ -202,18 +203,15 @@ class _XMLProfile:
 
 
 class ConversionProfile:
-    """Base class for a Video Profile."""
+    """Base class for a Conversion Profile."""
 
-    def __init__(self, prober, quality):
+    def __init__(self, prober):
         """Class initializer."""
         self.prober = prober
-        self.quality = quality
-
         self.xml_profile = _XMLProfile()
-        self.extension = self.get_xml_profile_attr(target_quality=self.quality,
-                                                   attr_name='file_extension')
-
-        self.params = self.xml_profile.get_xml_profile_attr(self.quality)
+        self.quality = None
+        self.extension = None
+        self.params = None
 
     def __getattr__(self, attr):
         """Delegate to manage the XMLProfile."""

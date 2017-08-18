@@ -46,7 +46,7 @@ class AboutVMDialog(QDialog):
         """Class initializer."""
         super(AboutVMDialog, self).__init__(parent)
         self.setWindowTitle(self.tr('About VideoMorph'))
-        self.resize(374, 404)
+        self.resize(500, 404)
         self.horizontal_layout_3 = QHBoxLayout(self)
         self.vertical_layout_4 = QVBoxLayout()
         self.horizontal_layout_2 = QHBoxLayout()
@@ -143,6 +143,7 @@ class AboutVMDialog(QDialog):
 
     @staticmethod
     def get_license_text():
+        """Get the license text from the license file."""
         license_path = (LINUX_PATHS['doc'] + '/LICENSE' if
                         isfile(LINUX_PATHS['doc'] + '/LICENSE') else
                         '../LICENSE')
