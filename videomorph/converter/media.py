@@ -59,18 +59,6 @@ class MediaList(list):
         super(MediaList, self).clear()
         self.position = None
 
-    def _filter_by_path(self, files_paths):
-        """Return a list with files not added to media list."""
-        if self.length:
-            filtered_paths = [file_path for file_path in files_paths if
-                              self._file_not_added(file_path)]
-            if not filtered_paths:
-                return None
-        else:
-            filtered_paths = files_paths
-
-        return filtered_paths
-
     def populate(self, files_paths):
         """Populate MediaList object with _MediaFile objects.
 
@@ -186,6 +174,18 @@ class MediaList(list):
         """Yield _MediaFile objects to be added to MediaList."""
         for file_path in files_paths:
             yield _MediaFile(file_path, self._profile)
+
+    def _filter_by_path(self, files_paths):
+        """Return a list with files to add to media list."""
+        if self.length:
+            filtered_paths = [file_path for file_path in files_paths if
+                              self._file_not_added(file_path)]
+            if not filtered_paths:
+                return None
+        else:
+            filtered_paths = files_paths
+
+        return filtered_paths
 
     def _file_not_added(self, file_path):
         """Determine if a video file is in the list already."""
