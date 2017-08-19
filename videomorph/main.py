@@ -32,6 +32,8 @@ from PyQt5.QtWidgets import qApp
 from . import LOCALE
 from .converter.console import run_on_console
 from .forms.videomorph import VideoMorphMW
+from videomorph import  LINUX_PATHS
+from videomorph import VM_PATHS
 
 
 def main():
@@ -41,14 +43,13 @@ def main():
 
     # Setup app translator
     app_translator = QTranslator()
-    if exists('..{0}share{1}videomorph{2}translations'.format(sep, sep, sep)):
-        app_translator.load(
-            "..{0}share{1}videomorph{2}translations{3}videomorph_{4}".format(
-                sep, sep, sep, sep, LOCALE))
+
+    if exists('..{0}{1}'.format(sep, VM_PATHS['i18n'])):
+        app_translator.load('..{0}{1}{2}videomorph_{3}'.format(
+            sep, VM_PATHS['i18n'], sep, LOCALE))
     else:
         app_translator.load(
-            "{0}usr{1}share{2}videomorph{3}translations"
-            "{4}videomorph_{5}".format(sep, sep, sep, sep, sep, LOCALE))
+            LINUX_PATHS['i18n'] + '{0}videomorph_{1}'.format(sep, LOCALE))
 
     app.installTranslator(app_translator)
     qt_translator = QTranslator()
