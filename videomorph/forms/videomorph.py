@@ -19,7 +19,6 @@
 
 """This module defines the VideoMorph main window that holds the UI."""
 
-import time
 from collections import OrderedDict
 from collections import namedtuple
 from functools import partial
@@ -86,14 +85,8 @@ class VideoMorphMW(QMainWindow):
     def __init__(self):
         """Class initializer."""
         super(VideoMorphMW, self).__init__()
-        # Variables for calculating total progress
-        self.time_jump = 0.0
-        self.partial_time = 0.0
-        self.total_time = 0.0
 
         self.media_list_duration = 0.0
-        self.process_initial_time = 0.0
-        self.operation_initial_time = 0.0
 
         # App interface setup
         # Window size
@@ -132,9 +125,12 @@ class VideoMorphMW(QMainWindow):
         # Create conversion library
         self.conversion_lib = ConversionLib()
         self.conversion_lib.setup_converter(
-            reader=self._read_encoding_output,
+            reader=self._ready_read,
             finisher=self._finish_file_encoding,
             process_channel=QProcess.MergedChannels)
+        # Create reader and timer
+        self.reader = self.conversion_lib.reader
+        self.timer = self.conversion_lib.timer
 
         # Create initial Settings if not created
         self._create_initial_settings()
@@ -619,14 +615,6 @@ class VideoMorphMW(QMainWindow):
         for key, setting in settings.items():
             settings_file.setValue(key, setting)
 
-    def _reset_progress_times(self):
-        """Reset the variables used to calculate progress."""
-        self.time_jump = 0.0
-        self.partial_time = 0.0
-        self.total_time = 0.0
-        self.operation_initial_time = 0.0
-        self.media_list_duration = self.media_list.duration
-
     def _show_message_box(self, type_, title, msg):
         QMessageBox(type_, title, msg, QMessageBox.Ok, self).show()
 
@@ -1050,7 +1038,7 @@ class VideoMorphMW(QMainWindow):
         self.media_list.position += 1
 
         # Reset the operation initial time
-        self.operation_initial_time = 0.0
+        self.timer.operation_start_time = 0.0
 
         running_file = self.media_list.running_file
 
@@ -1086,7 +1074,8 @@ class VideoMorphMW(QMainWindow):
         self.media_list.running_file.delete_output(
             output_dir=self.le_output.text())
         # Update the list duration and partial time for total progress bar
-        self._reset_progress_times()
+        self.timer.reset_progress_times()
+        self.media_list_duration = self.media_list.duration
         # Terminate the file encoding
         self.conversion_lib.stop_converter()
 
@@ -1106,7 +1095,8 @@ class VideoMorphMW(QMainWindow):
         self.conversion_lib.stop_converter()
 
         # Update the list duration and partial time for total progress bar
-        self._reset_progress_times()
+        self.timer.reset_progress_times()
+        self.media_list_duration = self.media_list.duration
 
     def _finish_file_encoding(self):
         """Finish the file encoding process."""
@@ -1139,14 +1129,14 @@ class VideoMorphMW(QMainWindow):
         """End up the encoding process."""
         # Test if encoding process is finished
         if self.media_list.is_exhausted:
-            if self.conversion_lib.current_library_error is not None:
+            if self.conversion_lib.library_error is not None:
                 self._show_message_box(
                     type_=QMessageBox.Critical,
                     title='Error!',
                     msg=self.tr('The Conversion Library has '
                                 'Failed with Error:') + ' ' +
-                    self.conversion_lib.current_library_error)
-                self.conversion_lib.current_library_error = None
+                    self.conversion_lib.library_error)
+                self.conversion_lib.library_error = None
             elif not self.media_list.all_stopped:
                 self._show_message_box(
                     type_=QMessageBox.Information,
@@ -1164,8 +1154,9 @@ class VideoMorphMW(QMainWindow):
             # Reset all progress related variables
             self.pb_progress.setProperty("value", 0)
             self.pb_total_progress.setProperty("value", 0)
-            self._reset_progress_times()
-            self.process_initial_time = 0.0
+            self.timer.reset_progress_times()
+            self.media_list_duration = self.media_list.duration
+            self.timer.process_start_time = 0.0
             # Reset the position
             self.media_list.position = None
             # Update tool buttons
@@ -1175,112 +1166,93 @@ class VideoMorphMW(QMainWindow):
         else:
             self.start_encoding()
 
-    def _calculate_total_progress(self, operation_time):
-        """"Calculate total progress percent."""
-        if self.partial_time > operation_time:
-            self.time_jump += self.partial_time
-            self.total_time = self.time_jump + operation_time
-            self.partial_time = operation_time
-        else:
-            self.total_time = self.time_jump + operation_time
-            self.partial_time = operation_time
+    def _ready_read(self):
+        """Is called when the conversion process emit a new output."""
+        self.reader.update(
+            process_output=self.conversion_lib.read_converter_output())
 
-        return int(self.total_time / float(self.media_list_duration) * 100)
+        self._update_conversion_progress()
 
-    def _calculate_operation_time(self, op_cum_time, op_time_read):
-        """Estimating operation time."""
-        file_duration = float(self.media_list.running_file.get_info(
-            'format_duration'))
-        adjustment_coefficient = op_cum_time / op_time_read
-
-        return file_duration * adjustment_coefficient
-
-    def _calculate_operation_remaining_time(self, op_cum_time, op_time_read):
-        op_time = self._calculate_operation_time(op_cum_time=op_cum_time,
-                                                 op_time_read=op_time_read)
-        # Avoid negative time
-        try:
-            operation_remaining_time = write_time(op_time - op_cum_time)
-        except ValueError:
-            operation_remaining_time = write_time(0)
-
-        return operation_remaining_time
-
-    def _read_encoding_output(self):
+    def _update_conversion_progress(self):
         """Read the encoding output from the converter stdout."""
-        # Getting the process output
-        process_output = self.conversion_lib.read_converter_output()
-
-        # Reading time from library output
-        time_read = self.conversion_lib.read_conversion_param(
-            param='time',
-            process_output=process_output)
-
         # Initialize the process time
-        if not self.process_initial_time:
-            self.process_initial_time = time.time()
+        if not self.timer.process_start_time:
+            self.timer.init_process_start_time()
 
         # Initialize the operation time
-        if not self.operation_initial_time:
-            self.operation_initial_time = time.time()
+        if not self.timer.operation_start_time:
+            self.timer.init_operation_start_time()
 
         # Return if no time read
-        if not time_read:
+        if not self.reader.time_read:
             # Catch the library errors only before time_read
-            self.conversion_lib.process_conversion_errors(process_output)
+            self.conversion_lib.catch_errors()
             return
 
-        # Real time computation
-        sys_time = time.time()
-        operation_cum_time = sys_time - self.operation_initial_time
-        process_cum_time = sys_time - self.process_initial_time
+        # update cum time
+        self.timer.update_cum_times()
 
         # Convert time read to seconds
-        operation_time_read = self.conversion_lib.time_read_to_seconds(
-            time_read=time_read)
+        operation_time_read = self.reader.time_read_in_seconds
 
-        # Avoid negative time
-        operation_remaining_time = self._calculate_operation_remaining_time(
-            op_cum_time=operation_cum_time,
-            op_time_read=operation_time_read)
-
-        # Reading bit rate
-        bit_rate_read = self.conversion_lib.read_conversion_param(
-            param='bitrate',
-            process_output=process_output)
-        bit_rate = bit_rate_read[0].split('=')[-1].strip()
-
-        # Calculate operation progress percent
+        # Get file and list duration
         file_duration = float(self.media_list.running_file.get_info(
             'format_duration'))
-        operation_progress = int(operation_time_read /
-                                 file_duration * 100)
 
-        # Update the table and the operation progress bar
-        self.pb_progress.setProperty("value", operation_progress)
+        # Calculate operation progress percentage
+        operation_progress = self.timer.calculate_operation_progress(
+            op_time_read=operation_time_read,
+            file_duration=file_duration)
+
+        # calculate total progress percentage
+        process_progress = self.timer.calculate_process_progress(
+            op_time_read=operation_time_read,
+            list_duration=self.media_list_duration)
+
+        # Update progress
+        self._update_progress(op_progress=operation_progress,
+                              pr_progress=process_progress)
+
+        self._update_status_bar(op_time_read=operation_time_read)
+
+        self._update_main_window_title(op_progress=operation_progress)
+
+    def _update_progress(self, op_progress, pr_progress):
+        """Update operation progress in tasks list & operation progress bar."""
+        # Update operation progress bar
+        self.pb_progress.setProperty("value", op_progress)
+        # Update operation progress in tasks list
         self.tb_tasks.item(self.media_list.position, 3).setText(
-            str(operation_progress) + "%")
+            str(op_progress) + "%")
+        self.pb_total_progress.setProperty("value", pr_progress)
 
-        # Update the total progress bar
-        process_progress = self._calculate_total_progress(operation_time_read)
-        self.pb_total_progress.setProperty("value", process_progress)
-
+    def _update_main_window_title(self, op_progress):
+        """Udate the main window title."""
         running_file_name = self.media_list.running_file.get_name(
             with_extension=True)
+
+        self.setWindowTitle(str(op_progress) + '%' + '-' +
+                            '[' + running_file_name + ']' +
+                            ' - ' + APPNAME + ' ' + VERSION)
+
+    def _update_status_bar(self, op_time_read):
+        """Update the status bar while converting."""
+        running_file_name = self.media_list.running_file.get_name(
+            with_extension=True)
+        file_duration = float(self.media_list.running_file.get_info(
+            'format_duration'))
 
         self.statusBar().showMessage(
             self.tr('Converting: {m}\t\t\t '
                     'At: {br}\t\t\t '
                     'Operation Remaining Time: {ort}\t\t\t '
                     'Total Elapsed Time: {tet}').format(
-                        m=running_file_name,
-                        br=bit_rate,
-                        ort=operation_remaining_time,
-                        tet=write_time(process_cum_time)))
-
-        self.setWindowTitle(str(operation_progress) + '%' + '-' +
-                            '[' + running_file_name + ']' +
-                            ' - ' + APPNAME + ' ' + VERSION)
+                m=running_file_name,
+                br=self.reader.bitrate_read,
+                ort=self.timer.calculate_operation_remaining_time(
+                    op_time_read=op_time_read,
+                    file_duration=file_duration),
+                tet=write_time(self.timer.process_cum_time)))
 
     def _update_media_files_status(self):
         """Update file status."""

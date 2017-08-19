@@ -73,6 +73,8 @@ class MediaList(list):
         if files_paths_to_add is None:
             return
 
+        self.not_added_files.clear()
+
         # First, it yields the total number of video files to process
         yield len(files_paths_to_add)
 
