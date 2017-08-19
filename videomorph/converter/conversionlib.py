@@ -40,6 +40,7 @@ class ConversionLib:
         self._name = self.get_system_library_name()
         self._player = _Player()
         self._converter = _Converter(conversion_lib_name=self.name)
+        self.library_error = None
         self.reader = _OutputReader()
         self.timer = _ConversionTimer()
         self._delegates = (self._converter, self._player)
@@ -53,6 +54,7 @@ class ConversionLib:
                 raise AttributeError('Attribute not found')
 
     def catch_errors(self):
+        """Catch the library error when running."""
         self.library_error = self.reader.catch_library_error()
 
     @staticmethod
@@ -193,9 +195,11 @@ class _OutputReader:
         self._process_output = None
 
     def read(self):
+        """Return the process output."""
         return self._process_output
 
     def update(self, process_output):
+        """Update the process output."""
         self._process_output = process_output
 
     @property
@@ -282,9 +286,9 @@ class _ConversionTimer:
 
     def _calculate_operation_time(self, op_time_read, file_duration):
         """Estimating operation time."""
-        adjustment_coefficient = self.operation_cum_time / op_time_read
+        speed = self.operation_cum_time / op_time_read
 
-        return file_duration * adjustment_coefficient
+        return file_duration * speed
 
     def calculate_operation_remaining_time(self, op_time_read, file_duration):
         """Return the operation remaining time."""

@@ -1247,12 +1247,12 @@ class VideoMorphMW(QMainWindow):
                     'At: {br}\t\t\t '
                     'Operation Remaining Time: {ort}\t\t\t '
                     'Total Elapsed Time: {tet}').format(
-                m=running_file_name,
-                br=self.reader.bitrate_read,
-                ort=self.timer.calculate_operation_remaining_time(
-                    op_time_read=op_time_read,
-                    file_duration=file_duration),
-                tet=write_time(self.timer.process_cum_time)))
+                        m=running_file_name,
+                        br=self.reader.bitrate_read,
+                        ort=self.timer.calculate_operation_remaining_time(
+                            op_time_read=op_time_read,
+                            file_duration=file_duration),
+                        tet=write_time(self.timer.process_cum_time)))
 
     def _update_media_files_status(self):
         """Update file status."""

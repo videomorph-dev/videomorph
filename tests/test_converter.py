@@ -38,6 +38,7 @@ media_list = media.MediaList(profile)
 
 
 def teardown():
+    """Clean up when finished."""
     media_list.clear()
     gen = media_list.populate(('Dad.mpg',))
     next(gen)
