@@ -37,7 +37,8 @@ LINUX_PATHS = {'apps': '/usr/share/applications',
                'i18n': '/usr/share/videomorph/translations',
                'profiles': '/usr/share/videomorph/stdprofiles',
                'doc': '/usr/share/doc/videomorph',
-               'man': '/usr/share/man/man1'}
+               'man': '/usr/share/man/man1',
+               'gnome_mime': '/etc/gnome/defaults.list'}
 
 VM_PATHS = {'apps': 'share/applications',
             'icons': 'share/icons',

@@ -21,6 +21,8 @@
 
 import re
 from time import time
+from mimetypes import guess_type
+from os.path import exists
 
 from PyQt5.QtCore import QProcess
 
@@ -30,6 +32,12 @@ from . import PROBER
 from .utils import write_time
 from .utils import spawn_process
 from .utils import which
+from videomorph import LINUX_PATHS
+
+
+class PlayerNotFoundError(Exception):
+    """Exception to handle Player not found error."""
+    pass
 
 
 class ConversionLib:
@@ -51,7 +59,9 @@ class ConversionLib:
             try:
                 return getattr(delegate, attr)
             except AttributeError:
-                raise AttributeError('Attribute not found')
+                pass
+        else:
+            raise AttributeError('Attribute not found')
 
     def catch_errors(self):
         """Catch the library error when running."""
@@ -169,18 +179,53 @@ class _Player:
     def run_player(self, file_path):
         """Play a video file."""
         if self._name is None:
-            self._get_player()
+            self._set_player(file_path)
 
         if self._name is not None:
             spawn_process([which(self._name), file_path])
         else:
             raise AttributeError('No Payer Available')
 
-    def _get_player(self):
+    def _set_player(self, file_path):
+        """Return the video player to be used."""
+        try:
+            self._name = self._gnome_player_finder(file_path)
+        except (FileNotFoundError, PlayerNotFoundError):
+            pass
+
+        if self._name is None:
+            self._name = self._list_base_player_finder()
+
+    @staticmethod
+    def _list_base_player_finder():
+        """Return a player from a list of popular players."""
         for player in PLAYERS:
             if which(player):
-                self._name = player
-                break
+                return player
+        else:
+            raise PlayerNotFoundError('Player not found')
+
+    def _gnome_player_finder(self, file_path):
+        """Return the default Gnome player."""
+        if exists(LINUX_PATHS['gnome_mime']):
+            mime_type = self._guess_mime_type(file_path)
+            if mime_type is None:
+                return None
+
+            with open('/etc/gnome/defaults.list', 'r', encoding='UTF-8') as dl:
+                for line in dl:
+                    if mime_type in line:
+                        player = line.split('=')[-1].split('.')[0]
+                        return player
+                else:
+                    raise PlayerNotFoundError('Player not found')
+        else:
+            raise FileNotFoundError('Gnome default.list not found')
+
+    @staticmethod
+    def _guess_mime_type(file_path):
+        """Return the file mine type."""
+        return guess_type(file_path)[0]
 
 
 class _OutputReader:
