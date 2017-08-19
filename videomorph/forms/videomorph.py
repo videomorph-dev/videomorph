@@ -1189,11 +1189,11 @@ class VideoMorphMW(QMainWindow):
             self.conversion_lib.catch_errors()
             return
 
+        # Update timer
+        self.timer.update(op_time_read_sec=self.reader.time_read_in_seconds)
+
         # update cum time
         self.timer.update_cum_times()
-
-        # Convert time read to seconds
-        operation_time_read = self.reader.time_read_in_seconds
 
         # Get file and list duration
         file_duration = float(self.media_list.running_file.get_info(
@@ -1201,19 +1201,17 @@ class VideoMorphMW(QMainWindow):
 
         # Calculate operation progress percentage
         operation_progress = self.timer.calculate_operation_progress(
-            op_time_read=operation_time_read,
             file_duration=file_duration)
 
         # calculate total progress percentage
         process_progress = self.timer.calculate_process_progress(
-            op_time_read=operation_time_read,
             list_duration=self.media_list_duration)
 
         # Update progress
         self._update_progress(op_progress=operation_progress,
                               pr_progress=process_progress)
 
-        self._update_status_bar(op_time_read=operation_time_read)
+        self._update_status_bar(op_time_read=self.reader.time_read_in_seconds)
 
         self._update_main_window_title(op_progress=operation_progress)
 
@@ -1250,7 +1248,6 @@ class VideoMorphMW(QMainWindow):
                         m=running_file_name,
                         br=self.reader.bitrate_read,
                         ort=self.timer.calculate_operation_remaining_time(
-                            op_time_read=op_time_read,
                             file_duration=file_duration),
                         tet=write_time(self.timer.process_cum_time)))
 

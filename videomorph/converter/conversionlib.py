@@ -246,11 +246,16 @@ class _ConversionTimer:
         self._partial_time = 0.0
         self._total_time = 0.0
 
+        self._op_time_read_sec = 0.0
+
         self.process_start_time = 0.0
         self.process_cum_time = 0.0
 
         self.operation_start_time = 0.0
         self.operation_cum_time = 0.0
+
+    def update(self, op_time_read_sec):
+        self._op_time_read_sec = op_time_read_sec
 
     def init_process_start_time(self):
         """Initialize process start time."""
@@ -267,33 +272,31 @@ class _ConversionTimer:
         self._total_time = 0.0
         self.operation_start_time = 0.0
 
-    @staticmethod
-    def calculate_operation_progress(op_time_read, file_duration):
+    def calculate_operation_progress(self, file_duration):
         """Return the operation progress percentage."""
-        return int(op_time_read / file_duration * 100)
+        return int(self._op_time_read_sec / file_duration * 100)
 
-    def calculate_process_progress(self, op_time_read, list_duration):
+    def calculate_process_progress(self, list_duration):
         """"Calculate total progress percentage."""
-        if self._partial_time > op_time_read:
+        if self._partial_time > self._op_time_read_sec:
             self._time_jump += self._partial_time
-            self._total_time = self._time_jump + op_time_read
-            self._partial_time = op_time_read
+            self._total_time = self._time_jump + self._op_time_read_sec
+            self._partial_time = self._op_time_read_sec
         else:
-            self._total_time = self._time_jump + op_time_read
-            self._partial_time = op_time_read
+            self._total_time = self._time_jump + self._op_time_read_sec
+            self._partial_time = self._op_time_read_sec
 
         return int(self._total_time / float(list_duration) * 100)
 
-    def _calculate_operation_time(self, op_time_read, file_duration):
+    def _calculate_operation_time(self, file_duration):
         """Estimating operation time."""
-        speed = self.operation_cum_time / op_time_read
+        speed = self.operation_cum_time / self._op_time_read_sec
 
         return file_duration * speed
 
-    def calculate_operation_remaining_time(self, op_time_read, file_duration):
+    def calculate_operation_remaining_time(self, file_duration):
         """Return the operation remaining time."""
-        op_time = self._calculate_operation_time(op_time_read=op_time_read,
-                                                 file_duration=file_duration)
+        op_time = self._calculate_operation_time(file_duration=file_duration)
         # Avoid negative time
         try:
             op_remaining_time = write_time(op_time - self.operation_cum_time)
