@@ -17,6 +17,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+"""This module contains the main function for VideoMorph."""
+
 import sys
 from os import sep
 from os.path import exists

@@ -19,9 +19,10 @@
 
 """This module defines the videomorph package and the needed constants."""
 
-from videomorph.converter.utils import get_locale
 from os.path import expanduser
 from os.path import join as join_path
+
+from videomorph.converter.utils import get_locale
 
 APPNAME = 'VideoMorph'
 VERSION = '1.1'

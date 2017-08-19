@@ -20,12 +20,14 @@
 """This module provides the definition of the ConversionLib class."""
 
 import re
+from time import time
 
 from PyQt5.QtCore import QProcess
 
 from . import CONV_LIB
 from . import PLAYERS
 from . import PROBER
+from .utils import write_time
 from .utils import spawn_process
 from .utils import which
 
@@ -38,16 +40,22 @@ class ConversionLib:
         self._name = self.get_system_library_name()
         self._player = _Player()
         self._converter = _Converter(conversion_lib_name=self.name)
+        self.library_error = None
+        self.reader = _OutputReader()
+        self.timer = _ConversionTimer()
+        self._delegates = (self._converter, self._player)
 
     def __getattr__(self, attr):
-        """Delegate to manage _Player and _Converter objects."""
-        try:
-            return getattr(self._converter, attr)
-        except AttributeError:
+        """Delegate to use instance member objects."""
+        for delegate in self._delegates:
             try:
-                return getattr(self._player, attr)
+                return getattr(delegate, attr)
             except AttributeError:
                 raise AttributeError('Attribute not found')
+
+    def catch_errors(self):
+        """Catch the library error when running."""
+        self.library_error = self.reader.catch_library_error()
 
     @staticmethod
     def get_system_library_name():
@@ -86,8 +94,6 @@ class _Converter:
         """Class initializer."""
         self._conversion_lib = conversion_lib_name
         self._process = QProcess()
-        self._library_errors = ('Unknown encoder', 'Unrecognized option')
-        self.current_library_error = None
         self._params_regex = {'bitrate':
                                   r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
                               'time':
@@ -128,12 +134,6 @@ class _Converter:
     def converter_exit_status(self):
         """Call QProcess.exit_status method."""
         return self._process.exitStatus()
-
-    def process_conversion_errors(self, process_output):
-        """Process the library errors."""
-        for error in self._library_errors:
-            if error in process_output:
-                self.current_library_error = error
 
     def read_conversion_param(self, param, process_output):
         """Read library output looking for some parameters."""
@@ -181,3 +181,132 @@ class _Player:
             if which(player):
                 self._name = player
                 break
+
+
+class _OutputReader:
+    """Read the converter output."""
+
+    def __init__(self):
+        self._params_regex = {'bitrate':
+                              r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
+                              'time':
+                              r'time=([0-9.:]+) '}
+        self._library_errors = ('Unknown encoder', 'Unrecognized option')
+        self._process_output = None
+
+    def read(self):
+        """Return the process output."""
+        return self._process_output
+
+    def update(self, process_output):
+        """Update the process output."""
+        self._process_output = process_output
+
+    @property
+    def time_read(self):
+        """Return the time read."""
+        return self._read_output_param(param='time')
+
+    @property
+    def bitrate_read(self):
+        """Return the bitrate read."""
+        bitrate_read = self._read_output_param(param='bitrate')
+
+        return bitrate_read[0].split('=')[-1].strip()
+
+    @property
+    def time_read_in_seconds(self):
+        """Convert time read to seconds."""
+        seconds = 0.0
+        for time_part in self.time_read[0].split(':'):
+            seconds = 60 * seconds + float(time_part)
+
+        return seconds
+
+    def catch_library_error(self):
+        """Process the library errors."""
+        for error in self._library_errors:
+            if error in self._process_output:
+                return error
+            else:
+                return None
+
+    def _read_output_param(self, param):
+        """Read library output looking for some parameters."""
+        pattern = re.compile(self._params_regex[param])
+
+        return pattern.findall(self._process_output)
+
+
+class _ConversionTimer:
+    """Class to process Conversion progress times."""
+
+    def __init__(self):
+        self._time_jump = 0.0
+        self._partial_time = 0.0
+        self._total_time = 0.0
+
+        self._op_time_read_sec = 0.0
+
+        self.process_start_time = 0.0
+        self.process_cum_time = 0.0
+
+        self.operation_start_time = 0.0
+        self.operation_cum_time = 0.0
+
+    def update(self, op_time_read_sec):
+        self._op_time_read_sec = op_time_read_sec
+
+    def init_process_start_time(self):
+        """Initialize process start time."""
+        self.process_start_time = time()
+
+    def init_operation_start_time(self):
+        """Initialize the operation time"""
+        self.operation_start_time = time()
+
+    def reset_progress_times(self):
+        """Reset the variables used to calculate progress."""
+        self._time_jump = 0.0
+        self._partial_time = 0.0
+        self._total_time = 0.0
+        self.operation_start_time = 0.0
+
+    def calculate_operation_progress(self, file_duration):
+        """Return the operation progress percentage."""
+        return int(self._op_time_read_sec / file_duration * 100)
+
+    def calculate_process_progress(self, list_duration):
+        """"Calculate total progress percentage."""
+        if self._partial_time > self._op_time_read_sec:
+            self._time_jump += self._partial_time
+            self._total_time = self._time_jump + self._op_time_read_sec
+            self._partial_time = self._op_time_read_sec
+        else:
+            self._total_time = self._time_jump + self._op_time_read_sec
+            self._partial_time = self._op_time_read_sec
+
+        return int(self._total_time / float(list_duration) * 100)
+
+    def _calculate_operation_time(self, file_duration):
+        """Estimating operation time."""
+        speed = self.operation_cum_time / self._op_time_read_sec
+
+        return file_duration * speed
+
+    def calculate_operation_remaining_time(self, file_duration):
+        """Return the operation remaining time."""
+        op_time = self._calculate_operation_time(file_duration=file_duration)
+        # Avoid negative time
+        try:
+            op_remaining_time = write_time(op_time - self.operation_cum_time)
+        except ValueError:
+            op_remaining_time = write_time(0)
+
+        return op_remaining_time
+
+    def update_cum_times(self):
+        """Real time computation."""
+        sys_time = time()
+        self.operation_cum_time = sys_time - self.operation_start_time
+        self.process_cum_time = sys_time - self.process_start_time

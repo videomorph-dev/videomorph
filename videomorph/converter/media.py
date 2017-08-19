@@ -68,15 +68,17 @@ class MediaList(list):
             Element 1: Total number of video files to process
             Element 2,...: file path for the video file processed
         """
-        if self.length:
-            files_paths = [file_path for file_path in files_paths if
-                           self._file_not_added(file_path)]
-            if not files_paths:
-                return
-        # First it yield the total number of video files to process
-        yield len(files_paths)
+        files_paths_to_add = self._filter_by_path(files_paths)
 
-        for file in self._media_files_generator(files_paths):
+        if files_paths_to_add is None:
+            return
+
+        self.not_added_files.clear()
+
+        # First, it yields the total number of video files to process
+        yield len(files_paths_to_add)
+
+        for file in self._media_files_generator(files_paths_to_add):
             try:
                 self._add_file(file)
                 yield file.get_name(with_extension=True)
@@ -174,6 +176,18 @@ class MediaList(list):
         """Yield _MediaFile objects to be added to MediaList."""
         for file_path in files_paths:
             yield _MediaFile(file_path, self._profile)
+
+    def _filter_by_path(self, files_paths):
+        """Return a list with files to add to media list."""
+        if self.length:
+            filtered_paths = [file_path for file_path in files_paths if
+                              self._file_not_added(file_path)]
+            if not filtered_paths:
+                return None
+        else:
+            filtered_paths = files_paths
+
+        return filtered_paths
 
     def _file_not_added(self, file_path):
         """Determine if a video file is in the list already."""
