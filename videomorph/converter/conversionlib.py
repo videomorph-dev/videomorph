@@ -104,10 +104,6 @@ class _Converter:
         """Class initializer."""
         self._conversion_lib = conversion_lib_name
         self._process = QProcess()
-        self._params_regex = {'bitrate':
-                                  r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
-                              'time':
-                                  r'time=([0-9.:]+) '}
 
     def setup_converter(self, reader, finisher, process_channel):
         """Set up the QProcess object."""
@@ -144,21 +140,6 @@ class _Converter:
     def converter_exit_status(self):
         """Call QProcess.exit_status method."""
         return self._process.exitStatus()
-
-    def read_conversion_param(self, param, process_output):
-        """Read library output looking for some parameters."""
-        pattern = re.compile(self._params_regex[param])
-
-        return pattern.findall(process_output)
-
-    @staticmethod
-    def time_read_to_seconds(time_read):
-        """Convert time read to seconds."""
-        seconds = 0.0
-        for time_part in time_read[0].split(':'):
-            seconds = 60 * seconds + float(time_part)
-
-        return seconds
 
     @property
     def converter_is_running(self):
@@ -243,27 +224,27 @@ class _OutputReader:
         """Return the process output."""
         return self._process_output
 
-    def update(self, process_output):
+    def update_read(self, process_output):
         """Update the process output."""
         self._process_output = process_output
 
     @property
-    def time_read(self):
+    def has_time_read(self):
         """Return the time read."""
         return self._read_output_param(param='time')
 
     @property
-    def bitrate_read(self):
+    def bitrate(self):
         """Return the bitrate read."""
         bitrate_read = self._read_output_param(param='bitrate')
 
         return bitrate_read[0].split('=')[-1].strip()
 
     @property
-    def time_read_in_seconds(self):
+    def time(self):
         """Convert time read to seconds."""
         seconds = 0.0
-        for time_part in self.time_read[0].split(':'):
+        for time_part in self.has_time_read[0].split(':'):
             seconds = 60 * seconds + float(time_part)
 
         return seconds
@@ -291,7 +272,7 @@ class _ConversionTimer:
         self._partial_time = 0.0
         self._total_time = 0.0
 
-        self._op_time_read_sec = 0.0
+        self._operation_time_read = 0.0
 
         self.process_start_time = 0.0
         self.process_cum_time = 0.0
@@ -299,8 +280,9 @@ class _ConversionTimer:
         self.operation_start_time = 0.0
         self.operation_cum_time = 0.0
 
-    def update(self, op_time_read_sec):
-        self._op_time_read_sec = op_time_read_sec
+    def update_time(self, op_time_read_sec):
+        """Update ConversionTimer with operation time read from conversion."""
+        self._operation_time_read = op_time_read_sec
 
     def init_process_start_time(self):
         """Initialize process start time."""
@@ -317,31 +299,31 @@ class _ConversionTimer:
         self._total_time = 0.0
         self.operation_start_time = 0.0
 
-    def calculate_operation_progress(self, file_duration):
+    def operation_progress(self, file_duration):
         """Return the operation progress percentage."""
-        return int(self._op_time_read_sec / file_duration * 100)
+        return int(self._operation_time_read / file_duration * 100)
 
-    def calculate_process_progress(self, list_duration):
+    def process_progress(self, list_duration):
         """"Calculate total progress percentage."""
-        if self._partial_time > self._op_time_read_sec:
+        if self._partial_time > self._operation_time_read:
             self._time_jump += self._partial_time
-            self._total_time = self._time_jump + self._op_time_read_sec
-            self._partial_time = self._op_time_read_sec
+            self._total_time = self._time_jump + self._operation_time_read
+            self._partial_time = self._operation_time_read
         else:
-            self._total_time = self._time_jump + self._op_time_read_sec
-            self._partial_time = self._op_time_read_sec
+            self._total_time = self._time_jump + self._operation_time_read
+            self._partial_time = self._operation_time_read
 
         return int(self._total_time / float(list_duration) * 100)
 
-    def _calculate_operation_time(self, file_duration):
+    def _operation_time(self, file_duration):
         """Estimating operation time."""
-        speed = self.operation_cum_time / self._op_time_read_sec
+        speed = self.operation_cum_time / self._operation_time_read
 
         return file_duration * speed
 
-    def calculate_operation_remaining_time(self, file_duration):
+    def operation_remaining_time(self, file_duration):
         """Return the operation remaining time."""
-        op_time = self._calculate_operation_time(file_duration=file_duration)
+        op_time = self._operation_time(file_duration=file_duration)
         # Avoid negative time
         try:
             op_remaining_time = write_time(op_time - self.operation_cum_time)

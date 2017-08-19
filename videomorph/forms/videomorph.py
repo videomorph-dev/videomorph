@@ -1168,7 +1168,7 @@ class VideoMorphMW(QMainWindow):
 
     def _ready_read(self):
         """Is called when the conversion process emit a new output."""
-        self.reader.update(
+        self.reader.update_read(
             process_output=self.conversion_lib.read_converter_output())
 
         self._update_conversion_progress()
@@ -1184,13 +1184,13 @@ class VideoMorphMW(QMainWindow):
             self.timer.init_operation_start_time()
 
         # Return if no time read
-        if not self.reader.time_read:
+        if not self.reader.has_time_read:
             # Catch the library errors only before time_read
             self.conversion_lib.catch_errors()
             return
 
-        # Update timer
-        self.timer.update(op_time_read_sec=self.reader.time_read_in_seconds)
+        # Update timer time
+        self.timer.update_time(op_time_read_sec=self.reader.time)
 
         # update cum time
         self.timer.update_cum_times()
@@ -1200,18 +1200,18 @@ class VideoMorphMW(QMainWindow):
             'format_duration'))
 
         # Calculate operation progress percentage
-        operation_progress = self.timer.calculate_operation_progress(
+        operation_progress = self.timer.operation_progress(
             file_duration=file_duration)
 
         # calculate total progress percentage
-        process_progress = self.timer.calculate_process_progress(
+        process_progress = self.timer.process_progress(
             list_duration=self.media_list_duration)
 
         # Update progress
         self._update_progress(op_progress=operation_progress,
                               pr_progress=process_progress)
 
-        self._update_status_bar(op_time_read=self.reader.time_read_in_seconds)
+        self._update_status_bar()
 
         self._update_main_window_title(op_progress=operation_progress)
 
@@ -1233,7 +1233,7 @@ class VideoMorphMW(QMainWindow):
                             '[' + running_file_name + ']' +
                             ' - ' + APPNAME + ' ' + VERSION)
 
-    def _update_status_bar(self, op_time_read):
+    def _update_status_bar(self):
         """Update the status bar while converting."""
         running_file_name = self.media_list.running_file.get_name(
             with_extension=True)
@@ -1246,8 +1246,8 @@ class VideoMorphMW(QMainWindow):
                     'Operation Remaining Time: {ort}\t\t\t '
                     'Total Elapsed Time: {tet}').format(
                         m=running_file_name,
-                        br=self.reader.bitrate_read,
-                        ort=self.timer.calculate_operation_remaining_time(
+                        br=self.reader.bitrate,
+                        ort=self.timer.operation_remaining_time(
                             file_duration=file_duration),
                         tet=write_time(self.timer.process_cum_time)))
 
