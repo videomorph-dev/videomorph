@@ -67,9 +67,8 @@ class _XMLProfile:
 
         # Setup the _XMLProfile to be used.
         self.create_xml_profiles_file()
-        self.set_xml_root()
 
-    def set_xml_root(self):
+    def _set_xml_root(self):
         """Set the XML root."""
         self._xml_root = self._get_xml_root()
 
@@ -86,6 +85,7 @@ class _XMLProfile:
                 # if not installed
                 copy_file('../' + VM_PATHS['profiles'] + '/profiles.xml',
                           profiles_xml)
+        self._set_xml_root()
 
     def add_xml_profile(self, profile_name, preset, params, extension):
         """Add a conversion profile."""
@@ -132,6 +132,8 @@ class _XMLProfile:
             self._xml_root.insert(0, xml_profile)
             self._save_xml_tree()
 
+        self._set_xml_root()
+
     def export_xml_profiles(self, dst_dir):
         """Export a file with the conversion profiles."""
         # Raise PermissionError if user don't have write permission
@@ -144,6 +146,7 @@ class _XMLProfile:
         """Import a conversion profile file."""
         try:
             copy_file(src=src_file, dst=self._xml_profiles_path)
+            self._set_xml_root()
         except DistutilsFileError:
             raise PermissionError
 

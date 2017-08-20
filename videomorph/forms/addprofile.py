@@ -147,6 +147,7 @@ class AddProfileDialog(QDialog):
             )
             self.le_extension.setFocus()
         else:
-            self.parent.xml_profile.set_xml_root()
             self.parent.populate_profiles_combo()
+            self.parent.profile.update(
+                new_quality=self.parent.cb_quality.currentText())
             QDialog.accept(self)

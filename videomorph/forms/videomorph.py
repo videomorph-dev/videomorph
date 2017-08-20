@@ -811,6 +811,7 @@ class VideoMorphMW(QMainWindow):
         """Play the input video using an available video player."""
         row = self.tb_tasks.currentIndex().row()
         self._play_media_file(file_path=self.media_list.get_file_path(row))
+        self.tb_tasks.setCurrentItem(None)
 
     def play_output_media_file(self, path):
         """Play the output video using an available video player."""
@@ -818,6 +819,7 @@ class VideoMorphMW(QMainWindow):
         path = self.media_list.get_file(row).get_output_path(
             self.le_output.text())
         self._play_media_file(file_path=path)
+        self.tb_tasks.setCurrentItem(None)
 
     def _play_media_file(self, file_path):
         """Play a video using an available video player."""
@@ -849,6 +851,7 @@ class VideoMorphMW(QMainWindow):
 
         try:
             media_files = search_directory_recursively(directory)
+            self.source_dir = directory
             self.add_media_files(*media_files)
         except FileNotFoundError:
             self._show_message_box(
@@ -905,7 +908,7 @@ class VideoMorphMW(QMainWindow):
                 title=self.tr('Error!'),
                 msg=self.tr('Can not Write to Selected Directory'))
         else:
-            self._show_message_box(type_=QMessageBox.information,
+            self._show_message_box(type_=QMessageBox.Information,
                                    title=self.tr('Information!'),
                                    msg=msg_info)
 
@@ -926,8 +929,41 @@ class VideoMorphMW(QMainWindow):
         if directory:
             msg_info = self.tr('Conversion Profiles Successfully Exported!')
             self._export_import_profiles(
-                func=self.xml_profile.export_xml_profiles,
+                func=self.profile.export_xml_profiles,
                 path=directory, msg_info=msg_info)
+
+    def import_profiles(self):
+        """Import conversion profiles."""
+        file_path = self._select_files(
+            dialog_title=self.tr('Select a Profiles File'),
+            files_filter=self.tr('Profiles Files ') + '(*.xml)',
+            single_file=True)
+
+        if file_path:
+            msg_info = self.tr('Conversion Profiles Successfully Imported!')
+
+            self._export_import_profiles(
+                func=self.profile.import_xml_profiles,
+                path=file_path, msg_info=msg_info)
+            self.populate_profiles_combo()
+            self.profile.update(new_quality=self.cb_quality.currentText())
+
+    def restore_profiles(self):
+        """Restore default profiles."""
+        msg_box = QMessageBox(
+            QMessageBox.Warning,
+            self.tr('Warning!'),
+            self.tr('Do you Really Want to Restore the '
+                    'Default Conversion Profiles?'),
+            QMessageBox.NoButton, self)
+
+        msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
+        msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
+
+        if msg_box.exec_() == QMessageBox.AcceptRole:
+            self.profile.create_xml_profiles_file(restore=True)
+            self.populate_profiles_combo()
+            self.profile.update(new_quality=self.cb_quality.currentText())
 
     def _select_files(self, dialog_title, files_filter,
                       source_dir=QDir.homePath(), single_file=False):
@@ -955,37 +991,6 @@ class VideoMorphMW(QMainWindow):
             self.source_dir = dirname(files_paths[0])
 
         return files_paths
-
-    def import_profiles(self):
-        """Import conversion profiles."""
-        file_path = self._select_files(
-            dialog_title=self.tr('Select a Profiles File'),
-            files_filter=self.tr('Profiles Files ') + '(*.xml)',
-            single_file=True)
-
-        if file_path:
-            msg_info = self.tr('Conversion Profiles Successfully Imported!')
-
-            self._export_import_profiles(
-                func=self.xml_profile.import_xml_profiles,
-                path=file_path, msg_info=msg_info)
-
-    def restore_profiles(self):
-        """Restore default profiles."""
-        msg_box = QMessageBox(
-            QMessageBox.Warning,
-            self.tr('Warning!'),
-            self.tr('Do you Really Want to Restore the '
-                    'Default Conversion Profiles?'),
-            QMessageBox.NoButton, self)
-
-        msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
-        msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
-
-        if msg_box.exec_() == QMessageBox.AcceptRole:
-            self.xml_profile.create_xml_profiles_file(restore=True)
-            self.xml_profile.set_xml_root()
-            self.populate_profiles_combo()
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
