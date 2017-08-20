@@ -210,32 +210,32 @@ class ConversionProfile:
 
     def __init__(self, prober):
         """Class initializer."""
+        self._xml_profile = _XMLProfile()
+        self._quality = None
         self.prober = prober
-        self.xml_profile = _XMLProfile()
-        self.quality = None
         self.extension = None
         self.params = None
 
+
     def __getattr__(self, attr):
         """Delegate to manage the XMLProfile."""
-        return getattr(self.xml_profile, attr)
+        return getattr(self._xml_profile, attr)
 
     def update(self, new_quality):
         """Set the target Quality and other parameters needed to get it."""
-        self.quality = new_quality
+        self._quality = new_quality
         # Update the params and extension when the target quality change
-        self.params = self.xml_profile.get_xml_profile_attr(
-            target_quality=self.quality,
+        self.params = self._xml_profile.get_xml_profile_attr(
+            target_quality=self._quality,
             attr_name='preset_params')
-        self.extension = self.xml_profile.get_xml_profile_attr(
-            target_quality=self.quality,
+        self.extension = self._xml_profile.get_xml_profile_attr(
+            target_quality=self._quality,
             attr_name='file_extension')
 
     @property
     def quality_tag(self):
         """Generate a tag from profile quality string."""
         tag_regex = re.compile(r'[A-Z][0-9]?')
-        tag = ''.join(tag_regex.findall(self.quality))
+        tag = ''.join(tag_regex.findall(self._quality))
 
         return '[' + tag + ']'
-

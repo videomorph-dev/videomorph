@@ -207,8 +207,8 @@ class _MediaFile:
 
     def __init__(self, file_path, profile):
         """Class initializer."""
-        self.input_path = file_path
         self._profile = profile
+        self.input_path = file_path
         self.status = STATUS.todo
         self.info = self._parse_probe()
 

@@ -46,12 +46,12 @@ class ConversionLib:
     def __init__(self):
         """Class initializer."""
         self._name = self.get_system_library_name()
-        self._player = _Player()
         self._converter = _Converter(conversion_lib_name=self.name)
+        self._player = _Player()
+        self._delegates = (self._converter, self._player)
         self.library_error = None
         self.reader = _OutputReader()
         self.timer = _ConversionTimer()
-        self._delegates = (self._converter, self._player)
 
     def __getattr__(self, attr):
         """Delegate to use instance member objects."""
@@ -66,15 +66,6 @@ class ConversionLib:
     def catch_errors(self):
         """Catch the library error when running."""
         self.library_error = self.reader.catch_library_error()
-
-    @staticmethod
-    def get_system_library_name():
-        """Return the name of the conversion library installed on system."""
-        if which(CONV_LIB.ffmpeg):
-            return CONV_LIB.ffmpeg  # Default library
-        elif which(CONV_LIB.avconv):
-            return CONV_LIB.avconv  # Alternative library
-        return None  # Not available library
 
     @property
     def name(self):
@@ -95,6 +86,15 @@ class ConversionLib:
             return PROBER.avprobe
         else:
             return None
+
+    @staticmethod
+    def get_system_library_name():
+        """Return the name of the conversion library installed on system."""
+        if which(CONV_LIB.ffmpeg):
+            return CONV_LIB.ffmpeg  # Default library
+        elif which(CONV_LIB.avconv):
+            return CONV_LIB.avconv  # Alternative library
+        return None  # Not available library
 
 
 class _Converter:
@@ -141,14 +141,14 @@ class _Converter:
         """Call QProcess.exit_status method."""
         return self._process.exitStatus()
 
+    def read_converter_output(self):
+        """Call QProcess.readAll method."""
+        return str(self._process.readAll())
+
     @property
     def converter_is_running(self):
         """Return QProcess state."""
         return self._process.state() == QProcess.Running
-
-    def read_converter_output(self):
-        """Call QProcess.readAll method."""
-        return str(self._process.readAll())
 
 
 class _Player:
@@ -177,15 +177,6 @@ class _Player:
         if self._name is None:
             self._name = self._list_base_player_finder()
 
-    @staticmethod
-    def _list_base_player_finder():
-        """Return a player from a list of popular players."""
-        for player in PLAYERS:
-            if which(player):
-                return player
-        else:
-            raise PlayerNotFoundError('Player not found')
-
     def _gnome_player_finder(self, file_path):
         """Return the default Gnome player."""
         if exists(LINUX_PATHS['gnome_mime']):
@@ -208,6 +199,15 @@ class _Player:
         """Return the file mine type."""
         return guess_type(file_path)[0]
 
+    @staticmethod
+    def _list_base_player_finder():
+        """Return a player from a list of popular players."""
+        for player in PLAYERS:
+            if which(player):
+                return player
+        else:
+            raise PlayerNotFoundError('Player not found')
+
 
 class _OutputReader:
     """Read the converter output."""
@@ -227,6 +227,14 @@ class _OutputReader:
     def update_read(self, process_output):
         """Update the process output."""
         self._process_output = process_output
+
+    def catch_library_error(self):
+        """Process the library errors."""
+        for error in self._library_errors:
+            if error in self._process_output:
+                return error
+            else:
+                return None
 
     @property
     def has_time_read(self):
@@ -249,14 +257,6 @@ class _OutputReader:
 
         return seconds
 
-    def catch_library_error(self):
-        """Process the library errors."""
-        for error in self._library_errors:
-            if error in self._process_output:
-                return error
-            else:
-                return None
-
     def _read_output_param(self, param):
         """Read library output looking for some parameters."""
         pattern = re.compile(self._params_regex[param])
@@ -268,6 +268,7 @@ class _ConversionTimer:
     """Class to process Conversion progress times."""
 
     def __init__(self):
+        """Class initializer."""
         self._time_jump = 0.0
         self._partial_time = 0.0
         self._total_time = 0.0
@@ -276,7 +277,6 @@ class _ConversionTimer:
 
         self.process_start_time = 0.0
         self.process_cum_time = 0.0
-
         self.operation_start_time = 0.0
         self.operation_cum_time = 0.0
 
@@ -315,12 +315,6 @@ class _ConversionTimer:
 
         return int(self._total_time / float(list_duration) * 100)
 
-    def _operation_time(self, file_duration):
-        """Estimating operation time."""
-        speed = self.operation_cum_time / self._operation_time_read
-
-        return file_duration * speed
-
     def operation_remaining_time(self, file_duration):
         """Return the operation remaining time."""
         op_time = self._operation_time(file_duration=file_duration)
@@ -337,3 +331,9 @@ class _ConversionTimer:
         sys_time = time()
         self.operation_cum_time = sys_time - self.operation_start_time
         self.process_cum_time = sys_time - self.process_start_time
+
+    def _operation_time(self, file_duration):
+        """Estimating operation time."""
+        speed = self.operation_cum_time / self._operation_time_read
+
+        return file_duration * speed
