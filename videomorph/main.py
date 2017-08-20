@@ -29,6 +29,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import qApp
 
+from . import BASE_DIR
 from . import LOCALE
 from .converter.console import run_on_console
 from .forms.videomorph import VideoMorphMW
@@ -44,8 +45,8 @@ def main():
     # Setup app translator
     app_translator = QTranslator()
 
-    if exists('..{0}{1}'.format(sep, VM_PATHS['i18n'])):
-        app_translator.load('..{0}{1}{2}videomorph_{3}'.format(
+    if exists(BASE_DIR + '{0}{1}'.format(sep, VM_PATHS['i18n'])):
+        app_translator.load(BASE_DIR + '{0}{1}{2}videomorph_{3}'.format(
             sep, VM_PATHS['i18n'], sep, LOCALE))
     else:
         app_translator.load(

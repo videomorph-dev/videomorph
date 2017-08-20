@@ -36,6 +36,7 @@ from PyQt5.QtWidgets import (QDialog,
                              QSpacerItem)
 
 from videomorph import APPNAME
+from videomorph import BASE_DIR
 from videomorph import LINUX_PATHS
 from videomorph import VERSION
 
@@ -146,7 +147,7 @@ class AboutVMDialog(QDialog):
         """Get the license text from the license file."""
         license_path = (LINUX_PATHS['doc'] + '/LICENSE' if
                         isfile(LINUX_PATHS['doc'] + '/LICENSE') else
-                        '../LICENSE')
+                        BASE_DIR +'/LICENSE')
 
         with open(license_path, 'r', encoding='UTF-8') as lic:
             return ''.join(lic.readlines())

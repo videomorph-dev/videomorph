@@ -20,14 +20,16 @@
 """This module defines the videomorph package and the needed constants."""
 
 from os.path import expanduser
+from os.path import dirname
 from os.path import join as join_path
 
 from videomorph.converter.utils import get_locale
 
 APPNAME = 'VideoMorph'
 VERSION = '1.1'
-LOCALE = get_locale()
 CODENAME = 'adventurer'
+BASE_DIR = dirname(dirname(__file__))
+LOCALE = get_locale()
 PACKAGE_NAME = APPNAME.lower()
 MAINTAINER = APPNAME + ' ' + 'Development Team'
 
