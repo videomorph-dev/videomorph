@@ -88,12 +88,12 @@ def search_directory_recursively(directory, files=None):
             for file in file_names:
                 if file.split('.')[-1] in VIDEO_FILTERS:
                     files.append('{0}'.join([dir_path, file]).format(sep))
-
-        if not files:
-            raise FileNotFoundError("No Video Files Found in: {0}".format(
-                directory))
-
-        return files
     else:
         raise IsADirectoryError("Directory: {0}, doesn't exist".format(
             directory))
+
+    if not files:
+        raise FileNotFoundError("No Video Files Found in: {0}".format(
+            directory))
+
+    return files
