@@ -237,4 +237,7 @@ class ConversionProfile:
         tag_regex = re.compile(r'[A-Z][0-9]?')
         tag = ''.join(tag_regex.findall(self._quality))
 
+        if not tag:
+            tag = ''.join([word[0] for word in self._quality.split()]).upper()
+
         return '[' + tag + ']-'
