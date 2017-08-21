@@ -159,17 +159,17 @@ class MediaList(list):
 
     def _add_file(self, media_file):
         """Add a video file to the list."""
+        # Invalid metadata
         try:
-            # Invalid metadata
+            # Duration is not a valid float() argument
             duration = float(media_file.get_info('format_duration'))
-            if duration > 0:
-                self.append(media_file)
-            else:
-                # 0 duration video file not added
-                raise InvalidMetadataError('File is zero length')
         except (TypeError, ValueError):
             raise InvalidMetadataError('Invalid file duration')
-        except InvalidMetadataError:
+
+        # Duration = 0
+        if duration > 0:
+            self.append(media_file)
+        else:
             raise InvalidMetadataError('File is zero length')
 
     def _media_files_generator(self, files_paths):
