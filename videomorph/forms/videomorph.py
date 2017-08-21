@@ -278,13 +278,13 @@ class VideoMorphMW(QMainWindow):
         self.le_output.setReadOnly(True)
         horizontal_layout.addWidget(self.le_output)
         outputbtn_tip = self.tr('Choose Output Directory')
-        self.tb_output = QToolButton(
+        self.btn_output = QToolButton(
             gb_output_dir,
             statusTip=outputbtn_tip,
             toolTip=outputbtn_tip)
-        self.tb_output.setText('...')
-        self.tb_output.clicked.connect(self.output_directory)
-        horizontal_layout.addWidget(self.tb_output)
+        self.btn_output.setIcon(QIcon(':/icons/output-folder.png'))
+        self.btn_output.clicked.connect(self.output_directory)
+        horizontal_layout.addWidget(self.btn_output)
         vertical_layout_1.addLayout(horizontal_layout)
         vertical_layout.addLayout(vertical_layout_1)
         self.vertical_layout_2.addWidget(gb_output_dir)
@@ -347,7 +347,7 @@ class VideoMorphMW(QMainWindow):
             callback=self.open_media_files)
 
         self.open_media_dir_action = self._action_factory(
-            icon=QIcon(':/icons/folder.png'),
+            icon=QIcon(':/icons/add-folder.png'),
             text=self.tr('Open &Directory...'),
             shortcut="Ctrl+D",
             tip=self.tr('Add all the Video Files in a Directory '
@@ -362,21 +362,21 @@ class VideoMorphMW(QMainWindow):
             callback=self.add_costume_profile)
 
         self.export_profile_action = self._action_factory(
-            icon=QIcon(':/icons/send.png'),
+            icon=QIcon(':/icons/export.png'),
             text=self.tr('&Export Conversion Profiles...'),
             shortcut="Ctrl+E",
             tip=self.tr('Export Conversion Profiles'),
             callback=self.export_profiles)
 
         self.import_profile_action = self._action_factory(
-            icon=QIcon(':/icons/incoming.png'),
+            icon=QIcon(':/icons/import.png'),
             text=self.tr('&Import Conversion Profiles...'),
             shortcut="Ctrl+I",
             tip=self.tr('Import Conversion Profiles'),
             callback=self.import_profiles)
 
         self.restore_profile_action = self._action_factory(
-            icon=QIcon(':/icons/default.png'),
+            icon=QIcon(':/icons/default-profile.png'),
             text=self.tr('&Restore the Default Conversion Profiles'),
             tip=self.tr('Restore the Default Conversion Profiles'),
             callback=self.restore_profiles)
@@ -394,7 +394,7 @@ class VideoMorphMW(QMainWindow):
             callback=self.play_output_media_file)
 
         self.clear_media_list_action = self._action_factory(
-            icon=QIcon(':/icons/garbage.png'),
+            icon=QIcon(':/icons/clear-list.png'),
             text=self.tr('Clear &List'),
             shortcut="Ctrl+Del",
             enabled=False,
@@ -403,7 +403,7 @@ class VideoMorphMW(QMainWindow):
             callback=self.clear_media_list)
 
         self.remove_media_file_action = self._action_factory(
-            icon=QIcon(':/icons/minus.png'),
+            icon=QIcon(':/icons/remove-file.png'),
             text=self.tr('&Remove File'),
             shortcut="Del",
             enabled=False,
@@ -412,7 +412,7 @@ class VideoMorphMW(QMainWindow):
             callback=self.remove_media_file)
 
         self.convert_action = self._action_factory(
-            icon=QIcon(':/icons/play.png'),
+            icon=QIcon(':/icons/convert.png'),
             text=self.tr('&Convert'),
             shortcut="Ctrl+R",
             enabled=False,
@@ -436,7 +436,7 @@ class VideoMorphMW(QMainWindow):
             callback=self.stop_all_files_encoding)
 
         self.about_action = self._action_factory(
-            icon=QIcon(':/icons/info.png'),
+            icon=QIcon(':/icons/about.png'),
             text=self.tr('&About') + ' ' + APPNAME + ' ' + VERSION + '...',
             shortcut="Ctrl+H",
             tip=self.tr('&About') + ' ' + APPNAME + ' ' + VERSION,
@@ -514,6 +514,7 @@ class VideoMorphMW(QMainWindow):
         self.tool_bar.addAction(self.stop_all_action)
         self.tool_bar.addSeparator()
         self.tool_bar.addAction(self.settings_action)
+        self.tool_bar.setIconSize(QSize(28, 28))
         # Add the toolbar to main window
         self.addToolBar(Qt.TopToolBarArea, self.tool_bar)
 
@@ -745,6 +746,8 @@ class VideoMorphMW(QMainWindow):
     def _insert_table_item(self, item_text, row, column):
         item = QTableWidgetItem()
         item.setText(item_text)
+        if column == COLUMNS.NAME:
+            item.setIcon(QIcon(':/icons/video-in-list.png'))
         self.tb_tasks.setItem(row, column, item)
 
     def _create_table(self):
@@ -1338,7 +1341,7 @@ class VideoMorphMW(QMainWindow):
         self.cb_quality.setEnabled(variables['presets'])
         self.cb_profiles.setEnabled(variables['profiles'])
         self.add_profile_action.setEnabled(variables['add_costume_profile'])
-        self.tb_output.setEnabled(variables['output_dir'])
+        self.btn_output.setEnabled(variables['output_dir'])
         self.chb_subtitle.setEnabled(variables['subtitles_chb'])
         self.chb_delete.setEnabled(variables['delete_chb'])
         self.play_input_media_file_action.setEnabled(variables['play_input'])
