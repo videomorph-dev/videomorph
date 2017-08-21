@@ -43,7 +43,7 @@ def teardown():
     gen = media_list.populate(('Dad.mpg',))
     next(gen)
     next(gen)
-    media_list.get_file(0).delete_output('.')
+    media_list.get_file(0).delete_output('.', tagged_output=True)
 
 
 # Set of test for converter module
@@ -71,6 +71,8 @@ def test_start_converter():
 
     cmd = media_list.get_file(position=0).build_conversion_cmd(
         output_dir='.',
+        subtitle=False,
+        tagged_output=True,
         target_quality='DVD Fullscreen (4:3)')
 
     conv_lib.start_converter(cmd)

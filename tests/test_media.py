@@ -106,6 +106,7 @@ def test_add_file_twice():
 
 def test_get_file_status():
     """Test get the file status."""
+    media_list.clear()
     gen = media_list.populate(('Dad.mpg',))
     next(gen)
     next(gen)
@@ -116,6 +117,7 @@ def test_get_file_status():
 
 def test_set_file_status():
     """Test set the file status."""
+    media_list.clear()
     gen = media_list.populate(('Dad.mpg',))
     next(gen)
     next(gen)
@@ -135,6 +137,8 @@ def test_build_conversion_cmd():
 
     assert media_list.get_file(0).build_conversion_cmd(
         output_dir='.',
+        tagged_output=True,
+        subtitle=True,
         target_quality='DVD Fullscreen (4:3)') == ['-i', 'Dad.mpg', '-f',
                                                    'dvd', '-target',
                                                    'ntsc-dvd', '-vcodec',

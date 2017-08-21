@@ -40,13 +40,6 @@ def setup():
     profile.update(new_quality='MP4 Fullscreen (4:3)')
 
 
-# Tests for _XMLProfile class
-def test_set_xml_root():
-    """Test set_xml_root."""
-    profile.set_xml_root()
-    assert xml.etree.ElementTree.iselement(profile._xml_root)
-
-
 def test_get_xml_profile_attr():
     """Test get_xml_profile_attr."""
     attr = profile.get_xml_profile_attr(target_quality='MP4 Fullscreen (4:3)',
@@ -99,7 +92,7 @@ def test_get_xml_profile_qualities():
 # Tests for _Profile class
 def test_quality_tag():
     """Test quality_tag."""
-    assert profile.quality_tag == '[MP4F]'
+    assert profile.quality_tag == '[MP4F]-'
 
 
 def test_update():
