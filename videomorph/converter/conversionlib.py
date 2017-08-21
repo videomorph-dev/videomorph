@@ -181,18 +181,20 @@ class _Player:
         """Return the default Gnome player."""
         if exists(LINUX_PATHS['gnome_mime']):
             mime_type = self._guess_mime_type(file_path)
-            if mime_type is None:
-                return None
-
-            with open('/etc/gnome/defaults.list', 'r', encoding='UTF-8') as dl:
-                for line in dl:
-                    if mime_type in line:
-                        player = line.split('=')[-1].split('.')[0]
-                        return player
-                else:
-                    raise PlayerNotFoundError('Player not found')
         else:
             raise FileNotFoundError('Gnome default.list not found')
+
+        if mime_type is None:
+            return None
+
+        with open(LINUX_PATHS['gnome_mime'], 'r',
+                  encoding='UTF-8') as mime_file:
+            for line in mime_file:
+                if mime_type in line:
+                    player = line.split('=')[-1].split('.')[0]
+                    return player
+            else:
+                raise PlayerNotFoundError('Player not found')
 
     @staticmethod
     def _guess_mime_type(file_path):
