@@ -216,7 +216,6 @@ class ConversionProfile:
         self.extension = None
         self.params = None
 
-
     def __getattr__(self, attr):
         """Delegate to manage the XMLProfile."""
         return getattr(self._xml_profile, attr)
@@ -238,4 +237,4 @@ class ConversionProfile:
         tag_regex = re.compile(r'[A-Z][0-9]?')
         tag = ''.join(tag_regex.findall(self._quality))
 
-        return '[' + tag + ']'
+        return '[' + tag + ']-'

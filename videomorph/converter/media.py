@@ -225,21 +225,32 @@ class _MediaFile:
         """Return an info attribute from a given file: media_file."""
         return self.info.get(info_param)
 
-    def build_conversion_cmd(self, output_dir, target_quality, subtitle=False):
-        """Return the conversion command."""
-        if not access(output_dir, W_OK):
-            raise PermissionError('Access denied')
-        # Ensure the conversion_profile is up to date
-        self._profile.update(new_quality=target_quality)
+    def _process_subtitles(self, subtitle):
         # Process subtitles if available
         if subtitle and self._subtitle_path:
             subtitle_opt = ['-vf', "subtitles='{0}':force_style='Fontsize=24'"
                                    ":charenc=cp1252".format(
-                                       self._subtitle_path)]
+                                        self._subtitle_path)]
         else:
             subtitle_opt = []
+
+        return subtitle_opt
+
+    def build_conversion_cmd(self, output_dir, target_quality,
+                             tagged_output, subtitle):
+        """Return the conversion command."""
+        if not access(output_dir, W_OK):
+            raise PermissionError('Access denied')
+
+        # Ensure the conversion_profile is up to date
+        self._profile.update(new_quality=target_quality)
+
+        # Process subtitles if available
+        subtitle_opt = self._process_subtitles(subtitle)
+
         # Get the output path
-        output_path = self.get_output_path(output_dir)
+        output_path = self.get_output_path(output_dir, tagged_output)
+
         # Build the conversion command
         cmd = ['-i', self.input_path] + subtitle_opt + \
             shlex.split(self._profile.params) + \
@@ -248,10 +259,10 @@ class _MediaFile:
 
         return cmd
 
-    def delete_output(self, output_dir):
+    def delete_output(self, output_dir, tagged_output):
         """Delete the output file if conversion is stopped."""
-        if exists(self.get_output_path(output_dir)):
-            remove(self.get_output_path(output_dir))
+        if exists(self.get_output_path(output_dir, tagged_output)):
+            remove(self.get_output_path(output_dir, tagged_output))
 
     def delete_input(self):
         """Delete the input file when conversion is finished."""
@@ -261,12 +272,13 @@ class _MediaFile:
         except FileNotFoundError:
             pass
 
-    def get_output_path(self, output_dir):
+    def get_output_path(self, output_dir, tagged_output):
         """Return the the output file input_path."""
+        tag = self._profile.quality_tag if tagged_output else ''
+
         output_file_path = (output_dir +
                             sep +  # multi-platform input_path separator
-                            self._profile.quality_tag +
-                            '-' +
+                            tag +
                             self.get_name() +
                             self._profile.extension)
         return output_file_path

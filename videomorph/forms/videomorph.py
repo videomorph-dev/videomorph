@@ -220,13 +220,24 @@ class VideoMorphMW(QMainWindow):
         self.chb_subtitle.setEnabled(False)
         vertical_layout.addWidget(self.label_other_options)
         vertical_layout.addWidget(self.chb_subtitle)
-        del_text = self.tr('Delete Input Video Files when Finished')
 
+        del_text = self.tr('Delete Input Video Files when Finished')
         self.chb_delete = QCheckBox(del_text,
                                     statusTip=del_text,
                                     toolTip=del_text)
         self.chb_delete.setEnabled(False)
         vertical_layout.addWidget(self.chb_delete)
+
+        tag_text = self.tr('Use Format Tag in Output Video File Name')
+        tag_tip_text = (tag_text + '. ' +
+                        self.tr('Useful when Converting a '
+                                'Video File to Multiples Formats'))
+        self.chb_tag = QCheckBox(tag_text,
+                                 statusTip=tag_tip_text,
+                                 toolTip=tag_tip_text)
+        self.chb_tag.setEnabled(False)
+        vertical_layout.addWidget(self.chb_tag)
+
         horizontal_layout.addLayout(vertical_layout)
         self.vertical_layout_1.addWidget(gb_settings)
 
@@ -725,6 +736,7 @@ class VideoMorphMW(QMainWindow):
                                       profiles=False,
                                       subtitles_chb=False,
                                       delete_chb=False,
+                                      tag_chb=False,
                                       play_input=False,
                                       play_output=False)
             else:
@@ -794,6 +806,7 @@ class VideoMorphMW(QMainWindow):
                                   output_dir=False,
                                   settings=False,
                                   delete_chb=False,
+                                  tag_chb=False,
                                   play_input=False,
                                   play_output=False)
         else:
@@ -820,7 +833,8 @@ class VideoMorphMW(QMainWindow):
         """Play the output video using an available video player."""
         row = self.tb_tasks.currentIndex().row()
         path = self.media_list.get_file(row).get_output_path(
-            self.le_output.text())
+            output_dir=self.le_output.text(),
+            tagged_output=self.chb_tag.checkState())
         self._play_media_file(file_path=path)
         self.tb_tasks.setCurrentItem(None)
 
@@ -894,6 +908,7 @@ class VideoMorphMW(QMainWindow):
                                   profiles=False,
                                   subtitles_chb=False,
                                   delete_chb=False,
+                                  tag_chb=False,
                                   play_input=False,
                                   play_output=False)
 
@@ -1023,6 +1038,7 @@ class VideoMorphMW(QMainWindow):
                                   profiles=False,
                                   subtitles_chb=False,
                                   delete_chb=False,
+                                  tag_chb=False,
                                   play_input=False,
                                   play_output=False)
 
@@ -1039,6 +1055,7 @@ class VideoMorphMW(QMainWindow):
                               output_dir=False,
                               settings=False,
                               delete_chb=False,
+                              tag_chb=False,
                               play_input=False,
                               play_output=False)
 
@@ -1058,6 +1075,7 @@ class VideoMorphMW(QMainWindow):
                         self.media_list.position,
                         COLUMNS.QUALITY).text(),
                     output_dir=self.le_output.text(),
+                    tagged_output=self.chb_tag.checkState(),
                     subtitle=bool(self.chb_subtitle.checkState()))
                 # Then pass it to the _converter
                 self.conversion_lib.start_converter(cmd=conversion_cmd)
@@ -1080,7 +1098,8 @@ class VideoMorphMW(QMainWindow):
         self.media_list.running_file.status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
         self.media_list.running_file.delete_output(
-            output_dir=self.le_output.text())
+            output_dir=self.le_output.text(),
+            tagged_output=self.chb_tag.checkState())
         # Update the list duration and partial time for total progress bar
         self.timer.reset_progress_times()
         self.media_list_duration = self.media_list.duration
@@ -1090,7 +1109,9 @@ class VideoMorphMW(QMainWindow):
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
         # Delete the file when conversion is stopped by the user
-        self.media_list.running_file.delete_output(self.le_output.text())
+        self.media_list.running_file.delete_output(
+            output_dir=self.le_output.text(),
+            tagged_output=self.chb_tag.checkState())
         for media_file in self.media_list:
             # Set _MediaFile.status attribute
             if media_file.status != STATUS.done:
@@ -1327,6 +1348,7 @@ class VideoMorphMW(QMainWindow):
                          settings=True,
                          subtitles_chb=True,
                          delete_chb=True,
+                         tag_chb=True,
                          play_input=True,
                          play_output=True)
 
@@ -1344,6 +1366,7 @@ class VideoMorphMW(QMainWindow):
         self.btn_output.setEnabled(variables['output_dir'])
         self.chb_subtitle.setEnabled(variables['subtitles_chb'])
         self.chb_delete.setEnabled(variables['delete_chb'])
+        self.chb_tag.setEnabled(variables['tag_chb'])
         self.play_input_media_file_action.setEnabled(variables['play_input'])
         self.play_output_media_file_action.setEnabled(variables['play_output'])
         self.settings_action.setEnabled(variables['settings'])
@@ -1357,7 +1380,8 @@ class VideoMorphMW(QMainWindow):
 
         row = self.tb_tasks.currentIndex().row()
         path = self.media_list.get_file(row).get_output_path(
-            self.le_output.text())
+            output_dir=self.le_output.text(),
+            tagged_output=self.chb_tag.checkState())
         # Only enable the menu if output file exist and if it not .mp4,
         # cause .mp4 files doesn't run until conversion is finished
         if exists(path) and self.cb_profiles.currentText() != 'MP4':
