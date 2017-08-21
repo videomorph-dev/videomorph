@@ -1218,25 +1218,19 @@ class VideoMorphMW(QMainWindow):
             self.conversion_lib.catch_errors()
             return
 
-        # Update timer time
         self.timer.update_time(op_time_read_sec=self.reader.time)
 
-        # update cum time
         self.timer.update_cum_times()
 
-        # Get file and list duration
         file_duration = float(self.media_list.running_file.get_info(
             'format_duration'))
 
-        # Calculate operation progress percentage
         operation_progress = self.timer.operation_progress(
             file_duration=file_duration)
 
-        # calculate total progress percentage
         process_progress = self.timer.process_progress(
             list_duration=self.media_list_duration)
 
-        # Update progress
         self._update_progress(op_progress=operation_progress,
                               pr_progress=process_progress)
 
