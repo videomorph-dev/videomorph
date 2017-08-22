@@ -60,8 +60,8 @@ class ConversionLib:
                 return getattr(delegate, attr)
             except AttributeError:
                 pass
-        else:
-            raise AttributeError('Attribute not found')
+
+        raise AttributeError('Attribute not found')
 
     def catch_errors(self):
         """Catch the library error when running."""
@@ -193,13 +193,8 @@ class _Player:
                 if mime_type in line:
                     player = line.split('=')[-1].split('.')[0]
                     return player
-            else:
-                raise PlayerNotFoundError('Player not found')
 
-    @staticmethod
-    def _guess_mime_type(file_path):
-        """Return the file mine type."""
-        return guess_type(file_path)[0]
+            raise PlayerNotFoundError('Player not found')
 
     @staticmethod
     def _list_base_player_finder():
@@ -207,14 +202,20 @@ class _Player:
         for player in PLAYERS:
             if which(player):
                 return player
-        else:
-            raise PlayerNotFoundError('Player not found')
+
+        raise PlayerNotFoundError('Player not found')
+
+    @staticmethod
+    def _guess_mime_type(file_path):
+        """Return the file mine type."""
+        return guess_type(file_path)[0]
 
 
 class _OutputReader:
     """Read the converter output."""
 
     def __init__(self):
+        """Class initializer."""
         self._params_regex = {'bitrate':
                               r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
                               'time':

@@ -230,7 +230,7 @@ class _MediaFile:
         if subtitle and self._subtitle_path:
             subtitle_opt = ['-vf', "subtitles='{0}':force_style='Fontsize=24'"
                                    ":charenc=cp1252".format(
-                                        self._subtitle_path)]
+                                       self._subtitle_path)]
         else:
             subtitle_opt = []
 

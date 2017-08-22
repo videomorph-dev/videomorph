@@ -20,7 +20,6 @@
 
 """This module provides tests for profile.py module."""
 
-import xml
 from collections import OrderedDict
 
 import nose
