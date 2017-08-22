@@ -1152,9 +1152,8 @@ class VideoMorphMW(QMainWindow):
             if (self.conversion_lib.converter_exit_status() ==
                     QProcess.NormalExit):
                 # When finished a file conversion...
-                self.tb_tasks.item(
-                    self.media_list.position,
-                    COLUMNS.PROGRESS).setText(self.tr('Done!'))
+                self.tb_tasks.item(self.media_list.position,
+                                   COLUMNS.PROGRESS).setText(self.tr('Done!'))
                 self.media_list.running_file.status = STATUS.done
                 self.pb_progress.setProperty("value", 0)
                 if self.chb_delete.checkState():

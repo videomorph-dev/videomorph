@@ -26,7 +26,6 @@ from os import access
 from os import remove
 from os import sep
 from os.path import basename
-from os.path import dirname
 from os.path import exists
 
 from . import CPU_CORES
