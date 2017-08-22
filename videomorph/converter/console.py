@@ -28,7 +28,7 @@ from os.path import sep
 
 from videomorph import APPNAME
 from videomorph import VERSION
-from videomorph.converter import VIDEO_FILTERS
+from videomorph.converter import VALID_VIDEO_EXT
 
 
 def run_on_console(app, main_win):
@@ -84,10 +84,11 @@ def search_directory_recursively(directory, files=None):
         files = []
 
     if isdir(directory):
-        for dir_path, _, file_names in walk(directory):
-            for file in file_names:
-                if file.split('.')[-1] in VIDEO_FILTERS:
-                    files.append('{0}'.join([dir_path, file]).format(sep))
+        for dir_path, _, files_names in walk(directory):
+            for file_name in files_names:
+                extension = '.' + file_name.split('.')[-1]
+                if extension in VALID_VIDEO_EXT:
+                    files.append('{0}'.join([dir_path, file_name]).format(sep))
     else:
         raise IsADirectoryError("Directory: {0}, doesn't exist".format(
             directory))
