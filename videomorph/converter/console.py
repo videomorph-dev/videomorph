@@ -86,7 +86,7 @@ def search_directory_recursively(directory, files=None):
     if isdir(directory):
         for dir_path, _, files_names in walk(directory):
             for file_name in files_names:
-                extension = '.' + file_name.split('.')[-1]
+                extension = '.{0}'.format(file_name.split('.')[-1])
                 if extension in VALID_VIDEO_EXT:
                     files.append('{0}'.join([dir_path, file_name]).format(sep))
     else:
