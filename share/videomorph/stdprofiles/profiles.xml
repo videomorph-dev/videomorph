@@ -128,4 +128,12 @@
             <preset_name_es>WMV Genérico</preset_name_es>
         </WMVGeneric>
     </WMV>
+    <MP3>
+        <ExtractAudiomp3>
+            <preset_name>Extract Audio mp3</preset_name>
+            <preset_params>-q:a 0 -map a</preset_params>
+            <file_extension>.mp3</file_extension>
+            <preset_name_es>Extraer Audio mp3</preset_name_es>
+        </ExtractAudiomp3>
+    </MP3>
 </video_profiles>

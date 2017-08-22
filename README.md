@@ -66,7 +66,7 @@ under LGPL/GPL
 Code & Artwork by:
 
  - [Ozkar L. Garcell](mailto:codeshard@openmailbox.org)
- - [Leodanis Pozo Ramos](mailto:lpozo@openmailbox.org)
+ - [Leodanis Pozo Ramos](mailto:lpozor78@gmail.com)
 
 Contributors:
 

@@ -3,7 +3,7 @@
 # File name: addprofiles.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ from PyQt5.QtWidgets import (QDialog, QWidget, QVBoxLayout, QLabel,
                              QLineEdit, QSpacerItem, QDialogButtonBox,
                              QMessageBox)
 
-from .converter import (ProfileBlankNameError,
-                        ProfileBlankPresetError,
-                        ProfileBlankParamsError,
-                        ProfileExtensionError)
+from videomorph.converter.profile import (ProfileBlankNameError,
+                                          ProfileBlankPresetError,
+                                          ProfileBlankParamsError,
+                                          ProfileExtensionError)
 
 
 class AddProfileDialog(QDialog):
@@ -114,7 +114,7 @@ class AddProfileDialog(QDialog):
     def accept(self):
         """Accept the dialog result."""
         try:
-            self.parent.xml_profile.add_conversion_profile(
+            self.parent.profile.add_xml_profile(
                 profile_name=self.le_profile_name.text(),
                 preset=self.le_preset_name.text(),
                 params=self.le_params.text(),
@@ -147,6 +147,7 @@ class AddProfileDialog(QDialog):
             )
             self.le_extension.setFocus()
         else:
-            self.parent.xml_profile.set_xml_root()
             self.parent.populate_profiles_combo()
+            self.parent.profile.update(
+                new_quality=self.parent.cb_quality.currentText())
             QDialog.accept(self)

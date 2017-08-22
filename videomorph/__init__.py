@@ -3,7 +3,7 @@
 # File name: __init__.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -19,40 +19,28 @@
 
 """This module defines the videomorph package and the needed constants."""
 
+from os.path import expanduser
+from os.path import dirname
+from os.path import join as join_path
 
-from collections import namedtuple
-from os import cpu_count
+from videomorph.converter.utils import get_locale
 
 APPNAME = 'VideoMorph'
-VERSION = '1.0'
-CODENAME = 'traveler'
+VERSION = '1.1'
+CODENAME = 'adventurer'
+BASE_DIR = dirname(dirname(__file__))
+LOCALE = get_locale()
 PACKAGE_NAME = APPNAME.lower()
 MAINTAINER = APPNAME + ' ' + 'Development Team'
 
-ConvLib = namedtuple('ConvLib', 'ffmpeg avconv')
-CONV_LIB = ConvLib('ffmpeg', 'avconv')
-
-VIDEO_FILTERS = ('*.mkv *.ogg *.mp4 *.mpg *.dat '
-                 '*.f4v *.flv *.wv *.3gp *.avi *.webm '
-                 '*.wmv *.mov *.vob *.ogv *.ts')
-
-Prober = namedtuple('Prober', 'ffprobe avprobe')
-PROBER = Prober('ffprobe', 'avprobe')
-
-MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
-STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
-
-
-CPU_CORES = (cpu_count() - 1 if
-             cpu_count() is not None
-             else 0)
-
 LINUX_PATHS = {'apps': '/usr/share/applications',
+               'config': join_path(expanduser('~'), '.videomorph'),
                'icons': '/usr/share/icons',
                'i18n': '/usr/share/videomorph/translations',
                'profiles': '/usr/share/videomorph/stdprofiles',
                'doc': '/usr/share/doc/videomorph',
-               'man': '/usr/share/man/man1'}
+               'man': '/usr/share/man/man1',
+               'gnome_mime': '/etc/gnome/defaults.list'}
 
 VM_PATHS = {'apps': 'share/applications',
             'icons': 'share/icons',
@@ -61,17 +49,3 @@ VM_PATHS = {'apps': 'share/applications',
             'doc': 'share/doc/videomorph',
             'man': 'share/man',
             'bin': 'bin'}
-
-PLAYERS = ['vlc',
-           'xplayer',
-           'totem',
-           'kmplayer',
-           'smplayer',
-           'mplayer',
-           'banshee',
-           'ffplay',
-           'mpv',
-           'gxine',
-           'xine-ui',
-           'gmlive',
-           'dragonplayer']

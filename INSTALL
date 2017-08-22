@@ -6,21 +6,21 @@
        \/     |  |_ _ /  |_ _ _  |_ _ _|  |      |  |_ _ _|  |    \   |        |     |
 
 
-VideoMorph 1.0
+VideoMorph 1.1
 
 DEPENDENCIES:
 - python3-pyqt5 (>=5.5.1)
 - python3:any (>=3.5.1-3)
-- ffmpeg (>=2.8.10)
+- ffmpeg (>=2.8.10) | libav-tools
 
 INSTALL:
 - Extract the source file
 
-    tar -xvf videomorph-1.0.tar.gz
+    tar -xvf videomorph-1.1.tar.gz
 
 - Change to the source dir
 
-    cd videomorph-1.0
+    cd videomorph-1.1
 
 - Install
 

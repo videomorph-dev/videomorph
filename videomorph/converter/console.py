@@ -3,7 +3,7 @@
 # File name: console.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ from os.path import sep
 
 from videomorph import APPNAME
 from videomorph import VERSION
-from videomorph import VIDEO_FILTERS
+from videomorph.converter import VIDEO_FILTERS
 
 
 def run_on_console(app, main_win):
@@ -88,12 +88,12 @@ def search_directory_recursively(directory, files=None):
             for file in file_names:
                 if file.split('.')[-1] in VIDEO_FILTERS:
                     files.append('{0}'.join([dir_path, file]).format(sep))
-
-        if not files:
-            raise FileNotFoundError("No Video Files Found in: {0}".format(
-                directory))
-
-        return files
     else:
         raise IsADirectoryError("Directory: {0}, doesn't exist".format(
             directory))
+
+    if not files:
+        raise FileNotFoundError("No Video Files Found in: {0}".format(
+            directory))
+
+    return files

@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# File _name: videomorph
+# File name: __init__.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
 #   Copyright 2016-2017 VideoMorph Development Team
@@ -18,6 +17,4 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-if __name__ == '__main__':
-    from videomorph.main import main
-    main()
+"""This module defines the forms package."""

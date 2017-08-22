@@ -2,4 +2,24 @@
   <qresource prefix="logo">
     <file>./videomorph.png</file>
   </qresource>
+  <qresource prefix="icons">
+    <file>./about.png</file>
+    <file>./add-folder.png</file>
+    <file>./add-profile.png</file>
+    <file>./clear-list.png</file>
+    <file>./convert.png</file>
+    <file>./default-profile.png</file>
+    <file>./exit.png</file>
+    <file>./export.png</file>
+    <file>./import.png</file>
+    <file>./output-folder.png</file>
+    <file>./remove-file.png</file>
+    <file>./settings.png</file>
+    <file>./stop.png</file>
+    <file>./stop-all.png</file>
+    <file>./video-file.png</file>
+    <file>./video-in-list.png</file>
+    <file>./video-player-input.png</file>
+    <file>./video-player-output.png</file>
+  </qresource>
 </RCC>
