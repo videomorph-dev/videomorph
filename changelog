@@ -2,7 +2,14 @@ videomorph (1.1) xenial; urgency=high
 
     * Release VideoMorph v1.1
 
- -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 14:00:00 -0400
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 17:00:00 -0400
+
+videomorph (1.0) xenial; urgency=high
+
+    * BugFix: When the output file name coincide with the input file name,
+      the input video was overwritten
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 22 Aug 2017 15:24:45 -0400
 
 videomorph (1.0) xenial; urgency=low
 
