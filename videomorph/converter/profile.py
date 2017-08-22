@@ -31,7 +31,7 @@ from xml.etree.ElementTree import ParseError
 from videomorph import LINUX_PATHS
 from videomorph import LOCALE
 from videomorph import VM_PATHS
-from . import VIDEO_FILTERS
+from . import VALID_VIDEO_FORMATS
 
 
 class ProfileError(Exception):
@@ -100,7 +100,8 @@ class _XMLProfile:
         if not params:
             raise ProfileBlankParamsError
 
-        if not extension.startswith('.') or extension not in VIDEO_FILTERS:
+        if (not extension.startswith('.') or
+                    extension not in VALID_VIDEO_FORMATS):
             raise ProfileExtensionError
 
         extension = extension.lower()
