@@ -1,8 +1,109 @@
-videomorph (1.1) xenial; urgency=medium
+videomorph (1.1) xenial; urgency=high
 
-    * Add a man page
+    * Release VideoMorph v1.1
 
- -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Fri, 19 May 2017 00:07:34 -0400
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 14:00:00 -0400
+
+videomorph (1.0) xenial; urgency=low
+
+    * New feature: Now is optional the use of a Format Tag in the name of
+      the output file (no tag by default). The user choose.
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 21 Aug 2017 09:49:27 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Improve the Artwork, mainly the icons theme. DONE
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 20 Aug 2017 22:02:29 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * BugFix: Correct the problem with the paths for translations and for
+      LICENSE
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 20 Aug 2017 16:41:44 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Play the videos with the system default video player. Done for
+      Genome base Desktop Environment
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 19 Aug 2017 16:11:44 -0400
+
+videomorph (1.0) xenial; urgency=low
+
+    * Adding new classes to process the conversion output and time progress
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 17 Aug 2017 22:53:41 -0400
+
+videomorph (1.0) xenial; urgency=low
+
+    * Adding the ability to cancel the process of adding files from the
+      progress dialog
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 17 Aug 2017 23:57:20 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * New Feature: Show a progress dialog when loading files. Remove threads
+      from media.py
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 17 Aug 2017 18:51:29 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Disable the Play Output File context menu if the file doesn't
+      exist, and in MP4 formats cause file can't be play until conversion
+      is finished. DONE
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 16 Aug 2017 01:29:15 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Refactor: Get the License from the LICENSE file instead of hard coding
+      it about.py file
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 15 Aug 2017 17:08:40 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Posible Bug: media_list.position = -1 represents the last element of
+      the list, not any element as was supposed. Now not element is
+      represented by NoneType
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 15 Aug 2017 00:33:35 -0400
+
+videomorph (1.0) xenial; urgency=low
+
+    * Move all modules related to GUI to the forms package
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 12 Aug 2017 23:09:01 -0400
+
+videomorph (1.0) xenial; urgency=low
+
+    * Add a main.py file and move there the main() function
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 12 Aug 2017 22:43:12 -0400
+
+videomorph (1.0) xenial; urgency=high
+
+    * BugFix: Correct the issue related to the inclusion of square brackets
+      within the subtitle path
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 12 Aug 2017 19:01:34 -0400
+
+videomorph (1.0) xenial; urgency=high
+
+    * BugFix: The output field showed the last used dir even if it does not exist
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 7 Aug 2017 19:58:33 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Add feature: Extract Audio in mp3 format
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 7 Aug 2017 19:32:45 -0400
 
 videomorph (1.0) xenial; urgency=medium
 

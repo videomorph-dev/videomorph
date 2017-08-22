@@ -30,11 +30,11 @@ from videomorph import VM_PATHS
 
 
 LONG_DESC = """Small Video Converter based on ffmpeg, Python 3 and Qt5.
-Unlike other video converters, VideoMorph focuses on a single task,
-convert video, making it simple, easy to use and allowing the user
-choose from a list of popular video formats.
+Unlike other video converters, VideoMorph focuses on a single goal:
+make video conversion simple, with an easy to use GUI and allowing
+the user to convert to the currently most popular video formats.
 
-VideoMorph UI is simple and clean focused on usability, eliminating
+VideoMorph GUI is simple and clean, focused on usability, eliminating
 annoying options rarely used.
 VideoMorph is a video converter, just that. If you want a video
 editor, VideoMorph isn't for you.
