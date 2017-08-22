@@ -1089,6 +1089,22 @@ class VideoMorphMW(QMainWindow):
                 self.update_interface(convert=False, stop=False,
                                       stop_all=False, remove=False,
                                       play_input=False, play_output=False)
+            except FileExistsError:
+                self._show_message_box(
+                    type_=QMessageBox.Critical,
+                    title=self.tr('Error!'),
+                    msg=(self.tr('Video File:') + ' ' +
+                         running_file.get_name(with_extension=True) + ' ' +
+                         self.tr('Already Exists in '
+                                 'Output Directory. Change the '
+                                 'Output Directory or Select the '
+                                 'Option to Use a Format Tag in '
+                                 'Output Video File Name')))
+
+                self.media_list.position = None
+                self.update_interface(stop=False,
+                                      stop_all=False, remove=False,
+                                      play_input=False, play_output=False)
         else:
             self._end_encoding_process()
 

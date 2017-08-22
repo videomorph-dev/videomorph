@@ -300,12 +300,12 @@ p, li { white-space: pre-wrap; }
         <translation>A&amp;yuda</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1181"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1197"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1083"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1093"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
@@ -320,7 +320,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivos de Video</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1324"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1334"/>
         <source>To Convert</source>
         <translation>Convertir</translation>
     </message>
@@ -330,7 +330,7 @@ p, li { white-space: pre-wrap; }
         <translation>Exportar al Directorio</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1175"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1191"/>
         <source>Information!</source>
         <translation>Información!</translation>
     </message>
@@ -350,17 +350,17 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1153"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1169"/>
         <source>Stopped!</source>
         <translation>Detenido!</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1141"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1157"/>
         <source>Done!</source>
         <translation>Hecho!</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1170"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1186"/>
         <source>Encoding Process Successfully Finished!</source>
         <translation>Proceso de Conversión Concluido Exitosamente!</translation>
     </message>
@@ -395,7 +395,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivo de Perfiles </translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1175"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1191"/>
         <source>Encoding Process Stopped by the User!</source>
         <translation>Proceso de Conversión Detenido por el Usuario!</translation>
     </message>
@@ -480,7 +480,7 @@ p, li { white-space: pre-wrap; }
         <translation>Otras Opciones:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1162"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1178"/>
         <source>The Conversion Library has Failed with Error:</source>
         <translation>La Librería de Conversión ha Fallado con Error:</translation>
     </message>
@@ -510,7 +510,7 @@ p, li { white-space: pre-wrap; }
         <translation>No se Encontraron Archivos de Video en:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1272"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1282"/>
         <source>Converting: {m}			 At: {br}			 Operation Remaining Time: {ort}			 Total Elapsed Time: {tet}</source>
         <translation>Convirtiendo: {m}			 A: {br}			 Tiempo Restante de la Operación: {ort}			 Tiempo Total Transcurrido: {tet}</translation>
     </message>
@@ -568,6 +568,16 @@ p, li { white-space: pre-wrap; }
         <location filename="../../../videomorph/forms/videomorph.py" line="232"/>
         <source>Useful when Converting a Video File to Multiples Formats</source>
         <translation>Útil cuando se Convierte un Archivo de Video a Múltiples Formatos</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1093"/>
+        <source>Video File:</source>
+        <translation>El Archivo de Video:</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1093"/>
+        <source>Already Exists in Output Directory. Change the Output Directory or Select the Option to Use a Format Tag in Output Video File Name</source>
+        <translation>ya Existe en el Directorio Destino. Cambie el Directorio Destino o Seleccione la Opción Usar Etiqueta de Formato en el Nombre del Archivo de Salida</translation>
     </message>
 </context>
 </TS>

@@ -26,6 +26,7 @@ from os import access
 from os import remove
 from os import sep
 from os.path import basename
+from os.path import dirname
 from os.path import exists
 
 from . import CPU_CORES
@@ -250,6 +251,9 @@ class _MediaFile:
 
         # Get the output path
         output_path = self.get_output_path(output_dir, tagged_output)
+
+        if exists(output_path):
+            raise FileExistsError('Video file already exits')
 
         # Build the conversion command
         cmd = ['-i', self.input_path] + subtitle_opt + \
