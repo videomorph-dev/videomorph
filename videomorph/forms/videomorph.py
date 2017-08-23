@@ -92,7 +92,7 @@ class VideoMorphMW(QMainWindow):
         # Window size
         self.resize(680, 576)
         # Set window title
-        self.setWindowTitle(APPNAME + ' ' + VERSION)
+        self._set_window_title()
         # Define and set app icon
         icon = QIcon()
         icon.addPixmap(QPixmap(':/logo/videomorph.png'))
@@ -1104,6 +1104,7 @@ class VideoMorphMW(QMainWindow):
 
                 self.media_list.position = None
                 self._reset_progress_bars()
+                self._set_window_title()
                 self.update_interface(stop=False,
                                       stop_all=False, remove=False,
                                       play_input=False, play_output=False)
@@ -1121,6 +1122,7 @@ class VideoMorphMW(QMainWindow):
 
                 self.media_list.position = None
                 self._reset_progress_bars()
+                self._set_window_title()
                 self._reset_options_check_boxes()
                 self.update_interface(stop=False,
                                       stop_all=False, remove=False,
@@ -1212,7 +1214,7 @@ class VideoMorphMW(QMainWindow):
                     title=self.tr('Information!'),
                     msg=self.tr('Encoding Process Stopped by the User!'))
 
-            self.setWindowTitle(APPNAME + ' ' + VERSION)
+            self._set_window_title()
             self.statusBar().showMessage(self.tr('Ready'))
             self._reset_options_check_boxes()
             # Reset all progress related variables
@@ -1228,6 +1230,10 @@ class VideoMorphMW(QMainWindow):
                                   play_input=False, play_output=False)
         else:
             self.start_encoding()
+
+    def _set_window_title(self):
+        """Set window title."""
+        self.setWindowTitle(APPNAME + ' ' + VERSION)
 
     def _reset_progress_bars(self):
         """Reset the progress bars."""
