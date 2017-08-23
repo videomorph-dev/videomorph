@@ -225,17 +225,6 @@ class _MediaFile:
         """Return an info attribute from a given file: media_file."""
         return self.info.get(info_param)
 
-    def _process_subtitles(self, subtitle):
-        # Process subtitles if available
-        if subtitle and self._subtitle_path:
-            subtitle_opt = ['-vf', "subtitles='{0}':force_style='Fontsize=24'"
-                                   ":charenc=cp1252".format(
-                                       self._subtitle_path)]
-        else:
-            subtitle_opt = []
-
-        return subtitle_opt
-
     def build_conversion_cmd(self, output_dir, target_quality,
                              tagged_output, subtitle):
         """Return the conversion command."""
@@ -268,8 +257,12 @@ class _MediaFile:
             remove(self.get_output_path(output_dir, tagged_output))
 
     def delete_input(self):
-        """Delete the input file when conversion is finished."""
-        remove(self.input_path)
+        """Delete the input file (and subtitle) when conversion is finished."""
+        try:
+            remove(self.input_path)
+        except FileNotFoundError:
+            pass
+
         try:
             remove(self._subtitle_path)
         except FileNotFoundError:
@@ -294,8 +287,22 @@ class _MediaFile:
 
         if exists(subtitle_path):
             return subtitle_path
+        else:
+            raise FileNotFoundError('Subtitle file not found')
 
-        return None
+    def _process_subtitles(self, subtitle):
+        # Process subtitles if available
+        if subtitle:
+            try:
+                subtitle_opt = ['-vf',
+                                "subtitles='{0}':force_style='Fontsize=24'"
+                                ":charenc=cp1252".format(
+                                    self._subtitle_path)]
+                return subtitle_opt
+            except FileNotFoundError:
+                pass
+
+        return []
 
     def _probe(self):
         """Return the prober output as a file like object."""
