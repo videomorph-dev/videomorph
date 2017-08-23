@@ -60,6 +60,11 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/codeshard/videomorph&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;https://github.com/codeshard/videomorph&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../../videomorph/forms/about.py" line="157"/>
+        <source>See License at:</source>
+        <translation>Vea la Licencia en:</translation>
+    </message>
 </context>
 <context>
     <name>AddProfileDialog</name>
@@ -295,12 +300,12 @@ p, li { white-space: pre-wrap; }
         <translation>A&amp;yuda</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1216"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1218"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1111"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1112"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
@@ -315,7 +320,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivos de Video</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1357"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1363"/>
         <source>To Convert</source>
         <translation>Convertir</translation>
     </message>
@@ -325,7 +330,7 @@ p, li { white-space: pre-wrap; }
         <translation>Exportar al Directorio</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1210"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1212"/>
         <source>Information!</source>
         <translation>Información!</translation>
     </message>
@@ -345,17 +350,17 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1188"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1190"/>
         <source>Stopped!</source>
         <translation>Detenido!</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1176"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1178"/>
         <source>Done!</source>
         <translation>Hecho!</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1205"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1207"/>
         <source>Encoding Process Successfully Finished!</source>
         <translation>Proceso de Conversión Concluido Exitosamente!</translation>
     </message>
@@ -390,7 +395,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivo de Perfiles </translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1210"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1212"/>
         <source>Encoding Process Stopped by the User!</source>
         <translation>Proceso de Conversión Detenido por el Usuario!</translation>
     </message>
@@ -475,7 +480,7 @@ p, li { white-space: pre-wrap; }
         <translation>Otras Opciones:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1197"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1199"/>
         <source>The Conversion Library has Failed with Error:</source>
         <translation>La Librería de Conversión ha Fallado con Error:</translation>
     </message>
@@ -505,7 +510,7 @@ p, li { white-space: pre-wrap; }
         <translation>No se Encontraron Archivos de Video en:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1305"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1311"/>
         <source>Converting: {m}			 At: {br}			 Operation Remaining Time: {ort}			 Total Elapsed Time: {tet}</source>
         <translation>Convirtiendo: {m}			 A: {br}			 Tiempo Restante de la Operación: {ort}			 Tiempo Total Transcurrido: {tet}</translation>
     </message>
@@ -565,7 +570,7 @@ p, li { white-space: pre-wrap; }
         <translation>Útil cuando se Convierte un Archivo de Video a Múltiples Formatos</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1111"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1112"/>
         <source>Video File:</source>
         <translation>El Archivo de Video:</translation>
     </message>
@@ -580,7 +585,7 @@ p, li { white-space: pre-wrap; }
         <translation>no Encontrado</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1111"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1112"/>
         <source>Already Exists in Output Directory. Please, Change the Output Directory</source>
         <translation>ya Exite en el Directorio Destino. Por Favor, Cambie el Directorio Destino</translation>
     </message>

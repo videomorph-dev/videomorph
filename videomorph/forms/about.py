@@ -145,12 +145,17 @@ class AboutVMDialog(QDialog):
 
         self.plain_text_edit.setPlainText(self.get_license_text())
 
-    @staticmethod
-    def get_license_text():
+    def get_license_text(self):
         """Get the license text from the license file."""
-        license_path = (LINUX_PATHS['doc'] + '/LICENSE' if
-                        isfile(LINUX_PATHS['doc'] + '/LICENSE') else
-                        BASE_DIR +'/LICENSE')
+        if isfile(LINUX_PATHS['doc'] + '/LICENSE'):
+            license_path = LINUX_PATHS['doc'] + '/LICENSE'
+        elif isfile(BASE_DIR + '/LICENSE'):
+            license_path = BASE_DIR + '/LICENSE'
+        elif isfile('/usr/share/common-licenses/Apache-2.0'):
+            license_path = '/usr/share/common-licenses/Apache-2.0'
+        else:
+            return (self.tr('See License at:') + '\n\n' +
+                    'http://www.apache.org/licenses/LICENSE-2.0')
 
         with open(license_path, 'r', encoding='UTF-8') as lic:
             return ''.join(lic.readlines())
