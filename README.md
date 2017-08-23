@@ -75,6 +75,7 @@ Contributors:
 
  - [Maikel Llamaret Heredia](http://gutl.jovenclub.cu)
  - [Carlos Parra Zaldivar](http://libreoffice.cubava.cu)
+ - [Leonel Salazar Videaux](http://debianhlg.cubava.cu/)
 
 Copyright:
 

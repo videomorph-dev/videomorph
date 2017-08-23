@@ -1099,10 +1099,11 @@ class VideoMorphMW(QMainWindow):
                     type_=QMessageBox.Critical,
                     title=self.tr('Error!'),
                     msg=(self.tr('Input Video File:') + ' ' +
-                         running_file.get_name(with_extension=True) + ' ' +
+                         running_file.get_output_file_name(with_extension=True) + ' ' +
                          self.tr('not Found')))
 
                 self.media_list.position = None
+                self._reset_progress_bars()
                 self.update_interface(stop=False,
                                       stop_all=False, remove=False,
                                       play_input=False, play_output=False)
@@ -1111,7 +1112,9 @@ class VideoMorphMW(QMainWindow):
                     type_=QMessageBox.Critical,
                     title=self.tr('Error!'),
                     msg=(self.tr('Video File:') + ' ' +
-                         running_file.get_name(with_extension=True) + ' ' +
+                         running_file.get_output_file_name(
+                             output_dir=self.le_output.text(),
+                             tagged_output=self.chb_tag.checkState()) + ' ' +
                          self.tr('Already Exists in '
                                  'Output Directory. Change the '
                                  'Output Directory or Select the '
@@ -1119,6 +1122,7 @@ class VideoMorphMW(QMainWindow):
                                  'Output Video File Name')))
 
                 self.media_list.position = None
+                self._reset_progress_bars()
                 self.update_interface(stop=False,
                                       stop_all=False, remove=False,
                                       play_input=False, play_output=False)
@@ -1213,8 +1217,7 @@ class VideoMorphMW(QMainWindow):
             self.statusBar().showMessage(self.tr('Ready'))
             self._reset_options_check_boxes()
             # Reset all progress related variables
-            self.pb_progress.setProperty("value", 0)
-            self.pb_total_progress.setProperty("value", 0)
+            self._reset_progress_bars()
             self.timer.reset_progress_times()
             self.media_list_duration = self.media_list.duration
             self.timer.process_start_time = 0.0
@@ -1226,6 +1229,11 @@ class VideoMorphMW(QMainWindow):
                                   play_input=False, play_output=False)
         else:
             self.start_encoding()
+
+    def _reset_progress_bars(self):
+        """Reset the progress bars."""
+        self.pb_progress.setProperty("value", 0)
+        self.pb_total_progress.setProperty("value", 0)
 
     def _ready_read(self):
         """Is called when the conversion process emit a new output."""

@@ -273,6 +273,12 @@ class _MediaFile:
         except FileNotFoundError:
             pass
 
+    def get_output_file_name(self, output_dir, tagged_output):
+        """Return the name of the output video file."""
+        file_name = basename(self.get_output_path(output_dir, tagged_output))
+
+        return file_name
+
     def get_output_path(self, output_dir, tagged_output):
         """Return the the output file input_path."""
         tag = self._profile.quality_tag if tagged_output else ''
