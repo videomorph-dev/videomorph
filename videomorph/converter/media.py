@@ -231,6 +231,9 @@ class _MediaFile:
         if not access(output_dir, W_OK):
             raise PermissionError('Access denied')
 
+        if not exists(self.input_path):
+            raise FileNotFoundError('Input video file not found')
+
         # Ensure the conversion_profile is up to date
         self._profile.update(new_quality=target_quality)
 
@@ -253,8 +256,10 @@ class _MediaFile:
 
     def delete_output(self, output_dir, tagged_output):
         """Delete the output file if conversion is stopped."""
-        if exists(self.get_output_path(output_dir, tagged_output)):
+        try:
             remove(self.get_output_path(output_dir, tagged_output))
+        except FileNotFoundError:
+            pass
 
     def delete_input(self):
         """Delete the input file (and subtitle) when conversion is finished."""

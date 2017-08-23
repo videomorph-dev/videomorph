@@ -899,6 +899,9 @@ class VideoMorphMW(QMainWindow):
 
         # If all files are deleted... update the interface
         if not self.tb_tasks.rowCount():
+            # Reset the options
+            self._reset_options_check_boxes()
+            # Update the interface
             self.update_interface(convert=False,
                                   clear=False,
                                   remove=False,
@@ -1027,6 +1030,8 @@ class VideoMorphMW(QMainWindow):
             self.tb_tasks.setRowCount(0)
             # Clear MediaList so it contains no element
             self.media_list.clear()
+            # Reset the options
+            self._reset_options_check_boxes()
             # Update buttons so user cannot convert, clear, or stop if there
             # is no file in the list
             self.update_interface(convert=False,
@@ -1087,6 +1092,18 @@ class VideoMorphMW(QMainWindow):
 
                 self.media_list.position = None
                 self.update_interface(convert=False, stop=False,
+                                      stop_all=False, remove=False,
+                                      play_input=False, play_output=False)
+            except FileNotFoundError:
+                self._show_message_box(
+                    type_=QMessageBox.Critical,
+                    title=self.tr('Error!'),
+                    msg=(self.tr('Input Video File:') + ' ' +
+                         running_file.get_name(with_extension=True) + ' ' +
+                         self.tr('not Found')))
+
+                self.media_list.position = None
+                self.update_interface(stop=False,
                                       stop_all=False, remove=False,
                                       play_input=False, play_output=False)
             except FileExistsError:
@@ -1194,7 +1211,7 @@ class VideoMorphMW(QMainWindow):
 
             self.setWindowTitle(APPNAME + ' ' + VERSION)
             self.statusBar().showMessage(self.tr('Ready'))
-            self.chb_delete.setChecked(False)
+            self._reset_options_check_boxes()
             # Reset all progress related variables
             self.pb_progress.setProperty("value", 0)
             self.pb_total_progress.setProperty("value", 0)
@@ -1331,6 +1348,11 @@ class VideoMorphMW(QMainWindow):
             self.tb_tasks.item(
                 row,
                 COLUMNS.PROGRESS).setText(self.tr('To Convert'))
+
+    def _reset_options_check_boxes(self):
+        self.chb_delete.setChecked(False)
+        self.chb_tag.setChecked(False)
+        self.chb_subtitle.setChecked(False)
 
     def _set_media_status(self):
         """Update media files state of conversion."""
