@@ -1099,7 +1099,8 @@ class VideoMorphMW(QMainWindow):
                     type_=QMessageBox.Critical,
                     title=self.tr('Error!'),
                     msg=(self.tr('Input Video File:') + ' ' +
-                         running_file.get_output_file_name(with_extension=True) + ' ' +
+                         running_file.get_output_file_name(
+                             with_extension=True) + ' ' +
                          self.tr('not Found')))
 
                 self.media_list.position = None

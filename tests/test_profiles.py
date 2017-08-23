@@ -57,35 +57,36 @@ def test_get_xml_profile_attr():
 def test_get_xml_profile_qualities():
     """Test get_xml_profile_qualities."""
     qualities = profile.get_xml_profile_qualities()
+
     assert qualities == OrderedDict(
         [('AVI',
-          ['Compatible MS',
-           'XVID Pantalla Completa (4:3)',
-           'XVID Pantalla Panorámica (16:9)']),
+          ['MS Compatible',
+           'XVID Fullscreen (4:3)',
+           'XVID Widescreen (16:9)']),
          ('DVD',
-          ['DVD Pantalla Completa (4:3)',
-           'DVD Pantalla Panorámica (16:9)',
-           'DVD Pantalla Completa (4:3) Alta Calidad',
-           'DVD Pantalla Panorámica (16:9) Alta Calidad',
-           'DVD Baja Calidad']),
+          ['DVD Fullscreen (4:3)',
+           'DVD Widescreen (16:9)',
+           'DVD Fullscreen (4:3) High Quality',
+           'DVD Widescreen (16:9) High Quality',
+           'DVD Low Quality']),
          ('FLV',
-          ['FLV Pantalla Completa (4:3)',
-           'FLV Pantalla Panorámica (16:9)']),
+          ['FLV Fullscreen (4:3)',
+           'FLV Widescreen (16:9)']),
          ('MP4',
-          ['MP4 Alta Calidad',
-           'MP4 Muy Alta Calidad',
-           'MP4 Súper Alta Calidad',
-           'MP4 Pantalla Completa (4:3)',
-           'MP4 Pantalla Panorámica (16:9)']),
+          ['MP4 High Quality',
+           'MP4 Very High Quality',
+           'MP4 Super High Quality',
+           'MP4 Fullscreen (4:3)',
+           'MP4 Widescreen (16:9)']),
          ('VCD',
-          ['VCD Alta Calidad']),
+          ['VCD High Quality']),
          ('WEBM',
-          ['WEBM Pantalla Completa (4:3)',
-           'WEBM Pantalla Panorámica (16:9)']),
+          ['WEBM Fullscreen (4:3)',
+           'WEBM Widescreen (16:9)']),
          ('WMV',
-          ['WMV Genérico']),
+          ['WMV Generic']),
          ('MP3',
-          ['Extraer Audio mp3'])])
+          ['Extract Audio mp3'])])
 
 
 # Tests for _Profile class

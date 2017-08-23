@@ -75,9 +75,9 @@ def run_on_console(app, main_win):
 
     if files:
         # Avoid duplicated files
-        files = set(files)
+        files_to_add = set(files)
         # Add files
-        main_win.add_media_files(*files)
+        main_win.add_media_files(*files_to_add)
         main_win.show()
         sys.exit(app.exec_())
 

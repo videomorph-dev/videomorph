@@ -100,9 +100,8 @@ class _XMLProfile:
         if not params:
             raise ProfileBlankParamsError
 
-        if (not extension.startswith('.') or
-                    extension not in VALID_VIDEO_EXT):
-            raise ProfileExtensionError
+        if not extension.startswith('.') or extension not in VALID_VIDEO_EXT:
+            raise ProfileExtensionError('Invalid video file extension')
 
         extension = extension.lower()
 
