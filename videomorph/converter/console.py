@@ -25,6 +25,7 @@ from os import walk
 from os.path import exists
 from os.path import isdir
 from os.path import sep
+from os.path import abspath
 
 from videomorph import APPNAME
 from videomorph import VERSION
@@ -58,7 +59,7 @@ def run_on_console(app, main_win):
     if args.input_file:
         for file in args.input_file:
             if exists(file):
-                files.append(file)
+                files.append(abspath(file))
             else:
                 print("Video File: {0}, doesn't exit".format(file),
                       file=sys.stderr)
@@ -73,6 +74,9 @@ def run_on_console(app, main_win):
             print(error, file=sys.stderr)
 
     if files:
+        # Avoid duplicated files
+        files = set(files)
+        # Add files
         main_win.add_media_files(*files)
         main_win.show()
         sys.exit(app.exec_())
@@ -88,7 +92,8 @@ def search_directory_recursively(directory, files=None):
             for file_name in files_names:
                 extension = '.{0}'.format(file_name.split('.')[-1])
                 if extension in VALID_VIDEO_EXT:
-                    files.append('{0}'.join([dir_path, file_name]).format(sep))
+                    files.append(
+                        abspath('{0}'.join([dir_path, file_name]).format(sep)))
     else:
         raise IsADirectoryError("Directory: {0}, doesn't exist".format(
             directory))
