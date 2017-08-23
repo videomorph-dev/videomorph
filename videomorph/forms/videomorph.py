@@ -1116,13 +1116,12 @@ class VideoMorphMW(QMainWindow):
                              output_dir=self.le_output.text(),
                              tagged_output=self.chb_tag.checkState()) + ' ' +
                          self.tr('Already Exists in '
-                                 'Output Directory. Change the '
-                                 'Output Directory or Select the '
-                                 'Option to Use a Format Tag in '
-                                 'Output Video File Name')))
+                                 'Output Directory. Please, Change the '
+                                 'Output Directory')))
 
                 self.media_list.position = None
                 self._reset_progress_bars()
+                self._reset_options_check_boxes()
                 self.update_interface(stop=False,
                                       stop_all=False, remove=False,
                                       play_input=False, play_output=False)
