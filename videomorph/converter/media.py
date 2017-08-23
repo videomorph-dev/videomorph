@@ -69,7 +69,7 @@ class MediaList(list):
             Element 2,...: file path for the video file processed
         """
         files_paths_to_add = self._filter_by_path(files_paths)
-        print(files_paths_to_add)
+
         if files_paths_to_add is None:
             return
 

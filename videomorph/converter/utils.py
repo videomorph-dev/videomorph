@@ -31,6 +31,7 @@ def get_locale():
             getdefaultlocale()[0])
     # return 'es_ES'
 
+
 def spawn_process(cmd):
     """Return a Popen object."""
     return Popen(cmd,
