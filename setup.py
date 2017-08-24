@@ -21,7 +21,14 @@
 """This module defines the installation script for VideoMorph."""
 
 from sys import platform
-from setuptools import setup, find_packages
+
+try:
+    from setuptools import setup
+    from setuptools import find_packages
+    packages = find_packages(exclude=['tests', 'docs'])
+except ImportError:
+    from distutils.core import setup
+    packages = ['videomorph', 'videomorph/converter', 'videomorph/forms']
 
 from videomorph import VERSION
 from videomorph import PACKAGE_NAME
@@ -61,7 +68,7 @@ if __name__ == '__main__':
           maintainer_email='lpozor78@gmail.com',
           url='https://github.com/codeshard/videomorph',
           license='Apache License, Version 2.0',
-          packages=find_packages(exclude=['tests', 'docs']),
+          packages=packages,
 
           data_files=[
               # Desktop entry
@@ -79,7 +86,7 @@ if __name__ == '__main__':
               # Documentation files
               (SYS_PATH['doc'],
                ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL',
-                'copyright', 'changelog.gz', 'TODO']),
+                'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
               # Man page
               (SYS_PATH['man'],
                [VM_PATHS['man'] + '/videomorph.1.gz'])
