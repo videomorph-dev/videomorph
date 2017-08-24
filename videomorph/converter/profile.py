@@ -28,6 +28,7 @@ from os.path import exists, getsize
 from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
+from videomorph import BASE_DIR
 from videomorph import LINUX_PATHS
 from videomorph import LOCALE
 from videomorph import VM_PATHS
@@ -83,8 +84,9 @@ class _XMLProfile:
                           profiles_xml)
             else:
                 # if not installed
-                copy_file('../' + VM_PATHS['profiles'] + '/profiles.xml',
-                          profiles_xml)
+                copy_file(BASE_DIR + '{0}{1}{2}profiles.xml'.format(
+                    sep, VM_PATHS['profiles'], sep), profiles_xml)
+
         self._set_xml_root()
 
     def add_xml_profile(self, profile_name, preset, params, extension):
