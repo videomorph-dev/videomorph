@@ -2,7 +2,7 @@ Package: videomorph
 Version: 1.1
 Architecture: all
 Maintainer: VideoMorph Development Team <codeshard@openmailbox.org>
-Installed-Size: 2106
+Installed-Size: 435.9
 Section: video
 Priority: optional
 Depends: ffmpeg | libav-tools, python3-pyqt5, python3 (>=3.4)

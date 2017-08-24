@@ -2,14 +2,64 @@ videomorph (1.1) xenial; urgency=high
 
     * Release VideoMorph v1.1
 
- -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 17:00:00 -0400
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 24 Aug 2017 10:00:00 -0400
+
+videomorph (1.0) xenial; urgency=high
+
+    * BuxFix: "python setup.py install" fails in systems where setuptools is not installed.
+      Some other corrections to setup.py module: include the changelog.gz and the
+      screenshot.png files in the package
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 23 Aug 2017 21:59:45 -0400
+
+videomorph (1.0) xenial; urgency=high
+
+    * BugFix: Correct a problem with duplicated files when adding files from
+      console using -i and -d option at the same time
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 23 Aug 2017 08:58:13 -0400
+
+videomorph (1.0) xenial; urgency=high
+
+    * BugFix: Check boxes for Other Options now will be unchecked when list
+      is cleared, or process is stopped
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 23 Aug 2017 01:03:09 -0400
+
+videomorph (1.0) xenial; urgency=high
+
+    * BugFix: Correct a problem in _MediaFile.delete_input() and the subtitles
+      files
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 23 Aug 2017 00:21:11 -0400
+
+videomorph (1.0) xenial; urgency=high
+
+    * BugFix: Correct a problem in _OutputReader.catch_library_error() related
+      to processing the library errors. Add a new library error.
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 18:46:28 -0400
+
+videomorph (1.0) xenial; urgency=high
+
+    * BugFix: Correct the problem with video extension adding directory.
+      It accepted .mp as a valid extension, for instance
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 17:41:16 -0400
+
+videomorph (1.0) xenial; urgency=high
+
+    * BugFix: Correct the problem with video extension in customized profiles.
+      It accepted .mp as a valid extension, for instance
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 16:18:14 -0400
 
 videomorph (1.0) xenial; urgency=high
 
     * BugFix: When the output file name coincide with the input file name,
       the input video was overwritten
 
- -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 22 Aug 2017 15:24:45 -0400
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 15:24:45 -0400
 
 videomorph (1.0) xenial; urgency=low
 
