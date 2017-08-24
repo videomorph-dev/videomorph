@@ -25,10 +25,10 @@ from sys import platform
 try:
     from setuptools import setup
     from setuptools import find_packages
-    packages = find_packages(exclude=['tests', 'docs'])
+    PACKAGES = find_packages(exclude=['tests', 'docs'])
 except ImportError:
     from distutils.core import setup
-    packages = ['videomorph', 'videomorph/converter', 'videomorph/forms']
+    PACKAGES = ['videomorph', 'videomorph/converter', 'videomorph/forms']
 
 from videomorph import VERSION
 from videomorph import PACKAGE_NAME
@@ -68,7 +68,7 @@ if __name__ == '__main__':
           maintainer_email='lpozor78@gmail.com',
           url='https://github.com/codeshard/videomorph',
           license='Apache License, Version 2.0',
-          packages=packages,
+          packages=PACKAGES,
 
           data_files=[
               # Desktop entry
@@ -93,4 +93,4 @@ if __name__ == '__main__':
           ],
 
           scripts=[VM_PATHS['bin'] + '/videomorph']
-         )
+          )
