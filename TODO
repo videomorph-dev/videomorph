@@ -1,15 +1,26 @@
 TODO List:
 ----------
 
-Next version or later:
+Next version (1.1):
     - Pack in .rpm format
     - Pack for Arch Linux
+
+Version (1.2)
+    - Create a public interface in media.MediaList to handel the running file
+      using delegation (running_file_name(), running_file_status(), running_file_info(),
+      running_file_path())
+    - Implement the main window interface in a separated module, maybe mainwindow.py
+    - Move the business logic present in videomorph.py, about.py and other views to converter
+      package
+    - Move the HTML text hardcoded in about.py to a file distributed as doc. Read the about
+      info from that file as done with the license
 
 BugFix:
     -
 
 Someday:
     - Allow drag and drop video files into the List of Conversion Tasks
-    - Play the videos with the system default video player (in KDE branch).
+    - Play the videos with the system default video player (in KDE branch)
+    - Implement an alternative class for _Converter (subprocess maybe) to decouple from PyQt5
     - Implement model/view/controller pattern
     - Make it run on Windows

@@ -46,7 +46,6 @@ mv -v "$package_name" dist
 # Some clean up
 sudo rm -rfv build videomorph_deb/usr
 sudo --remove-timestamp
-rm -rfv changelog.gz
 
 # Build a standard python dist to be install with python3 setup.py install command
 python3 setup.py sdist
@@ -59,6 +58,7 @@ cd dist
 tar -cvf "videomorph-""$version".tar.gz "videomorph-""$version"
 cd ..
 rm -rfv dist/"videomorph-""$version"
+rm -rfv changelog.gz
 
 # Runnin lintian
 lintian -i dist/"$package_name" >dist/lintian.log

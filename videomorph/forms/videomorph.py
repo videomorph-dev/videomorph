@@ -92,7 +92,7 @@ class VideoMorphMW(QMainWindow):
         # Window size
         self.resize(680, 576)
         # Set window title
-        self.setWindowTitle(APPNAME + ' ' + VERSION)
+        self._set_window_title()
         # Define and set app icon
         icon = QIcon()
         icon.addPixmap(QPixmap(':/logo/videomorph.png'))
@@ -899,6 +899,9 @@ class VideoMorphMW(QMainWindow):
 
         # If all files are deleted... update the interface
         if not self.tb_tasks.rowCount():
+            # Reset the options
+            self._reset_options_check_boxes()
+            # Update the interface
             self.update_interface(convert=False,
                                   clear=False,
                                   remove=False,
@@ -1027,6 +1030,8 @@ class VideoMorphMW(QMainWindow):
             self.tb_tasks.setRowCount(0)
             # Clear MediaList so it contains no element
             self.media_list.clear()
+            # Reset the options
+            self._reset_options_check_boxes()
             # Update buttons so user cannot convert, clear, or stop if there
             # is no file in the list
             self.update_interface(convert=False,
@@ -1089,6 +1094,40 @@ class VideoMorphMW(QMainWindow):
                 self.update_interface(convert=False, stop=False,
                                       stop_all=False, remove=False,
                                       play_input=False, play_output=False)
+            except FileNotFoundError:
+                self._show_message_box(
+                    type_=QMessageBox.Critical,
+                    title=self.tr('Error!'),
+                    msg=(self.tr('Input Video File:') + ' ' +
+                         running_file.get_output_file_name(
+                             with_extension=True) + ' ' +
+                         self.tr('not Found')))
+
+                self.media_list.position = None
+                self._reset_progress_bars()
+                self._set_window_title()
+                self.update_interface(stop=False,
+                                      stop_all=False, remove=False,
+                                      play_input=False, play_output=False)
+            except FileExistsError:
+                self._show_message_box(
+                    type_=QMessageBox.Critical,
+                    title=self.tr('Error!'),
+                    msg=(self.tr('Video File:') + ' ' +
+                         running_file.get_output_file_name(
+                             output_dir=self.le_output.text(),
+                             tagged_output=self.chb_tag.checkState()) + ' ' +
+                         self.tr('Already Exists in '
+                                 'Output Directory. Please, Change the '
+                                 'Output Directory')))
+
+                self.media_list.position = None
+                self._reset_progress_bars()
+                self._set_window_title()
+                self._reset_options_check_boxes()
+                self.update_interface(stop=False,
+                                      stop_all=False, remove=False,
+                                      play_input=False, play_output=False)
         else:
             self._end_encoding_process()
 
@@ -1136,9 +1175,8 @@ class VideoMorphMW(QMainWindow):
             if (self.conversion_lib.converter_exit_status() ==
                     QProcess.NormalExit):
                 # When finished a file conversion...
-                self.tb_tasks.item(
-                    self.media_list.position,
-                    COLUMNS.PROGRESS).setText(self.tr('Done!'))
+                self.tb_tasks.item(self.media_list.position,
+                                   COLUMNS.PROGRESS).setText(self.tr('Done!'))
                 self.media_list.running_file.status = STATUS.done
                 self.pb_progress.setProperty("value", 0)
                 if self.chb_delete.checkState():
@@ -1177,12 +1215,11 @@ class VideoMorphMW(QMainWindow):
                     title=self.tr('Information!'),
                     msg=self.tr('Encoding Process Stopped by the User!'))
 
-            self.setWindowTitle(APPNAME + ' ' + VERSION)
+            self._set_window_title()
             self.statusBar().showMessage(self.tr('Ready'))
-            self.chb_delete.setChecked(False)
+            self._reset_options_check_boxes()
             # Reset all progress related variables
-            self.pb_progress.setProperty("value", 0)
-            self.pb_total_progress.setProperty("value", 0)
+            self._reset_progress_bars()
             self.timer.reset_progress_times()
             self.media_list_duration = self.media_list.duration
             self.timer.process_start_time = 0.0
@@ -1194,6 +1231,15 @@ class VideoMorphMW(QMainWindow):
                                   play_input=False, play_output=False)
         else:
             self.start_encoding()
+
+    def _set_window_title(self):
+        """Set window title."""
+        self.setWindowTitle(APPNAME + ' ' + VERSION)
+
+    def _reset_progress_bars(self):
+        """Reset the progress bars."""
+        self.pb_progress.setProperty("value", 0)
+        self.pb_total_progress.setProperty("value", 0)
 
     def _ready_read(self):
         """Is called when the conversion process emit a new output."""
@@ -1316,6 +1362,11 @@ class VideoMorphMW(QMainWindow):
             self.tb_tasks.item(
                 row,
                 COLUMNS.PROGRESS).setText(self.tr('To Convert'))
+
+    def _reset_options_check_boxes(self):
+        self.chb_delete.setChecked(False)
+        self.chb_tag.setChecked(False)
+        self.chb_subtitle.setChecked(False)
 
     def _set_media_status(self):
         """Update media files state of conversion."""

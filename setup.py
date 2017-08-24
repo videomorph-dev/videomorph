@@ -21,7 +21,14 @@
 """This module defines the installation script for VideoMorph."""
 
 from sys import platform
-from setuptools import setup, find_packages
+
+try:
+    from setuptools import setup
+    from setuptools import find_packages
+    PACKAGES = find_packages(exclude=['tests', 'docs'])
+except ImportError:
+    from distutils.core import setup
+    PACKAGES = ['videomorph', 'videomorph/converter', 'videomorph/forms']
 
 from videomorph import VERSION
 from videomorph import PACKAGE_NAME
@@ -30,11 +37,11 @@ from videomorph import VM_PATHS
 
 
 LONG_DESC = """Small Video Converter based on ffmpeg, Python 3 and Qt5.
-Unlike other video converters, VideoMorph focuses on a single task,
-convert video, making it simple, easy to use and allowing the user
-choose from a list of popular video formats.
+Unlike other video converters, VideoMorph focuses on a single goal:
+make video conversion simple, with an easy to use GUI and allowing
+the user to convert to the currently most popular video formats.
 
-VideoMorph UI is simple and clean focused on usability, eliminating
+VideoMorph GUI is simple and clean, focused on usability, eliminating
 annoying options rarely used.
 VideoMorph is a video converter, just that. If you want a video
 editor, VideoMorph isn't for you.
@@ -61,7 +68,7 @@ if __name__ == '__main__':
           maintainer_email='lpozor78@gmail.com',
           url='https://github.com/codeshard/videomorph',
           license='Apache License, Version 2.0',
-          packages=find_packages(exclude=['tests', 'docs']),
+          packages=PACKAGES,
 
           data_files=[
               # Desktop entry
@@ -79,11 +86,11 @@ if __name__ == '__main__':
               # Documentation files
               (SYS_PATH['doc'],
                ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL',
-                'copyright', 'changelog.gz', 'TODO']),
+                'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
               # Man page
               (SYS_PATH['man'],
                [VM_PATHS['man'] + '/videomorph.1.gz'])
           ],
 
           scripts=[VM_PATHS['bin'] + '/videomorph']
-         )
+          )

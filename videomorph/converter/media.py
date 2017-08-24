@@ -225,22 +225,14 @@ class _MediaFile:
         """Return an info attribute from a given file: media_file."""
         return self.info.get(info_param)
 
-    def _process_subtitles(self, subtitle):
-        # Process subtitles if available
-        if subtitle and self._subtitle_path:
-            subtitle_opt = ['-vf', "subtitles='{0}':force_style='Fontsize=24'"
-                                   ":charenc=cp1252".format(
-                                       self._subtitle_path)]
-        else:
-            subtitle_opt = []
-
-        return subtitle_opt
-
     def build_conversion_cmd(self, output_dir, target_quality,
                              tagged_output, subtitle):
         """Return the conversion command."""
         if not access(output_dir, W_OK):
             raise PermissionError('Access denied')
+
+        if not exists(self.input_path):
+            raise FileNotFoundError('Input video file not found')
 
         # Ensure the conversion_profile is up to date
         self._profile.update(new_quality=target_quality)
@@ -250,6 +242,9 @@ class _MediaFile:
 
         # Get the output path
         output_path = self.get_output_path(output_dir, tagged_output)
+
+        if exists(output_path):
+            raise FileExistsError('Video file already exits')
 
         # Build the conversion command
         cmd = ['-i', self.input_path] + subtitle_opt + \
@@ -261,16 +256,28 @@ class _MediaFile:
 
     def delete_output(self, output_dir, tagged_output):
         """Delete the output file if conversion is stopped."""
-        if exists(self.get_output_path(output_dir, tagged_output)):
+        try:
             remove(self.get_output_path(output_dir, tagged_output))
+        except FileNotFoundError:
+            pass
 
     def delete_input(self):
-        """Delete the input file when conversion is finished."""
-        remove(self.input_path)
+        """Delete the input file (and subtitle) when conversion is finished."""
+        try:
+            remove(self.input_path)
+        except FileNotFoundError:
+            pass
+
         try:
             remove(self._subtitle_path)
         except FileNotFoundError:
             pass
+
+    def get_output_file_name(self, output_dir, tagged_output):
+        """Return the name of the output video file."""
+        file_name = basename(self.get_output_path(output_dir, tagged_output))
+
+        return file_name
 
     def get_output_path(self, output_dir, tagged_output):
         """Return the the output file input_path."""
@@ -291,8 +298,22 @@ class _MediaFile:
 
         if exists(subtitle_path):
             return subtitle_path
+        else:
+            raise FileNotFoundError('Subtitle file not found')
 
-        return None
+    def _process_subtitles(self, subtitle):
+        # Process subtitles if available
+        if subtitle:
+            try:
+                subtitle_opt = ['-vf',
+                                "subtitles='{0}':force_style='Fontsize=24'"
+                                ":charenc=cp1252".format(
+                                    self._subtitle_path)]
+                return subtitle_opt
+            except FileNotFoundError:
+                pass
+
+        return []
 
     def _probe(self):
         """Return the prober output as a file like object."""

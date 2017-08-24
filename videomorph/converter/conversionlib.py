@@ -220,7 +220,9 @@ class _OutputReader:
                               r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
                               'time':
                               r'time=([0-9.:]+) '}
-        self._library_errors = ('Unknown encoder', 'Unrecognized option')
+        self._library_errors = ('Unknown encoder',
+                                'Unrecognized option',
+                                'Invalid argument')
         self._process_output = None
 
     def read(self):
@@ -236,8 +238,8 @@ class _OutputReader:
         for error in self._library_errors:
             if error in self._process_output:
                 return error
-            else:
-                return None
+
+        return None
 
     @property
     def has_time_read(self):

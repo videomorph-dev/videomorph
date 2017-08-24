@@ -20,15 +20,16 @@
 """This module contains some utilities and functions."""
 
 import os
+from locale import getdefaultlocale
 from subprocess import PIPE
 from subprocess import Popen
 
 
 def get_locale():
     """Return the default locale string."""
-    # return ('es_ES' if getdefaultlocale()[0] == 'es_CU' else
-    #         getdefaultlocale()[0])
-    return 'es_ES'
+    return ('es_ES' if getdefaultlocale()[0] == 'es_CU' else
+            getdefaultlocale()[0])
+    # return 'es_ES'
 
 
 def spawn_process(cmd):

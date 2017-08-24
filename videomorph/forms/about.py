@@ -114,17 +114,20 @@ class AboutVMDialog(QDialog):
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">Developers:</span></p>\n"
-            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ozkar L. Garcell - project leader</p>\n"
+            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ozkar L. Garcell - Project leader & Publisher</p>\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">&lt;codeshard@openmailbox.org&gt;</p>\n"
             "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Leodanis Pozo Ramos - main developer</p>\n"
+            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Leodanis Pozo Ramos - Main developer & ArtWork</p>\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">&lt;lpozor78@gmail.org&gt;</p>\n"
             "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600;\"><br /></p>\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">Translators:</span></p>\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ozkar L. Garcell - en_US, es_ES</p>\n"
+            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Leodanis Pozo Ramos - en_US, es_ES</p>\n"
             "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600;\"><br /></p>\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">Contributors:</span></p>\n"
-            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Carlos Parra Zaldivar - Artwork.</p>\n"
+            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Carlos Parra Zaldivar - Tester</p>\n"
+            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Maikel Llamaret Heredia - Tester & ArtWork</p>\n"
+            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Leonel Salazar Videaux - Tester & Publisher</p>\n"
             "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600;\"><br /></p></body></html>"
         ))
 
@@ -133,7 +136,7 @@ class AboutVMDialog(QDialog):
             "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-            "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">A simple and lightweight video transcoder.</span></p>\n"
+            "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">An easy to use and lightweight video converter</span></p>\n"
             "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;\"><br /></p>\n"
             "<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">VideoMorph</span><span style=\" font-size:11pt;\"> is a small GUI front-end for </span><a href=\"http://ffmpeg.org/\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">ffmpeg</span></a><span style=\" font-size:11pt;\"> and avconv, based on code from </span><a href=\"https://github.com/senko/python-video-converter\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">python-video-converter</span></a><span style=\" font-size:11pt;\"> and presets idea from </span><a href=\"http://qwinff.github.io/\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">QWinFF</span></a><span style=\" font-size:11pt;\">.</span></p>\n"
             "<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;\"><br /></p>\n"
@@ -142,12 +145,17 @@ class AboutVMDialog(QDialog):
 
         self.plain_text_edit.setPlainText(self.get_license_text())
 
-    @staticmethod
-    def get_license_text():
+    def get_license_text(self):
         """Get the license text from the license file."""
-        license_path = (LINUX_PATHS['doc'] + '/LICENSE' if
-                        isfile(LINUX_PATHS['doc'] + '/LICENSE') else
-                        BASE_DIR +'/LICENSE')
+        if isfile(LINUX_PATHS['doc'] + '/LICENSE'):
+            license_path = LINUX_PATHS['doc'] + '/LICENSE'
+        elif isfile(BASE_DIR + '/LICENSE'):
+            license_path = BASE_DIR + '/LICENSE'
+        elif isfile('/usr/share/common-licenses/Apache-2.0'):
+            license_path = '/usr/share/common-licenses/Apache-2.0'
+        else:
+            return (self.tr('See License at:') + '\n\n' +
+                    'http://www.apache.org/licenses/LICENSE-2.0')
 
         with open(license_path, 'r', encoding='UTF-8') as lic:
             return ''.join(lic.readlines())
