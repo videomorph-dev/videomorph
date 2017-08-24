@@ -50,9 +50,9 @@ PLAYERS = ['vlc',
            'smplayer',
            'mplayer',
            'banshee',
-           'ffplay',
            'mpv',
            'gxine',
            'xine-ui',
            'gmlive',
-           'dragonplayer']
+           'dragon',
+           'ffplay']
