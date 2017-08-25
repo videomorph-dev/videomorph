@@ -14,7 +14,7 @@ Version (1.2)
       package
     - Move the HTML text hardcoded in about.py to a file distributed as doc. Read the about
       info from that file as done with the license
-    - Implement the defaulprofiles.xml and customprofiles.xml and from them create the profiles.xml
+    - Implement the default profiles.xml and custom profiles.xml and from them create the profiles.xml
       tu use finally. This three file should be at $HOME/.videomorph/profiles
     - Add the an option to list the changelog in Help menu
 
