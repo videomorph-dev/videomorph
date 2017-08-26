@@ -25,12 +25,11 @@ from os import cpu_count
 ConvLib = namedtuple('ConvLib', 'ffmpeg avconv')
 CONV_LIB = ConvLib('ffmpeg', 'avconv')
 
-VALID_VIDEO_EXT = {'.mkv', '.ogg', '.mp4', '.mpg', '.dat',
-                   '.f4v', '.flv', '.wv', '.3gp', '.avi',
-                   '.webm', '.wmv', '.mov', '.vob', '.ogv',
-                   '.ts'}
 
-VIDEO_FILTERS = ' *'.join(('', *VALID_VIDEO_EXT)).strip()
+VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
+                ' *.flv *.vob *.ts *.3gp *.ogv *.mpg *.mp4 *.avi')
+
+VALID_VIDEO_EXT = {ext[1:] for ext in VIDEO_FILTERS.split()}
 
 Prober = namedtuple('Prober', 'ffprobe avprobe')
 PROBER = Prober('ffprobe', 'avprobe')
