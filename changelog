@@ -6,84 +6,84 @@ videomorph (1.1) xenial; urgency=high
 
 videomorph (1.0) xenial; urgency=high
 
-    * BuxFix: "python setup.py install" fails in systems where setuptools is not installed.
+    * "python setup.py install" fails in systems where setuptools is not installed.
       Some other corrections to setup.py module: include the changelog.gz and the
-      screenshot.png files in the package
+      screenshot.png files in the package. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 23 Aug 2017 21:59:45 -0400
 
 videomorph (1.0) xenial; urgency=high
 
-    * BugFix: Correct a problem with duplicated files when adding files from
-      console using -i and -d option at the same time
+    * Problem with duplicated files when adding files from console using -i
+      and -d option at the same time. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 23 Aug 2017 08:58:13 -0400
 
 videomorph (1.0) xenial; urgency=high
 
-    * BugFix: Check boxes for Other Options now will be unchecked when list
+    * Check boxes for Other Options now will be unchecked when list
       is cleared, or process is stopped
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 23 Aug 2017 01:03:09 -0400
 
 videomorph (1.0) xenial; urgency=high
 
-    * BugFix: Correct a problem in _MediaFile.delete_input() and the subtitles
-      files
+    * Correct a problem in _MediaFile.delete_input() and the subtitles
+      files. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 23 Aug 2017 00:21:11 -0400
 
 videomorph (1.0) xenial; urgency=high
 
-    * BugFix: Correct a problem in _OutputReader.catch_library_error() related
-      to processing the library errors. Add a new library error.
+    * Correct a problem in _OutputReader.catch_library_error() related
+      to processing the library errors. Fixed
+    * Add a new library error
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 18:46:28 -0400
 
 videomorph (1.0) xenial; urgency=high
 
-    * BugFix: Correct the problem with video extension adding directory.
-      It accepted .mp as a valid extension, for instance
+    * Correct the problem with video extension adding directory.
+      It accepted .mp as a valid extension, for instance. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 17:41:16 -0400
 
 videomorph (1.0) xenial; urgency=high
 
-    * BugFix: Correct the problem with video extension in customized profiles.
-      It accepted .mp as a valid extension, for instance
+    * Correct the problem with video extension in customized profiles.
+      It accepted .mp as a valid extension, for instance. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 16:18:14 -0400
 
 videomorph (1.0) xenial; urgency=high
 
-    * BugFix: When the output file name coincide with the input file name,
-      the input video was overwritten
+    * When the output file path coincide with the input file path,
+      the input video was overwritten. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 22 Aug 2017 15:24:45 -0400
 
 videomorph (1.0) xenial; urgency=low
 
-    * New feature: Now is optional the use of a Format Tag in the name of
-      the output file (no tag by default). The user choose.
+    * Now is optional the use of a Format Tag in the name of
+      the output file (no tag by default). The user choose
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 21 Aug 2017 09:49:27 -0400
 
 videomorph (1.0) xenial; urgency=medium
 
-    * Improve the Artwork, mainly the icons theme. DONE
+    * Artwork improved, mainly the icons theme
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 20 Aug 2017 22:02:29 -0400
 
 videomorph (1.0) xenial; urgency=medium
 
-    * BugFix: Correct the problem with the paths for translations and for
-      LICENSE
+    * Problem to find the paths for translations and for LICENSE. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 20 Aug 2017 16:41:44 -0400
 
 videomorph (1.0) xenial; urgency=medium
 
-    * Play the videos with the system default video player. Done for
+    * Play the videos with the system default video player. Now available for
       Genome base Desktop Environment
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 19 Aug 2017 16:11:44 -0400
@@ -103,31 +103,32 @@ videomorph (1.0) xenial; urgency=low
 
 videomorph (1.0) xenial; urgency=medium
 
-    * New Feature: Show a progress dialog when loading files. Remove threads
-      from media.py
+    * Show a progress dialog when loading files, so the user now the app is
+      still working
+    * Remove threads from media.py
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 17 Aug 2017 18:51:29 -0400
 
 videomorph (1.0) xenial; urgency=medium
 
     * Disable the Play Output File context menu if the file doesn't
-      exist, and in MP4 formats cause file can't be play until conversion
-      is finished. DONE
+      exist, and in MP4 formats cause this format can't be play until conversion
+      is finished
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 16 Aug 2017 01:29:15 -0400
 
 videomorph (1.0) xenial; urgency=medium
 
-    * Refactor: Get the License from the LICENSE file instead of hard coding
+    * Get the License from the LICENSE file instead of hard coding
       it about.py file
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 15 Aug 2017 17:08:40 -0400
 
 videomorph (1.0) xenial; urgency=medium
 
-    * Posible Bug: media_list.position = -1 represents the last element of
+    * media_list.position = -1 represents the last element of
       the list, not any element as was supposed. Now not element is
-      represented by NoneType
+      represented by NoneType. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 15 Aug 2017 00:33:35 -0400
 
@@ -145,25 +146,70 @@ videomorph (1.0) xenial; urgency=low
 
 videomorph (1.0) xenial; urgency=high
 
-    * BugFix: Correct the issue related to the inclusion of square brackets
-      within the subtitle path
+    * Issue related to the inclusion of square brackets within the subtitle path. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 12 Aug 2017 19:01:34 -0400
 
 videomorph (1.0) xenial; urgency=high
 
-    * BugFix: The output field showed the last used dir even if it does not exist
+    * The output field showed the last used dir even if it does not exist. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 7 Aug 2017 19:58:33 -0400
 
 videomorph (1.0) xenial; urgency=medium
 
-    * Add feature: Extract Audio in mp3 format
+    * Extract Audio in mp3 format
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 7 Aug 2017 19:32:45 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Release VideoMorph v1.1
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Fri, 19 May 2017 14:00:00 -0400
 
 videomorph (1.0) xenial; urgency=medium
 
     * Add a man page
 
  -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Fri, 19 May 2017 00:07:34 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Edit/Restore to Default Conversion Profiles. Just in case
+      the user break the profiles
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Thu, 18 May 2017 01:58:48 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Accept a video file or a directory with videos or both in the command line
+      (videomorph -i video.avi and videomorph -d directory)
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Tue, 16 May 2017 16:18:06 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Include subtitles in the video file
+    * Allow the user to decide if the source video file is to be removed when
+      conversion finish
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Tue, 16 May 2017 00:34:57 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Import presets from outer source
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Sun, 14 May 2017 22:52:38 -0400
+
+videomorph (1.0) xenial; urgency=medium
+
+    * Use setuptools.setup instead of disutils.core.setup for more options
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Thu, 11 May 2017 20:24:20 -0400
+
+videomorph (0.8) xenial; urgency=medium
+
+    * Release VideoMorph v0.8
+
+ -- Leodanis Pozo Ramos <lpozo@openmailbox.org>  Sun, 30 April 2017 20:24:20 -0400
