@@ -33,7 +33,7 @@ from . import BASE_DIR
 from . import LOCALE
 from .converter.console import run_on_console
 from .forms.videomorph import VideoMorphMW
-from videomorph import  LINUX_PATHS
+from videomorph import LINUX_PATHS
 from videomorph import VM_PATHS
 
 
