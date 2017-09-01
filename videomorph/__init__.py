@@ -18,34 +18,3 @@
 #   limitations under the License.
 
 """This module defines the videomorph package and the needed constants."""
-
-from os.path import expanduser
-from os.path import dirname
-from os.path import join as join_path
-
-from videomorph.converter.utils import get_locale
-
-APPNAME = 'VideoMorph'
-VERSION = '1.1'
-CODENAME = 'adventurer'
-BASE_DIR = dirname(dirname(__file__))
-LOCALE = get_locale()
-PACKAGE_NAME = APPNAME.lower()
-MAINTAINER = APPNAME + ' ' + 'Development Team'
-
-LINUX_PATHS = {'apps': '/usr/share/applications',
-               'config': join_path(expanduser('~'), '.videomorph'),
-               'icons': '/usr/share/icons',
-               'i18n': '/usr/share/videomorph/translations',
-               'profiles': '/usr/share/videomorph/stdprofiles',
-               'doc': '/usr/share/doc/videomorph',
-               'man': '/usr/share/man/man1',
-               'gnome_mime': '/etc/gnome/defaults.list'}
-
-VM_PATHS = {'apps': 'share/applications',
-            'icons': 'share/icons',
-            'i18n': 'share/videomorph/translations',
-            'profiles': 'share/videomorph/stdprofiles',
-            'doc': 'share/doc/videomorph',
-            'man': 'share/man',
-            'bin': 'bin'}

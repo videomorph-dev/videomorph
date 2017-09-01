@@ -30,10 +30,10 @@ except ImportError:
     from distutils.core import setup
     PACKAGES = ['videomorph', 'videomorph/converter', 'videomorph/forms']
 
-from videomorph import VERSION
-from videomorph import PACKAGE_NAME
-from videomorph import LINUX_PATHS
-from videomorph import VM_PATHS
+from videomorph.converter import VERSION
+from videomorph.converter import PACKAGE_NAME
+from videomorph.converter import LINUX_PATHS
+from videomorph.converter import VM_PATHS
 
 
 LONG_DESC = """Small Video Converter based on ffmpeg, Python 3 and Qt5.

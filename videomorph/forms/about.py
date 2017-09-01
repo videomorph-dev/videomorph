@@ -35,10 +35,10 @@ from PyQt5.QtWidgets import (QDialog,
                              QLabel,
                              QSpacerItem)
 
-from videomorph import APPNAME
-from videomorph import BASE_DIR
-from videomorph import LINUX_PATHS
-from videomorph import VERSION
+from videomorph.converter import APP_NAME
+from videomorph.converter import BASE_DIR
+from videomorph.converter import LINUX_PATHS
+from videomorph.converter import VERSION
 
 
 class AboutVMDialog(QDialog):
@@ -62,7 +62,7 @@ class AboutVMDialog(QDialog):
                               "font-size:20pt; font-weight:600;\">{n}</span>"
                               "</p><p align=\"center\"><span style=\" "
                               "font-size:9pt; font-weight:600;\">version {v}"
-                              "</span></p>".format(n=APPNAME, v=VERSION))
+                              "</span></p>".format(n=APP_NAME, v=VERSION))
         self.label_2.setMinimumSize(QSize(0, 64))
         self.label_2.setMaximumSize(QSize(16777215, 64))
         self.horizontal_layout_2.addWidget(self.label_2)

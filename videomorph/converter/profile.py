@@ -28,10 +28,10 @@ from os.path import exists, getsize
 from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
-from videomorph import BASE_DIR
-from videomorph import LINUX_PATHS
-from videomorph import LOCALE
-from videomorph import VM_PATHS
+from . import BASE_DIR
+from . import LINUX_PATHS
+from . import LOCALE
+from . import VM_PATHS
 from . import VALID_VIDEO_EXT
 
 

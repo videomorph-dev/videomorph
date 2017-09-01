@@ -59,8 +59,8 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QItemDelegate)
 
 from . import videomorph_qrc
-from videomorph import APPNAME
-from videomorph import VERSION
+from videomorph.converter import APP_NAME
+from videomorph.converter import VERSION
 from videomorph.converter import CONV_LIB
 from videomorph.converter import STATUS
 from videomorph.converter import VIDEO_FILTERS
@@ -448,16 +448,16 @@ class VideoMorphMW(QMainWindow):
 
         self.about_action = self._action_factory(
             icon=QIcon(':/icons/about.png'),
-            text=self.tr('&About') + ' ' + APPNAME + ' ' + VERSION + '...',
+            text=self.tr('&About') + ' ' + APP_NAME + ' ' + VERSION + '...',
             shortcut="Ctrl+H",
-            tip=self.tr('&About') + ' ' + APPNAME + ' ' + VERSION,
+            tip=self.tr('&About') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.about)
 
         self.exit_action = self._action_factory(
             icon=QIcon(':/icons/exit.png'),
             text=self.tr('E&xit'),
             shortcut="Ctrl+Q",
-            tip=self.tr('Exit') + ' ' + APPNAME + ' ' + VERSION,
+            tip=self.tr('Exit') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.close)
 
         self.settings_action = self._action_factory(
@@ -1233,7 +1233,7 @@ class VideoMorphMW(QMainWindow):
 
     def _set_window_title(self):
         """Set window title."""
-        self.setWindowTitle(APPNAME + ' ' + VERSION)
+        self.setWindowTitle(APP_NAME + ' ' + VERSION)
 
     def _reset_progress_bars(self):
         """Reset the progress bars."""
@@ -1299,7 +1299,7 @@ class VideoMorphMW(QMainWindow):
 
         self.setWindowTitle(str(op_progress) + '%' + '-' +
                             '[' + running_file_name + ']' +
-                            ' - ' + APPNAME + ' ' + VERSION)
+                            ' - ' + APP_NAME + ' ' + VERSION)
 
     def _update_status_bar(self):
         """Update the status bar while converting."""

@@ -14,7 +14,6 @@ Next version (1.2):
     - Implement the default profiles.xml and custom profiles.xml and from them create the profiles.xml
       tu use finally. This three file should be at $HOME/.videomorph/profiles
     - Add the an option to list the changelog in Help menu
-    - Move all constants to converter package to avoid cyclic dependency among packages
     - Create the blog in Cubava.cu with the domain videomorph.cubava.cu
     - Redesign app logo and the icons
     - Create an user manual

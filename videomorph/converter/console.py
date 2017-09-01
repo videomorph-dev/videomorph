@@ -27,16 +27,16 @@ from os.path import isdir
 from os.path import sep
 from os.path import abspath
 
-from videomorph import APPNAME
-from videomorph import VERSION
-from videomorph.converter import VALID_VIDEO_EXT
+from . import APP_NAME
+from . import VERSION
+from . import VALID_VIDEO_EXT
 
 
 def run_on_console(app, main_win):
     """Provides option to run VideoMorph from the command line."""
 
     # Add a parser for command line
-    parser = argparse.ArgumentParser(description=APPNAME + ' ' + VERSION)
+    parser = argparse.ArgumentParser(description=APP_NAME + ' ' + VERSION)
 
     # Add options for command line
     parser.add_argument('-i', '--input-file',

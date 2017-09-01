@@ -27,12 +27,12 @@ from os.path import exists
 from PyQt5.QtCore import QProcess
 
 from . import CONV_LIB
+from . import LINUX_PATHS
 from . import PLAYERS
 from . import PROBER
 from .utils import write_time
 from .utils import spawn_process
 from .utils import which
-from videomorph import LINUX_PATHS
 
 
 class PlayerNotFoundError(Exception):
