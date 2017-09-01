@@ -766,7 +766,7 @@ class VideoMorphMW(QMainWindow):
         self.tb_tasks.setRowCount(self.media_list.length)
         # Call converter_is_running only once
         converter_is_running = self.conversion_lib.converter_is_running
-        for row, media_file in enumerate(self.media_list):
+        for row in range(self.tb_tasks.rowCount()):
             self._insert_table_item(
                 item_text=self.media_list.get_file_name(position=row,
                                                         with_extension=True),
