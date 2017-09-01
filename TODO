@@ -5,9 +5,6 @@ Next version (1.2):
 
     - Pack in .rpm format
     - Pack for Arch Linux
-    - Create a public interface in media.MediaList to handel the running file
-      using delegation (running_file_name(), running_file_status(), running_file_info(),
-      running_file_path())
     - Pack as standard binary package, not as a Python package
     - Implement the main window interface in a separated module, maybe mainwindow.py
     - Move the business logic present in videomorph.py, about.py and other views to converter

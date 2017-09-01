@@ -768,12 +768,13 @@ class VideoMorphMW(QMainWindow):
         converter_is_running = self.conversion_lib.converter_is_running
         for row, media_file in enumerate(self.media_list):
             self._insert_table_item(
-                item_text=media_file.get_name(with_extension=True),
+                item_text=self.media_list.get_file_name(position=row,
+                                                        with_extension=True),
                 row=row, column=COLUMNS.NAME)
 
             self._insert_table_item(
                 item_text=str(write_time(
-                    media_file.get_info('format_duration'))),
+                    self.media_list.running_file_info('format_duration'))),
                 row=row, column=COLUMNS.DURATION)
 
             self._insert_table_item(
@@ -1070,12 +1071,10 @@ class VideoMorphMW(QMainWindow):
         # Reset the operation initial time
         self.timer.operation_start_time = 0.0
 
-        running_file = self.media_list.running_file
-
-        if running_file.status == STATUS.todo:
+        if self.media_list.running_file_status == STATUS.todo:
             try:
                 # Fist build the conversion command
-                conversion_cmd = running_file.build_conversion_cmd(
+                conversion_cmd = self.media_list.running_file_conversion_cmd(
                     target_quality=self.tb_tasks.item(
                         self.media_list.position,
                         COLUMNS.QUALITY).text(),
@@ -1099,7 +1098,7 @@ class VideoMorphMW(QMainWindow):
                     type_=QMessageBox.Critical,
                     title=self.tr('Error!'),
                     msg=(self.tr('Input Video File:') + ' ' +
-                         running_file.get_output_file_name(
+                         self.media_list.running_file_name(
                              with_extension=True) + ' ' +
                          self.tr('not Found')))
 
@@ -1114,7 +1113,7 @@ class VideoMorphMW(QMainWindow):
                     type_=QMessageBox.Critical,
                     title=self.tr('Error!'),
                     msg=(self.tr('Video File:') + ' ' +
-                         running_file.get_output_file_name(
+                         self.media_list.running_file_output_name(
                              output_dir=self.le_output.text(),
                              tagged_output=self.chb_tag.checkState()) + ' ' +
                          self.tr('Already Exists in '
@@ -1134,9 +1133,9 @@ class VideoMorphMW(QMainWindow):
     def stop_file_encoding(self):
         """Stop file encoding process and continue with the list."""
         # Set _MediaFile.status attribute
-        self.media_list.running_file.status = STATUS.stopped
+        self.media_list.running_file_status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
-        self.media_list.running_file.delete_output(
+        self.media_list.delete_running_file_output(
             output_dir=self.le_output.text(),
             tagged_output=self.chb_tag.checkState())
         # Update the list duration and partial time for total progress bar
@@ -1148,7 +1147,7 @@ class VideoMorphMW(QMainWindow):
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
         # Delete the file when conversion is stopped by the user
-        self.media_list.running_file.delete_output(
+        self.media_list.delete_running_file_output(
             output_dir=self.le_output.text(),
             tagged_output=self.chb_tag.checkState())
         for media_file in self.media_list:
@@ -1168,7 +1167,7 @@ class VideoMorphMW(QMainWindow):
 
     def _finish_file_encoding(self):
         """Finish the file encoding process."""
-        if self.media_list.running_file.status != STATUS.stopped:
+        if self.media_list.running_file_status != STATUS.stopped:
             # Close and kill the converterprocess
             self.conversion_lib.close_converter()
             # Check if the process finished OK
@@ -1177,10 +1176,10 @@ class VideoMorphMW(QMainWindow):
                 # When finished a file conversion...
                 self.tb_tasks.item(self.media_list.position,
                                    COLUMNS.PROGRESS).setText(self.tr('Done!'))
-                self.media_list.running_file.status = STATUS.done
+                self.media_list.running_file_status = STATUS.done
                 self.pb_progress.setProperty("value", 0)
                 if self.chb_delete.checkState():
-                    self.media_list.running_file.delete_input()
+                    self.media_list.delete_running_file_input()
             # Attempt to end the conversion process
             self._end_encoding_process()
         else:
@@ -1268,7 +1267,7 @@ class VideoMorphMW(QMainWindow):
 
         self.timer.update_cum_times()
 
-        file_duration = float(self.media_list.running_file.get_info(
+        file_duration = float(self.media_list.running_file_info(
             'format_duration'))
 
         operation_progress = self.timer.operation_progress(
@@ -1294,8 +1293,8 @@ class VideoMorphMW(QMainWindow):
         self.pb_total_progress.setProperty("value", pr_progress)
 
     def _update_main_window_title(self, op_progress):
-        """Udate the main window title."""
-        running_file_name = self.media_list.running_file.get_name(
+        """Update the main window title."""
+        running_file_name = self.media_list.running_file_name(
             with_extension=True)
 
         self.setWindowTitle(str(op_progress) + '%' + '-' +
@@ -1304,9 +1303,7 @@ class VideoMorphMW(QMainWindow):
 
     def _update_status_bar(self):
         """Update the status bar while converting."""
-        running_file_name = self.media_list.running_file.get_name(
-            with_extension=True)
-        file_duration = float(self.media_list.running_file.get_info(
+        file_duration = float(self.media_list.running_file_info(
             'format_duration'))
 
         self.statusBar().showMessage(
@@ -1314,7 +1311,8 @@ class VideoMorphMW(QMainWindow):
                     'At: {br}\t\t\t '
                     'Operation Remaining Time: {ort}\t\t\t '
                     'Total Elapsed Time: {tet}').format(
-                        m=running_file_name,
+                        m=self.media_list.running_file_name(
+                            with_extension=True),
                         br=self.reader.bitrate,
                         ort=self.timer.operation_remaining_time(
                             file_duration=file_duration),
