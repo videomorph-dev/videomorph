@@ -1,14 +1,14 @@
 TODO List:
 ----------
 
-Next version (1.1):
+Next version (1.2):
+
     - Pack in .rpm format
     - Pack for Arch Linux
-
-Version (1.2)
     - Create a public interface in media.MediaList to handel the running file
       using delegation (running_file_name(), running_file_status(), running_file_info(),
       running_file_path())
+    - Pack as standard binary package, not as a Python package
     - Implement the main window interface in a separated module, maybe mainwindow.py
     - Move the business logic present in videomorph.py, about.py and other views to converter
       package
@@ -17,14 +17,18 @@ Version (1.2)
     - Implement the default profiles.xml and custom profiles.xml and from them create the profiles.xml
       tu use finally. This three file should be at $HOME/.videomorph/profiles
     - Add the an option to list the changelog in Help menu
+    - Move all constants to converter package to avoid cyclic dependency among packages
+    - Create the blog in Cubava.cu with the domain videomorph.cubava.cu
+    - Redesign app logo and the icons
+    - Create an user manual
+    - Allow drag and drop video files into the List of Conversion Tasks
+    - Play the videos with the system default video player (in KDE branch)
+    - Implement an alternative class for _Converter (subprocess maybe) to decouple from PyQt5
 
 BugFix:
     -
 
 Someday:
     - Pack in Flatpak or Snap
-    - Allow drag and drop video files into the List of Conversion Tasks
-    - Play the videos with the system default video player (in KDE branch)
-    - Implement an alternative class for _Converter (subprocess maybe) to decouple from PyQt5
     - Implement model/view/controller pattern
     - Make it run on Windows

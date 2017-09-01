@@ -22,8 +22,9 @@
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import (QDialog, QWidget, QVBoxLayout, QLabel,
                              QLineEdit, QSpacerItem, QDialogButtonBox,
-                             QMessageBox)
+                             QMessageBox, QCompleter)
 
+from videomorph.converter import VALID_VIDEO_EXT
 from videomorph.converter.profile import (ProfileBlankNameError,
                                           ProfileBlankPresetError,
                                           ProfileBlankParamsError,
@@ -47,10 +48,15 @@ class AddProfileDialog(QDialog):
         self.vertical_layout = QVBoxLayout()
 
         self.label = QLabel(self.layout_widget)
-        self.label.setText(self.tr("Pr&ofile Name (e.g. MP4)"))
+        self.label.setText(self.tr('Pr&ofile Name:'))
         self.vertical_layout.addWidget(self.label)
 
         self.le_profile_name = QLineEdit(self.layout_widget)
+        self.le_profile_name.setPlaceholderText(self.tr('(e.g. MP4)'))
+        profile_name_model = QCompleter(
+            self.parent.profile.get_xml_profile_qualities().keys())
+        profile_name_model.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.le_profile_name.setCompleter(profile_name_model)
         self.vertical_layout.addWidget(self.le_profile_name)
 
         self.vertical_layout_4.addLayout(self.vertical_layout)
@@ -59,10 +65,12 @@ class AddProfileDialog(QDialog):
 
         self.label_2 = QLabel(self.layout_widget)
         self.label_2.setText(self.tr(
-            "&Target Quality Name (e.g. MP4 Widescreen (16:9))"))
+            "&Target Quality Name:"))
         self.vertical_layout_2.addWidget(self.label_2)
 
         self.le_preset_name = QLineEdit(self.layout_widget)
+        self.le_preset_name.setPlaceholderText(
+            self.tr('(e.g. MP4 Widescreen (16:9))'))
         self.vertical_layout_2.addWidget(self.le_preset_name)
 
         self.vertical_layout_4.addLayout(self.vertical_layout_2)
@@ -71,7 +79,7 @@ class AddProfileDialog(QDialog):
 
         self.label_3 = QLabel(self.layout_widget)
         self.label_3.setText(self.tr(
-            "&Command Line Parameters for Tarrget Quality"))
+            "&Command Line Parameters for Target Quality:"))
         self.vertical_layout_3.addWidget(self.label_3)
 
         self.le_params = QLineEdit(self.layout_widget)
@@ -83,10 +91,14 @@ class AddProfileDialog(QDialog):
 
         self.label_4 = QLabel(self.layout_widget)
         self.label_4.setText(self.tr(
-            "Output File &Extension (e.g. .mp4)"))
+            "Output File &Extension:"))
         self.vertical_layout_5.addWidget(self.label_4)
 
         self.le_extension = QLineEdit(self.layout_widget)
+        self.le_extension.setPlaceholderText(self.tr('(e.g. .mp4)'))
+        extensions_model = QCompleter(VALID_VIDEO_EXT)
+        extensions_model.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.le_extension.setCompleter(extensions_model)
         self.vertical_layout_5.addWidget(self.le_extension)
 
         self.vertical_layout_4.addLayout(self.vertical_layout_5)

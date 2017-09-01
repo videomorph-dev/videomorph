@@ -69,54 +69,69 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>AddProfileDialog</name>
     <message>
-        <location filename="../../../videomorph/forms/addprofile.py" line="39"/>
+        <location filename="../../../videomorph/forms/addprofile.py" line="40"/>
         <source>Add Customized Profile</source>
         <translation>Añadir Perfil de Conversión Personalizado</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/addprofile.py" line="50"/>
-        <source>Pr&amp;ofile Name (e.g. MP4)</source>
-        <translation>&amp;Nombre del Perfil (Ej. MP4)</translation>
-    </message>
-    <message>
-        <location filename="../../../videomorph/forms/addprofile.py" line="61"/>
-        <source>&amp;Target Quality Name (e.g. MP4 Widescreen (16:9))</source>
-        <translation>&amp;Calidad Objetivo (Ej. MP4 Pantalla Panorámica (16:9))</translation>
-    </message>
-    <message>
-        <location filename="../../../videomorph/forms/addprofile.py" line="73"/>
-        <source>&amp;Command Line Parameters for Tarrget Quality</source>
-        <translation>&amp;Parámetros de Línea de Comandos para la Calidad Objetivo</translation>
-    </message>
-    <message>
-        <location filename="../../../videomorph/forms/addprofile.py" line="85"/>
-        <source>Output File &amp;Extension (e.g. .mp4)</source>
-        <translation>&amp;Extensión del Archivo de Salida (Ej. .mp4)</translation>
-    </message>
-    <message>
-        <location filename="../../../videomorph/forms/addprofile.py" line="142"/>
+        <location filename="../../../videomorph/forms/addprofile.py" line="154"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/addprofile.py" line="124"/>
+        <location filename="../../../videomorph/forms/addprofile.py" line="136"/>
         <source>Profile Name can&apos;t be Left Blank</source>
         <translation>El Nombre del Perfil no Puede Quedar en Blanco</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/addprofile.py" line="130"/>
+        <location filename="../../../videomorph/forms/addprofile.py" line="142"/>
         <source>Target Quality Name can&apos;t be Left Blank</source>
         <translation>La Calidad Objetivo no Puede Quedar en Blanco</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/addprofile.py" line="136"/>
+        <location filename="../../../videomorph/forms/addprofile.py" line="148"/>
         <source>Command Line Parameters can&apos;t be Left Blank</source>
         <translation>Los Parámetros de Línea de Comandos no Pueden Quedar en Blanco</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/addprofile.py" line="142"/>
+        <location filename="../../../videomorph/forms/addprofile.py" line="154"/>
         <source>Output File Extension can&apos;t be Left Blank, it must start with a dot (.) and should be a Valid Video Extension</source>
         <translation>La Extensión del Archivo de Salida no Puede Quedar en Blanco, debe Comenzar con un Punto (.) y debe ser una Extensión de Video Válida</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/addprofile.py" line="51"/>
+        <source>Pr&amp;ofile Name:</source>
+        <translation>N&amp;ombre del Perfil:</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/addprofile.py" line="55"/>
+        <source>(e.g. MP4)</source>
+        <translation>(Ej. MP4)</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/addprofile.py" line="67"/>
+        <source>&amp;Target Quality Name:</source>
+        <translation>Nombre de la C&amp;alidad Objetivo:</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/addprofile.py" line="72"/>
+        <source>(e.g. MP4 Widescreen (16:9))</source>
+        <translation>(Ej. MP4 Pantalla Panorámica (16:9))</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/addprofile.py" line="81"/>
+        <source>&amp;Command Line Parameters for Target Quality:</source>
+        <translation>&amp;Parámetros de Línea de Comandos para la Calidad Objetivo:</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/addprofile.py" line="93"/>
+        <source>Output File &amp;Extension:</source>
+        <translation>&amp;Extensión de Archivo de Salida:</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/addprofile.py" line="98"/>
+        <source>(e.g. .mp4)</source>
+        <translation>(Ej. .mp4)</translation>
     </message>
 </context>
 <context>
@@ -300,12 +315,12 @@ p, li { white-space: pre-wrap; }
         <translation>A&amp;yuda</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1218"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1219"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1112"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1113"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
@@ -320,7 +335,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivos de Video</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1363"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1364"/>
         <source>To Convert</source>
         <translation>Convertir</translation>
     </message>
@@ -330,7 +345,7 @@ p, li { white-space: pre-wrap; }
         <translation>Exportar al Directorio</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1212"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1213"/>
         <source>Information!</source>
         <translation>Información!</translation>
     </message>
@@ -350,17 +365,17 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1190"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1191"/>
         <source>Stopped!</source>
         <translation>Detenido!</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1178"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1179"/>
         <source>Done!</source>
         <translation>Hecho!</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1207"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1208"/>
         <source>Encoding Process Successfully Finished!</source>
         <translation>Proceso de Conversión Concluido Exitosamente!</translation>
     </message>
@@ -395,7 +410,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivo de Perfiles </translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1212"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1213"/>
         <source>Encoding Process Stopped by the User!</source>
         <translation>Proceso de Conversión Detenido por el Usuario!</translation>
     </message>
@@ -480,7 +495,7 @@ p, li { white-space: pre-wrap; }
         <translation>Otras Opciones:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1199"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1200"/>
         <source>The Conversion Library has Failed with Error:</source>
         <translation>La Librería de Conversión ha Fallado con Error:</translation>
     </message>
@@ -510,7 +525,7 @@ p, li { white-space: pre-wrap; }
         <translation>No se Encontraron Archivos de Video en:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1311"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1312"/>
         <source>Converting: {m}			 At: {br}			 Operation Remaining Time: {ort}			 Total Elapsed Time: {tet}</source>
         <translation>Convirtiendo: {m}			 A: {br}			 Tiempo Restante de la Operación: {ort}			 Tiempo Total Transcurrido: {tet}</translation>
     </message>
@@ -570,7 +585,7 @@ p, li { white-space: pre-wrap; }
         <translation>Útil cuando se Convierte un Archivo de Video a Múltiples Formatos</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1112"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1113"/>
         <source>Video File:</source>
         <translation>El Archivo de Video:</translation>
     </message>
@@ -585,7 +600,7 @@ p, li { white-space: pre-wrap; }
         <translation>no Encontrado</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1112"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1113"/>
         <source>Already Exists in Output Directory. Please, Change the Output Directory</source>
         <translation>ya Exite en el Directorio Destino. Por Favor, Cambie el Directorio Destino</translation>
     </message>
