@@ -41,6 +41,11 @@ def spawn_process(cmd):
                  universal_newlines=True)
 
 
+def open_with_user_preferred_app(url):
+    """Open a file or url with user's preferred app."""
+    spawn_process([which('xdg-open'), url])
+
+
 def which(app):
     """Detect if an app is installed in your system."""
     if app == '':

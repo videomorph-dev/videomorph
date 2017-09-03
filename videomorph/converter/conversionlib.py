@@ -21,17 +21,15 @@
 
 import re
 from time import time
-from mimetypes import guess_type
-from os.path import exists
 
 from PyQt5.QtCore import QProcess
 
 from . import CONV_LIB
-from . import LINUX_PATHS
 from . import PLAYERS
 from . import PROBER
 from .utils import write_time
 from .utils import spawn_process
+from .utils import open_with_user_preferred_app
 from .utils import which
 
 
@@ -47,25 +45,25 @@ class ConversionLib:
         """Class initializer."""
         self._name = self.get_system_library_name()
         self._converter = _Converter(conversion_lib_name=self.name)
-        self._player = _Player()
-        self._delegates = (self._converter, self._player)
         self.library_error = None
         self.reader = _OutputReader()
         self.timer = _ConversionTimer()
 
     def __getattr__(self, attr):
         """Delegate to use instance member objects."""
-        for delegate in self._delegates:
-            try:
-                return getattr(delegate, attr)
-            except AttributeError:
-                pass
-
-        raise AttributeError('Attribute not found')
+        return getattr(self._converter, attr)
 
     def catch_errors(self):
         """Catch the library error when running."""
         self.library_error = self.reader.catch_library_error()
+
+    def run_player(self, file_path):
+        """Play a video file with user default player."""
+        if which('xdg-open') is not None:
+            open_with_user_preferred_app(url=file_path)
+        else:
+            player = self._get_player()
+            spawn_process([which(player), file_path])
 
     @property
     def name(self):
@@ -95,6 +93,15 @@ class ConversionLib:
         elif which(CONV_LIB.avconv):
             return CONV_LIB.avconv  # Alternative library
         return None  # Not available library
+
+    @staticmethod
+    def _get_player():
+        """Return a player from a list of popular players."""
+        for player in PLAYERS:
+            if which(player):
+                return player
+
+        raise PlayerNotFoundError('Player not found')
 
 
 class _Converter:
@@ -149,66 +156,6 @@ class _Converter:
     def converter_is_running(self):
         """Return QProcess state."""
         return self._process.state() == QProcess.Running
-
-
-class _Player:
-    """_Player class to provide a video player."""
-
-    def __init__(self):
-        self._name = None
-
-    def run_player(self, file_path):
-        """Play a video file."""
-        if self._name is None:
-            self._set_player(file_path)
-
-        if self._name is not None:
-            spawn_process([which(self._name), file_path])
-        else:
-            raise AttributeError('No Payer Available')
-
-    def _set_player(self, file_path):
-        """Return the video player to be used."""
-        try:
-            self._name = self._gnome_player_finder(file_path)
-        except (FileNotFoundError, PlayerNotFoundError):
-            pass
-
-        if self._name is None:
-            self._name = self._list_base_player_finder()
-
-    def _gnome_player_finder(self, file_path):
-        """Return the default Gnome player."""
-        if exists(LINUX_PATHS['gnome_mime']):
-            mime_type = self._guess_mime_type(file_path)
-        else:
-            raise FileNotFoundError('Gnome default.list not found')
-
-        if mime_type is None:
-            return None
-
-        with open(LINUX_PATHS['gnome_mime'], 'r',
-                  encoding='UTF-8') as mime_file:
-            for line in mime_file:
-                if mime_type in line:
-                    player = line.split('=')[-1].split('.')[0]
-                    return player
-
-            raise PlayerNotFoundError('Player not found')
-
-    @staticmethod
-    def _list_base_player_finder():
-        """Return a player from a list of popular players."""
-        for player in PLAYERS:
-            if which(player):
-                return player
-
-        raise PlayerNotFoundError('Player not found')
-
-    @staticmethod
-    def _guess_mime_type(file_path):
-        """Return the file mine type."""
-        return guess_type(file_path)[0]
 
 
 class _OutputReader:
