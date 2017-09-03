@@ -74,6 +74,7 @@ from videomorph.converter.utils import which
 from videomorph.converter.utils import write_time
 from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
+from .changelog import ChangelogDialog
 from .settings import SettingsDialog
 
 # Conversion tasks list table columns
@@ -455,6 +456,11 @@ class VideoMorphMW(QMainWindow):
             tip=self.tr('About') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.about)
 
+        self.changelog_action = self._action_factory(
+            text=APP_NAME + ' ' + VERSION + ' ' + self.tr('Changelog') + '...',
+            tip=APP_NAME + ' ' + VERSION + ' ' + self.tr('Changelog'),
+            callback=self.changelog)
+
         self.ffmpeg_doc_action = self._action_factory(
             icon=QIcon(':/icons/ffmpeg.png'),
             text=self.tr('&Ffmpeg Documentation...'),
@@ -519,6 +525,7 @@ class VideoMorphMW(QMainWindow):
         # Help menu
         self.help_menu = self.menuBar().addMenu(self.tr('&Help'))
         self.help_menu.addAction(self.about_action)
+        self.help_menu.addAction(self.changelog_action)
         self.help_menu.addSeparator()
         self.help_menu.addAction(self.ffmpeg_doc_action)
 
@@ -646,7 +653,12 @@ class VideoMorphMW(QMainWindow):
         about_dlg = AboutVMDialog(parent=self)
         about_dlg.exec_()
 
-    def ffmpeg_doc(self):
+    def changelog(self):
+        changelog_dlg = ChangelogDialog(parent=self)
+        changelog_dlg.exec_()
+
+    @staticmethod
+    def ffmpeg_doc():
         """Open ffmpeg documentation page."""
         open_with_user_preferred_app(url='http://ffmpeg.org')
 
