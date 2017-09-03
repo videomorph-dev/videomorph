@@ -69,6 +69,7 @@ from videomorph.converter.conversionlib import ConversionLib
 from videomorph.converter.conversionlib import PlayerNotFoundError
 from videomorph.converter.media import MediaList
 from videomorph.converter.profile import ConversionProfile
+from videomorph.converter.utils import open_with_user_preferred_app
 from videomorph.converter.utils import which
 from videomorph.converter.utils import write_time
 from .about import AboutVMDialog
@@ -451,8 +452,15 @@ class VideoMorphMW(QMainWindow):
             icon=QIcon(':/icons/about.png'),
             text=self.tr('&About') + ' ' + APP_NAME + ' ' + VERSION + '...',
             shortcut="Ctrl+H",
-            tip=self.tr('&About') + ' ' + APP_NAME + ' ' + VERSION,
+            tip=self.tr('About') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.about)
+
+        self.ffmpeg_doc_action = self._action_factory(
+            icon=QIcon(':/icons/ffmpeg.png'),
+            text=self.tr('&Ffmpeg Documentation...'),
+            shortcut="Ctrl+L",
+            tip=self.tr('Open Ffmpeg On-Line Documentation'),
+            callback=self.ffmpeg_doc)
 
         self.exit_action = self._action_factory(
             icon=QIcon(':/icons/exit.png'),
@@ -511,6 +519,8 @@ class VideoMorphMW(QMainWindow):
         # Help menu
         self.help_menu = self.menuBar().addMenu(self.tr('&Help'))
         self.help_menu.addAction(self.about_action)
+        self.help_menu.addSeparator()
+        self.help_menu.addAction(self.ffmpeg_doc_action)
 
     def _create_toolbar(self):
         """Create a toolbar and add it to the interface."""
@@ -635,6 +645,10 @@ class VideoMorphMW(QMainWindow):
         """Show About dialog."""
         about_dlg = AboutVMDialog(parent=self)
         about_dlg.exec_()
+
+    def ffmpeg_doc(self):
+        """Open ffmpeg documentation page."""
+        open_with_user_preferred_app(url='http://ffmpeg.org')
 
     def settings(self):
         """Open a Setting Dialog to define the conversion library to use."""
