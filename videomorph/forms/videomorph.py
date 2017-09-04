@@ -457,8 +457,8 @@ class VideoMorphMW(QMainWindow):
             callback=self.about)
 
         self.changelog_action = self._action_factory(
-            text=APP_NAME + ' ' + VERSION + ' ' + self.tr('Changelog') + '...',
-            tip=APP_NAME + ' ' + VERSION + ' ' + self.tr('Changelog'),
+            text=self.tr('Changelog') + '...',
+            tip=self.tr('Changelog'),
             callback=self.changelog)
 
         self.ffmpeg_doc_action = self._action_factory(
