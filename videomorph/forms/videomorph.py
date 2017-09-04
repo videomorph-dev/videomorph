@@ -660,7 +660,8 @@ class VideoMorphMW(QMainWindow):
     @staticmethod
     def ffmpeg_doc():
         """Open ffmpeg documentation page."""
-        open_with_user_preferred_app(url='http://ffmpeg.org')
+        open_with_user_preferred_app(
+            url='https://ffmpeg.org/documentation.html')
 
     def settings(self):
         """Open a Setting Dialog to define the conversion library to use."""
