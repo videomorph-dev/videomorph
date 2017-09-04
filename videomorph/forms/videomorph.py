@@ -1116,7 +1116,12 @@ class VideoMorphMW(QMainWindow):
                     title=self.tr('Error!'),
                     msg=self.tr('Can not Write to Selected Directory'))
 
+                self.timer.reset_progress_times()
+                self.media_list_duration = self.media_list.duration
                 self.media_list.position = None
+                self._reset_progress_bars()
+                self._set_window_title()
+                self._reset_options_check_boxes()
                 self.update_interface(convert=False, stop=False,
                                       stop_all=False, remove=False,
                                       play_input=False, play_output=False)
@@ -1129,9 +1134,12 @@ class VideoMorphMW(QMainWindow):
                              with_extension=True) + ' ' +
                          self.tr('not Found')))
 
+                self.timer.reset_progress_times()
+                self.media_list_duration = self.media_list.duration
                 self.media_list.position = None
                 self._reset_progress_bars()
                 self._set_window_title()
+                self._reset_options_check_boxes()
                 self.update_interface(stop=False,
                                       stop_all=False, remove=False,
                                       play_input=False, play_output=False)
@@ -1147,6 +1155,8 @@ class VideoMorphMW(QMainWindow):
                                  'Output Directory. Please, Change the '
                                  'Output Directory')))
 
+                self.timer.reset_progress_times()
+                self.media_list_duration = self.media_list.duration
                 self.media_list.position = None
                 self._reset_progress_bars()
                 self._set_window_title()
