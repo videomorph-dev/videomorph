@@ -654,6 +654,7 @@ class VideoMorphMW(QMainWindow):
         about_dlg.exec_()
 
     def changelog(self):
+        """Show the changelog dialog."""
         changelog_dlg = ChangelogDialog(parent=self)
         changelog_dlg.exec_()
 

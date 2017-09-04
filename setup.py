@@ -92,5 +92,4 @@ if __name__ == '__main__':
                [VM_PATHS['man'] + '/videomorph.1.gz'])
           ],
 
-          scripts=[VM_PATHS['bin'] + '/videomorph']
-          )
+          scripts=[VM_PATHS['bin'] + '/videomorph'])
