@@ -22,9 +22,11 @@
 import re
 from collections import OrderedDict
 from distutils.errors import DistutilsFileError
+from distutils.dir_util import mkpath
 from distutils.file_util import copy_file
 from os import sep
 from os.path import exists, getsize
+from os.path import getmtime
 from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
@@ -33,6 +35,7 @@ from . import LINUX_PATHS
 from . import LOCALE
 from . import VM_PATHS
 from . import VALID_VIDEO_EXT
+from . import XML_FILES
 
 
 class ProfileError(Exception):
@@ -61,33 +64,17 @@ class ProfileExtensionError(ProfileError):
 
 
 class _XMLProfile:
-    """Class to manage the profiles.xml file."""
+    """Class to manage the xml profiles file."""
 
     def __init__(self):
-        self._xml_root = None
+        """Class initializer."""
+        # Create xml files.
+        self._xml_files = XML_FILES
+        self._create_xml_files()
 
-        # Setup the _XMLProfile to be used.
-        self.create_xml_profiles_file()
-
-    def _set_xml_root(self):
-        """Set the XML root."""
-        self._xml_root = self._get_xml_root()
-
-    def create_xml_profiles_file(self, restore=False):
-        """Create a xml file with the conversion profiles."""
-        profiles_xml = self._xml_profiles_path
-
-        if not exists(profiles_xml) or not getsize(profiles_xml) or restore:
-            if exists(LINUX_PATHS['profiles'] + '/profiles.xml'):
-                # if VideoMorph is installed
-                copy_file(LINUX_PATHS['profiles'] + '/profiles.xml',
-                          profiles_xml)
-            else:
-                # if not installed
-                copy_file(BASE_DIR + '{0}{1}{2}profiles.xml'.format(
-                    sep, VM_PATHS['profiles'], sep), profiles_xml)
-
-        self._set_xml_root()
+    def restore_default_profiles(self):
+        """Restore default profiles."""
+        self._copy_xml_file(file_name=self._xml_files.customized)
 
     def add_xml_profile(self, profile_name, preset, params, extension):
         """Add a conversion profile."""
@@ -108,6 +95,17 @@ class _XMLProfile:
         extension = extension.lower()
 
         xml_profile = ElementTree.Element(profile_name)
+
+        xml_preset = self._create_xml_preset(preset, params, extension)
+
+        self._insert_xml_elements(xml_profile=xml_profile,
+                                  xml_preset=xml_preset,
+                                  xml_root=self._get_xml_root(
+                                      self._xml_files.customized))
+
+    @staticmethod
+    def _create_xml_preset(preset, params, extension):
+        """Return a xml preset."""
         regexp = re.compile(r'[A-z][0-9]?')
         preset_tag = ''.join(regexp.findall(preset))
         xml_preset = ElementTree.Element(preset_tag)
@@ -124,31 +122,35 @@ class _XMLProfile:
                                   xml_extension, xml_preset_name_es]):
             xml_preset.insert(i, elem)
 
-        for i, elem in enumerate(self._xml_root[:]):
+        return xml_preset
+
+    def _insert_xml_elements(self, xml_profile, xml_preset, xml_root):
+        for i, elem in enumerate(xml_root[:]):
             if elem.tag == xml_profile.tag:
-                self._xml_root[i].insert(0, xml_preset)
-                self._save_xml_tree()
+                xml_root[i].insert(0, xml_preset)
+                self._save_xml_tree(xml_tree=xml_root)
                 break
         else:
             xml_profile.insert(0, xml_preset)
-            self._xml_root.insert(0, xml_profile)
-            self._save_xml_tree()
-
-        self._set_xml_root()
+            xml_root.insert(0, xml_profile)
+            self._save_xml_tree(xml_tree=xml_root)
 
     def export_xml_profiles(self, dst_dir):
         """Export a file with the conversion profiles."""
         # Raise PermissionError if user don't have write permission
         try:
-            copy_file(src=self._xml_profiles_path, dst=dst_dir)
+            copy_file(src=self._user_xml_file_path(
+                    file_name=self._xml_files.customized),
+                dst=dst_dir)
         except DistutilsFileError:
             raise PermissionError
 
     def import_xml_profiles(self, src_file):
         """Import a conversion profile file."""
         try:
-            copy_file(src=src_file, dst=self._xml_profiles_path)
-            self._set_xml_root()
+            dst_directory = self._user_xml_file_path(
+                self._xml_files.customized)
+            copy_file(src=src_file, dst=dst_directory)
         except DistutilsFileError:
             raise PermissionError
 
@@ -159,51 +161,99 @@ class _XMLProfile:
                      'file_extension': 2,
                      'preset_name_es': 3}
 
-        for element in self._xml_root:
-            for item in element:
-                if (item[0].text == target_quality or
-                        item[3].text == target_quality):
-                    return item[param_map[attr_name]].text
+        for xml_file in self._xml_files:
+            for element in self._get_xml_root(xml_file_name=xml_file):
+                for item in element:
+                    if (item[0].text == target_quality or
+                            item[3].text == target_quality):
+                        return item[param_map[attr_name]].text
 
     def get_xml_profile_qualities(self):
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
         values = []
 
-        for element in self._xml_root:
-            for item in element:
-                if LOCALE == 'es_ES':
-                    # Create the dict with values in spanish
-                    values.append(item[3].text)
-                else:
-                    # Create the dict with values in english
-                    values.append(item[0].text)
+        for xml_file in self._xml_files:
+            for element in self._get_xml_root(xml_file):
+                for item in element:
+                    if LOCALE == 'es_ES':
+                        # Create the dict with values in spanish
+                        values.append(item[3].text)
+                    else:
+                        # Create the dict with values in english
+                        values.append(item[0].text)
 
-            qualities_per_profile[element.tag] = values
-            # Reinitialize values
-            values = []
+                qualities_per_profile[element.tag] = values
+                # Reinitialize values
+                values = []
 
         return qualities_per_profile
 
-    def _save_xml_tree(self):
-        """Save xml tree."""
-        with open(self._xml_profiles_path, 'wb') as xml_file:
-            xml_file.write(b'<?xml version="1.0"?>\n')
-            ElementTree.ElementTree(self._xml_root).write(xml_file,
-                                                          encoding='UTF-8')
+    @staticmethod
+    def _user_xml_files_directory():
+        return LINUX_PATHS['config'] + '{0}{1}'.format(sep, 'profiles')
 
-    @property
-    def _xml_profiles_path(self):
+    def _user_xml_file_path(self, file_name):
         """Return the path to the profiles file."""
-        return LINUX_PATHS['config'] + '{0}profiles.xml'.format(sep)
+        return (self._user_xml_files_directory() +
+                '{0}{1}'.format(sep, file_name))
 
-    def _get_xml_root(self):
-        """Return the profiles.xml root."""
+    @staticmethod
+    def _sys_xml_file_path(file_name):
+        """Return the path to xml profiles file in the system."""
+        if exists(LINUX_PATHS['profiles'] + file_name):
+            # if VideoMorph is installed
+            return LINUX_PATHS['profiles'] + file_name
+        else:
+            # if not installed
+            return BASE_DIR + '{0}{1}{2}{3}'.format(
+                sep, VM_PATHS['profiles'], sep, file_name)
+
+    def _save_xml_tree(self, xml_tree):
+        """Save the xml tree."""
+        xml_profiles_path = self._user_xml_file_path(
+            self._xml_files.customized)
+
+        with open(xml_profiles_path, 'wb') as xml_file:
+            xml_file.write(b'<?xml version="1.0"?>\n')
+            ElementTree.ElementTree(xml_tree).write(xml_file, encoding='UTF-8')
+
+    def _create_xml_files(self):
+        """Create a xml file with the conversion profiles."""
+        mkpath(self._user_xml_files_directory())
+
+        for xml_file in self._xml_files:
+            if not self._xml_file_is_correct(xml_file):
+                self._copy_xml_file(file_name=xml_file)
+
+    def _copy_xml_file(self, file_name):
+        """Copy profiles xml file."""
+        xml_file_sys_path = self._sys_xml_file_path(file_name)
+        xml_file_user_path = self._user_xml_file_path(file_name)
+
+        copy_file(src=xml_file_sys_path, dst=xml_file_user_path)
+
+    def _xml_file_is_correct(self, file_name):
+        """Validate xml files in user config directory."""
+        xml_file_user_path = self._user_xml_file_path(file_name)
+        xml_file_sys_path = self._sys_xml_file_path(file_name)
+
+        if not exists(xml_file_user_path) or not getsize(xml_file_user_path):
+            return False
+
+        if getmtime(xml_file_sys_path) > getmtime(xml_file_user_path):
+            return False
+
+        return True
+
+    def _get_xml_root(self, xml_file_name):
+        """Return the xml root."""
+        path = self._user_xml_file_path(file_name=xml_file_name)
         try:
-            tree = ElementTree.parse(self._xml_profiles_path)
+            tree = ElementTree.parse(path)
         except ParseError:
-            self.create_xml_profiles_file(restore=True)
-            tree = ElementTree.parse(self._xml_profiles_path)
+            self.restore_default_profiles()
+            tree = ElementTree.parse(path)
         return tree.getroot()
 
 

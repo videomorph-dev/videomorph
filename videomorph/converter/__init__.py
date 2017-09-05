@@ -50,6 +50,9 @@ PROBER = Prober('ffprobe', 'avprobe')
 MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
 STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
 
+XMLFiles = namedtuple('XMLFiles', 'default customized')
+XML_FILES = XMLFiles('default.xml', 'customized.xml')
+
 CPU_CORES = (cpu_count() - 1 if
              cpu_count() is not None
              else 0)
@@ -71,7 +74,7 @@ PLAYERS = ['vlc',
 VM_PATHS = {'apps': 'share/applications',
             'icons': 'share/icons',
             'i18n': 'share/videomorph/translations',
-            'profiles': 'share/videomorph/stdprofiles',
+            'profiles': 'share/videomorph/profiles',
             'doc': 'share/doc/videomorph',
             'man': 'share/man',
             'bin': 'bin'}
@@ -80,7 +83,6 @@ LINUX_PATHS = {'apps': '/usr/share/applications',
                'config': join_path(expanduser('~'), '.videomorph'),
                'icons': '/usr/share/icons',
                'i18n': '/usr/share/videomorph/translations',
-               'profiles': '/usr/share/videomorph/stdprofiles',
+               'profiles': '/usr/share/videomorph/profiles',
                'doc': '/usr/share/doc/videomorph',
-               'man': '/usr/share/man/man1',
-               'gnome_mime': '/etc/gnome/defaults.list'}
+               'man': '/usr/share/man/man1'}

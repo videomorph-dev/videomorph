@@ -373,7 +373,7 @@ class VideoMorphMW(QMainWindow):
             text=self.tr('&Add Customized Profile...'),
             shortcut="Ctrl+F",
             tip=self.tr('Add Customized Profile'),
-            callback=self.add_costume_profile)
+            callback=self.add_customized_profile)
 
         self.export_profile_action = self._action_factory(
             icon=QIcon(':/icons/export.png'),
@@ -542,6 +542,7 @@ class VideoMorphMW(QMainWindow):
         self.tool_bar.addAction(self.stop_action)
         self.tool_bar.addAction(self.stop_all_action)
         self.tool_bar.addSeparator()
+        self.tool_bar.addAction(self.add_profile_action)
         self.tool_bar.addAction(self.settings_action)
         self.tool_bar.setIconSize(QSize(28, 28))
         # Add the toolbar to main window
@@ -619,8 +620,7 @@ class VideoMorphMW(QMainWindow):
         if 'source_dir' in settings.allKeys():
             self.source_dir = str(settings.value('source_dir'))
         if 'conversion_lib' in settings.allKeys():
-            self.conversion_lib.name = settings.value(
-                'conversion_lib')
+            self.conversion_lib.name = settings.value('conversion_lib')
 
     def _write_app_settings(self, **app_settings):
         """Write app settings on exit.
@@ -945,7 +945,7 @@ class VideoMorphMW(QMainWindow):
                                   play_input=False,
                                   play_output=False)
 
-    def add_costume_profile(self):
+    def add_customized_profile(self):
         """Show dialog for adding conversion profiles."""
         add_profile_dlg = AddProfileDialog(parent=self)
         add_profile_dlg.exec_()
@@ -1012,7 +1012,7 @@ class VideoMorphMW(QMainWindow):
         msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
 
         if msg_box.exec_() == QMessageBox.AcceptRole:
-            self.profile.create_xml_profiles_file(restore=True)
+            self.profile.restore_default_profiles()
             self.populate_profiles_combo()
             self.profile.update(new_quality=self.cb_quality.currentText())
 

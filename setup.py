@@ -82,7 +82,10 @@ if __name__ == '__main__':
                [VM_PATHS['i18n'] + '/videomorph_es.qm']),
               # Default conversion profiles
               (SYS_PATH['profiles'],
-               [VM_PATHS['profiles'] + '/profiles.xml']),
+               [VM_PATHS['profiles'] + '/default.xml']),
+              # Customized conversion profiles
+              (SYS_PATH['profiles'],
+               [VM_PATHS['profiles'] + '/customized.xml']),
               # Documentation files
               (SYS_PATH['doc'],
                ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL',
