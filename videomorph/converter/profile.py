@@ -103,38 +103,6 @@ class _XMLProfile:
                                   xml_root=self._get_xml_root(
                                       self._xml_files.customized))
 
-    @staticmethod
-    def _create_xml_preset(preset, params, extension):
-        """Return a xml preset."""
-        regexp = re.compile(r'[A-z][0-9]?')
-        preset_tag = ''.join(regexp.findall(preset))
-        xml_preset = ElementTree.Element(preset_tag)
-        xml_preset_name = ElementTree.Element('preset_name')
-        xml_preset_name.text = preset
-        xml_params = ElementTree.Element('preset_params')
-        xml_params.text = params
-        xml_extension = ElementTree.Element('file_extension')
-        xml_extension.text = extension
-        xml_preset_name_es = ElementTree.Element('preset_name_es')
-        xml_preset_name_es.text = preset
-
-        for i, elem in enumerate([xml_preset_name, xml_params,
-                                  xml_extension, xml_preset_name_es]):
-            xml_preset.insert(i, elem)
-
-        return xml_preset
-
-    def _insert_xml_elements(self, xml_profile, xml_preset, xml_root):
-        for i, elem in enumerate(xml_root[:]):
-            if elem.tag == xml_profile.tag:
-                xml_root[i].insert(0, xml_preset)
-                self._save_xml_tree(xml_tree=xml_root)
-                break
-        else:
-            xml_profile.insert(0, xml_preset)
-            xml_root.insert(0, xml_profile)
-            self._save_xml_tree(xml_tree=xml_root)
-
     def export_xml_profiles(self, dst_dir):
         """Export a file with the conversion profiles."""
         # Raise PermissionError if user don't have write permission
@@ -189,25 +157,21 @@ class _XMLProfile:
 
         return qualities_per_profile
 
-    @staticmethod
-    def _user_xml_files_directory():
-        return LINUX_PATHS['config'] + '{0}{1}'.format(sep, 'profiles')
-
     def _user_xml_file_path(self, file_name):
         """Return the path to the profiles file."""
         return (self._user_xml_files_directory() +
                 '{0}{1}'.format(sep, file_name))
 
-    @staticmethod
-    def _sys_xml_file_path(file_name):
-        """Return the path to xml profiles file in the system."""
-        if exists(LINUX_PATHS['profiles'] + file_name):
-            # if VideoMorph is installed
-            return LINUX_PATHS['profiles'] + file_name
+    def _insert_xml_elements(self, xml_profile, xml_preset, xml_root):
+        for i, elem in enumerate(xml_root[:]):
+            if elem.tag == xml_profile.tag:
+                xml_root[i].insert(0, xml_preset)
+                self._save_xml_tree(xml_tree=xml_root)
+                break
         else:
-            # if not installed
-            return BASE_DIR + '{0}{1}{2}{3}'.format(
-                sep, VM_PATHS['profiles'], sep, file_name)
+            xml_profile.insert(0, xml_preset)
+            xml_root.insert(0, xml_profile)
+            self._save_xml_tree(xml_tree=xml_root)
 
     def _save_xml_tree(self, xml_tree):
         """Save the xml tree."""
@@ -255,6 +219,42 @@ class _XMLProfile:
             self.restore_default_profiles()
             tree = ElementTree.parse(path)
         return tree.getroot()
+
+    @staticmethod
+    def _user_xml_files_directory():
+        return LINUX_PATHS['config'] + '{0}{1}'.format(sep, 'profiles')
+
+    @staticmethod
+    def _sys_xml_file_path(file_name):
+        """Return the path to xml profiles file in the system."""
+        if exists(LINUX_PATHS['profiles'] + file_name):
+            # if VideoMorph is installed
+            return LINUX_PATHS['profiles'] + file_name
+        else:
+            # if not installed
+            return BASE_DIR + '{0}{1}{2}{3}'.format(
+                sep, VM_PATHS['profiles'], sep, file_name)
+
+    @staticmethod
+    def _create_xml_preset(preset, params, extension):
+        """Return a xml preset."""
+        regexp = re.compile(r'[A-z][0-9]?')
+        preset_tag = ''.join(regexp.findall(preset))
+        xml_preset = ElementTree.Element(preset_tag)
+        xml_preset_name = ElementTree.Element('preset_name')
+        xml_preset_name.text = preset
+        xml_params = ElementTree.Element('preset_params')
+        xml_params.text = params
+        xml_extension = ElementTree.Element('file_extension')
+        xml_extension.text = extension
+        xml_preset_name_es = ElementTree.Element('preset_name_es')
+        xml_preset_name_es.text = preset
+
+        for i, elem in enumerate([xml_preset_name, xml_params,
+                                  xml_extension, xml_preset_name_es]):
+            xml_preset.insert(i, elem)
+
+        return xml_preset
 
 
 class ConversionProfile:
