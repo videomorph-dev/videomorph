@@ -38,6 +38,10 @@ MAINTAINER = APP_NAME + ' ' + 'Development Team'
 ConvLib = namedtuple('ConvLib', 'ffmpeg avconv')
 CONV_LIB = ConvLib('ffmpeg', 'avconv')
 
+LIBRARY_ERRORS = ('Unknown encoder', 'Unrecognized option', 'Invalid argument')
+
+LIBRARY_PARAM_REGEX = {'bitrate': r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
+                       'time': r'time=([0-9.:]+) '}
 
 VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
                  ' *.flv *.vob *.ts *.3gp *.ogv *.mpg *.mp4 *.avi')

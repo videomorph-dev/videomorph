@@ -25,6 +25,8 @@ from time import time
 from PyQt5.QtCore import QProcess
 
 from . import CONV_LIB
+from . import LIBRARY_ERRORS
+from . import LIBRARY_PARAM_REGEX
 from . import PLAYERS
 from . import PROBER
 from .utils import write_time
@@ -163,13 +165,8 @@ class _OutputReader:
 
     def __init__(self):
         """Class initializer."""
-        self._params_regex = {'bitrate':
-                              r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
-                              'time':
-                              r'time=([0-9.:]+) '}
-        self._library_errors = ('Unknown encoder',
-                                'Unrecognized option',
-                                'Invalid argument')
+        self._params_regex = LIBRARY_PARAM_REGEX
+        self._library_errors = LIBRARY_ERRORS
         self._process_output = None
 
     def read(self):
