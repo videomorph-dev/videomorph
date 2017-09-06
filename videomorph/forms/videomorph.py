@@ -173,7 +173,7 @@ class VideoMorphMW(QMainWindow):
     def _group_settings(self):
         """Settings group."""
         gb_settings = QGroupBox(self.central_widget)
-        gb_settings.setTitle(self.tr('Conversion Presets'))
+        gb_settings.setTitle(self.tr('Conversion Profile'))
         size_policy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
@@ -457,6 +457,7 @@ class VideoMorphMW(QMainWindow):
             callback=self.about)
 
         self.changelog_action = self._action_factory(
+            icon=QIcon(':/icons/changelog.png'),
             text=self.tr('Changelog') + '...',
             tip=self.tr('Changelog'),
             callback=self.changelog)
@@ -542,7 +543,6 @@ class VideoMorphMW(QMainWindow):
         self.tool_bar.addAction(self.stop_action)
         self.tool_bar.addAction(self.stop_all_action)
         self.tool_bar.addSeparator()
-        self.tool_bar.addAction(self.add_profile_action)
         self.tool_bar.addAction(self.settings_action)
         self.tool_bar.setIconSize(QSize(28, 28))
         # Add the toolbar to main window

@@ -140,8 +140,8 @@ class _XMLProfile:
         # Raise PermissionError if user don't have write permission
         try:
             copy_file(src=self._user_xml_file_path(
-                    file_name=self._xml_files.customized),
-                dst=dst_dir)
+                file_name=self._xml_files.customized),
+                      dst=dst_dir)
         except DistutilsFileError:
             raise PermissionError
 

@@ -46,7 +46,7 @@ class ChangelogDialog(QtWidgets.QDialog):
         size_policy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
         self.setSizePolicy(size_policy)
         self.setMinimumSize(QtCore.QSize(800, 600))
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self)
+        self.horizontal_layout = QtWidgets.QHBoxLayout(self)
         self.text_edit = QtWidgets.QTextEdit(self)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -55,7 +55,7 @@ class ChangelogDialog(QtWidgets.QDialog):
             "cursor",
             QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.text_edit.setReadOnly(True)
-        self.horizontalLayout.addWidget(self.text_edit)
+        self.horizontal_layout.addWidget(self.text_edit)
         self.text_edit.setAlignment(QtCore.Qt.AlignJustify)
 
         self._generate_changelog()

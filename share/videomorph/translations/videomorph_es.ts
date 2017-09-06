@@ -196,8 +196,8 @@ p, li { white-space: pre-wrap; }
     <name>VideoMorphMW</name>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="176"/>
-        <source>Conversion Presets</source>
-        <translation>Perfiles de Conversión</translation>
+        <source>Conversion Profile</source>
+        <translation>Perfil de Conversión</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="194"/>
@@ -595,7 +595,7 @@ p, li { white-space: pre-wrap; }
         <translation>Reproducir Archivo de Video de Salida</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="559"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="560"/>
         <source>Adding Video Files...</source>
         <translation>Añadiendo Archivos de Video...</translation>
     </message>
@@ -605,7 +605,7 @@ p, li { white-space: pre-wrap; }
         <translation>Añadiendo Archivo:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="560"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="561"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
