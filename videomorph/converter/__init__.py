@@ -21,13 +21,30 @@
 
 from collections import namedtuple
 from os import cpu_count
+from os.path import expanduser
+from os.path import dirname
+from os.path import join as join_path
+
+from .utils import get_locale
+
+APP_NAME = 'VideoMorph'
+VERSION = '1.1'
+CODENAME = 'adventurer'
+BASE_DIR = dirname(dirname(dirname(__file__)))
+LOCALE = get_locale()
+PACKAGE_NAME = APP_NAME.lower()
+MAINTAINER = APP_NAME + ' ' + 'Development Team'
 
 ConvLib = namedtuple('ConvLib', 'ffmpeg avconv')
 CONV_LIB = ConvLib('ffmpeg', 'avconv')
 
+LIBRARY_ERRORS = ('Unknown encoder', 'Unrecognized option', 'Invalid argument')
+
+LIBRARY_PARAM_REGEX = {'bitrate': r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
+                       'time': r'time=([0-9.:]+) '}
 
 VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
-                ' *.flv *.vob *.ts *.3gp *.ogv *.mpg *.mp4 *.avi')
+                 ' *.flv *.vob *.ts *.3gp *.ogv *.mpg *.mp4 *.avi')
 
 VALID_VIDEO_EXT = {ext[1:] for ext in VIDEO_FILTERS.split()}
 
@@ -37,6 +54,8 @@ PROBER = Prober('ffprobe', 'avprobe')
 MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
 STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
 
+XMLFiles = namedtuple('XMLFiles', 'default customized')
+XML_FILES = XMLFiles('default.xml', 'customized.xml')
 
 CPU_CORES = (cpu_count() - 1 if
              cpu_count() is not None
@@ -55,3 +74,19 @@ PLAYERS = ['vlc',
            'gmlive',
            'dragon',
            'ffplay']
+
+VM_PATHS = {'apps': 'share/applications',
+            'icons': 'share/icons',
+            'i18n': 'share/videomorph/translations',
+            'profiles': 'share/videomorph/profiles',
+            'doc': 'share/doc/videomorph',
+            'man': 'share/man',
+            'bin': 'bin'}
+
+LINUX_PATHS = {'apps': '/usr/share/applications',
+               'config': join_path(expanduser('~'), '.videomorph'),
+               'icons': '/usr/share/icons',
+               'i18n': '/usr/share/videomorph/translations',
+               'profiles': '/usr/share/videomorph/profiles',
+               'doc': '/usr/share/doc/videomorph',
+               'man': '/usr/share/man/man1'}

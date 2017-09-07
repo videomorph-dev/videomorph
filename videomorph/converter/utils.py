@@ -27,9 +27,9 @@ from subprocess import Popen
 
 def get_locale():
     """Return the default locale string."""
-    return ('es_ES' if getdefaultlocale()[0] == 'es_CU' else
-            getdefaultlocale()[0])
-    # return 'es_ES'
+    # return ('es_ES' if getdefaultlocale()[0] == 'es_CU' else
+    #         getdefaultlocale()[0])
+    return 'es_ES'
 
 
 def spawn_process(cmd):
@@ -39,6 +39,11 @@ def spawn_process(cmd):
                  stdout=PIPE,
                  stderr=PIPE,
                  universal_newlines=True)
+
+
+def open_with_user_preferred_app(url):
+    """Open a file or url with user's preferred app."""
+    spawn_process([which('xdg-open'), url])
 
 
 def which(app):

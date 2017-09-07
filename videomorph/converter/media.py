@@ -114,6 +114,45 @@ class MediaList(list):
         """Return general streaming info from a video file."""
         return self[position].get_info(info_param)
 
+    def running_file_name(self, with_extension=False):
+        """Return the running file name."""
+        return self._running_file.get_name(with_extension)
+
+    def running_file_info(self, info_param):
+        """Return running file info."""
+        return self._running_file.get_info(info_param)
+
+    @property
+    def running_file_status(self):
+        """Return file status."""
+        return self._running_file.status
+
+    @running_file_status.setter
+    def running_file_status(self, status):
+        """Set file status."""
+        self._running_file.status = status
+
+    def running_file_conversion_cmd(self, output_dir, target_quality,
+                                    tagged_output, subtitle):
+        """Return the conversion command."""
+        return self._running_file.build_conversion_cmd(output_dir,
+                                                       target_quality,
+                                                       tagged_output,
+                                                       subtitle)
+
+    def running_file_output_name(self, output_dir, tagged_output):
+        """Return the output name."""
+        return self._running_file.get_output_file_name(output_dir,
+                                                       tagged_output)
+
+    def delete_running_file_output(self, output_dir, tagged_output):
+        """Delete output file."""
+        self._running_file.delete_output(output_dir, tagged_output)
+
+    def delete_running_file_input(self):
+        """Delete input file."""
+        self._running_file.delete_input()
+
     @property
     def position(self):
         """self._position getter."""
@@ -126,11 +165,6 @@ class MediaList(list):
     def position(self, value):
         """self._position setter."""
         self._position = value
-
-    @property
-    def running_file(self):
-        """Return the file that is currently running."""
-        return self[self.position]
 
     @property
     def is_exhausted(self):
@@ -156,6 +190,11 @@ class MediaList(list):
         """Return the duration time of MediaList counting files todo only."""
         return sum(float(media.get_info('format_duration')) for
                    media in self if media.status == STATUS.todo)
+
+    @property
+    def _running_file(self):
+        """Return the file that is currently running."""
+        return self[self.position]
 
     def _add_file(self, media_file):
         """Add a video file to the list."""
@@ -222,7 +261,7 @@ class _MediaFile:
         return file_name
 
     def get_info(self, info_param):
-        """Return an info attribute from a given file: media_file."""
+        """Return an info attribute from a given video file."""
         return self.info.get(info_param)
 
     def build_conversion_cmd(self, output_dir, target_quality,
