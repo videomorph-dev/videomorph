@@ -46,7 +46,7 @@ LIBRARY_PARAM_REGEX = {'bitrate': r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
 VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
                  ' *.flv *.vob *.ts *.3gp *.ogv *.mpg *.mp4 *.avi')
 
-VALID_VIDEO_EXT = {ext[1:] for ext in VIDEO_FILTERS.split()}
+VALID_VIDEO_EXT = {ext.lstrip('*') for ext in VIDEO_FILTERS.split()}
 
 Prober = namedtuple('Prober', 'ffprobe avprobe')
 PROBER = Prober('ffprobe', 'avprobe')
