@@ -21,6 +21,7 @@ BugFix:
     -
 
 Someday:
+    - Define a git work flow for the project
     - Pack in Flatpak or Snap
     - Implement model/view/controller pattern
     - Make it run on Windows
