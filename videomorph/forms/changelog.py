@@ -62,23 +62,25 @@ class ChangelogDialog(QtWidgets.QDialog):
 
     def _generate_changelog(self):
         """Return a human readable changelog."""
-        if exists(BASE_DIR + '{0}changelog'.format(sep)):
-            changelog_file = BASE_DIR + '{0}changelog'.format(sep)
+        if exists(LINUX_PATHS['doc'] + '{0}changelog'.format(sep)):
+            changelog_file = LINUX_PATHS['doc'] + '{0}changelog'.format(sep)
         else:
-            changelog_file = (LINUX_PATHS['doc'] + '{0}changelog'.format(sep))
+            changelog_file = BASE_DIR + '{0}changelog'.format(sep)
 
-        try:
-            with open(changelog_file, 'r', encoding='utf-8') as changelog:
-                for i, line in enumerate(changelog):
-                    if line.startswith('    * '):
-                        if 'Release' in line:
-                            line = line.strip('    * ')
-                            if i > 2:
-                                self.text_edit.append('\n')
-                            self.text_edit.append('<b>{0}</b>'.format(line))
-                            self.text_edit.append('\n')
-                        else:
-                            line = line.strip('\n')
-                            self.text_edit.append(line)
-        except FileNotFoundError:
-            pass
+        with open(changelog_file, 'r', encoding='utf-8') as changelog:
+            changes = []
+            for line in changelog:
+                if line.startswith('    * '):
+                    if 'Release' in line:
+                        line = line.strip('\n')
+                        line = line.strip('    * ')
+                        version = '<b>{0}</b>'.format(line)
+                        changes.append(version)
+                        changes.extend(['<ul>', '</ul>'])
+                    else:
+                        line = line.strip('\n')
+                        line = line.strip('    * ')
+                        line = '<li>{0}</li>'.format(line)
+                        changes.insert(-1, line)
+
+        self.text_edit.setHtml(''.join(changes))
