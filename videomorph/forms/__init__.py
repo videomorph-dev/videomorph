@@ -17,4 +17,4 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module defines the videomorph package and the needed constants."""
+"""This module defines the forms package."""

@@ -1,0 +1,19 @@
+Package: videomorph
+Version: 1.1
+Architecture: all
+Maintainer: VideoMorph Development Team <codeshard@openmailbox.org>
+Installed-Size: 435.9
+Section: video
+Priority: optional
+Depends: ffmpeg | libav-tools, python3-pyqt5, python3 (>=3.4)
+Homepage: https://github.com/codeshard/videomorph
+Description: Small Video Converter based on ffmpeg, Python 3 and Qt5.
+ Unlike other video converters, VideoMorph focuses on a single goal:
+ make video conversion simple, with an easy to use GUI and allowing
+ the user to convert to the currently most popular video formats.
+ .
+ VideoMorph GUI is simple and clean focused on usability, eliminating
+ annoying options rarely used.
+ VideoMorph is a video converter, just that. If you want a video editor,
+ VideoMorph isn't for you.
+

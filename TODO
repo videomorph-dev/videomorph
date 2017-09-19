@@ -1,0 +1,27 @@
+TODO List:
+----------
+
+Next version (1.2):
+
+    - Pack in .rpm format
+    - Pack for Arch Linux
+    - Pack as standard binary package, not as a Python package
+    - Implement the main window interface in a separated module, maybe mainwindow.py
+    - Move the business logic present in videomorph.py, about.py and other views to converter
+      package
+    - Move the HTML text hardcoded in about.py to a file distributed as doc. Read the about
+      info from that file as done with the license
+    - Create the blog in Cubava.cu with the domain videomorph.cubava.cu
+    - Redesign app logo and the icons
+    - Create an user manual
+    - Allow drag and drop video files into the List of Conversion Tasks
+    - Implement an alternative class for _Converter (subprocess maybe) to decouple from PyQt5
+
+BugFix:
+    -
+
+Someday:
+    - Define a git work flow for the project
+    - Pack in Flatpak or Snap
+    - Implement model/view/controller pattern
+    - Make it run on Windows

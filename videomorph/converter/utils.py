@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # File name: utils.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -21,12 +20,30 @@
 """This module contains some utilities and functions."""
 
 import os
-from locale import getlocale
+from locale import getdefaultlocale
+from subprocess import PIPE
+from subprocess import Popen
 
 
 def get_locale():
-    # return 'es_ES' if getlocale()[0] == 'es_CU' else getlocale()[0]
+    """Return the default locale string."""
+    # return ('es_ES' if getdefaultlocale()[0] == 'es_CU' else
+    #         getdefaultlocale()[0])
     return 'es_ES'
+
+
+def spawn_process(cmd):
+    """Return a Popen object."""
+    return Popen(cmd,
+                 stdin=PIPE,
+                 stdout=PIPE,
+                 stderr=PIPE,
+                 universal_newlines=True)
+
+
+def open_with_user_preferred_app(url):
+    """Open a file or url with user's preferred app."""
+    spawn_process([which('xdg-open'), url])
 
 
 def which(app):

@@ -4,7 +4,7 @@
 # File name: test_media.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
-#   Copyright 2015-2016 VideoMorph Development Team
+#   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -18,157 +18,140 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+"""This module provides tests for media.py module."""
+
 import nose
 
-from videomorph.converter import media
-from videomorph.converter import profiles
-from videomorph.converter import XMLProfile
+from videomorph.converter.media import MediaList
+from videomorph.converter.profile import ConversionProfile
+from videomorph.converter import PROBER
+from videomorph.converter import STATUS
 
 
-# Set of tests for media.MediaFile class
-def test_get_name():
-    media_file = _get_media_file_obj()
-    assert media_file.get_name() == 'Dad'
-    # Another way to do this
-    nose.tools.assert_equal(media_file.get_name(), 'Dad')
+profile = ConversionProfile(prober=PROBER.ffprobe)
+profile.update(new_quality='DVD Fullscreen (4:3)')
 
-    # With extension
-    assert media_file.get_name(with_extension=True) == 'Dad.mpg'
-
-
-def test_get_info_with_ffprobe():
-    media_file = _get_media_file_obj()
-
-    nose.tools.assert_almost_equal(float(media_file.get_info('format_duration')),
-                                   120.72)
-    nose.tools.assert_almost_equal(float(media_file.get_info('file_size')),
-                                   21227416.0)
-    nose.tools.assert_equal(media_file.get_info('format_name'),
-                            'mpeg')
-    nose.tools.assert_equal(media_file.get_info('format_long_name'),
-                            'MPEG-PS (MPEG-2 Program Stream)')
-
-
-# def test_get_info_with_avprobe():
-#     media_file = _get_media_file_obj(prober='avprobe')
-#
-#     nose.tools.assert_almost_equal(float(media_file.get_info('format_duration')),
-#                                    120.68)
-#     nose.tools.assert_almost_equal(float(media_file.get_info('file_size')),
-#                                    21227416.0)
-#     nose.tools.assert_equal(media_file.get_info('format_name'),
-#                             'mpeg')
-#     nose.tools.assert_equal(media_file.get_info('format_long_name'),
-#                             'MPEG-PS (MPEG-2 Program Stream)')
-
-
-def test_get_conversion_cmd():
-    media_file = _get_media_file_obj()
-    assert media_file.get_conversion_cmd('.') == ['-i', 'Dad.mpg', '-f', 'dvd', '-target', 'ntsc-dvd', '-vcodec', 'mpeg2video', '-r', '29.97', '-s', '352x480', '-aspect', '4:3', '-b:v', '4000k', '-mbd', 'rd', '-cmp', '2', '-subcmp', '2', '-acodec', 'mp2', '-b:a', '192k', '-ar', '48000', '-ac', '2', '-threads', '3', '-y', './[DVDF]-Dad.mpg']
-
-
-def test_profile():
-    media_file = _get_media_file_obj()
-    assert isinstance(media_file.conversion_profile, profiles._Profile)
+media_list = MediaList(profile=profile)
 
 
 # Set of tests for media.MediaList class
-def test_add_file():
-    media_file = _get_media_file_obj()
-    media_list = _get_media_list_obj(empty=True)
-
-    # testing...
-    media_list.add_file(media_file)
-
-    assert len(media_list) == 1
-    assert isinstance(media_list[0], media.MediaFile)
-    assert media_file is media_list[0]
-
-
-@nose.tools.raises(media.FileAddedError)
-def test_add_file_twice():
-    """Testing adding the same file two times."""
-    media_file = _get_media_file_obj()
-    media_list = _get_media_list_obj(empty=True)
-
-    # test adding the same file twice
-    media_list.add_file(media_file)
-    media_list.add_file(media_file)
-
-
-def test_clear():
-    media_list = _get_media_list_obj()
-
-    # Be sure there is one element in the list
-    nose.tools.assert_equal(len(media_list), 1)
-
+def test_populate():
+    """Test populate."""
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
+    assert len(media_list) == 1 == media_list.length
+    assert media_list[0].input_path == 'Dad.mpg'
     media_list.clear()
-    nose.tools.assert_equal(len(media_list), 0)
 
 
 def test_delete_file():
-    media_list = _get_media_list_obj()
+    """Test delete_file."""
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
 
     # Be sure there is one element in the list
     assert len(media_list) == 1
 
-    media_list.delete_file(file_index=0)
+    media_list.delete_file(position=0)
     assert len(media_list) == 0
 
 
-def test_get_file():
-    media_list = _get_media_list_obj()
-
-    file = media_list.get_file(file_index=0)
-    assert isinstance(file, media.MediaFile)
-    assert file is media_list[0]
-
-
 def test_get_file_name():
-    media_list = _get_media_list_obj()
+    """Test get_file_name."""
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
 
-    name = media_list.get_file_name(file_index=0)
-    assert name == 'Dad'
-
-    name = media_list.get_file_name(file_index=0, with_extension=True)
-    assert name == 'Dad.mpg'
+    assert media_list.get_file_name(position=0) == 'Dad'
+    assert media_list.get_file_name(position=0,
+                                    with_extension=True) == 'Dad.mpg'
+    media_list.clear()
 
 
 def test_get_file_path():
-    media_list = _get_media_list_obj()
+    """Test get_file."""
+    media_list.clear()
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
 
-    assert media_list.get_file_path(file_index=0) == 'Dad.mpg'
-
-
-def test_lenght():
-    media_list = _get_media_list_obj()
-
-    nose.tools.assert_equal(media_list.length, 1)
+    assert media_list.get_file_path(position=0) == 'Dad.mpg'
+    media_list.clear()
 
 
 def test_duration():
-    media_list = _get_media_list_obj()
+    """Test duration."""
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
 
-    # with ffprobe
     nose.tools.assert_almost_equal(media_list.duration, 120.72)
+    media_list.clear()
 
 
-# Helper functions
-def _get_media_file_obj(file_path='Dad.mpg', prober='ffprobe'):
-    return media.MediaFile(
-        file_path,
-        conversion_profile=XMLProfile.get_conversion_profile(
-            profile_name='DVD', target_quality='DVD Fullscreen (4:3)'),
-        prober=prober)
+@nose.tools.raises(StopIteration)
+def test_add_file_twice():
+    """Testing adding the same file twice."""
+    media_list.clear()
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
+    assert media_list.length == 1
+
+    gen1 = media_list.populate(('Dad.mpg',))
+    next(gen1)
 
 
-def _get_media_list_obj(empty=False):
-    media_list = media.MediaList()
+def test_get_file_status():
+    """Test get the file status."""
+    media_list.clear()
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
 
-    if not empty:
-        media_list.add_file(_get_media_file_obj())
+    assert media_list.get_file_status(position=0) == STATUS.todo
+    media_list.clear()
 
-    return media_list
+
+def test_set_file_status():
+    """Test set the file status."""
+    media_list.clear()
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
+
+    media_list.set_file_status(0, STATUS.done)
+    assert media_list.get_file_status(position=0) == STATUS.done
+    media_list.clear()
+
+
+def test_build_conversion_cmd():
+    """Test build_conversion_cmd."""
+    media_list.clear()
+
+    gen = media_list.populate(('Dad.mpg',))
+    next(gen)
+    next(gen)
+
+    assert media_list.get_file(0).build_conversion_cmd(
+        output_dir='.',
+        tagged_output=True,
+        subtitle=True,
+        target_quality='DVD Fullscreen (4:3)') == ['-i', 'Dad.mpg', '-f',
+                                                   'dvd', '-target',
+                                                   'ntsc-dvd', '-vcodec',
+                                                   'mpeg2video', '-r',
+                                                   '29.97', '-s', '352x480',
+                                                   '-aspect', '4:3', '-b:v',
+                                                   '4000k', '-mbd', 'rd',
+                                                   '-cmp', '2', '-subcmp',
+                                                   '2', '-acodec', 'mp2',
+                                                   '-b:a', '192k', '-ar',
+                                                   '48000', '-ac', '2',
+                                                   '-threads', '3', '-y',
+                                                   './[DVDF]-Dad.mpg']
 
 
 if __name__ == '__main__':

@@ -15,10 +15,10 @@ and presets idea from [QWinFF](http://qwinff.github.io) and
 ## Goal
 
 Unlike other video converters, VideoMorph focuses on a single goal:
-video conversion, making it simple, easy to use and allowing the user to convert
-to the currently most popular video formats.
+make video conversion simple, with an easy to use GUI and allowing
+the user to convert to the currently most popular video formats.
 
-VideoMorph UI is simple and clean, focused on usability, eliminating annoying options rarely used.
+VideoMorph GUI is simple and clean, focused on usability, eliminating annoying options rarely used.
 VideoMorph is a video converter, just that. If you want a video editor,
 VideoMorph isn't for you.
 
@@ -26,16 +26,27 @@ VideoMorph isn't for you.
 
 To install the package:
 
-    python3 setup.py install
+    sudo python3 setup.py install # This does not install dependencies
 
 This only installs VideoMorph. The [ffmpeg](http://ffmpeg.org) package should be installed
 or compiled in your distribution.
+
+    or:
+
+    sudo install.sh
+
+This should install VideoMorph and its dependencies, including [ffmpeg](http://ffmpeg.org) package.
+
+To install the .deb file
+
+    use GDebi Packages Installer and follow the instructions, just that...
+
+This should install VideoMorph and its dependencies from your distro repo.
 
 ## Acknowledgements
 
 VideoMorph uses the following libraries and programs:
 
- - [Qt5](http://www.qt.io/qt5-4/)
  - [PyQt5](https://riverbankcomputing.com/software/pyqt/download5)
  - [FFmpeg](ffmpeg.org)
 
@@ -58,9 +69,14 @@ under LGPL/GPL
 Code & Artwork by:
 
  - [Ozkar L. Garcell](mailto:codeshard@openmailbox.org)
- - [Leodanis Pozo Ramos](mailto:lpozo@openmailbox.org)
+ - [Leodanis Pozo Ramos](mailto:lpozor78@gmail.com)
 
 Contributors:
 
  - [Maikel Llamaret Heredia](http://gutl.jovenclub.cu)
  - [Carlos Parra Zaldivar](http://libreoffice.cubava.cu)
+ - [Leonel Salazar Videaux](http://debianhlg.cubava.cu/)
+
+Copyright:
+
+    Copyright 2016-2017 VideoMorph Development Team
