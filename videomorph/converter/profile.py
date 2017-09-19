@@ -17,7 +17,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module contains the PRESETS for encoding different video formats."""
+"""This module provides the ConversionProfile class."""
 
 import re
 from collections import OrderedDict
@@ -123,7 +123,7 @@ class _XMLProfile:
             raise PermissionError
 
     def get_xml_profile_attr(self, target_quality, attr_name='preset_params'):
-        """Return a dict of preset/params."""
+        """Return a param of ConversionProfile."""
         param_map = {'preset_name': 0,
                      'preset_params': 1,
                      'file_extension': 2,
@@ -163,6 +163,7 @@ class _XMLProfile:
                 '{0}{1}'.format(sep, file_name))
 
     def _insert_xml_elements(self, xml_profile, xml_preset, xml_root):
+        """Insert an xml elemnte into an xml root."""
         for i, elem in enumerate(xml_root[:]):
             if elem.tag == xml_profile.tag:
                 xml_root[i].insert(0, xml_preset)
@@ -222,6 +223,7 @@ class _XMLProfile:
 
     @staticmethod
     def _user_xml_files_directory():
+        """Return the user xml directory path."""
         return LINUX_PATHS['config'] + '{0}{1}'.format(sep, 'profiles')
 
     @staticmethod
@@ -269,7 +271,7 @@ class ConversionProfile:
         self.params = None
 
     def __getattr__(self, attr):
-        """Delegate to manage the XMLProfile."""
+        """Delegate to manage the _XMLProfile object."""
         return getattr(self._xml_profile, attr)
 
     def update(self, new_quality):
