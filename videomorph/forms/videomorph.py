@@ -195,6 +195,7 @@ class VideoMorphMW(QMainWindow):
         self.cb_profiles = QComboBox(gb_settings, statusTip=profile_tip,
                                      toolTip=profile_tip)
         self.cb_profiles.setMinimumSize(QSize(200, 0))
+        self.cb_profiles.setIconSize(QSize(22, 22))
         vertical_layout.addWidget(self.cb_profiles)
         horizontal_layout_2 = QHBoxLayout()
         label_quality = QLabel(self.tr('Target Quality:'))
@@ -688,8 +689,15 @@ class VideoMorphMW(QMainWindow):
         # Clear combobox content
         self.cb_profiles.clear()
         # Populate the combobox with new data
-        self.cb_profiles.addItems(
-            self.profile.get_xml_profile_qualities().keys())
+
+        profile_names = self.profile.get_xml_profile_qualities().keys()
+        for i, profile_name in enumerate(profile_names):
+            self.cb_profiles.addItem(profile_name)
+            icon = QIcon(':/formats/{0}.png'.format(profile_name))
+            self.cb_profiles.setItemIcon(i, icon)
+
+        # self.cb_profiles.addItems(
+        #     self.profile.get_xml_profile_qualities().keys())
 
     def populate_quality_combo(self, combo):
         """Populate target quality combobox.

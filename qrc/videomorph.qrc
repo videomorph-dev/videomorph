@@ -24,4 +24,14 @@
     <file>./video-player-input.png</file>
     <file>./video-player-output.png</file>
   </qresource>
+    <qresource prefix="formats">
+    <file>./AVI.png</file>
+    <file>./DVD.png</file>
+    <file>./FLV.png</file>
+    <file>./MP3.png</file>
+    <file>./MP4.png</file>
+    <file>./VCD.png</file>
+    <file>./WEBM.png</file>
+    <file>./WMV.png</file>
+  </qresource>
 </RCC>
