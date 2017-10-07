@@ -29,15 +29,10 @@ from PyQt5.QtWidgets import QAbstractItemView
 from PyQt5.QtWidgets import QHeaderView
 from PyQt5.QtWidgets import QItemDelegate
 from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtWidgets import QMainWindow
 
 from . import COLUMNS
 from videomorph.converter import STATUS
 from videomorph.converter import VALID_VIDEO_EXT
-
-
-class VideoMorphMW(QMainWindow):
-    """VideoMorph Main Window class."""
 
 
 class TasksListTable(QTableWidget):
