@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# File name: mainwindow.py
+# File name: vmwidgets.py
 #
 # Copyright (C) 2017 Leodanis Pozo Ramos <lpozor78@gmail.com>
 #
@@ -19,7 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provides Main Window and customized widgets for VideoMorph."""
+"""This module provides customized widgets for VideoMorph."""
 
 from functools import partial
 

@@ -56,7 +56,7 @@ from PyQt5.QtWidgets import (QMainWindow,
 
 from . import videomorph_qrc
 from . import COLUMNS
-from .mainwindow import TasksListTable
+from .vmwidgets import TasksListTable
 from videomorph.converter import APP_NAME
 from videomorph.converter import VERSION
 from videomorph.converter import CONV_LIB
