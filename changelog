@@ -1,3 +1,105 @@
+videomorph (1.2) xenial; urgency=high
+
+    * VideoMorph v1.2. Release Date: Mon, 30 Oct 2017
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 30 Oct 2017 10:00:00 -0400
+
+videomorph (1.1) xenial; urgency=high
+
+    * Ask the user confirmation to exit VideoMorph when there are on going conversion tasks
+
+ -- Leonel Salazar Videaux <leonel.lordford@gmail.com>  Sat, 21 Oct 2017 00:47:57 -0400
+
+videomorph (1.1) xenial; urgency=medium
+
+    * Add support for drag and drop video files into the conversion task list
+
+ -- Leonel Salazar Videaux <leonel.lordford@gmail.com>  Wed, 4 Oct 2017 22:03:32 -0400
+
+videomorph (1.1) xenial; urgency=low
+
+    * Add icons to identify default formats in profiles combobox
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 23 Sep 2017 00:43:21 -0400
+
+videomorph (1.1) xenial; urgency=high
+
+    * New app logo and icon by Osmel Cruz
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 13 Sep 2017 21:27:19 -0400
+
+videomorph (1.1) xenial; urgency=low
+
+    * Teak _generate_changelog() method to generate a better formatted HTML text to show in Changelog Dialog
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 12 Sep 2017 23:01:16 -0400
+
+videomorph (1.1) xenial; urgency=low
+
+    * Add new icons
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 5 Sep 2017 20:18:48 -0400
+
+videomorph (1.1) xenial; urgency=high
+
+    * Separate the default and customized profiles in default.xml and customized.xml files to avoid overwriting the user defined profiles when upgrade to a new version. This files are now at $HOME/.videomorph/profiles
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 4 Sep 2017 21:01:25 -0400
+
+videomorph (1.1) xenial; urgency=high
+
+    * Problem with the total progress bar when FileExistsError was raised. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 3 Sep 2017 15:36:34 -0400
+
+videomorph (1.1) xenial; urgency=medium
+
+    * Changelog option added under Help menu
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 3 Sep 2017 15:36:34 -0400
+
+videomorph (1.1) xenial; urgency=low
+
+    * An option to open Ffmpeg on-line documentation is added under Help menu
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 3 Sep 2017 13:07:50 -0400
+
+videomorph (1.1) xenial; urgency=medium
+
+    * Use xdg-open system command to run the video file with the user default player in any Desktop Environment
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 3 Sep 2017 10:43:57 -0400
+
+videomorph (1.1) xenial; urgency=low
+
+    * Set place holder text instead of putting info in labels in Add Conversion Profile Dialog
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 26 Aug 2017 15:05:05 -0400
+
+videomorph (1.1) xenial; urgency=low
+
+    * Set completer for profile name and extension in Add Conversion Profile Dialog
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 26 Aug 2017 14:43:26 -0400
+
+videomorph (1.1) xenial; urgency=high
+
+    * Use set comprehension to generate the VALID_VIDEO_EXT from VIDEO_FILTERS for backward compatibility with older Python3 versions
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 26 Aug 2017 01:12:21 -0400
+
+videomorph (1.1) xenial; urgency=high
+
+    * Problem with the path of the user's profiles.xml file at $HOME/.videomorph. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 23 Aug 2017 23:12:44 -0400
+
+videomorph (1.1) xenial; urgency=low
+
+    * Updating the man page
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 23 Aug 2017 22:21:54 -0400
+
 videomorph (1.1) xenial; urgency=high
 
     * VideoMorph v1.1. Release Date: Thu, 24 Aug 2017
