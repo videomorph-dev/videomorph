@@ -707,9 +707,9 @@ class VideoMorphMW(QMainWindow):
 
     def closeEvent(self, event):
         """Things to todo on close."""
-        # ask for confirmation
         # Close communication and kill the encoding process
         if self.conversion_lib.converter_is_running:
+            # ask for confirmation
             user_answer = QMessageBox.question(
                 self,
                 APP_NAME,
