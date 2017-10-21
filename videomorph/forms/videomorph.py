@@ -707,17 +707,27 @@ class VideoMorphMW(QMainWindow):
 
     def closeEvent(self, event):
         """Things to todo on close."""
-        # Disconnect the finished signal
-        self.conversion_lib.converter_finished_disconnect(
-            connected=self._finish_file_encoding)
+        # ask for confirmation
         # Close communication and kill the encoding process
         if self.conversion_lib.converter_is_running:
-            self.conversion_lib.close_converter()
-            self.conversion_lib.kill_converter()
-        # Save settings
-        self._write_app_settings()
+            user_answer = QMessageBox.question(
+                self,
+                APP_NAME,
+                self.tr('There are on Going Conversion Tasks.'
+                        ' Are you Sure you Want to Exit?'),
+                QMessageBox.Yes | QMessageBox.No)
 
-        event.accept()
+            if user_answer == QMessageBox.Yes:
+                # Disconnect the finished signal
+                self.conversion_lib.converter_finished_disconnect(
+                    connected=self._finish_file_encoding)
+                self.conversion_lib.close_converter()
+                self.conversion_lib.kill_converter()
+                # Save settings
+                self._write_app_settings()
+                event.accept()
+            else:
+                event.ignore()
 
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with _MediaFile objects."""
