@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="1.1"
+version="1.2"
 ubuntu="-xenial"
 package_name="videomorph_""$version""_all.deb"
 python_version=$(python3 --version | cut -f2 -d " " | cut --fields=1,2 -d ".")

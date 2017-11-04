@@ -28,7 +28,7 @@ from os.path import join as join_path
 from .utils import get_locale
 
 APP_NAME = 'VideoMorph'
-VERSION = '1.1'
+VERSION = '1.2'
 CODENAME = 'adventurer'
 BASE_DIR = dirname(dirname(dirname(__file__)))
 LOCALE = get_locale()
