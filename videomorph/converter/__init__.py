@@ -29,7 +29,6 @@ from .utils import get_locale
 
 APP_NAME = 'VideoMorph'
 VERSION = '1.2'
-CODENAME = 'adventurer'
 BASE_DIR = dirname(dirname(dirname(__file__)))
 LOCALE = get_locale()
 PACKAGE_NAME = APP_NAME.lower()
