@@ -1,18 +1,18 @@
 videomorph (1.2) xenial; urgency=high
 
-    * VideoMorph v1.2. Release Date: Mon, 30 Oct 2017
+    * VideoMorph v1.2. Release Date: Tue, 7 Nov 2017
 
- -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 30 Oct 2017 10:00:00 -0400
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 7 Nov 2017 10:00:00 -0400
 
 videomorph (1.1) xenial; urgency=high
 
-    * Ask the user confirmation to exit VideoMorph when there are on going conversion tasks. (Leonel Salazar Videaux)
+    * Ask the user confirmation to exit VideoMorph when there are on going conversion tasks. (by Leonel Salazar Videaux)
 
  -- Leonel Salazar Videaux <leonel.lordford@gmail.com>  Sat, 21 Oct 2017 00:47:57 -0400
 
 videomorph (1.1) xenial; urgency=medium
 
-    * Add support for drag and drop video files into the conversion task list (Leonel Salazar Videaux)
+    * Add support for drag and drop video files into the conversion task list (by Leonel Salazar Videaux)
 
  -- Leonel Salazar Videaux <leonel.lordford@gmail.com>  Wed, 4 Oct 2017 22:03:32 -0400
 
@@ -24,7 +24,7 @@ videomorph (1.1) xenial; urgency=low
 
 videomorph (1.1) xenial; urgency=high
 
-    * New app logo and icon (Osmel Cruz)
+    * New app logo and icon (by Osmel Cruz)
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 13 Sep 2017 21:27:19 -0400
 

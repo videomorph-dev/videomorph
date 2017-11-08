@@ -31,7 +31,7 @@ To install the package:
 This only installs VideoMorph. The [ffmpeg](http://ffmpeg.org) package should be installed
 or compiled in your distribution.
 
-    or:
+    or (in Debian based distros only):
 
     sudo install.sh
 
@@ -50,8 +50,7 @@ VideoMorph uses the following libraries and programs:
  - [PyQt5](https://riverbankcomputing.com/software/pyqt/download5)
  - [FFmpeg](ffmpeg.org)
 
-You should have installed these programs and libraries for the proper
-functioning of VideoMorph.
+You should install these programs and libraries for VideoMorph to work properly.
 
 ## Contributing
 
@@ -76,6 +75,7 @@ Contributors:
  - [Maikel Llamaret Heredia](http://gutl.jovenclub.cu)
  - [Carlos Parra Zaldivar](http://libreoffice.cubava.cu)
  - [Leonel Salazar Videaux](http://debianhlg.cubava.cu/)
+ - Osmel Cruz
 
 Copyright:
 

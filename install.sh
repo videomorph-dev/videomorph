@@ -1,5 +1,5 @@
 #!/bin/bash
-# VideoMorph installation script
+# VideoMorph installation script for Debian based distros
 
 depends="ffmpeg python3 python3-pyqt5"
 

@@ -6,7 +6,7 @@
        \/     |  |_ _ /  |_ _ _  |_ _ _|  |      |  |_ _ _|  |    \   |        |     |
 
 
-VideoMorph 1.1
+VideoMorph 1.2
 
 DEPENDENCIES:
 - python3-pyqt5 (>=5.5.1)
@@ -20,7 +20,7 @@ INSTALL:
 
 - Change to the source dir
 
-    cd videomorph-1.1
+    cd videomorph-1.2
 
 - Install
 
