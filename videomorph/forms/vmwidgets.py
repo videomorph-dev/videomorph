@@ -39,6 +39,7 @@ class TasksListTable(QTableWidget):
     """Customized class to provide Tasks List Table."""
 
     def __init__(self, parent, window):
+        """Class initializer."""
         super(TasksListTable, self).__init__(parent)
         self._window = window
 
@@ -62,12 +63,14 @@ class TasksListTable(QTableWidget):
         self.setAcceptDrops(True)
 
     def dragEnterEvent(self, event):
+        """Drag Enter Event."""
         if event.mimeData().hasFormat('text/plain'):
             event.accept()
         else:
             event.ignore()
 
     def dragMoveEvent(self, event):
+        """Drag Move Event."""
         if event.mimeData().hasFormat('text/plain'):
             event.setDropAction(Qt.MoveAction)
             event.accept()
@@ -75,6 +78,7 @@ class TasksListTable(QTableWidget):
             event.ignore()
 
     def dropEvent(self, event):
+        """Drop Event."""
         files = []
 
         for url in event.mimeData().urls():
