@@ -229,9 +229,10 @@ class _XMLProfile:
     @staticmethod
     def _sys_xml_file_path(file_name):
         """Return the path to xml profiles file in the system."""
-        if exists(LINUX_PATHS['profiles'] + file_name):
+        file_path = LINUX_PATHS['profiles'] + '{0}{1}'.format(sep, file_name)
+        if exists(file_path):
             # if VideoMorph is installed
-            return LINUX_PATHS['profiles'] + file_name
+            return file_path
         else:
             # if not installed
             return BASE_DIR + '{0}{1}{2}{3}'.format(
