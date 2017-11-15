@@ -19,6 +19,7 @@
 
 """This module provides a dialog to show changelog."""
 
+import gzip
 from os.path import exists
 from os.path import sep
 
@@ -62,12 +63,13 @@ class ChangelogDialog(QtWidgets.QDialog):
 
     def _generate_changelog(self):
         """Return a human readable changelog."""
-        if exists(LINUX_PATHS['doc'] + '{0}changelog'.format(sep)):
-            changelog_file = LINUX_PATHS['doc'] + '{0}changelog'.format(sep)
+        changelog_path = LINUX_PATHS['doc'] + '{0}changelog.gz'.format(sep)
+        if exists(changelog_path):
+            changelog_file = changelog_path
         else:
-            changelog_file = BASE_DIR + '{0}changelog'.format(sep)
+            changelog_file = BASE_DIR + '{0}changelog.gz'.format(sep)
 
-        with open(changelog_file, 'r', encoding='utf-8') as changelog:
+        with gzip.open(changelog_file, 'rt', encoding='utf-8') as changelog:
             changes = []
             for line in changelog:
                 if line.startswith('    * '):
