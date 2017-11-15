@@ -20,7 +20,6 @@
 """This module defines the VideoMorph main window that holds the UI."""
 
 from collections import OrderedDict
-from collections import namedtuple
 from functools import partial
 from os import sep
 from os.path import dirname
@@ -46,7 +45,6 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QCheckBox,
                              QProgressBar,
                              QToolBar,
-                             QTableWidget,
                              QTableWidgetItem,
                              QLineEdit,
                              QAction,
@@ -54,11 +52,11 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QFileDialog,
                              QMessageBox,
                              QProgressDialog,
-                             QHeaderView,
-                             QToolButton,
-                             QItemDelegate)
+                             QToolButton)
 
 from . import videomorph_qrc
+from . import COLUMNS
+from .vmwidgets import TasksListTable
 from videomorph.converter import APP_NAME
 from videomorph.converter import VERSION
 from videomorph.converter import CONV_LIB
@@ -76,10 +74,6 @@ from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
 from .changelog import ChangelogDialog
 from .settings import SettingsDialog
-
-# Conversion tasks list table columns
-TableColumns = namedtuple('TableColumns', 'NAME DURATION QUALITY PROGRESS')
-COLUMNS = TableColumns(*range(4))
 
 
 class VideoMorphMW(QMainWindow):
@@ -195,6 +189,7 @@ class VideoMorphMW(QMainWindow):
         self.cb_profiles = QComboBox(gb_settings, statusTip=profile_tip,
                                      toolTip=profile_tip)
         self.cb_profiles.setMinimumSize(QSize(200, 0))
+        self.cb_profiles.setIconSize(QSize(22, 22))
         vertical_layout.addWidget(self.cb_profiles)
         horizontal_layout_2 = QHBoxLayout()
         label_quality = QLabel(self.tr('Target Quality:'))
@@ -256,23 +251,11 @@ class VideoMorphMW(QMainWindow):
             gb_tasks.sizePolicy().hasHeightForWidth())
         gb_tasks.setSizePolicy(size_policy)
         horizontal_layout = QHBoxLayout(gb_tasks)
-        self.tb_tasks = QTableWidget(gb_tasks)
-        self.tb_tasks.setColumnCount(4)
-        self.tb_tasks.setRowCount(0)
-        self.tb_tasks.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.tb_tasks.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tb_tasks.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.Stretch)
-        self.tb_tasks.setHorizontalHeaderLabels(
-            [self.tr('File Name'),
-             self.tr('Duration'),
-             self.tr('Target Quality'),
-             self.tr('Progress')])
-        self.tb_tasks.setStatusTip(tasks_text)
-        self.tb_tasks.setToolTip(tasks_text)
+        self.tb_tasks = TasksListTable(parent=gb_tasks,
+                                       window=self)
+
         self.tb_tasks.cellPressed.connect(self._enable_context_menu_action)
         # Create a combo box for Target update
-        self.tb_tasks.setItemDelegate(TargetQualityDelegate(parent=self))
         horizontal_layout.addWidget(self.tb_tasks)
         self.vertical_layout_2.addWidget(gb_tasks)
         self.tb_tasks.doubleClicked.connect(self._update_edit_triggers)
@@ -688,8 +671,15 @@ class VideoMorphMW(QMainWindow):
         # Clear combobox content
         self.cb_profiles.clear()
         # Populate the combobox with new data
-        self.cb_profiles.addItems(
-            self.profile.get_xml_profile_qualities().keys())
+
+        profile_names = self.profile.get_xml_profile_qualities().keys()
+        for i, profile_name in enumerate(profile_names):
+            self.cb_profiles.addItem(profile_name)
+            icon = QIcon(':/formats/{0}.png'.format(profile_name))
+            self.cb_profiles.setItemIcon(i, icon)
+
+        # self.cb_profiles.addItems(
+        #     self.profile.get_xml_profile_qualities().keys())
 
     def populate_quality_combo(self, combo):
         """Populate target quality combobox.
@@ -717,17 +707,27 @@ class VideoMorphMW(QMainWindow):
 
     def closeEvent(self, event):
         """Things to todo on close."""
-        # Disconnect the finished signal
-        self.conversion_lib.converter_finished_disconnect(
-            connected=self._finish_file_encoding)
         # Close communication and kill the encoding process
         if self.conversion_lib.converter_is_running:
-            self.conversion_lib.close_converter()
-            self.conversion_lib.kill_converter()
-        # Save settings
-        self._write_app_settings()
+            # ask for confirmation
+            user_answer = QMessageBox.question(
+                self,
+                APP_NAME,
+                self.tr('There are on Going Conversion Tasks.'
+                        ' Are you Sure you Want to Exit?'),
+                QMessageBox.Yes | QMessageBox.No)
 
-        event.accept()
+            if user_answer == QMessageBox.Yes:
+                # Disconnect the finished signal
+                self.conversion_lib.converter_finished_disconnect(
+                    connected=self._finish_file_encoding)
+                self.conversion_lib.close_converter()
+                self.conversion_lib.kill_converter()
+                # Save settings
+                self._write_app_settings()
+                event.accept()
+            else:
+                event.ignore()
 
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with _MediaFile objects."""
@@ -1468,58 +1468,3 @@ class VideoMorphMW(QMainWindow):
         # cause .mp4 files doesn't run until conversion is finished
         if exists(path) and self.cb_profiles.currentText() != 'MP4':
             self.play_output_media_file_action.setEnabled(True)
-
-
-class TargetQualityDelegate(QItemDelegate):
-    """Combobox to select the target quality from the task list."""
-
-    def __init__(self, parent=None):
-        """Class initializer."""
-        super(TargetQualityDelegate, self).__init__(parent)
-        self.parent = parent
-
-    def createEditor(self, parent, option, index):
-        """Create a ComboBox to edit the Target Quality."""
-        if index.column() == COLUMNS.QUALITY:
-            editor = QComboBox(parent)
-            self.parent.populate_quality_combo(combo=editor)
-            editor.activated.connect(partial(self.update,
-                                             editor,
-                                             index))
-            return editor
-        else:
-            return QItemDelegate.createEditor(self, parent, option, index)
-
-    def setEditorData(self, editor, index):
-        """Set Target Quality."""
-        text = index.model().data(index, Qt.DisplayRole)
-        if index.column() == COLUMNS.QUALITY:
-            i = editor.findText(text)
-            if i == -1:
-                i = 0
-            editor.setCurrentIndex(i)
-        else:
-            QItemDelegate.setEditorData(self, editor, index)
-
-        self.parent.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
-    def update(self, editor, index):
-        """Update several things in the interface."""
-        # Update table Progress field if file is: Done or Stopped
-        self.parent.update_table_progress_column(row=index.row())
-
-        # Update file status
-        self.parent.media_list.set_file_status(position=index.row(),
-                                               status=STATUS.todo)
-        # Update total duration of the new tasks list
-        self.parent.total_duration = self.parent.media_list.duration
-
-        # Update the interface
-        self.parent.update_interface(clear=False,
-                                     stop=False,
-                                     stop_all=False,
-                                     remove=False,
-                                     play_input=False,
-                                     play_output=False)
-
-        self.parent.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)

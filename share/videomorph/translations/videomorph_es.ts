@@ -195,157 +195,142 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>VideoMorphMW</name>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="176"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="170"/>
         <source>Conversion Profile</source>
         <translation>Perfil de Conversión</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="194"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="188"/>
         <source>Select a Video Format</source>
         <translation>Seleccione un Formato de Video</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="200"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="195"/>
         <source>Target Quality:</source>
         <translation>Calidad Objetivo:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="207"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="202"/>
         <source>Select a Video Target Quality</source>
         <translation>Seleccione una Calidad de Video Objetivo</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="250"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="245"/>
         <source>List of Conversion Tasks</source>
         <translation>Lista de Tareas de Conversión</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="266"/>
-        <source>File Name</source>
-        <translation>Nombre del Archivo</translation>
-    </message>
-    <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="266"/>
-        <source>Duration</source>
-        <translation>Duración</translation>
-    </message>
-    <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="266"/>
-        <source>Target Quality</source>
-        <translation>Calidad Objetivo</translation>
-    </message>
-    <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="309"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="292"/>
         <source>Progress</source>
         <translation>Progreso</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="283"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="266"/>
         <source>Output Directory</source>
         <translation>Directorio Destino</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="711"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="701"/>
         <source>Choose Output Directory</source>
         <translation>Seleccione el Directorio Destino</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="312"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="295"/>
         <source>Operation Progress</source>
         <translation>Progreso de la Operación</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="318"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="301"/>
         <source>Total Progress</source>
         <translation>Progreso Total</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="356"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="339"/>
         <source>Add Video Files to the List of Conversion Tasks</source>
         <translation>Añadir Archivos de Video a la Lista de Tareas de Conversión</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="371"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="354"/>
         <source>&amp;Add Customized Profile...</source>
         <translation>&amp;Añadir Perfil de Conversión Personalizado...</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="371"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="354"/>
         <source>Add Customized Profile</source>
         <translation>Añadir Perfil de Conversión Personalizado</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="378"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="361"/>
         <source>&amp;Export Conversion Profiles...</source>
         <translation>&amp;Exportar Perfiles de Conversión...</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="378"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="361"/>
         <source>Export Conversion Profiles</source>
         <translation>Exportar Perfiles de Conversión</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="410"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="393"/>
         <source>Clear &amp;List</source>
         <translation>Eliminar &amp;Lista</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="419"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="402"/>
         <source>&amp;Remove File</source>
         <translation>&amp;Eliminar Archivo</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="428"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="411"/>
         <source>&amp;Convert</source>
         <translation>&amp;Convertir</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="428"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="411"/>
         <source>Start Conversion Process</source>
         <translation>Iniciar el Proceso de Conversión</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="436"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="419"/>
         <source>&amp;Stop</source>
         <translation>&amp;Detener</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="436"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="419"/>
         <source>Stop Video File Conversion</source>
         <translation>Detener la Conversión del Archivo de Video</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="444"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="427"/>
         <source>S&amp;top All</source>
         <translation>Detener &amp;Todo</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="471"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="455"/>
         <source>E&amp;xit</source>
         <translation>Sa&amp;lir</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="478"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="462"/>
         <source>&amp;Settings...</source>
         <translation>&amp;Preferencias...</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="503"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="487"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="511"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="495"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edición</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="520"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="504"/>
         <source>&amp;Conversion</source>
         <translation>&amp;Conversión</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="526"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="510"/>
         <source>&amp;Help</source>
         <translation>A&amp;yuda</translation>
     </message>
@@ -415,12 +400,12 @@ p, li { white-space: pre-wrap; }
         <translation>Proceso de Conversión Concluido Exitosamente!</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="385"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="368"/>
         <source>&amp;Import Conversion Profiles...</source>
         <translation>&amp;Importar Perfiles de Conversión...</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="385"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="368"/>
         <source>Import Conversion Profiles</source>
         <translation>Importar Perfiles de Conversión</translation>
     </message>
@@ -430,12 +415,12 @@ p, li { white-space: pre-wrap; }
         <translation>Seleccionar Archivo de Perfiles</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="220"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="215"/>
         <source>Insert Subtitles if Available</source>
         <translation>Incrustar Subtítulos si están Disponibles</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="219"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="214"/>
         <source>Insert Subtitles if Available in Source Directory</source>
         <translation>Incrustar Subtítulos si están Disponibles en el Directorio Fuente</translation>
     </message>
@@ -455,32 +440,32 @@ p, li { white-space: pre-wrap; }
         <translation>Información de Formato de Archivo de Video no Válida para:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="186"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="180"/>
         <source>Convert to:</source>
         <translation>Convertir a:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="227"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="222"/>
         <source>Delete Input Video Files when Finished</source>
         <translation>Eliminar Archivos de Video de Entrada al Finalizar</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="410"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="393"/>
         <source>Remove all Video Files from the List of Conversion Tasks</source>
         <translation>Eliminar todos los Archivos de Video de la Lista de Tareas de Conversión</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="444"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="427"/>
         <source>Stop all Video Conversion Tasks</source>
         <translation>Detener todas las Tareas de Conversión de Video</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="452"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="435"/>
         <source>&amp;About</source>
         <translation>&amp;Acerca de</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="471"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="455"/>
         <source>Exit</source>
         <translation>Salir</translation>
     </message>
@@ -515,17 +500,17 @@ p, li { white-space: pre-wrap; }
         <translation>Eliminar todas las Tareas de Conversión de la Lista?</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="478"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="462"/>
         <source>Open Settings Dialog</source>
         <translation>Abrir el Diálogo de Preferencias</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="419"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="402"/>
         <source>Remove Selected Video File from the List of Conversion Tasks</source>
         <translation>Eliminar el Archivo de Video Seleccionado de la Lista de Tareas de Conversión</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="218"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="213"/>
         <source>Other Options:</source>
         <translation>Otras Opciones:</translation>
     </message>
@@ -535,17 +520,17 @@ p, li { white-space: pre-wrap; }
         <translation>La Librería de Conversión ha Fallado con Error:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="356"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="339"/>
         <source>&amp;Open Files...</source>
         <translation>&amp;Abir Archivos...</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="363"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="346"/>
         <source>Open &amp;Directory...</source>
         <translation>Abrir &amp;Directorio...</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="363"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="346"/>
         <source>Add all the Video Files in a Directory to the List of Conversion Tasks</source>
         <translation>Añadir todos los Archivos de Video de un Directorio a la Lista de Tareas de Conversión</translation>
     </message>
@@ -565,12 +550,12 @@ p, li { white-space: pre-wrap; }
         <translation>Convirtiendo: {m}			 A: {br}			 Tiempo Restante de la Operación: {ort}			 Tiempo Total Transcurrido: {tet}</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="392"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="375"/>
         <source>&amp;Restore the Default Conversion Profiles</source>
         <translation>&amp;Restablecer los Perfiles de Conversión por Defecto</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="392"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="375"/>
         <source>Restore the Default Conversion Profiles</source>
         <translation>Restablecer los Perfiles de Conversión por Defecto</translation>
     </message>
@@ -585,17 +570,17 @@ p, li { white-space: pre-wrap; }
         <translation>No se ha Encontrado un Reproductor de Videos en su Sistema</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="398"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="381"/>
         <source>Play Input Video File</source>
         <translation>Reproducir Archivo de Video de Entrada</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="404"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="387"/>
         <source>Play Output Video File</source>
         <translation>Reproducir Archivo de Video de Salida</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="560"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="543"/>
         <source>Adding Video Files...</source>
         <translation>Añadiendo Archivos de Video...</translation>
     </message>
@@ -605,17 +590,17 @@ p, li { white-space: pre-wrap; }
         <translation>Añadiendo Archivo:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="561"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="544"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="234"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="229"/>
         <source>Use Format Tag in Output Video File Name</source>
         <translation>Usar Etiqueta de Formato en el Nombre del Archivo de Salida</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="235"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="230"/>
         <source>Useful when Converting a Video File to Multiples Formats</source>
         <translation>Útil cuando se Convierte un Archivo de Video a Múltiples Formatos</translation>
     </message>
@@ -640,24 +625,29 @@ p, li { white-space: pre-wrap; }
         <translation>ya Exite en el Directorio Destino. Por Favor, Cambie el Directorio Destino</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="452"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="435"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="464"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="448"/>
         <source>&amp;Ffmpeg Documentation...</source>
         <translation>Documentación de &amp;Ffmpeg...</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="464"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="448"/>
         <source>Open Ffmpeg On-Line Documentation</source>
         <translation>Abrir la Documentación en Línea de Ffmpeg</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="459"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="442"/>
         <source>Changelog</source>
         <translation>Registro de Cambios</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/videomorph.py" line="713"/>
+        <source>There are on Going Conversion Tasks. Are you Sure you Want to Exit?</source>
+        <translation>Existen Tareas de Conversión en Ejecusión. ¿Está Seguro que Desea Salir?</translation>
     </message>
 </context>
 </TS>

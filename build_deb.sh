@@ -1,7 +1,6 @@
 #!/bin/bash
 
-version="1.1"
-ubuntu="-xenial"
+version="1.2"
 package_name="videomorph_""$version""_all.deb"
 python_version=$(python3 --version | cut -f2 -d " " | cut --fields=1,2 -d ".")
 
@@ -58,7 +57,6 @@ cd dist
 tar -cvf "videomorph-""$version".tar.gz "videomorph-""$version"
 cd ..
 rm -rfv dist/"videomorph-""$version"
-rm -rfv changelog.gz
 
 # Runnin lintian
 lintian -i dist/"$package_name" >dist/lintian.log
