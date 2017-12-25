@@ -37,7 +37,7 @@ from PyQt5.QtWidgets import (QDialog,
 
 from videomorph.converter import APP_NAME
 from videomorph.converter import BASE_DIR
-from videomorph.converter import LINUX_PATHS
+from videomorph.converter import SYS_PATHS
 from videomorph.converter import VERSION
 
 
@@ -147,8 +147,8 @@ class AboutVMDialog(QDialog):
 
     def get_license_text(self):
         """Get the license text from the license file."""
-        if isfile(LINUX_PATHS['doc'] + '/LICENSE'):
-            license_path = LINUX_PATHS['doc'] + '/LICENSE'
+        if isfile(SYS_PATHS.doc + '/LICENSE'):
+            license_path = SYS_PATHS.doc + '/LICENSE'
         elif isfile(BASE_DIR + '/LICENSE'):
             license_path = BASE_DIR + '/LICENSE'
         elif isfile('/usr/share/common-licenses/Apache-2.0'):

@@ -2,22 +2,20 @@
 
 # File name: syspath.py
 #
-# Copyright (C) 2017 Leodanis Pozo Ramos <lpozor78@gmail.com>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-# MA 02110-1301, USA.
+#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   Copyright 2016-2017 VideoMorph Development Team
+
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+
+#       http://www.apache.org/licenses/LICENSE-2.0
+
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
 
 """This module provides System Paths creation classes."""
 
@@ -43,25 +41,35 @@ class VMPaths:
         self.bin = 'bin'
 
 
-class LinuxPaths(VMPaths):
+class _LinuxPaths(VMPaths):
     """Class to define the paths to use in Linux systems."""
 
     def __init__(self):
         """Class initializer."""
-        super(LinuxPaths, self).__init__()
-        self.__dict__ = {attr: prefix + sep + self.__dict__[attr] for
-                         attr in self.__dict__}
+        super(_LinuxPaths, self).__init__()
+        for attr in self.__dict__:
+            if attr != 'config':
+                self.__dict__[attr] = prefix + sep + self.__dict__[attr]
 
 
-class WindowsPaths(VMPaths):
+class _WindowsPaths(VMPaths):
     """Class to define the paths to use in Windows systems."""
 
     def __init__(self):
-        super(WindowsPaths, self).__init__()
+        super(_WindowsPaths, self).__init__()
+        user_path = expanduser('~')
+        self.apps = join_path(user_path,'VideoMorph')
+        self.config = join_path(user_path, '.videomorph')
+        self.icons = join_path(user_path, r'VideoMorph\icons')
+        self.i18n = r'C:\Program Files\VideoMorph\translations'
+        self.profiles = r'C:\Program Files\VideoMorph\profiles'
+        self.doc = r'C:\Program Files\VideoMorph\doc'
+        self.man = r'C:\Program Files\VideoMorph\man'
+        self.bin = r'C:\Program Files\VideoMorph\bin'
 
 
 def sys_path_factory():
     """Factory method to create the appropriate path."""
     for path_class in VMPaths.__subclasses__():
-        if path_class.__name__.lower().startswith(platform):
+        if path_class.__name__.lower().startswith('_' + platform):
             return path_class()

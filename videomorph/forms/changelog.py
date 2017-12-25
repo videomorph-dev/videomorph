@@ -27,7 +27,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from videomorph.converter import APP_NAME
 from videomorph.converter import BASE_DIR
-from videomorph.converter import LINUX_PATHS
+from videomorph.converter import SYS_PATHS
 from videomorph.converter import VERSION
 
 
@@ -63,7 +63,7 @@ class ChangelogDialog(QtWidgets.QDialog):
 
     def _generate_changelog(self):
         """Return a human readable changelog."""
-        changelog_path = LINUX_PATHS['doc'] + '{0}changelog.gz'.format(sep)
+        changelog_path = SYS_PATHS.doc + '{0}changelog.gz'.format(sep)
         if exists(changelog_path):
             changelog_file = changelog_path
         else:

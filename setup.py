@@ -20,8 +20,6 @@
 
 """This module defines the installation script for VideoMorph."""
 
-from sys import platform
-
 try:
     from setuptools import setup
     from setuptools import find_packages
@@ -32,8 +30,8 @@ except ImportError:
 
 from videomorph.converter import VERSION
 from videomorph.converter import PACKAGE_NAME
-from videomorph.converter import LINUX_PATHS
 from videomorph.converter import VM_PATHS
+from videomorph.converter import SYS_PATHS
 
 
 LONG_DESC = """Small Video Converter based on ffmpeg, Python 3 and Qt5.
@@ -46,13 +44,6 @@ annoying options rarely used.
 VideoMorph is a video converter, just that. If you want a video
 editor, VideoMorph isn't for you.
 """
-
-SYS_PATH = None
-
-if platform == 'linux':
-    SYS_PATH = LINUX_PATHS
-elif platform == 'windows':
-    pass  # For the future
 
 
 if __name__ == '__main__':
@@ -72,25 +63,25 @@ if __name__ == '__main__':
 
           data_files=[
               # Desktop entry
-              (SYS_PATH['apps'],
-               [VM_PATHS['apps'] + '/videomorph.desktop']),
+              (SYS_PATHS.apps,
+               [VM_PATHS.apps + '/videomorph.desktop']),
               # App icon
-              (SYS_PATH['icons'],
-               [VM_PATHS['icons'] + '/videomorph.png']),
+              (SYS_PATHS.icons,
+               [VM_PATHS.icons + '/videomorph.png']),
               # App translation file
-              (SYS_PATH['i18n'],
-               [VM_PATHS['i18n'] + '/videomorph_es.qm']),
+              (SYS_PATHS.i18n,
+               [VM_PATHS.i18n + '/videomorph_es.qm']),
               # Default conversion profiles
-              (SYS_PATH['profiles'],
-               [VM_PATHS['profiles'] + '/default.xml',
-                VM_PATHS['profiles'] + '/customized.xml']),
+              (SYS_PATHS.profiles,
+               [VM_PATHS.profiles + '/default.xml',
+                VM_PATHS.profiles + '/customized.xml']),
               # Documentation files
-              (SYS_PATH['doc'],
+              (SYS_PATHS.doc,
                ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL',
                 'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
               # Man page
-              (SYS_PATH['man'],
-               [VM_PATHS['man'] + '/videomorph.1.gz'])
+              (SYS_PATHS.man,
+               [VM_PATHS.man + '/videomorph.1.gz'])
           ],
 
-          scripts=[VM_PATHS['bin'] + '/videomorph'])
+          scripts=[VM_PATHS.bin + '/videomorph'])

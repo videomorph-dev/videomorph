@@ -31,7 +31,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
 from . import BASE_DIR
-from . import LINUX_PATHS
+from . import SYS_PATHS
 from . import LOCALE
 from . import VM_PATHS
 from . import VALID_VIDEO_EXT
@@ -224,19 +224,19 @@ class _XMLProfile:
     @staticmethod
     def _user_xml_files_directory():
         """Return the user xml directory path."""
-        return LINUX_PATHS['config'] + '{0}{1}'.format(sep, 'profiles')
+        return SYS_PATHS.config + '{0}{1}'.format(sep, 'profiles')
 
     @staticmethod
     def _sys_xml_file_path(file_name):
         """Return the path to xml profiles file in the system."""
-        file_path = LINUX_PATHS['profiles'] + '{0}{1}'.format(sep, file_name)
+        file_path = SYS_PATHS.profiles + '{0}{1}'.format(sep, file_name)
         if exists(file_path):
             # if VideoMorph is installed
             return file_path
         else:
             # if not installed
             return BASE_DIR + '{0}{1}{2}{3}'.format(
-                sep, VM_PATHS['profiles'], sep, file_name)
+                sep, VM_PATHS.profiles, sep, file_name)
 
     @staticmethod
     def _create_xml_preset(preset, params, extension):
