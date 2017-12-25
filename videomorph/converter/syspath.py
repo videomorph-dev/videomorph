@@ -20,6 +20,7 @@
 """This module provides System Paths creation classes."""
 
 from os.path import expanduser
+from os.path import expandvars
 from os.path import join as join_path
 from os.path import sep
 from sys import platform
@@ -52,20 +53,26 @@ class _LinuxPaths(VMPaths):
                 self.__dict__[attr] = prefix + sep + self.__dict__[attr]
 
 
-class _WindowsPaths(VMPaths):
-    """Class to define the paths to use in Windows systems."""
+class _Win32Paths(VMPaths):
+    """Class to define the paths to use in Windows32 systems."""
 
     def __init__(self):
-        super(_WindowsPaths, self).__init__()
-        user_path = expanduser('~')
-        self.apps = join_path(user_path,'VideoMorph')
-        self.config = join_path(user_path, '.videomorph')
-        self.icons = join_path(user_path, r'VideoMorph\icons')
-        self.i18n = r'C:\Program Files\VideoMorph\translations'
-        self.profiles = r'C:\Program Files\VideoMorph\profiles'
-        self.doc = r'C:\Program Files\VideoMorph\doc'
-        self.man = r'C:\Program Files\VideoMorph\man'
-        self.bin = r'C:\Program Files\VideoMorph\bin'
+        """Class initializer."""
+        super(_Win32Paths, self).__init__()
+        program_files = expandvars('%ProgramFiles%')
+        self.apps = join_path(program_files, r'VideoMorph')
+        self.config = join_path(expanduser('~'), '.videomorph')
+        self.icons = join_path(program_files, r'VideoMorph\icons')
+        self.i18n = join_path(program_files, r'VideoMorph\translations')
+        self.profiles = join_path(program_files, r'VideoMorph\profiles')
+        self.doc = join_path(program_files, r'VideoMorph\doc')
+        self.man = join_path(program_files, r'VideoMorph\man')
+        self.bin = join_path(program_files, r'VideoMorph\bin')
+
+
+class _Win64Paths(_Win32Paths, VMPaths):
+    """Class to define the paths to use in Windows64 systems."""
+    pass
 
 
 def sys_path_factory():
