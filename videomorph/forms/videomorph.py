@@ -728,6 +728,10 @@ class VideoMorphMW(QMainWindow):
                 event.accept()
             else:
                 event.ignore()
+        else:
+            # Save settings
+            self._write_app_settings()
+            event.accept()
 
     def _fill_media_list(self, files_paths):
         """Fill MediaList object with _MediaFile objects."""
