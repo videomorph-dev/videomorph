@@ -77,7 +77,7 @@ if __name__ == '__main__':
                 VM_PATHS.profiles + '/customized.xml']),
               # Documentation files
               (SYS_PATHS.doc,
-               ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL',
+               ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
                 'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
               # Man page
               (SYS_PATHS.man,

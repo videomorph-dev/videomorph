@@ -22,13 +22,32 @@
 from collections import namedtuple
 from os import cpu_count
 from os.path import dirname
+from os.path import exists
+from os.path import join as join_path
 
 from .syspath import sys_path_factory
 from .syspath import VMPaths
 from .utils import get_locale
 
+
+SYS_PATHS = sys_path_factory()
+
+
+def get_version():
+    """Return app's version number."""
+    if exists(join_path(SYS_PATHS.doc, 'VERSION')):
+        version_file = join_path(SYS_PATHS.doc, 'VERSION')
+    else:
+        version_file = '../VERSION'
+
+    with open(version_file, 'r', encoding='UTF-8') as f:
+        version = f.readline().strip('\n')
+
+    return version
+
+
 APP_NAME = 'VideoMorph'
-VERSION = '1.2'
+VERSION = get_version()
 BASE_DIR = dirname(dirname(dirname(__file__)))
 LOCALE = get_locale()
 PACKAGE_NAME = APP_NAME.lower()
@@ -75,5 +94,3 @@ PLAYERS = ['vlc',
            'ffplay']
 
 VM_PATHS = VMPaths()
-
-SYS_PATHS = sys_path_factory()
