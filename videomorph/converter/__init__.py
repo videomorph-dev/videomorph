@@ -19,6 +19,7 @@
 
 """This module defines the converter package."""
 
+from sys import platform
 from collections import namedtuple
 from os import cpu_count
 from os.path import dirname
@@ -54,7 +55,14 @@ PACKAGE_NAME = APP_NAME.lower()
 MAINTAINER = APP_NAME + ' ' + 'Development Team'
 
 ConvLib = namedtuple('ConvLib', 'ffmpeg avconv')
-CONV_LIB = ConvLib('ffmpeg', 'avconv')
+Prober = namedtuple('Prober', 'ffprobe avprobe')
+
+if platform == 'linux':
+    CONV_LIB = ConvLib('ffmpeg', 'avconv')
+    PROBER = Prober('ffprobe', 'avprobe')
+elif platform == 'win32':
+    CONV_LIB = ConvLib('ffmpeg.exe', 'avconv.exe')
+    PROBER = Prober('ffprobe.exe', 'avprobe.exe')
 
 LIBRARY_ERRORS = ('Unknown encoder', 'Unrecognized option', 'Invalid argument')
 
@@ -65,9 +73,6 @@ VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
                  ' *.flv *.vob *.ts *.3gp *.ogv *.mpg *.mp4 *.avi')
 
 VALID_VIDEO_EXT = {ext.lstrip('*') for ext in VIDEO_FILTERS.split()}
-
-Prober = namedtuple('Prober', 'ffprobe avprobe')
-PROBER = Prober('ffprobe', 'avprobe')
 
 MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
 STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
