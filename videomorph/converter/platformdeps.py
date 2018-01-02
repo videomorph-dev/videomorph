@@ -27,6 +27,8 @@ from sys import platform
 from sys import prefix
 
 
+# PATHS
+
 class VMPaths:
     """Class to define the base class for paths handling."""
 
@@ -80,3 +82,69 @@ def sys_path_factory():
     for path_class in VMPaths.__subclasses__():
         if path_class.__name__.lower().startswith('_' + platform):
             return path_class()
+
+
+# CONVERSION LIBRARY
+
+class _ConversionLib:
+    """Class to define platform dependent conversion tools."""
+
+    def __init__(self):
+        """Class initializer."""
+        self.ffmpeg = 'ffmpeg'
+        self.avconv = 'avconv'
+
+
+class _LinuxConversionLib(_ConversionLib):
+    """Class to define platform dependent conversion tools for Linux."""
+    pass
+
+
+class _Win32ConversionLib(_ConversionLib):
+    """Class to define platform dependent conversion tools for Win32."""
+
+    def __init__(self):
+        """Class initializer."""
+        super(_Win32ConversionLib, self).__init__()
+        for attr in self.__dict__:
+            self.__dict__[attr] += '.exe'
+
+
+def conversion_lib_factory():
+    """Factory method to create the appropriate path."""
+    for conversion_lib_class in _ConversionLib.__subclasses__():
+        if conversion_lib_class.__name__.lower().startswith('_' + platform):
+            return conversion_lib_class()
+
+
+# LIBRARY PROBE TOOL
+
+class _Prober:
+    """Class to define platform dependent conversion tools."""
+
+    def __init__(self):
+        """Class initializer."""
+        self.ffprobe = 'ffprobe'
+        self.avprobe = 'avprobe'
+
+
+class _LinuxProber(_Prober):
+    """Class to define platform dependent conversion tools for Linux."""
+    pass
+
+
+class _Win32Prober(_Prober):
+    """Class to define platform dependent conversion tools for Win32."""
+
+    def __init__(self):
+        """Class initializer."""
+        super(_Win32Prober, self).__init__()
+        for attr in self.__dict__:
+            self.__dict__[attr] += '.exe'
+
+
+def prober_factory():
+    """Factory method to create the appropriate path."""
+    for prober_class in _Prober.__subclasses__():
+        if prober_class.__name__.lower().startswith('_' + platform):
+            return prober_class()

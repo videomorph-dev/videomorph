@@ -19,15 +19,16 @@
 
 """This module defines the converter package."""
 
-from sys import platform
 from collections import namedtuple
 from os import cpu_count
 from os.path import dirname
 from os.path import exists
 from os.path import join as join_path
 
-from .syspath import sys_path_factory
-from .syspath import VMPaths
+from .platformdeps import conversion_lib_factory
+from .platformdeps import prober_factory
+from .platformdeps import sys_path_factory
+from .platformdeps import VMPaths
 from .utils import get_locale
 
 
@@ -54,15 +55,9 @@ LOCALE = get_locale()
 PACKAGE_NAME = APP_NAME.lower()
 MAINTAINER = APP_NAME + ' ' + 'Development Team'
 
-ConvLib = namedtuple('ConvLib', 'ffmpeg avconv')
-Prober = namedtuple('Prober', 'ffprobe avprobe')
+CONV_LIB = conversion_lib_factory()
 
-if platform == 'linux':
-    CONV_LIB = ConvLib('ffmpeg', 'avconv')
-    PROBER = Prober('ffprobe', 'avprobe')
-elif platform == 'win32':
-    CONV_LIB = ConvLib('ffmpeg.exe', 'avconv.exe')
-    PROBER = Prober('ffprobe.exe', 'avprobe.exe')
+PROBER = prober_factory()
 
 LIBRARY_ERRORS = ('Unknown encoder', 'Unrecognized option', 'Invalid argument')
 
