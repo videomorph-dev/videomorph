@@ -20,6 +20,7 @@
 """This module provides a dialog to show app information."""
 
 from os.path import isfile
+from os.path import join as join_path
 
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QPixmap
@@ -147,12 +148,15 @@ class AboutVMDialog(QDialog):
 
     def get_license_text(self):
         """Get the license text from the license file."""
-        if isfile(SYS_PATHS.doc + '/LICENSE'):
-            license_path = SYS_PATHS.doc + '/LICENSE'
-        elif isfile(BASE_DIR + '/LICENSE'):
-            license_path = BASE_DIR + '/LICENSE'
-        elif isfile('/usr/share/common-licenses/Apache-2.0'):
-            license_path = '/usr/share/common-licenses/Apache-2.0'
+        doc_license = join_path(SYS_PATHS.doc, 'LICENSE')
+        basedir_license = join_path(BASE_DIR, 'LICENSE')
+        deb_license = '/usr/share/common-licenses/Apache-2.0'
+        if isfile(doc_license):
+            license_path = doc_license
+        elif isfile(basedir_license):
+            license_path = basedir_license
+        elif isfile(deb_license):
+            license_path = deb_license
         else:
             return (self.tr('See License at:') + '\n\n' +
                     'http://www.apache.org/licenses/LICENSE-2.0')

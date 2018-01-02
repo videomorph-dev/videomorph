@@ -22,10 +22,10 @@
 import argparse
 import sys
 from os import walk
+from os.path import abspath
 from os.path import exists
 from os.path import isdir
-from os.path import sep
-from os.path import abspath
+from os.path import join as join_path
 
 from . import APP_NAME
 from . import VERSION
@@ -92,8 +92,7 @@ def search_directory_recursively(directory, files=None):
             for file_name in files_names:
                 extension = '.{0}'.format(file_name.split('.')[-1])
                 if extension in VALID_VIDEO_EXT:
-                    files.append(
-                        abspath('{0}'.join([dir_path, file_name]).format(sep)))
+                    files.append(abspath(join_path(dir_path, file_name)))
     else:
         raise IsADirectoryError("Directory: {0}, doesn't exist".format(
             directory))

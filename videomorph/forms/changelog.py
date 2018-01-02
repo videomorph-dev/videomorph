@@ -21,7 +21,7 @@
 
 import gzip
 from os.path import exists
-from os.path import sep
+from os.path import join as join_path
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -63,11 +63,11 @@ class ChangelogDialog(QtWidgets.QDialog):
 
     def _generate_changelog(self):
         """Return a human readable changelog."""
-        changelog_path = SYS_PATHS.doc + '{0}changelog.gz'.format(sep)
+        changelog_path = join_path(SYS_PATHS.doc, 'changelog.gz')
         if exists(changelog_path):
             changelog_file = changelog_path
         else:
-            changelog_file = BASE_DIR + '{0}changelog.gz'.format(sep)
+            changelog_file = join_path(BASE_DIR, 'changelog.gz')
 
         with gzip.open(changelog_file, 'rt', encoding='utf-8') as changelog:
             changes = []

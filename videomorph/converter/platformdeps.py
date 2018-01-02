@@ -96,12 +96,12 @@ class _ConversionLib:
 
 
 class _LinuxConversionLib(_ConversionLib):
-    """Class to define platform dependent conversion tools for Linux."""
+    """Class to define platform dependent conversion lib for Linux."""
     pass
 
 
 class _Win32ConversionLib(_ConversionLib):
-    """Class to define platform dependent conversion tools for Win32."""
+    """Class to define platform dependent conversion lib for Win32."""
 
     def __init__(self):
         """Class initializer."""
@@ -111,7 +111,7 @@ class _Win32ConversionLib(_ConversionLib):
 
 
 def conversion_lib_factory():
-    """Factory method to create the appropriate path."""
+    """Factory method to create the appropriate lib name."""
     for conversion_lib_class in _ConversionLib.__subclasses__():
         if conversion_lib_class.__name__.lower().startswith('_' + platform):
             return conversion_lib_class()

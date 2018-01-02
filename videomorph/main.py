@@ -22,6 +22,7 @@
 import sys
 from os import sep
 from os.path import exists
+from os.path import join as join_path
 
 from PyQt5.QtCore import QLibraryInfo
 from PyQt5.QtCore import QTranslator
@@ -45,7 +46,7 @@ def main():
     # Setup app translator
     app_translator = QTranslator()
 
-    if exists(BASE_DIR + '{0}{1}'.format(sep, VM_PATHS.i18n)):
+    if exists(join_path(BASE_DIR, VM_PATHS.i18n)):
         app_translator.load(BASE_DIR + '{0}{1}{2}videomorph_{3}'.format(
             sep, VM_PATHS.i18n, sep, LOCALE))
     else:

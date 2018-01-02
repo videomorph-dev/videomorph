@@ -21,7 +21,7 @@
 
 from collections import OrderedDict
 from functools import partial
-from os import sep
+from os.path import join as join_path
 from os.path import dirname
 from os.path import exists
 from os.path import isdir
@@ -62,6 +62,7 @@ from videomorph.converter import VERSION
 from videomorph.converter import CONV_LIB
 from videomorph.converter import STATUS
 from videomorph.converter import VIDEO_FILTERS
+from videomorph.converter import SYS_PATHS
 from videomorph.converter.console import search_directory_recursively
 from videomorph.converter.conversionlib import ConversionLib
 from videomorph.converter.conversionlib import PlayerNotFoundError
@@ -572,13 +573,12 @@ class VideoMorphMW(QMainWindow):
 
     @staticmethod
     def _get_settings_file():
-        return QSettings('{0}{1}.videomorph{2}config.ini'.format(
-            QDir.homePath(), sep, sep), QSettings.IniFormat)
+        return QSettings(join_path(SYS_PATHS.config, 'config.ini'),
+                         QSettings.IniFormat)
 
     def _create_initial_settings(self):
         """Create initial settings file."""
-        if not exists('{0}{1}.videomorph{2}config.ini'.format(
-                QDir.homePath(), sep, sep)):
+        if not exists(join_path(SYS_PATHS.config, 'config.ini')):
             self._write_app_settings(pos=QPoint(100, 50),
                                      size=QSize(1096, 510),
                                      profile_index=0,

@@ -177,7 +177,6 @@ class MediaList(list):
         for file in self:
             if file.status != STATUS.stopped:
                 return False
-
         return True
 
     @property
