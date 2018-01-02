@@ -91,6 +91,9 @@ PLAYERS = ['vlc',
            'xine-ui',
            'gmlive',
            'dragon',
-           'ffplay']
+           'ffplay',
+           'wmplayer.exe',
+           'potplayer.exe',
+           'ffpaly.exe']
 
 VM_PATHS = VMPaths()
