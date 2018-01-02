@@ -1175,6 +1175,8 @@ class VideoMorphMW(QMainWindow):
 
     def stop_file_encoding(self):
         """Stop file encoding process and continue with the list."""
+        # Terminate the file encoding
+        self.conversion_lib.stop_converter()
         # Set _MediaFile.status attribute
         self.media_list.running_file_status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
@@ -1184,8 +1186,6 @@ class VideoMorphMW(QMainWindow):
         # Update the list duration and partial time for total progress bar
         self.timer.reset_progress_times()
         self.media_list_duration = self.media_list.duration
-        # Terminate the file encoding
-        self.conversion_lib.stop_converter()
 
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""

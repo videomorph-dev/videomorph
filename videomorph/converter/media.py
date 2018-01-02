@@ -294,10 +294,14 @@ class _MediaFile:
 
     def delete_output(self, output_dir, tagged_output):
         """Delete the output file if conversion is stopped."""
-        try:
-            remove(self.get_output_path(output_dir, tagged_output))
-        except FileNotFoundError:
-            pass
+        while True:
+            try:
+                remove(self.get_output_path(output_dir, tagged_output))
+                break
+            except FileNotFoundError:
+                break
+            except PermissionError:
+                continue
 
     def delete_input(self):
         """Delete the input file (and subtitle) when conversion is finished."""

@@ -52,7 +52,7 @@ class _LinuxPaths(VMPaths):
         super(_LinuxPaths, self).__init__()
         for attr in self.__dict__:
             if attr != 'config':
-                self.__dict__[attr] = prefix + sep + self.__dict__[attr]
+                self.__dict__[attr] = join_path(prefix, self.__dict__[attr])
 
 
 class _Win32Paths(VMPaths):
