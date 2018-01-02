@@ -6,7 +6,7 @@
        \/     |  |_ _ /  |_ _ _  |_ _ _|  |      |  |_ _ _|  |    \   |        |     |
 
 
-VideoMorph 1.2
+VideoMorph
 
 DEPENDENCIES:
 - python3-pyqt5 (>=5.5.1)

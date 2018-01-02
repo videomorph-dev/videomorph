@@ -40,7 +40,7 @@ class VMPaths:
         self.i18n = 'share/videomorph/translations'
         self.profiles = 'share/videomorph/profiles'
         self.doc = 'share/doc/videomorph'
-        self.man = 'share/man'
+        self.man = 'share/man/man1'
         self.bin = 'bin'
 
 

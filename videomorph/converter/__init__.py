@@ -33,6 +33,7 @@ from .utils import get_locale
 
 
 SYS_PATHS = sys_path_factory()
+BASE_DIR = dirname(dirname(dirname(__file__)))
 
 
 def get_version():
@@ -40,7 +41,7 @@ def get_version():
     if exists(join_path(SYS_PATHS.doc, 'VERSION')):
         version_file = join_path(SYS_PATHS.doc, 'VERSION')
     else:
-        version_file = '../VERSION'
+        version_file = join_path(BASE_DIR, 'VERSION')
 
     with open(version_file, 'r', encoding='UTF-8') as f:
         version = f.readline().strip('\n')
@@ -50,7 +51,6 @@ def get_version():
 
 APP_NAME = 'VideoMorph'
 VERSION = get_version()
-BASE_DIR = dirname(dirname(dirname(__file__)))
 LOCALE = get_locale()
 PACKAGE_NAME = APP_NAME.lower()
 MAINTAINER = APP_NAME + ' ' + 'Development Team'
@@ -91,9 +91,6 @@ PLAYERS = ['vlc',
            'xine-ui',
            'gmlive',
            'dragon',
-           'ffplay',
-           'wmplayer.exe',
-           'potplayer.exe',
-           'ffpaly.exe']
+           'ffplay']
 
 VM_PATHS = VMPaths()
