@@ -721,8 +721,11 @@ class VideoMorphMW(QMainWindow):
                 # Disconnect the finished signal
                 self.conversion_lib.converter_finished_disconnect(
                     connected=self._finish_file_encoding)
-                self.conversion_lib.close_converter()
                 self.conversion_lib.kill_converter()
+                self.conversion_lib.close_converter()
+                self.media_list.delete_running_file_output(
+                    output_dir=self.le_output.text(),
+                    tagged_output=self.chb_tag.checkState())
                 # Save settings
                 self._write_app_settings()
                 event.accept()
