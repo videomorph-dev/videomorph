@@ -22,9 +22,12 @@
 from os.path import expanduser
 from os.path import expandvars
 from os.path import join as join_path
-from os.path import sep
 from sys import platform
 from sys import prefix
+import webbrowser
+
+from .utils import spawn_process
+from .utils import which
 
 
 # PATHS
@@ -144,7 +147,53 @@ class _Win32Prober(_Prober):
 
 
 def prober_factory():
-    """Factory method to create the appropriate path."""
+    """Factory method to create the appropriate prober."""
     for prober_class in _Prober.__subclasses__():
         if prober_class.__name__.lower().startswith('_' + platform):
             return prober_class()
+
+
+# EXTERNAL APP LAUNCHER
+
+class _Launcher:
+    """Abstract class to implement external apps launcher."""
+    def open_with_user_app(self, url):
+        """Open a file or url with user's preferred app."""
+        raise NotImplemented('Must be implemented in subclasses')
+
+    def open_with_user_browser(self, url):
+        """Open a web page with default browser."""
+        raise NotImplemented('Must be implemented in subclasses')
+
+
+class _LinuxLauncher(_Launcher):
+    """Concrete class to implement external apps launcher in Linux."""
+
+    def open_with_user_app(self, url):
+        """Open a file or url with user's preferred app."""
+        spawn_process([which('xdg-open'), url])
+
+    def open_with_user_browser(self, url):
+        """Open a web page with default browser."""
+        self.open_with_user_preferred_app(url)
+
+
+class _Win32Launcher(_Launcher):
+    """Concrete class to implement external apps launcher in Linux."""
+
+    def open_with_user_app(self, url):
+        """Open a file or url with user's preferred app."""
+        app_path = join_path(expandvars('%ProgramFiles%'),
+                             r'Windows Media Player\wmplayer.exe')
+        spawn_process([app_path, url])
+
+    def open_with_user_browser(self, url):
+        """Open a web page with default browser."""
+        webbrowser.open(url)
+
+
+def launcher_factory():
+    """Factory method to create the appropriate launcher."""
+    for launcher_class in _Launcher.__subclasses__():
+        if launcher_class.__name__.lower().startswith('_' + platform):
+            return launcher_class()

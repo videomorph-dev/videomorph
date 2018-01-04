@@ -67,6 +67,7 @@ from videomorph.converter.console import search_directory_recursively
 from videomorph.converter.conversionlib import ConversionLib
 from videomorph.converter.conversionlib import PlayerNotFoundError
 from videomorph.converter.media import MediaList
+from videomorph.converter.platformdeps import launcher_factory
 from videomorph.converter.profile import ConversionProfile
 from videomorph.converter.utils import open_with_user_preferred_app
 from videomorph.converter.utils import which
@@ -644,7 +645,8 @@ class VideoMorphMW(QMainWindow):
     @staticmethod
     def ffmpeg_doc():
         """Open ffmpeg documentation page."""
-        open_with_user_preferred_app(
+        launcher = launcher_factory()
+        launcher.open_with_user_browser(
             url='https://ffmpeg.org/documentation.html')
 
     def settings(self):
