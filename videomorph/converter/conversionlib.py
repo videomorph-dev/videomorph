@@ -27,17 +27,10 @@ from PyQt5.QtCore import QProcess
 from . import CONV_LIB
 from . import LIBRARY_ERRORS
 from . import LIBRARY_PARAM_REGEX
-from . import PLAYERS
 from . import PROBER
+from .platformdeps import launcher_factory
 from .utils import write_time
-from .utils import spawn_process
-from .utils import open_with_user_preferred_app
 from .utils import which
-
-
-class PlayerNotFoundError(Exception):
-    """Exception to handle Player not found error."""
-    pass
 
 
 class ConversionLib:
@@ -61,11 +54,8 @@ class ConversionLib:
 
     def run_player(self, file_path):
         """Play a video file with user default player."""
-        if which('xdg-open') is not None:
-            open_with_user_preferred_app(url=file_path)
-        else:
-            player = self._get_player()
-            spawn_process([which(player), file_path])
+        launcher = launcher_factory()
+        launcher.open_with_user_app(url=file_path)
 
     @property
     def name(self):
@@ -95,15 +85,6 @@ class ConversionLib:
         elif which(CONV_LIB.avconv):
             return CONV_LIB.avconv  # Alternative library
         return None  # Not available library
-
-    @staticmethod
-    def _get_player():
-        """Return a player from a list of popular players."""
-        for player in PLAYERS:
-            if which(player):
-                return player
-
-        raise PlayerNotFoundError('Player not found')
 
 
 class _Converter:

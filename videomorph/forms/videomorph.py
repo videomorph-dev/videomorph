@@ -65,11 +65,10 @@ from videomorph.converter import VIDEO_FILTERS
 from videomorph.converter import SYS_PATHS
 from videomorph.converter.console import search_directory_recursively
 from videomorph.converter.conversionlib import ConversionLib
-from videomorph.converter.conversionlib import PlayerNotFoundError
 from videomorph.converter.media import MediaList
+from videomorph.converter.platformdeps import PlayerNotFoundError
 from videomorph.converter.platformdeps import launcher_factory
 from videomorph.converter.profile import ConversionProfile
-from videomorph.converter.utils import open_with_user_preferred_app
 from videomorph.converter.utils import which
 from videomorph.converter.utils import write_time
 from .about import AboutVMDialog

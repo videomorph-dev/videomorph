@@ -19,6 +19,7 @@
 
 """This module provides System Paths creation classes."""
 
+import os
 from os.path import expanduser
 from os.path import expandvars
 from os.path import join as join_path
@@ -28,6 +29,17 @@ import webbrowser
 
 from .utils import spawn_process
 from .utils import which
+
+
+def generic_factory(parent_class):
+    for concrete_class in parent_class.__subclasses__():
+        if concrete_class.__name__.lower().startswith('_' + platform):
+            return concrete_class()
+
+
+class PlayerNotFoundError(Exception):
+    """Exception to handle Player not found error."""
+    pass
 
 
 # PATHS
@@ -75,21 +87,14 @@ class _Win32Paths(VMPaths):
         self.bin = join_path(program_files, r'VideoMorph\bin')
 
 
-class _Win64Paths(_Win32Paths, VMPaths):
-    """Class to define the paths to use in Windows64 systems."""
-    pass
-
-
 def sys_path_factory():
     """Factory method to create the appropriate path."""
-    for path_class in VMPaths.__subclasses__():
-        if path_class.__name__.lower().startswith('_' + platform):
-            return path_class()
+    return generic_factory(parent_class=VMPaths)
 
 
 # CONVERSION LIBRARY
 
-class _ConversionLib:
+class _Library:
     """Class to define platform dependent conversion tools."""
 
     def __init__(self):
@@ -98,26 +103,24 @@ class _ConversionLib:
         self.avconv = 'avconv'
 
 
-class _LinuxConversionLib(_ConversionLib):
+class _LinuxLibrary(_Library):
     """Class to define platform dependent conversion lib for Linux."""
     pass
 
 
-class _Win32ConversionLib(_ConversionLib):
+class _Win32Library(_Library):
     """Class to define platform dependent conversion lib for Win32."""
 
     def __init__(self):
         """Class initializer."""
-        super(_Win32ConversionLib, self).__init__()
+        super(_Win32Library, self).__init__()
         for attr in self.__dict__:
             self.__dict__[attr] += '.exe'
 
 
 def conversion_lib_factory():
     """Factory method to create the appropriate lib name."""
-    for conversion_lib_class in _ConversionLib.__subclasses__():
-        if conversion_lib_class.__name__.lower().startswith('_' + platform):
-            return conversion_lib_class()
+    return generic_factory(parent_class=_Library)
 
 
 # LIBRARY PROBE TOOL
@@ -148,34 +151,60 @@ class _Win32Prober(_Prober):
 
 def prober_factory():
     """Factory method to create the appropriate prober."""
-    for prober_class in _Prober.__subclasses__():
-        if prober_class.__name__.lower().startswith('_' + platform):
-            return prober_class()
+    return generic_factory(parent_class=_Prober)
 
 
 # EXTERNAL APP LAUNCHER
 
 class _Launcher:
     """Abstract class to implement external apps launcher."""
+    def __init__(self):
+        self.players = None
+
     def open_with_user_app(self, url):
         """Open a file or url with user's preferred app."""
         raise NotImplemented('Must be implemented in subclasses')
 
-    def open_with_user_browser(self, url):
+    @staticmethod
+    def open_with_user_browser(url):
         """Open a web page with default browser."""
-        raise NotImplemented('Must be implemented in subclasses')
+        webbrowser.open(url)
 
 
 class _LinuxLauncher(_Launcher):
     """Concrete class to implement external apps launcher in Linux."""
 
+    def __init__(self):
+        super(_LinuxLauncher, self).__init__()
+        self.players = ['vlc',
+                        'xplayer',
+                        'totem',
+                        'kmplayer',
+                        'smplayer',
+                        'mplayer',
+                        'banshee',
+                        'mpv',
+                        'gxine',
+                        'xine-ui',
+                        'gmlive',
+                        'dragon',
+                        'ffplay']
+
     def open_with_user_app(self, url):
         """Open a file or url with user's preferred app."""
-        spawn_process([which('xdg-open'), url])
+        if which('xdg-open') is not None:
+            spawn_process([which('xdg-open'), url])
+        else:
+            player = self._get_player()
+            spawn_process([which(player), url])
 
-    def open_with_user_browser(self, url):
-        """Open a web page with default browser."""
-        self.open_with_user_preferred_app(url)
+    def _get_player(self):
+        """Return a player from a list of popular players."""
+        for player in self.players:
+            if which(player):
+                return player
+
+        raise PlayerNotFoundError('Player not found')
 
 
 class _Win32Launcher(_Launcher):
@@ -183,17 +212,9 @@ class _Win32Launcher(_Launcher):
 
     def open_with_user_app(self, url):
         """Open a file or url with user's preferred app."""
-        app_path = join_path(expandvars('%ProgramFiles%'),
-                             r'Windows Media Player\wmplayer.exe')
-        spawn_process([app_path, url])
-
-    def open_with_user_browser(self, url):
-        """Open a web page with default browser."""
-        webbrowser.open(url)
+        os.startfile(url)
 
 
 def launcher_factory():
     """Factory method to create the appropriate launcher."""
-    for launcher_class in _Launcher.__subclasses__():
-        if launcher_class.__name__.lower().startswith('_' + platform):
-            return launcher_class()
+    return generic_factory(parent_class=_Launcher)

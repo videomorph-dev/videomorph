@@ -79,18 +79,4 @@ CPU_CORES = (cpu_count() - 1 if
              cpu_count() is not None
              else 0)
 
-PLAYERS = ['vlc',
-           'xplayer',
-           'totem',
-           'kmplayer',
-           'smplayer',
-           'mplayer',
-           'banshee',
-           'mpv',
-           'gxine',
-           'xine-ui',
-           'gmlive',
-           'dragon',
-           'ffplay']
-
 VM_PATHS = VMPaths()
