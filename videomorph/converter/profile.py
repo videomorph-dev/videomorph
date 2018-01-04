@@ -24,7 +24,6 @@ from collections import OrderedDict
 from distutils.errors import DistutilsFileError
 from distutils.dir_util import mkpath
 from distutils.file_util import copy_file
-from os import sep
 from os.path import exists, getsize
 from os.path import getmtime
 from os.path import join as join_path

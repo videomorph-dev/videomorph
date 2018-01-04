@@ -32,6 +32,7 @@ from .utils import which
 
 
 def generic_factory(parent_class):
+    """Generic factory function."""
     for concrete_class in parent_class.__subclasses__():
         if concrete_class.__name__.lower().startswith('_' + platform):
             return concrete_class()
@@ -163,7 +164,7 @@ class _Launcher:
 
     def open_with_user_app(self, url):
         """Open a file or url with user's preferred app."""
-        raise NotImplemented('Must be implemented in subclasses')
+        raise NotImplementedError('Must be implemented in subclasses')
 
     @staticmethod
     def open_with_user_browser(url):
