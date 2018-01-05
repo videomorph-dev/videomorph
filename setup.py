@@ -60,7 +60,8 @@ if __name__ == '__main__':
           url='https://github.com/codeshard/videomorph',
           license='Apache License, Version 2.0',
           packages=PACKAGES,
-
+          platforms=['linux', 'win32'],
+          keywords='multimedia, video conversion, common video formats',
           data_files=[
               # Desktop entry
               (SYS_PATHS.apps,
