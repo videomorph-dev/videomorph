@@ -14,13 +14,13 @@ else
     mkdir dist
 fi
 
-# Create a binary linux distribution
+# Create a binary Linux distribution
 python3 setup.py bdist
 
 # Untar it to videomorph_deb
 tar -xvf dist/videomorph*.tar.gz --directory videomorph_deb
 
-# Addapt to .deb standard structure
+# Adapt to .deb standard structure
 mv -v videomorph_deb/usr/local/* videomorph_deb/usr
 rm -rfv videomorph_deb/usr/local
 rm -rfv videomorph_deb/usr/share/doc/videomorph/LICENSE
@@ -49,15 +49,6 @@ sudo --remove-timestamp
 # Build a standard python dist to be install with python3 setup.py install command
 python3 setup.py sdist
 
-# Include the install.sh an uninstall.sh scritps into the dist
-tar -xvf dist/"videomorph-""$version"".tar.gz" --directory dist
-rm -rfv dist/"videomorph-""$version"".tar.gz"
-cp -v -a install.sh uninstall.sh dist/"videomorph-""$version"
-cd dist
-tar -cvf "videomorph-""$version".tar.gz "videomorph-""$version"
-cd ..
-rm -rfv dist/"videomorph-""$version"
-
 # Runnin lintian
 lintian -i dist/"$package_name" >dist/lintian.log
-/opt/sublime_text/sublime_text dist/lintian.log
+xdg-open dist/lintian.log
