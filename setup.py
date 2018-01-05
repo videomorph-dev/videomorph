@@ -26,24 +26,15 @@ try:
     PACKAGES = find_packages(exclude=['tests', 'docs'])
 except ImportError:
     from distutils.core import setup
-    PACKAGES = ['videomorph', 'videomorph/converter', 'videomorph/forms']
+    PACKAGES = ['videomorph', 'videomorph.converter', 'videomorph.forms']
 
 from videomorph.converter import VERSION
 from videomorph.converter import PACKAGE_NAME
 from videomorph.converter import VM_PATHS
 from videomorph.converter import SYS_PATHS
 
-
-LONG_DESC = """Small Video Converter based on ffmpeg, Python 3 and Qt5.
-Unlike other video converters, VideoMorph focuses on a single goal:
-make video conversion simple, with an easy to use GUI and allowing
-the user to convert to the currently most popular video formats.
-
-VideoMorph GUI is simple and clean, focused on usability, eliminating
-annoying options rarely used.
-VideoMorph is a video converter, just that. If you want a video
-editor, VideoMorph isn't for you.
-"""
+with open('README.md') as desc_file:
+    long_description = desc_file.read()
 
 
 if __name__ == '__main__':
@@ -51,7 +42,7 @@ if __name__ == '__main__':
           version=VERSION,
           description='Small Video Converter based on ffmpeg, '
                       'Python 3 and Qt5, focused on usability.',
-          long_description=LONG_DESC,
+          long_description=long_description,
 
           author='Ozkar L. Garcell',
           author_email='codeshard@openmailbox.org',
@@ -62,6 +53,7 @@ if __name__ == '__main__':
           packages=PACKAGES,
           platforms=['linux', 'win32'],
           keywords='multimedia, video conversion, common video formats',
+
           data_files=[
               # Desktop entry
               (SYS_PATHS.apps,
