@@ -52,8 +52,6 @@ def get_version():
 APP_NAME = 'VideoMorph'
 VERSION = get_version()
 LOCALE = get_locale()
-PACKAGE_NAME = APP_NAME.lower()
-MAINTAINER = APP_NAME + ' ' + 'Development Team'
 
 CONV_LIB = conversion_lib_factory()
 

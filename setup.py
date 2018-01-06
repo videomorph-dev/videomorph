@@ -20,29 +20,31 @@
 
 """This module defines the installation script for VideoMorph."""
 
-try:
-    from setuptools import setup
-    from setuptools import find_packages
-    PACKAGES = find_packages(exclude=['tests', 'docs'])
-except ImportError:
-    from distutils.core import setup
-    PACKAGES = ['videomorph', 'videomorph.converter', 'videomorph.forms']
+from distutils.core import setup
 
 from videomorph.converter import VERSION
-from videomorph.converter import PACKAGE_NAME
+from videomorph.converter import APP_NAME
 from videomorph.converter import VM_PATHS
 from videomorph.converter import SYS_PATHS
 
-with open('README.md') as desc_file:
-    long_description = desc_file.read()
+
+LONG_DESCRIPTION = """Small Video Converter based on ffmpeg, Python 3 and Qt5.
+Unlike other video converters, VideoMorph focuses on a single goal:
+make video conversion simple, with an easy to use GUI and allowing
+the user to convert to the currently most popular video formats.
+.
+VideoMorph GUI is simple and clean, focused on usability, eliminating
+annoying options rarely used.
+VideoMorph is a video converter, just that. If you want a video editor,
+VideoMorph isn't for you."""
 
 
 if __name__ == '__main__':
-    setup(name=PACKAGE_NAME,
+    setup(name=APP_NAME.lower(),
           version=VERSION,
           description='Small Video Converter based on ffmpeg, '
                       'Python 3 and Qt5, focused on usability.',
-          long_description=long_description,
+          long_description=LONG_DESCRIPTION,
 
           author='Ozkar L. Garcell',
           author_email='codeshard@openmailbox.org',
@@ -50,7 +52,7 @@ if __name__ == '__main__':
           maintainer_email='lpozor78@gmail.com',
           url='https://github.com/codeshard/videomorph',
           license='Apache License, Version 2.0',
-          packages=PACKAGES,
+          packages=['videomorph', 'videomorph.converter', 'videomorph.forms'],
           platforms=['linux', 'win32'],
           keywords='multimedia, video conversion, common video formats',
 
