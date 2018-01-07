@@ -20,6 +20,7 @@
 """This module contains some utilities and functions."""
 
 import os
+from os.path import pathsep
 from locale import getdefaultlocale
 from subprocess import PIPE
 from subprocess import Popen
@@ -40,13 +41,14 @@ def spawn_process(cmd):
                  stderr=PIPE,
                  universal_newlines=True)
 
+
 def which(app):
     """Detect if an app is installed in your system."""
     if app == '':
         raise ValueError('Invalid app name')
 
     path = os.environ.get('PATH', os.defpath)
-    for directory in path.split(':'):
+    for directory in path.split(pathsep):
         app_path = os.path.join(directory, app)
         if os.path.exists(app_path) and os.access(app_path, os.X_OK):
             return app_path
