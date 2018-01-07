@@ -24,8 +24,6 @@ from locale import getdefaultlocale
 from subprocess import PIPE
 from subprocess import Popen
 
-from . import SYS_PATHS
-
 
 def get_locale():
     """Return the default locale string."""
@@ -42,14 +40,13 @@ def spawn_process(cmd):
                  stderr=PIPE,
                  universal_newlines=True)
 
-
 def which(app):
     """Detect if an app is installed in your system."""
     if app == '':
         raise ValueError('Invalid app name')
 
     path = os.environ.get('PATH', os.defpath)
-    for directory in path.split(SYS_PATHS.path_sep):
+    for directory in path.split(':'):
         app_path = os.path.join(directory, app)
         if os.path.exists(app_path) and os.access(app_path, os.X_OK):
             return app_path
