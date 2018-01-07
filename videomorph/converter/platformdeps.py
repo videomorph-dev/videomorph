@@ -50,6 +50,7 @@ class VMPaths:
 
     def __init__(self):
         """Class initializer."""
+        self.path_sep = ':'
         self.apps = 'share/applications'
         self.config = join_path(expanduser('~'), '.videomorph')
         self.icons = 'share/icons'
@@ -67,7 +68,7 @@ class _LinuxPaths(VMPaths):
         """Class initializer."""
         super(_LinuxPaths, self).__init__()
         for attr in self.__dict__:
-            if attr != 'config':
+            if attr not in {'config', 'path_sep'}:
                 self.__dict__[attr] = join_path(prefix, self.__dict__[attr])
 
 
@@ -78,6 +79,7 @@ class _Win32Paths(VMPaths):
         """Class initializer."""
         super(_Win32Paths, self).__init__()
         program_files = expandvars('%ProgramFiles%')
+        self.path_sep = ';'
         self.apps = join_path(program_files, r'VideoMorph')
         self.config = join_path(expanduser('~'), '.videomorph')
         self.icons = join_path(program_files, r'VideoMorph\icons')
