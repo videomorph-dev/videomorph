@@ -254,7 +254,7 @@ class _MediaFile:
     def get_name(self, with_extension=False):
         """Return the file name."""
         full_file_name = basename(self.input_path)
-        file_name = full_file_name.split('.')[0]
+        file_name = full_file_name[0:full_file_name.rfind('.')]
 
         if with_extension:
             return full_file_name
