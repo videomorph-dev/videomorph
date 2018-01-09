@@ -1,0 +1,2 @@
+include install.sh
+include uninstall.sh
