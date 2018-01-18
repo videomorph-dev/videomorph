@@ -47,7 +47,7 @@ if __name__ == '__main__':
           long_description=LONG_DESCRIPTION,
 
           author='Ozkar L. Garcell',
-          author_email='codeshard@openmailbox.org',
+          author_email='ozkar.garcell@gmail.com',
           maintainer='Leodanis Pozo Ramos',
           maintainer_email='lpozor78@gmail.com',
           url='https://github.com/codeshard/videomorph',
