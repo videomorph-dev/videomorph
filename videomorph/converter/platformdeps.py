@@ -20,7 +20,6 @@
 """This module provides System Paths creation classes."""
 
 import os
-from os.path import exists
 from os.path import expanduser
 from os.path import expandvars
 from os.path import join as join_path
@@ -28,7 +27,6 @@ from sys import platform
 from sys import prefix
 import webbrowser
 
-from . import BASE_DIR
 from .utils import spawn_process
 from .utils import which
 
@@ -60,14 +58,6 @@ class VMPaths:
         self.doc = 'share/doc/videomorph'
         self.man = 'share/man/man1'
         self.bin = 'bin'
-
-    @property
-    def conversion_lib(self):
-        local_path = join_path(BASE_DIR, 'ffmpeg', 'ffmpeg')
-        if exists(local_path):
-            conversion_lib = local_path
-        else:
-            conversion_lib = which()
 
 
 class _LinuxPaths(VMPaths):
