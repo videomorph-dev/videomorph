@@ -2,7 +2,7 @@
 #
 # File name: videomorph.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,12 +68,11 @@ from videomorph.converter.media import MediaList
 from videomorph.converter.platformdeps import PlayerNotFoundError
 from videomorph.converter.platformdeps import launcher_factory
 from videomorph.converter.profile import ConversionProfile
-from videomorph.converter.utils import which
 from videomorph.converter.utils import write_time
 from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
 from .changelog import ChangelogDialog
-from .settings import SettingsDialog
+# from .settings import SettingsDialog
 
 
 class VideoMorphMW(QMainWindow):
@@ -459,12 +458,12 @@ class VideoMorphMW(QMainWindow):
             tip=self.tr('Exit') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.close)
 
-        self.settings_action = self._action_factory(
-            icon=QIcon(':/icons/settings.png'),
-            text=self.tr('&Settings...'),
-            shortcut="Ctrl+S",
-            tip=self.tr('Open Settings Dialog'),
-            callback=self.settings)
+        # self.settings_action = self._action_factory(
+        #     icon=QIcon(':/icons/settings.png'),
+        #     text=self.tr('&Settings...'),
+        #     shortcut="Ctrl+S",
+        #     tip=self.tr('Open Settings Dialog'),
+        #     callback=self.settings)
 
     def _create_context_menu(self):
         first_separator = QAction(self)
@@ -488,8 +487,8 @@ class VideoMorphMW(QMainWindow):
         self.file_menu.addAction(self.open_media_file_action)
         self.file_menu.addAction(self.open_media_dir_action)
         self.file_menu.addSeparator()
-        self.file_menu.addAction(self.settings_action)
-        self.file_menu.addSeparator()
+        # self.file_menu.addAction(self.settings_action)
+        # self.file_menu.addSeparator()
         self.file_menu.addAction(self.exit_action)
         # Edit menu
         self.edit_menu = self.menuBar().addMenu(self.tr('&Edit'))
@@ -526,7 +525,7 @@ class VideoMorphMW(QMainWindow):
         self.tool_bar.addAction(self.stop_action)
         self.tool_bar.addAction(self.stop_all_action)
         self.tool_bar.addSeparator()
-        self.tool_bar.addAction(self.settings_action)
+        # self.tool_bar.addAction(self.settings_action)
         self.tool_bar.setIconSize(QSize(28, 28))
         # Add the toolbar to main window
         self.addToolBar(Qt.TopToolBarArea, self.tool_bar)
@@ -844,7 +843,6 @@ class VideoMorphMW(QMainWindow):
                                   clear=False,
                                   remove=False,
                                   output_dir=False,
-                                  settings=False,
                                   delete_chb=False,
                                   tag_chb=False,
                                   play_input=False,
@@ -1098,7 +1096,6 @@ class VideoMorphMW(QMainWindow):
                               clear=False,
                               remove=False,
                               output_dir=False,
-                              settings=False,
                               delete_chb=False,
                               tag_chb=False,
                               play_input=False,
@@ -1436,7 +1433,6 @@ class VideoMorphMW(QMainWindow):
                          profiles=True,
                          add_costume_profile=True,
                          output_dir=True,
-                         settings=True,
                          subtitles_chb=True,
                          delete_chb=True,
                          tag_chb=True,
@@ -1460,7 +1456,7 @@ class VideoMorphMW(QMainWindow):
         self.chb_tag.setEnabled(variables['tag_chb'])
         self.play_input_media_file_action.setEnabled(variables['play_input'])
         self.play_output_media_file_action.setEnabled(variables['play_output'])
-        self.settings_action.setEnabled(variables['settings'])
+        # self.settings_action.setEnabled(variables['settings'])
         self.tb_tasks.setCurrentItem(None)
 
     def _enable_context_menu_action(self):
