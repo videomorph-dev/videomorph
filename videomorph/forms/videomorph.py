@@ -90,7 +90,7 @@ class VideoMorphMW(QMainWindow):
         self._set_window_title()
         # Define and set app icon
         icon = QIcon()
-        icon.addPixmap(QPixmap(':/logo/videomorph.png'))
+        icon.addPixmap(QPixmap(':/icons/videomorph.ico'))
         self.setWindowIcon(icon)
         # Define app central widget
         self.central_widget = QWidget(self)
