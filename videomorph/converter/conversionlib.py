@@ -78,9 +78,9 @@ class _LibraryPath:
     @staticmethod
     def _get_system_path(app):
         """Return the name of the conversion library installed on system."""
-        local_path = join_path(BASE_DIR, 'ffmpeg', 'bin', app)
+        local_path = join_path(BASE_DIR, 'ffmpeg', 'bin')
         if exists(local_path):
-            return local_path
+            return join_path(local_path, app)
         if which(app):
             return which(app)
         return None  # Not available library
