@@ -25,8 +25,6 @@ from os.path import dirname
 from os.path import exists
 from os.path import join as join_path
 
-from .platformdeps import conversion_lib_factory
-from .platformdeps import prober_factory
 from .platformdeps import sys_path_factory
 from .platformdeps import VMPaths
 from .utils import get_locale
@@ -52,10 +50,6 @@ def get_version():
 APP_NAME = 'VideoMorph'
 VERSION = get_version()
 LOCALE = get_locale()
-
-CONV_LIB = conversion_lib_factory()
-
-PROBER = prober_factory()
 
 LIBRARY_ERRORS = ('Unknown encoder', 'Unrecognized option', 'Invalid argument')
 

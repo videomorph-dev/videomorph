@@ -31,7 +31,7 @@ from videomorph.converter.profile import ConversionProfile
 
 conv_lib = ConversionLib()
 
-profile = ConversionProfile(prober=conv_lib.prober)
+profile = ConversionProfile(prober=conv_lib.prober_path)
 profile.update(new_quality='DVD Fullscreen (4:3)')
 
 media_list = media.MediaList(profile)
@@ -59,7 +59,7 @@ def test_name():
 
 def test_prober():
     """Test the prober name."""
-    assert conv_lib.prober == PROBER.ffprobe
+    assert conv_lib.prober_path == PROBER.ffprobe
 
 
 def test_start_converter():

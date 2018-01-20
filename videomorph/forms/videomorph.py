@@ -59,7 +59,6 @@ from . import COLUMNS
 from .vmwidgets import TasksListTable
 from videomorph.converter import APP_NAME
 from videomorph.converter import VERSION
-from videomorph.converter import CONV_LIB
 from videomorph.converter import STATUS
 from videomorph.converter import VIDEO_FILTERS
 from videomorph.converter import SYS_PATHS
@@ -135,7 +134,7 @@ class VideoMorphMW(QMainWindow):
 
         # Create the conversion profile object only once
         self.profile = ConversionProfile(
-            prober=self.conversion_lib.prober)
+            prober=self.conversion_lib.prober_path)
 
         # Create the Media list object
         self.media_list = MediaList(profile=self.profile)
@@ -653,22 +652,22 @@ class VideoMorphMW(QMainWindow):
 
     def settings(self):
         """Open a Setting Dialog to define the conversion library to use."""
-        settings_dlg = SettingsDialog(parent=self)
-        if self.conversion_lib.name == CONV_LIB.ffmpeg:
-            settings_dlg.radio_btn_ffmpeg.setChecked(True)
-        elif self.conversion_lib.name == CONV_LIB.avconv:
-            settings_dlg.radio_btn_avconv.setChecked(True)
-
-        if not which(CONV_LIB.ffmpeg):
-            settings_dlg.radio_btn_ffmpeg.setEnabled(False)
-        elif not which(CONV_LIB.avconv):
-            settings_dlg.radio_btn_avconv.setEnabled(False)
-
-        if settings_dlg.exec_():
-            if settings_dlg.radio_btn_ffmpeg.isChecked():
-                self.conversion_lib.name = CONV_LIB.ffmpeg
-            elif settings_dlg.radio_btn_avconv.isChecked():
-                self.conversion_lib.name = CONV_LIB.avconv
+        # settings_dlg = SettingsDialog(parent=self)
+        # if self.conversion_lib.name == CONV_LIB.ffmpeg:
+        #     settings_dlg.radio_btn_ffmpeg.setChecked(True)
+        # elif self.conversion_lib.name == CONV_LIB.avconv:
+        #     settings_dlg.radio_btn_avconv.setChecked(True)
+        #
+        # if not which(CONV_LIB.ffmpeg):
+        #     settings_dlg.radio_btn_ffmpeg.setEnabled(False)
+        # elif not which(CONV_LIB.avconv):
+        #     settings_dlg.radio_btn_avconv.setEnabled(False)
+        #
+        # if settings_dlg.exec_():
+        #     if settings_dlg.radio_btn_ffmpeg.isChecked():
+        #         self.conversion_lib.name = CONV_LIB.ffmpeg
+        #     elif settings_dlg.radio_btn_avconv.isChecked():
+        #         self.conversion_lib.name = CONV_LIB.avconv
 
     def populate_profiles_combo(self):
         """Populate profiles combobox."""

@@ -93,68 +93,6 @@ def sys_path_factory():
     return generic_factory(parent_class=VMPaths)
 
 
-# CONVERSION LIBRARY
-
-class _Library:
-    """Class to define platform dependent conversion tools."""
-
-    def __init__(self):
-        """Class initializer."""
-        self.ffmpeg = 'ffmpeg'
-        self.avconv = 'avconv'
-
-
-class _LinuxLibrary(_Library):
-    """Class to define platform dependent conversion lib for Linux."""
-    pass
-
-
-class _Win32Library(_Library):
-    """Class to define platform dependent conversion lib for Win32."""
-
-    def __init__(self):
-        """Class initializer."""
-        super(_Win32Library, self).__init__()
-        for attr in self.__dict__:
-            self.__dict__[attr] += '.exe'
-
-
-def conversion_lib_factory():
-    """Factory method to create the appropriate lib name."""
-    return generic_factory(parent_class=_Library)
-
-
-# LIBRARY PROBE TOOL
-
-class _Prober:
-    """Class to define platform dependent conversion tools."""
-
-    def __init__(self):
-        """Class initializer."""
-        self.ffprobe = 'ffprobe'
-        self.avprobe = 'avprobe'
-
-
-class _LinuxProber(_Prober):
-    """Class to define platform dependent conversion tools for Linux."""
-    pass
-
-
-class _Win32Prober(_Prober):
-    """Class to define platform dependent conversion tools for Win32."""
-
-    def __init__(self):
-        """Class initializer."""
-        super(_Win32Prober, self).__init__()
-        for attr in self.__dict__:
-            self.__dict__[attr] += '.exe'
-
-
-def prober_factory():
-    """Factory method to create the appropriate prober."""
-    return generic_factory(parent_class=_Prober)
-
-
 # EXTERNAL APP LAUNCHER
 
 class _Launcher:

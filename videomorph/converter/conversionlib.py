@@ -20,15 +20,17 @@
 """This module provides the definition of the ConversionLib class."""
 
 import re
+from os.path import exists
+from os.path import join as join_path
 from time import time
 
 from PyQt5.QtCore import QProcess
 
-from . import CONV_LIB
+from . import BASE_DIR
 from . import LIBRARY_ERRORS
 from . import LIBRARY_PARAM_REGEX
-from . import PROBER
 from .platformdeps import launcher_factory
+from .platformdeps import generic_factory
 from .utils import write_time
 from .utils import which
 
@@ -38,8 +40,10 @@ class ConversionLib:
 
     def __init__(self):
         """Class initializer."""
-        self._name = self.get_system_library_name()
-        self._converter = _Converter(conversion_lib_name=self.name)
+        library = library_path_factory()
+        self._library_path = library.library_path
+        self.prober_path = library.prober_path
+        self._converter = _Converter(library_path=self.library_path)
         self.library_error = None
         self.reader = _OutputReader()
         self.timer = _ConversionTimer()
@@ -58,41 +62,64 @@ class ConversionLib:
         launcher.open_with_user_app(url=file_path)
 
     @property
-    def name(self):
+    def library_path(self):
         """Return the name of the conversion library."""
-        return self._name
+        return self._library_path
 
-    @name.setter
-    def name(self, library_name):
-        """Set the name of the conversion library."""
-        self._name = library_name
 
-    @property
-    def prober(self):
-        """Return the prober of the conversion library."""
-        if self._name == CONV_LIB.ffmpeg:
-            return PROBER.ffprobe
-        elif self._name == CONV_LIB.avconv:
-            return PROBER.avprobe
-        else:
-            return None
+class _LibraryPath:
+    """Class to define platform dependent conversion tools."""
+
+    def __init__(self):
+        """Class initializer."""
+        self.library_path = self._get_library_path()
+        self.prober_path = self._get_prober_path()
 
     @staticmethod
-    def get_system_library_name():
+    def _get_system_path(app):
         """Return the name of the conversion library installed on system."""
-        if which(CONV_LIB.ffmpeg):
-            return CONV_LIB.ffmpeg  # Default library
-        elif which(CONV_LIB.avconv):
-            return CONV_LIB.avconv  # Alternative library
+        local_path = join_path(BASE_DIR, 'ffmpeg', 'bin', app)
+        if exists(local_path):
+            return local_path
+        if which(app):
+            return which(app)
         return None  # Not available library
+
+    def _get_library_path(self):
+        """Get conversion library path."""
+        return self._get_system_path('ffmpeg')
+
+    def _get_prober_path(self):
+        """Get prober path."""
+        return self._get_system_path('ffprobe')
+
+
+class _LinuxLibraryPath(_LibraryPath):
+    """Class to define platform dependent conversion lib for Linux."""
+    pass
+
+
+class _Win32LibraryPath(_LibraryPath):
+    """Class to define platform dependent conversion lib for Win32."""
+
+    def __init__(self):
+        """Class initializer."""
+        super(_Win32LibraryPath, self).__init__()
+        self.library_path += '.exe'
+        self.prober_path += '.exe'
+
+
+def library_path_factory():
+    """Factory method to create the appropriate lib name."""
+    return generic_factory(parent_class=_LibraryPath)
 
 
 class _Converter:
     """_Converter class to provide conversion functionality."""
 
-    def __init__(self, conversion_lib_name):
+    def __init__(self, library_path):
         """Class initializer."""
-        self._conversion_lib = conversion_lib_name
+        self._library_path = library_path
         self._process = QProcess()
 
     def setup_converter(self, reader, finisher, process_channel):
@@ -103,7 +130,7 @@ class _Converter:
 
     def start_converter(self, cmd):
         """Start the encoding process."""
-        self._process.start(which(self._conversion_lib), cmd)
+        self._process.start(self._library_path, cmd)
 
     def stop_converter(self):
         """Terminate the encoding process."""

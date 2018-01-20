@@ -35,7 +35,7 @@ conv = ConversionLib()
 def setup():
     """Function to setup the test."""
     global profile
-    profile = ConversionProfile(prober=conv.prober)
+    profile = ConversionProfile(prober=conv.prober_path)
     profile.update(new_quality='MP4 Fullscreen (4:3)')
 
 
