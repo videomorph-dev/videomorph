@@ -72,7 +72,6 @@ from videomorph.converter.utils import write_time
 from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
 from .changelog import ChangelogDialog
-# from .settings import SettingsDialog
 
 
 class VideoMorphMW(QMainWindow):
@@ -458,13 +457,6 @@ class VideoMorphMW(QMainWindow):
             tip=self.tr('Exit') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.close)
 
-        # self.settings_action = self._action_factory(
-        #     icon=QIcon(':/icons/settings.png'),
-        #     text=self.tr('&Settings...'),
-        #     shortcut="Ctrl+S",
-        #     tip=self.tr('Open Settings Dialog'),
-        #     callback=self.settings)
-
     def _create_context_menu(self):
         first_separator = QAction(self)
         first_separator.setSeparator(True)
@@ -487,8 +479,6 @@ class VideoMorphMW(QMainWindow):
         self.file_menu.addAction(self.open_media_file_action)
         self.file_menu.addAction(self.open_media_dir_action)
         self.file_menu.addSeparator()
-        # self.file_menu.addAction(self.settings_action)
-        # self.file_menu.addSeparator()
         self.file_menu.addAction(self.exit_action)
         # Edit menu
         self.edit_menu = self.menuBar().addMenu(self.tr('&Edit'))
@@ -525,7 +515,7 @@ class VideoMorphMW(QMainWindow):
         self.tool_bar.addAction(self.stop_action)
         self.tool_bar.addAction(self.stop_all_action)
         self.tool_bar.addSeparator()
-        # self.tool_bar.addAction(self.settings_action)
+        self.tool_bar.addAction(self.exit_action)
         self.tool_bar.setIconSize(QSize(28, 28))
         # Add the toolbar to main window
         self.addToolBar(Qt.TopToolBarArea, self.tool_bar)
@@ -648,25 +638,6 @@ class VideoMorphMW(QMainWindow):
         launcher = launcher_factory()
         launcher.open_with_user_browser(
             url='https://ffmpeg.org/documentation.html')
-
-    def settings(self):
-        """Open a Setting Dialog to define the conversion library to use."""
-        # settings_dlg = SettingsDialog(parent=self)
-        # if self.conversion_lib.name == CONV_LIB.ffmpeg:
-        #     settings_dlg.radio_btn_ffmpeg.setChecked(True)
-        # elif self.conversion_lib.name == CONV_LIB.avconv:
-        #     settings_dlg.radio_btn_avconv.setChecked(True)
-        #
-        # if not which(CONV_LIB.ffmpeg):
-        #     settings_dlg.radio_btn_ffmpeg.setEnabled(False)
-        # elif not which(CONV_LIB.avconv):
-        #     settings_dlg.radio_btn_avconv.setEnabled(False)
-        #
-        # if settings_dlg.exec_():
-        #     if settings_dlg.radio_btn_ffmpeg.isChecked():
-        #         self.conversion_lib.name = CONV_LIB.ffmpeg
-        #     elif settings_dlg.radio_btn_avconv.isChecked():
-        #         self.conversion_lib.name = CONV_LIB.avconv
 
     def populate_profiles_combo(self):
         """Populate profiles combobox."""
@@ -1456,7 +1427,6 @@ class VideoMorphMW(QMainWindow):
         self.chb_tag.setEnabled(variables['tag_chb'])
         self.play_input_media_file_action.setEnabled(variables['play_input'])
         self.play_output_media_file_action.setEnabled(variables['play_output'])
-        # self.settings_action.setEnabled(variables['settings'])
         self.tb_tasks.setCurrentItem(None)
 
     def _enable_context_menu_action(self):
