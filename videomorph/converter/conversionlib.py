@@ -20,7 +20,7 @@
 """This module provides the definition of the ConversionLib class."""
 
 import re
-from os.path import exists
+from os.path import isdir
 from os.path import join as join_path
 from time import time
 
@@ -78,9 +78,9 @@ class _LibraryPath:
     @staticmethod
     def _get_system_path(app):
         """Return the name of the conversion library installed on system."""
-        local_path = join_path(BASE_DIR, 'ffmpeg', 'bin')
-        if exists(local_path):
-            return join_path(local_path, app)
+        local_dir = join_path(BASE_DIR, 'ffmpeg', 'bin')
+        if isdir(local_dir):
+            return join_path(local_dir, app)
         if which(app):
             return which(app)
         return None  # Not available library
