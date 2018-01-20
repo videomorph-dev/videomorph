@@ -593,8 +593,6 @@ class VideoMorphMW(QMainWindow):
             self.le_output.setText(output_dir)
         if 'source_dir' in settings.allKeys():
             self.source_dir = str(settings.value('source_dir'))
-        if 'conversion_lib' in settings.allKeys():
-            self.conversion_lib.name = settings.value('conversion_lib')
 
     def _write_app_settings(self, **app_settings):
         """Write app settings on exit.
@@ -610,8 +608,7 @@ class VideoMorphMW(QMainWindow):
             profile_index=self.cb_profiles.currentIndex(),
             preset_index=self.cb_quality.currentIndex(),
             source_dir=self.source_dir,
-            output_dir=self.le_output.text(),
-            conv_lib=self.conversion_lib.name)
+            output_dir=self.le_output.text())
 
         if app_settings:
             settings.update(app_settings)
