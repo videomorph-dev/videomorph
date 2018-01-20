@@ -50,7 +50,7 @@ if __name__ == '__main__':
           author_email='ozkar.garcell@gmail.com',
           maintainer='Leodanis Pozo Ramos',
           maintainer_email='lpozor78@gmail.com',
-          url='https://github.com/codeshard/videomorph',
+          url='https://github.com/videomorph-dev/videomorph',
           license='Apache License, Version 2.0',
           packages=['videomorph', 'videomorph.converter', 'videomorph.forms'],
           platforms=['linux', 'win32'],
