@@ -20,13 +20,19 @@
 
 """This module defines the installation script for VideoMorph."""
 
-from distutils.core import setup
+from sys import platform
+
+try:
+    from setuptools import setup
+    use_distutils = False
+except ImportError:
+    from distutils.core import setup
+    use_distutils = True
 
 from videomorph.converter import VERSION
 from videomorph.converter import APP_NAME
 from videomorph.converter import VM_PATHS
 from videomorph.converter import SYS_PATHS
-
 
 LONG_DESCRIPTION = """Small Video Converter based on ffmpeg, Python 3 and Qt5.
 Unlike other video converters, VideoMorph focuses on a single goal:
@@ -38,45 +44,81 @@ annoying options rarely used.
 VideoMorph is a video converter, just that. If you want a video editor,
 VideoMorph isn't for you."""
 
+commons = dict(name=APP_NAME.lower(),
+               version=VERSION,
+               description='Small Video Converter based on ffmpeg, '
+                           'Python 3 and Qt5, focused on usability.',
+               long_description=LONG_DESCRIPTION,
+               author='Ozkar L. Garcell',
+               author_email='ozkar.garcell@gmail.com',
+               maintainer='Leodanis Pozo Ramos',
+               maintainer_email='lpozor78@gmail.com',
+               url='https://github.com/videomorph-dev/videomorph',
+               license='Apache License, Version 2.0',
+               packages=['videomorph', 'videomorph.converter',
+                         'videomorph.forms'],
+               platforms=['linux', 'win32'],
+               keywords='multimedia, video conversion, common video formats')
+
+commons_setuptools = dict(
+    entry_points={'gui_scripts': ['videomorph = videomorph.main:main']})
+
+
+linux_data_files = dict(
+    data_files=[  # Desktop entry
+                (SYS_PATHS.apps,
+                 [VM_PATHS.apps + '/videomorph.desktop']),
+                # App icon
+                (SYS_PATHS.icons,
+                 [VM_PATHS.icons + '/videomorph.png']),
+                # App translation file
+                (SYS_PATHS.i18n,
+                 [VM_PATHS.i18n + '/videomorph_es.qm']),
+                # Default conversion profiles
+                (SYS_PATHS.profiles,
+                 [VM_PATHS.profiles + '/default.xml',
+                  VM_PATHS.profiles + '/customized.xml']),
+                # Documentation files
+                (SYS_PATHS.doc,
+                 ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
+                  'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
+                # Man page
+                (SYS_PATHS.man,
+                 [VM_PATHS.man + '/videomorph.1.gz'])])
+
+linux_distutils = dict(scripts=[VM_PATHS.bin + '/videomorph'])
+
+
+win32_data_files = dict(
+    data_files=[  # App icon
+                (SYS_PATHS.icons,
+                 [VM_PATHS.icons + '/videomorph.ico']),
+                # App translation file
+                (SYS_PATHS.i18n,
+                 [VM_PATHS.i18n + '/videomorph_es.qm']),
+                # Default conversion profiles
+                (SYS_PATHS.profiles,
+                 [VM_PATHS.profiles + '/default.xml',
+                  VM_PATHS.profiles + '/customized.xml']),
+                # Documentation files
+                (SYS_PATHS.doc,
+                 ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
+                  'copyright', 'changelog.gz', 'TODO', 'screenshot.png'])])
+
+
+setup_params = commons
+
+if platform == 'linux':
+    setup_params.update(linux_data_files)
+    if use_distutils:
+        setup_params.update(linux_distutils)
+    else:
+        setup_params.update(commons_setuptools)
+elif platform == 'win32':
+    setup_params.update(win32_data_files)
+    if not use_distutils:
+        setup_params.update(commons_setuptools)
+
 
 if __name__ == '__main__':
-    setup(name=APP_NAME.lower(),
-          version=VERSION,
-          description='Small Video Converter based on ffmpeg, '
-                      'Python 3 and Qt5, focused on usability.',
-          long_description=LONG_DESCRIPTION,
-
-          author='Ozkar L. Garcell',
-          author_email='ozkar.garcell@gmail.com',
-          maintainer='Leodanis Pozo Ramos',
-          maintainer_email='lpozor78@gmail.com',
-          url='https://github.com/videomorph-dev/videomorph',
-          license='Apache License, Version 2.0',
-          packages=['videomorph', 'videomorph.converter', 'videomorph.forms'],
-          platforms=['linux', 'win32'],
-          keywords='multimedia, video conversion, common video formats',
-
-          data_files=[
-              # Desktop entry
-              (SYS_PATHS.apps,
-               [VM_PATHS.apps + '/videomorph.desktop']),
-              # App icon
-              (SYS_PATHS.icons,
-               [VM_PATHS.icons + '/videomorph.png']),
-              # App translation file
-              (SYS_PATHS.i18n,
-               [VM_PATHS.i18n + '/videomorph_es.qm']),
-              # Default conversion profiles
-              (SYS_PATHS.profiles,
-               [VM_PATHS.profiles + '/default.xml',
-                VM_PATHS.profiles + '/customized.xml']),
-              # Documentation files
-              (SYS_PATHS.doc,
-               ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
-                'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
-              # Man page
-              (SYS_PATHS.man,
-               [VM_PATHS.man + '/videomorph.1.gz'])
-          ],
-
-          scripts=[VM_PATHS.bin + '/videomorph'])
+    setup(**setup_params)
