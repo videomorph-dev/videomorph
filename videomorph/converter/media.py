@@ -359,7 +359,7 @@ class _MediaFile:
 
     def _probe(self):
         """Return the prober output as a file like object."""
-        prober_run = spawn_process([which(self._profile.prober),
+        prober_run = spawn_process([self._profile.prober,
                                     '-show_format',
                                     self.input_path])
 
