@@ -75,10 +75,9 @@ class _LibraryPath:
         self.library_path = self._get_library_path()
         self.prober_path = self._get_prober_path()
 
-    @staticmethod
-    def _get_system_path(app):
+    def _get_system_path(self, app):
         """Return the name of the conversion library installed on system."""
-        local_dir = join_path(BASE_DIR, 'ffmpeg', 'bin')
+        local_dir = self.get_local_dir()
         if isdir(local_dir):
             return join_path(local_dir, app)
         if which(app):
@@ -93,10 +92,15 @@ class _LibraryPath:
         """Get prober path."""
         return self._get_system_path('ffprobe')
 
+    def get_local_dir(self):
+        raise NotImplementedError('Must be implemented in subclasses')
+
 
 class _LinuxLibraryPath(_LibraryPath):
     """Class to define platform dependent conversion lib for Linux."""
-    pass
+
+    def get_local_dir(self):
+        return join_path(BASE_DIR, 'ffmpeg')
 
 
 class _Win32LibraryPath(_LibraryPath):
@@ -107,6 +111,9 @@ class _Win32LibraryPath(_LibraryPath):
         super(_Win32LibraryPath, self).__init__()
         self.library_path += '.exe'
         self.prober_path += '.exe'
+
+    def get_local_dir(self):
+        return join_path(BASE_DIR, 'ffmpeg', 'bin')
 
 
 def library_path_factory():
