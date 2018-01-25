@@ -122,3 +122,14 @@ elif platform == 'win32':
 
 if __name__ == '__main__':
     setup(**setup_params)
+
+    # if platform == 'win32':
+    #     import os
+    #     from sys import prefix
+    #     from os.path import exists
+    #     from os.path import expandvars
+    #     from os.path import join as join_path
+    #
+    #     exe_path = join_path(prefix, 'Scripts', APP_NAME.lower() + '.exe')
+    #     if exists(exe_path):
+    #         os.link(source=exe_path, link_name=APP_NAME + VERSION)
