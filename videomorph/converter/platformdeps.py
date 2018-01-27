@@ -109,6 +109,9 @@ class _Launcher:
         """Open a web page with default browser."""
         webbrowser.open(url)
 
+    def shutdown_machine(self):
+        raise NotImplementedError('Must be implemented in subclasses')
+
 
 class _LinuxLauncher(_Launcher):
     """Concrete class to implement external apps launcher in Linux."""
@@ -145,6 +148,9 @@ class _LinuxLauncher(_Launcher):
 
         raise PlayerNotFoundError('Player not found')
 
+    def shutdown_machine(self):
+        spawn_process(['shutdown', 'now'])
+
 
 class _Win32Launcher(_Launcher):
     """Concrete class to implement external apps launcher in Linux."""
@@ -152,6 +158,9 @@ class _Win32Launcher(_Launcher):
     def open_with_user_app(self, url):
         """Open a file or url with user's preferred app."""
         os.startfile(url)
+
+    def shutdown_machine(self):
+        spawn_process(['shutdown', '/s'])
 
 
 def launcher_factory():

@@ -25,6 +25,7 @@ from os.path import join as join_path
 from os.path import dirname
 from os.path import exists
 from os.path import isdir
+from time import sleep
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -52,7 +53,8 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QFileDialog,
                              QMessageBox,
                              QProgressDialog,
-                             QToolButton)
+                             QToolButton,
+                             qApp)
 
 from . import videomorph_qrc
 from . import COLUMNS
@@ -233,6 +235,13 @@ class VideoMorphMW(QMainWindow):
                                  toolTip=tag_tip_text)
         self.chb_tag.setEnabled(False)
         vertical_layout.addWidget(self.chb_tag)
+
+        shutdown_text = self.tr('Shutdown Machine When Conversion Finished')
+        self.chb_shutdown = QCheckBox(shutdown_text,
+                                      statusTip=shutdown_text,
+                                      toolTip=shutdown_text)
+        self.chb_shutdown.setEnabled(False)
+        vertical_layout.addWidget(self.chb_shutdown)
 
         horizontal_layout.addLayout(vertical_layout)
         self.vertical_layout_1.addWidget(gb_settings)
@@ -636,6 +645,12 @@ class VideoMorphMW(QMainWindow):
         launcher.open_with_user_browser(
             url='https://ffmpeg.org/documentation.html')
 
+    def shutdown_machine(self):
+        """Shutdown machine when conversion is finished."""
+        launcher = launcher_factory()
+        qApp.closeAllWindows()
+        launcher.shutdown_machine()
+
     def populate_profiles_combo(self):
         """Populate profiles combobox."""
         # Clear combobox content
@@ -743,6 +758,7 @@ class VideoMorphMW(QMainWindow):
                                       subtitles_chb=False,
                                       delete_chb=False,
                                       tag_chb=False,
+                                      shutdown_chb=False,
                                       play_input=False,
                                       play_output=False)
             else:
@@ -918,6 +934,7 @@ class VideoMorphMW(QMainWindow):
                                   subtitles_chb=False,
                                   delete_chb=False,
                                   tag_chb=False,
+                                  shutdown_chb=False,
                                   play_input=False,
                                   play_output=False)
 
@@ -1050,6 +1067,7 @@ class VideoMorphMW(QMainWindow):
                                   subtitles_chb=False,
                                   delete_chb=False,
                                   tag_chb=False,
+                                  shutdown_chb=False,
                                   play_input=False,
                                   play_output=False)
 
@@ -1208,6 +1226,7 @@ class VideoMorphMW(QMainWindow):
         """End up the encoding process."""
         # Test if encoding process is finished
         if self.media_list.is_exhausted:
+
             if self.conversion_lib.library_error is not None:
                 self._show_message_box(
                     type_=QMessageBox.Critical,
@@ -1217,6 +1236,9 @@ class VideoMorphMW(QMainWindow):
                     self.conversion_lib.library_error)
                 self.conversion_lib.library_error = None
             elif not self.media_list.all_stopped:
+                if self.chb_shutdown.checkState():
+                    self.shutdown_machine()
+                    return
                 self._show_message_box(
                     type_=QMessageBox.Information,
                     title=self.tr('Information!'),
@@ -1378,6 +1400,7 @@ class VideoMorphMW(QMainWindow):
         self.chb_delete.setChecked(False)
         self.chb_tag.setChecked(False)
         self.chb_subtitle.setChecked(False)
+        self.chb_shutdown.setChecked(False)
 
     def _set_media_status(self):
         """Update media files state of conversion."""
@@ -1404,6 +1427,7 @@ class VideoMorphMW(QMainWindow):
                          subtitles_chb=True,
                          delete_chb=True,
                          tag_chb=True,
+                         shutdown_chb=True,
                          play_input=True,
                          play_output=True)
 
@@ -1422,6 +1446,7 @@ class VideoMorphMW(QMainWindow):
         self.chb_subtitle.setEnabled(variables['subtitles_chb'])
         self.chb_delete.setEnabled(variables['delete_chb'])
         self.chb_tag.setEnabled(variables['tag_chb'])
+        self.chb_shutdown.setEnabled(variables['shutdown_chb'])
         self.play_input_media_file_action.setEnabled(variables['play_input'])
         self.play_output_media_file_action.setEnabled(variables['play_output'])
         self.tb_tasks.setCurrentItem(None)
