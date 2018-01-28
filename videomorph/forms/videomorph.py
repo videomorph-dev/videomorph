@@ -236,7 +236,7 @@ class VideoMorphMW(QMainWindow):
         self.chb_tag.setEnabled(False)
         vertical_layout.addWidget(self.chb_tag)
 
-        shutdown_text = self.tr('Shutdown Machine When Conversion Finished')
+        shutdown_text = self.tr('Shutdown Computer when Conversion Finished')
         self.chb_shutdown = QCheckBox(shutdown_text,
                                       statusTip=shutdown_text,
                                       toolTip=shutdown_text)

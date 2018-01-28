@@ -307,7 +307,7 @@ p, li { white-space: pre-wrap; }
         <translation>A&amp;yuda</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1254"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1253"/>
         <source>Ready</source>
         <translation>Listo</translation>
     </message>
@@ -327,7 +327,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivos de Video</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1398"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1397"/>
         <source>To Convert</source>
         <translation>Convertir</translation>
     </message>
@@ -337,7 +337,7 @@ p, li { white-space: pre-wrap; }
         <translation>Exportar al Directorio</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1248"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1247"/>
         <source>Information!</source>
         <translation>Información!</translation>
     </message>
@@ -367,7 +367,7 @@ p, li { white-space: pre-wrap; }
         <translation>Hecho!</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1243"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1242"/>
         <source>Encoding Process Successfully Finished!</source>
         <translation>Proceso de Conversión Concluido Exitosamente!</translation>
     </message>
@@ -402,7 +402,7 @@ p, li { white-space: pre-wrap; }
         <translation>Archivo de Perfiles </translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1248"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1247"/>
         <source>Encoding Process Stopped by the User!</source>
         <translation>Proceso de Conversión Detenido por el Usuario!</translation>
     </message>
@@ -482,7 +482,7 @@ p, li { white-space: pre-wrap; }
         <translation>Otras Opciones:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1235"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1231"/>
         <source>The Conversion Library has Failed with Error:</source>
         <translation>La Librería de Conversión ha Fallado con Error:</translation>
     </message>
@@ -512,7 +512,7 @@ p, li { white-space: pre-wrap; }
         <translation>No se Encontraron Archivos de Video en:</translation>
     </message>
     <message>
-        <location filename="../../../videomorph/forms/videomorph.py" line="1345"/>
+        <location filename="../../../videomorph/forms/videomorph.py" line="1344"/>
         <source>Converting: {m}			 At: {br}			 Operation Remaining Time: {ort}			 Total Elapsed Time: {tet}</source>
         <translation>Convirtiendo: {m}			 A: {br}			 Tiempo Restante de la Operación: {ort}			 Tiempo Total Transcurrido: {tet}</translation>
     </message>
@@ -618,8 +618,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="239"/>
-        <source>Shutdown Machine When Conversion Finished</source>
-        <translation>Apagar la Máquina al Terminar la Conversión</translation>
+        <source>Shutdown Computer when Conversion Finished</source>
+        <translation>Apagar la Computadora al Terminar la Conversión</translation>
     </message>
 </context>
 </TS>
