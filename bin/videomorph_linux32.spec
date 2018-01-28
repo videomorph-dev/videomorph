@@ -6,6 +6,7 @@ block_cipher = None
 added_files = [('../VERSION', ''),
                ('../changelog.gz', ''),
                ('../LICENSE', ''),
+               ('../README.md', ''),
                ('../share/videomorph/profiles/customized.xml', 'share/videomorph/profiles'),
                ('../share/videomorph/profiles/default.xml', 'share/videomorph/profiles'),
                ('../share/videomorph/translations/videomorph_es.qm', 'share/videomorph/translations'),
