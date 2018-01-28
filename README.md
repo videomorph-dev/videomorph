@@ -1,7 +1,7 @@
 # VideoMorph
 
-[![Build Status](https://travis-ci.org/codeshard/videomorph.png?branch=master)](https://travis-ci.org/codeshard/videomorph)
-[![codecov.io](https://codecov.io/github/codeshard/videomorph/coverage.svg?branch=master)](https://codecov.io/github/codeshard/videomorph?branch=master)
+[![Build Status](https://travis-ci.org/videomorph-dev/videomorph.png?branch=master)](https://travis-ci.org/videomorph-dev/videomorph)
+[![codecov.io](https://codecov.io/github/videomorph-dev/videomorph/coverage.svg?branch=master)](https://codecov.io/github/videomorph-dev/videomorph?branch=master)
 
 VideoMorph is a small GUI wrapper for [ffmpeg](http://ffmpeg.org),
 based on code from [python-video-converter](https://github.com/senko/python-video-converter)
@@ -30,18 +30,28 @@ To install the package:
 
 This only installs VideoMorph. The [ffmpeg](http://ffmpeg.org) package should be installed
 or compiled in your distribution.
+In Windows platform you need to have Python >= 3.4, PyQt5 and ffmpeg library installed.
+The videomorph.exe will be placed at Python3x\Scripts.
+It is recommended that you have setuptools installed for better portability and configuration, but
+distutils work just fine.
 
-    or (in Debian based distros only):
+In Debian based distros:
 
     sudo install.sh
 
-This should install VideoMorph and its dependencies, including [ffmpeg](http://ffmpeg.org) package.
+This should install VideoMorph and its dependencies, including [ffmpeg](http://ffmpeg.org) package, from
+your current repository.
 
-To install the .deb file
+To install from the .deb file in Debian based distros:
 
     use GDebi Packages Installer and follow the instructions, just that...
 
-This should install VideoMorph and its dependencies from your distro repo.
+This should install VideoMorph and its dependencies from your current repository.
+
+To use a Portable Edition (PE)
+
+    decompress the .tar.gz or the .zip file (GNU/Linux and Windows respectively) in any directory,
+    then double click on videomorph or videomorph.exe depending on your platform
 
 ## Acknowledgements
 
@@ -65,9 +75,9 @@ under LGPL/GPL
 
 ## Authors and Copyright
 
-Code & Artwork by:
+Code, Artwork and l10n by:
 
- - [Ozkar L. Garcell](mailto:codeshard@openmailbox.org)
+ - [Ozkar L. Garcell](mailto:ozkar.garcell@gmail.com)
  - [Leodanis Pozo Ramos](mailto:lpozor78@gmail.com)
 
 Contributors:
