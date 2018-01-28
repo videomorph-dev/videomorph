@@ -25,7 +25,7 @@ from os.path import join as join_path
 from os.path import dirname
 from os.path import exists
 from os.path import isdir
-from time import sleep
+from sys import platform
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -1463,5 +1463,6 @@ class VideoMorphMW(QMainWindow):
             tagged_output=self.chb_tag.checkState())
         # Only enable the menu if output file exist and if it not .mp4,
         # cause .mp4 files doesn't run until conversion is finished
-        if exists(path) and self.cb_profiles.currentText() != 'MP4':
+        if (exists(path) and self.cb_profiles.currentText() != 'MP4' and
+                platform != 'win32'):
             self.play_output_media_file_action.setEnabled(True)
