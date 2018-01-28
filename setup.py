@@ -34,7 +34,7 @@ from videomorph.converter import APP_NAME
 from videomorph.converter import VM_PATHS
 from videomorph.converter import SYS_PATHS
 
-LONG_DESCRIPTION = """Small Video Converter based on ffmpeg, Python 3 and Qt5.
+LONG_DESCRIPTION = """Small Video Converter based on ffmpeg, Python 3 and PyQt5.
 Unlike other video converters, VideoMorph focuses on a single goal:
 make video conversion simple, with an easy to use GUI and allowing
 the user to convert to the currently most popular video formats.
