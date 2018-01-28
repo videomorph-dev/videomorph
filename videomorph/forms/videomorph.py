@@ -645,7 +645,8 @@ class VideoMorphMW(QMainWindow):
         launcher.open_with_user_browser(
             url='https://ffmpeg.org/documentation.html')
 
-    def shutdown_machine(self):
+    @staticmethod
+    def shutdown_machine():
         """Shutdown machine when conversion is finished."""
         launcher = launcher_factory()
         qApp.closeAllWindows()

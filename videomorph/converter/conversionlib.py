@@ -56,7 +56,8 @@ class ConversionLib:
         """Catch the library error when running."""
         self.library_error = self.reader.catch_library_error()
 
-    def run_player(self, file_path):
+    @staticmethod
+    def run_player(file_path):
         """Play a video file with user default player."""
         launcher = launcher_factory()
         launcher.open_with_user_app(url=file_path)
@@ -77,7 +78,7 @@ class _LibraryPath:
 
     def _get_system_path(self, app):
         """Return the name of the conversion library installed on system."""
-        local_dir = self.get_local_dir()
+        local_dir = self._get_local_dir()
         if isdir(local_dir):
             return join_path(local_dir, app)
         if which(app):
@@ -92,14 +93,16 @@ class _LibraryPath:
         """Get prober path."""
         return self._get_system_path('ffprobe')
 
-    def get_local_dir(self):
+    def _get_local_dir(self):
+        """Return the local directory for ffmpeg library."""
         raise NotImplementedError('Must be implemented in subclasses')
 
 
 class _LinuxLibraryPath(_LibraryPath):
     """Class to define platform dependent conversion lib for Linux."""
 
-    def get_local_dir(self):
+    def _get_local_dir(self):
+        """Return the local directory for ffmpeg library."""
         return join_path(BASE_DIR, 'ffmpeg')
 
 
@@ -112,7 +115,8 @@ class _Win32LibraryPath(_LibraryPath):
         self.library_path += '.exe'
         self.prober_path += '.exe'
 
-    def get_local_dir(self):
+    def _get_local_dir(self):
+        """Return the local directory for ffmpeg library."""
         return join_path(BASE_DIR, 'ffmpeg', 'bin')
 
 

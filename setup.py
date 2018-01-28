@@ -66,44 +66,44 @@ commons_setuptools = dict(
 
 linux_data_files = dict(
     data_files=[  # Desktop entry
-                (SYS_PATHS.apps,
-                 [VM_PATHS.apps + '/videomorph.desktop']),
-                # App icon
-                (SYS_PATHS.icons,
-                 [VM_PATHS.icons + '/videomorph.png']),
-                # App translation file
-                (SYS_PATHS.i18n,
-                 [VM_PATHS.i18n + '/videomorph_es.qm']),
-                # Default conversion profiles
-                (SYS_PATHS.profiles,
-                 [VM_PATHS.profiles + '/default.xml',
-                  VM_PATHS.profiles + '/customized.xml']),
-                # Documentation files
-                (SYS_PATHS.doc,
-                 ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
-                  'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
-                # Man page
-                (SYS_PATHS.man,
-                 [VM_PATHS.man + '/videomorph.1.gz'])])
+        (SYS_PATHS.apps,
+         [VM_PATHS.apps + '/videomorph.desktop']),
+        # App icon
+        (SYS_PATHS.icons,
+         [VM_PATHS.icons + '/videomorph.png']),
+        # App translation file
+        (SYS_PATHS.i18n,
+         [VM_PATHS.i18n + '/videomorph_es.qm']),
+        # Default conversion profiles
+        (SYS_PATHS.profiles,
+         [VM_PATHS.profiles + '/default.xml',
+          VM_PATHS.profiles + '/customized.xml']),
+        # Documentation files
+        (SYS_PATHS.doc,
+         ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
+          'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
+        # Man page
+        (SYS_PATHS.man,
+         [VM_PATHS.man + '/videomorph.1.gz'])])
 
 linux_distutils = dict(scripts=[VM_PATHS.bin + '/videomorph'])
 
 
 win32_data_files = dict(
     data_files=[  # App icon
-                (SYS_PATHS.icons,
-                 [VM_PATHS.icons + '/videomorph.ico']),
-                # App translation file
-                (SYS_PATHS.i18n,
-                 [VM_PATHS.i18n + '/videomorph_es.qm']),
-                # Default conversion profiles
-                (SYS_PATHS.profiles,
-                 [VM_PATHS.profiles + '/default.xml',
-                  VM_PATHS.profiles + '/customized.xml']),
-                # Documentation files
-                (SYS_PATHS.doc,
-                 ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
-                  'copyright', 'changelog.gz', 'TODO', 'screenshot.png'])])
+        (SYS_PATHS.icons,
+         [VM_PATHS.icons + '/videomorph.ico']),
+        # App translation file
+        (SYS_PATHS.i18n,
+         [VM_PATHS.i18n + '/videomorph_es.qm']),
+        # Default conversion profiles
+        (SYS_PATHS.profiles,
+         [VM_PATHS.profiles + '/default.xml',
+          VM_PATHS.profiles + '/customized.xml']),
+        # Documentation files
+        (SYS_PATHS.doc,
+         ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
+          'copyright', 'changelog.gz', 'TODO', 'screenshot.png'])])
 
 
 setup_params = commons

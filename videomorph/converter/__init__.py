@@ -41,8 +41,8 @@ def get_version():
     else:
         version_file = join_path(BASE_DIR, 'VERSION')
 
-    with open(version_file, 'r', encoding='UTF-8') as f:
-        version = f.readline().strip('\n')
+    with open(version_file, 'r', encoding='UTF-8') as ver_file:
+        version = ver_file.readline().strip('\n')
 
     return version
 

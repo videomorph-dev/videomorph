@@ -110,6 +110,7 @@ class _Launcher:
         webbrowser.open(url)
 
     def shutdown_machine(self):
+        """Shutdown computer."""
         raise NotImplementedError('Must be implemented in subclasses')
 
 
@@ -149,6 +150,7 @@ class _LinuxLauncher(_Launcher):
         raise PlayerNotFoundError('Player not found')
 
     def shutdown_machine(self):
+        """Shutdown computer."""
         spawn_process(['shutdown', 'now'])
 
 
@@ -160,6 +162,7 @@ class _Win32Launcher(_Launcher):
         os.startfile(url)
 
     def shutdown_machine(self):
+        """Shutdown computer."""
         spawn_process(['shutdown', '/s'])
 
 
