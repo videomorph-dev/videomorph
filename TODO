@@ -18,7 +18,6 @@ Someday:
       package
     - Move the HTML text hardcoded in about.py to a file distributed as doc. Read the about
       info from that file as done with the license
-    - Create the blog in Cubava.cu with the domain videomorph.cubava.cu
     - Define a git work flow for the project
     - Pack in Flatpak or Snap
     - Implement model/view/controller pattern
