@@ -1027,27 +1027,26 @@ class VideoMorphMW(QMainWindow):
     def _select_files(self, dialog_title, files_filter,
                       source_dir=QDir.homePath(), single_file=False):
         # Validate source_dir
-        source_dir = source_dir if isdir(source_dir) else QDir.homePath()
+        source_directory = source_dir if isdir(source_dir) else QDir.homePath()
 
         # Select media files and store their path
         if single_file:
             files_paths, _ = QFileDialog.getOpenFileName(self,
                                                          dialog_title,
-                                                         source_dir,
+                                                         source_directory,
                                                          files_filter)
         else:
             files_paths, _ = QFileDialog.getOpenFileNames(self,
                                                           dialog_title,
-                                                          source_dir,
+                                                          source_directory,
                                                           files_filter)
 
-        if not files_paths:
+        if files_paths:
             # Update the source directory
-            self.source_dir = source_dir
-            return None
+            if not single_file:
+                self.source_dir = dirname(files_paths[0])
         else:
-            # Update the source directory
-            self.source_dir = dirname(files_paths[0])
+            return None
 
         return files_paths
 
