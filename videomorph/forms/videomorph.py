@@ -568,7 +568,20 @@ class VideoMorphMW(QMainWindow):
             if int(self.tb_tasks.currentColumn()) == COLUMNS.NAME:
                 self.play_input_media_file()
 
-        if not self.conversion_lib.converter_is_running:
+        if self.conversion_lib.converter_is_running:
+            self.update_interface(presets=False,
+                                  profiles=False,
+                                  subtitles_chb=False,
+                                  add_costume_profile=False,
+                                  convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  output_dir=False,
+                                  delete_chb=False,
+                                  tag_chb=False,
+                                  play_input=False,
+                                  play_output=False)
+        else:
             self.update_interface(stop=False, stop_all=False, remove=False,
                                   play_input=False, play_output=False)
 
