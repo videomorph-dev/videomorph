@@ -25,7 +25,6 @@ from os.path import join as join_path
 from os.path import dirname
 from os.path import exists
 from os.path import isdir
-from sys import platform
 
 from PyQt5.QtCore import (QSize,
                           Qt,
