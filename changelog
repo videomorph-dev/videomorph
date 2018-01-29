@@ -4,6 +4,12 @@ videomorph (1.3); urgency=high
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 1 Feb 2018 10:00:00 -0500
 
+videomorph (1.2); urgency=medium
+
+    * Play output video in Windows platforms when converting
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 28 Jan 2018 23:09:30 -0500
+
 videomorph (1.2); urgency=high
 
     * Problem with updating the interface when converter is running and the user plays a video. Fixed
@@ -21,12 +27,6 @@ videomorph (1.2); urgency=high
     * Update README.md with new installation details
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 28 Jan 2018 00:11:57 -0500
-
-videomorph (1.2); urgency=high
-
-    * Do not play output video on Windows platforms when converting
-
- -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 27 Jan 2018 19:51:44 -0500
 
 videomorph (1.2); urgency=high
 
@@ -126,7 +126,7 @@ videomorph (1.2); urgency=low
 
 videomorph (1.2); urgency=low
 
-    * Set paths to use dynamically in GNU/Linux and Windows systems
+    * Set paths to be used dynamically in GNU/Linux and Windows systems
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 25 Dec 2017 18:10:55 -0500
 
