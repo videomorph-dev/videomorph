@@ -6,7 +6,7 @@ videomorph (1.3); urgency=high
 
 videomorph (1.2); urgency=high
 
-    * Problem with updating the interface when converter is running and the user plays one video. Fixed
+    * Problem with updating the interface when converter is running and the user plays a video. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 28 Jan 2018 18:06:16 -0500
 
