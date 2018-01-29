@@ -119,7 +119,9 @@ class VideoMorphMW(QMainWindow):
         # Create actions
         self._create_actions()
 
-        # Create conversion library
+        # Conversion library
+        self.no_library_msg = self.tr('Ffmpeg Library not Found'
+                                      ' in your System')
         self.conversion_lib = ConversionLib()
         self.conversion_lib.setup_converter(
             reader=self._ready_read,
