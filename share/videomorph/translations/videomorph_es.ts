@@ -172,6 +172,34 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>TasksListTable</name>
+    <message>
+        <location filename="../../../videomorph/forms/vmwidgets.py" line="49"/>
+        <source>File Name</source>
+        <translation>Nombre del Archivo</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/vmwidgets.py" line="49"/>
+        <source>Duration</source>
+        <translation>Duración</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/vmwidgets.py" line="49"/>
+        <source>Target Quality</source>
+        <translation>Calidad Objetivo</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/vmwidgets.py" line="49"/>
+        <source>Progress</source>
+        <translation>Progreso</translation>
+    </message>
+    <message>
+        <location filename="../../../videomorph/forms/vmwidgets.py" line="54"/>
+        <source>List of Conversion Tasks</source>
+        <translation>Lista de Tareas de Conversión</translation>
+    </message>
+</context>
+<context>
     <name>VideoMorphMW</name>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="171"/>
