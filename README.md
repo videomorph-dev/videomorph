@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/videomorph-dev/videomorph.png?branch=master)](https://travis-ci.org/videomorph-dev/videomorph)
 [![codecov.io](https://codecov.io/github/videomorph-dev/videomorph/coverage.svg?branch=master)](https://codecov.io/github/videomorph-dev/videomorph?branch=master)
 
-VideoMorph is a small GUI wrapper for [ffmpeg](http://ffmpeg.org),
+VideoMorph is a GUI wrapper for [ffmpeg](http://ffmpeg.org),
 based on code from [python-video-converter](https://github.com/senko/python-video-converter)
 and presets idea from [QWinFF](http://qwinff.github.io) and
 [FF Multi Converter](https://github.com/Ilias95/FF-Multi-Converter).
