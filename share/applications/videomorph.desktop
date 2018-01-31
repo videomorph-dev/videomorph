@@ -2,9 +2,9 @@
 Type=Application
 Name=VideoMorph
 GenericName=Video Converter
-GenericName[es]=Conversor de formatos de video
+GenericName[es]=Convertidor de Video
 Comment=Video Converter based on ffmpeg, Python 3 and PyQt5.
-Comment[es]=Convertidor de video basado en ffmpeg, Python 3 and PyQt5.
+Comment[es]=Convertidor de Video basado en ffmpeg, Python 3 and PyQt5.
 Exec=videomorph
 Icon=videomorph
 Terminal=false
