@@ -34,7 +34,7 @@ from videomorph.converter import APP_NAME
 from videomorph.converter import VM_PATHS
 from videomorph.converter import SYS_PATHS
 
-LONG_DESCRIPTION = """Small Video Converter based on ffmpeg, Python 3 and PyQt5.
+LONG_DESCRIPTION = """Video Converter based on ffmpeg, Python 3 and PyQt5.
 Unlike other video converters, VideoMorph focuses on a single goal:
 make video conversion simple, with an easy to use GUI and allowing
 the user to convert to the currently most popular video formats.
@@ -46,7 +46,7 @@ VideoMorph isn't for you."""
 
 commons = dict(name=APP_NAME.lower(),
                version=VERSION,
-               description='Small Video Converter based on ffmpeg, '
+               description='Video Converter based on ffmpeg, '
                            'Python 3 and Qt5, focused on usability.',
                long_description=LONG_DESCRIPTION,
                author='Ozkar L. Garcell',
@@ -55,7 +55,8 @@ commons = dict(name=APP_NAME.lower(),
                maintainer_email='lpozor78@gmail.com',
                url='https://github.com/videomorph-dev/videomorph',
                license='Apache License, Version 2.0',
-               packages=['videomorph', 'videomorph.converter',
+               packages=['videomorph',
+                         'videomorph.converter',
                          'videomorph.forms'],
                platforms=['linux', 'win32'],
                keywords='multimedia, video conversion, common video formats')
