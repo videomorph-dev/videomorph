@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "usage: bump-version.sh <version-id>"
+    echo "usage: bump-version.sh <version-number>"
 }
 
 if [ $# -ne 1 ]; then
