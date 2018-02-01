@@ -24,10 +24,10 @@ from sys import platform
 
 try:
     from setuptools import setup
-    use_distutils = False
+    USE_DISTUTILS = False
 except ImportError:
     from distutils.core import setup
-    use_distutils = True
+    USE_DISTUTILS = True
 
 from videomorph.converter import VERSION
 from videomorph.converter import APP_NAME
@@ -44,7 +44,7 @@ annoying options rarely used.
 VideoMorph is a video converter, just that. If you want a video editor,
 VideoMorph isn't for you."""
 
-commons = dict(name=APP_NAME.lower(),
+COMMONS = dict(name=APP_NAME.lower(),
                version=VERSION,
                description='Video Converter based on ffmpeg, '
                            'Python 3 and Qt5, focused on usability.',
@@ -61,11 +61,11 @@ commons = dict(name=APP_NAME.lower(),
                platforms=['linux', 'win32'],
                keywords='multimedia, video conversion, common video formats')
 
-commons_setuptools = dict(
+COMMONS_SETUPTOOLS = dict(
     entry_points={'gui_scripts': ['videomorph = videomorph.main:main']})
 
 
-linux_data_files = dict(
+LINUX_DATA_FILES = dict(
     data_files=[  # Desktop entry
         (SYS_PATHS.apps,
          [VM_PATHS.apps + '/videomorph.desktop']),
@@ -87,10 +87,10 @@ linux_data_files = dict(
         (SYS_PATHS.man,
          [VM_PATHS.man + '/videomorph.1.gz'])])
 
-linux_distutils = dict(scripts=[VM_PATHS.bin + '/videomorph'])
+LINUX_DISTUTILS = dict(scripts=[VM_PATHS.bin + '/videomorph'])
 
 
-win32_data_files = dict(
+WIN32_DATA_FILES = dict(
     data_files=[  # App icon
         (SYS_PATHS.icons,
          [VM_PATHS.icons + '/videomorph.ico']),
@@ -107,22 +107,22 @@ win32_data_files = dict(
           'copyright', 'changelog.gz', 'TODO', 'screenshot.png'])])
 
 
-setup_params = commons
+SETUP_PARAMS = COMMONS
 
 if platform == 'linux':
-    setup_params.update(linux_data_files)
-    if use_distutils:
-        setup_params.update(linux_distutils)
+    SETUP_PARAMS.update(LINUX_DATA_FILES)
+    if USE_DISTUTILS:
+        SETUP_PARAMS.update(LINUX_DISTUTILS)
     else:
-        setup_params.update(commons_setuptools)
+        SETUP_PARAMS.update(COMMONS_SETUPTOOLS)
 elif platform == 'win32':
-    setup_params.update(win32_data_files)
-    if not use_distutils:
-        setup_params.update(commons_setuptools)
+    SETUP_PARAMS.update(WIN32_DATA_FILES)
+    if not USE_DISTUTILS:
+        SETUP_PARAMS.update(COMMONS_SETUPTOOLS)
 
 
 if __name__ == '__main__':
-    setup(**setup_params)
+    setup(**SETUP_PARAMS)
 
     # if platform == 'win32':
     #     import os

@@ -28,9 +28,9 @@ from PyQt5.QtWidgets import QHeaderView
 from PyQt5.QtWidgets import QItemDelegate
 from PyQt5.QtWidgets import QComboBox
 
-from . import COLUMNS
 from videomorph.converter import STATUS
 from videomorph.converter import VALID_VIDEO_EXT
+from . import COLUMNS
 
 
 class TasksListTable(QTableWidget):
@@ -108,8 +108,8 @@ class TargetQualityDelegate(QItemDelegate):
                                              editor,
                                              index))
             return editor
-        else:
-            return QItemDelegate.createEditor(self, parent, option, index)
+
+        return QItemDelegate.createEditor(self, parent, option, index)
 
     def setEditorData(self, editor, index):
         """Set Target Quality."""

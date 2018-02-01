@@ -157,8 +157,8 @@ class MediaList(list):
         """self._position getter."""
         if self._position is None:
             return -1
-        else:
-            return self._position
+
+        return self._position
 
     @position.setter
     def position(self, value):

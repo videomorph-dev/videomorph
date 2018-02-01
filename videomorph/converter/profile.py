@@ -232,9 +232,9 @@ class _XMLProfile:
         if exists(file_path):
             # if VideoMorph is installed
             return file_path
-        else:
-            # if not installed
-            return join_path(BASE_DIR, VM_PATHS.profiles, file_name)
+
+        # if not installed
+        return join_path(BASE_DIR, VM_PATHS.profiles, file_name)
 
     @staticmethod
     def _create_xml_preset(preset, params, extension):

@@ -69,8 +69,8 @@ def write_time(time_in_secs):
         string = str(string)
         if len(string) == 1:
             return '0' + string
-        else:
-            return string
+
+        return string
 
     hours = int(time / 3600)
     minutes = int(time / 60) - hours * 60
@@ -83,5 +83,6 @@ def write_time(time_in_secs):
     elif minutes:  # @return the time in 00m:00s format
         return ':'.join(['{0}m'.format(fix(minutes)),
                          '{0}s'.format(fix(secs))])
-    else:  # @return the time in 00s format
-        return '{0}s'.format(fix(str(secs)))
+
+    # @return the time in 00s format
+    return '{0}s'.format(fix(str(secs)))

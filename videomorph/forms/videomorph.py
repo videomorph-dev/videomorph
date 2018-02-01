@@ -55,9 +55,7 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QToolButton,
                              qApp)
 
-from . import videomorph_qrc
-from . import COLUMNS
-from .vmwidgets import TasksListTable
+
 from videomorph.converter import APP_NAME
 from videomorph.converter import VERSION
 from videomorph.converter import STATUS
@@ -70,6 +68,9 @@ from videomorph.converter.platformdeps import PlayerNotFoundError
 from videomorph.converter.platformdeps import launcher_factory
 from videomorph.converter.profile import ConversionProfile
 from videomorph.converter.utils import write_time
+from . import videomorph_qrc
+from . import COLUMNS
+from .vmwidgets import TasksListTable
 from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
 from .changelog import ChangelogDialog
