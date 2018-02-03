@@ -30,28 +30,23 @@ To install the package:
 
 This only installs VideoMorph. The [ffmpeg](http://ffmpeg.org) package should be installed
 or compiled in your distribution.
-In Windows platform you need to have Python >= 3.4, PyQt5 and ffmpeg library installed.
-The videomorph.exe will be placed at Python3x\Scripts.
-It is recommended that you have setuptools installed for better portability and configuration, but
-distutils work just fine.
+On Windows platform you need to have Python >= 3.4, PyQt5 and ffmpeg library installed.
+The videomorph.exe will be placed at path\to\Python3x\Scripts. You'll need to have setuptools
+installed on your Windows system.
 
 In Debian based distros:
 
     sudo install.sh
 
-This should install VideoMorph and its dependencies, including [ffmpeg](http://ffmpeg.org) package, from
+This should install VideoMorph and its dependencies, including [ffmpeg](http://ffmpeg.org) library, from
 your current repository.
 
-To install from the .deb file in Debian based distros:
+To install from the .deb package in Debian based distros, we recommend you to
+use GDebi Packages Installer and follow the instructions, just that... This should install VideoMorph
+and its dependencies from your current repository.
 
-    use GDebi Packages Installer and follow the instructions, just that...
-
-This should install VideoMorph and its dependencies from your current repository.
-
-To use a Portable Edition (PE)
-
-    decompress the .tar.gz or the .zip file (GNU/Linux and Windows respectively) in any directory,
-    then double click on videomorph or videomorph.exe depending on your platform
+To use a Portable Edition (PE), decompress the .tar.gz or the .zip file (GNU/Linux and Windows respectively)
+in any directory, and then double click on videomorph or videomorph.exe depending on your platform
 
 ## Acknowledgements
 

@@ -6,7 +6,7 @@ videomorph (1.3); urgency=high
 
 videomorph (1.2); urgency=medium
 
-    * Play output video in Windows platforms when converting
+    * Play output video on Windows platforms when converting
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 28 Jan 2018 23:09:30 -0500
 
@@ -36,7 +36,7 @@ videomorph (1.2); urgency=high
 
 videomorph (1.2); urgency=high
 
-    * Update the setup.py to work with distutils or setuptools in GNU/Linux or in Windows
+    * Update the setup.py to work with distutils or setuptools in GNU/Linux or on Windows
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 20 Jan 2018 17:56:54 -0500
 
@@ -78,19 +78,19 @@ videomorph (1.2); urgency=high
 
 videomorph (1.2); urgency=low
 
-    * Open video file in Windows and Linux platform
+    * Open video file on Windows and Linux platform
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 3 Jan 2018 22:42:51 -0500
 
 videomorph (1.2); urgency=low
 
-    * Open ffmpeg documentation site with user browser in Windows
+    * Open ffmpeg documentation site with user browser on Windows
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 3 Jan 2018 20:26:55 -0500
 
 videomorph (1.2); urgency=high
 
-    * Problem with stopping conversion process for all files in Windows platform. Fixed
+    * Problem with stopping conversion process for all files on Windows platform. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 2 Jan 2018 21:16:50 -0500
 
@@ -102,7 +102,7 @@ videomorph (1.2); urgency=high
 
 videomorph (1.2); urgency=high
 
-    * Problem with conversion stopping in Windows. Fixed
+    * Problem with conversion stopping on Windows. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 2 Jan 2018 10:41:12 -0500
 

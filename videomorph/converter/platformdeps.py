@@ -72,7 +72,7 @@ class _LinuxPaths(VMPaths):
 
 
 class _Win32Paths(VMPaths):
-    """Class to define the paths to use in Windows32 systems."""
+    """Class to define the paths to use on Windows32 systems."""
 
     def __init__(self):
         """Class initializer."""
