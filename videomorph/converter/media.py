@@ -30,7 +30,7 @@ from os.path import exists
 
 from . import CPU_CORES
 from . import STATUS
-from .utils import spawn_process
+from .platformdeps import spawn_process
 
 
 class MediaError(Exception):
