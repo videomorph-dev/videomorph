@@ -4,6 +4,12 @@ videomorph (1.3); urgency=high
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 1 Feb 2018 10:00:00 -0500
 
+videomorph (1.2); urgency=low
+
+    * Hide cmd.exe window on Windows systems when running ffprobe
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 2 Feb 2018 22:48:25 -0500
+
 videomorph (1.2); urgency=medium
 
     * Play output video on Windows platforms when converting
