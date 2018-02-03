@@ -18,6 +18,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+"""This file defines the main VideoMorph executable script."""
+
+
 if __name__ == '__main__':
     from videomorph.main import main
     main()

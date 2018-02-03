@@ -16,7 +16,7 @@ DEPENDENCIES:
 INSTALL:
 - Extract the source file
 
-    tar -xvf videomorph-1.1.tar.gz
+    tar -xvf videomorph-x.x.tar.gz
 
 - Change to the source dir
 
