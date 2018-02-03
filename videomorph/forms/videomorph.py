@@ -68,8 +68,8 @@ from videomorph.converter.platformdeps import PlayerNotFoundError
 from videomorph.converter.platformdeps import launcher_factory
 from videomorph.converter.profile import ConversionProfile
 from videomorph.converter.utils import write_time
-from . import videomorph_qrc
 from . import COLUMNS
+from . import videomorph_qrc
 from .vmwidgets import TasksListTable
 from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
@@ -188,7 +188,8 @@ class VideoMorphMW(QMainWindow):
         horizontal_layout_1.addItem(spacer_item)
         vertical_layout.addLayout(horizontal_layout_1)
         profile_tip = self.tr('Select a Video Format')
-        self.cb_profiles = QComboBox(gb_settings, statusTip=profile_tip,
+        self.cb_profiles = QComboBox(gb_settings,
+                                     statusTip=profile_tip,
                                      toolTip=profile_tip)
         self.cb_profiles.setMinimumSize(QSize(200, 0))
         self.cb_profiles.setIconSize(QSize(22, 22))
@@ -202,7 +203,8 @@ class VideoMorphMW(QMainWindow):
         horizontal_layout_2.addItem(spacer_item_1)
         vertical_layout.addLayout(horizontal_layout_2)
         preset_tip = self.tr('Select a Video Target Quality')
-        self.cb_quality = QComboBox(gb_settings, statusTip=preset_tip,
+        self.cb_quality = QComboBox(gb_settings,
+                                    statusTip=preset_tip,
                                     toolTip=preset_tip)
         self.cb_quality.setMinimumSize(QSize(200, 0))
 
