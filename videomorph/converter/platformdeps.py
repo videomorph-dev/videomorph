@@ -20,14 +20,16 @@
 """This module provides System Paths creation classes."""
 
 import os
+import subprocess
 from os.path import expanduser
 from os.path import expandvars
 from os.path import join as join_path
+from subprocess import PIPE
+from subprocess import Popen
 from sys import platform
 from sys import prefix
 import webbrowser
 
-from .utils import spawn_process
 from .utils import which
 
 
@@ -169,3 +171,44 @@ class _Win32Launcher(_Launcher):
 def launcher_factory():
     """Factory method to create the appropriate launcher."""
     return generic_factory(parent_class=_Launcher)
+
+
+# PROCESSES
+
+class _Process:
+    """Abstract class to implement external subprocess."""
+    def spawn_process(self, cmd):
+        raise NotImplementedError('Must be implemented in subclasses')
+
+
+class _LinuxProcess(_Process):
+    """Concrete class to implement external subprocess on Linux."""
+
+    def spawn_process(self, cmd):
+        """Return a Popen object."""
+
+        return Popen(cmd,
+                     stdin=PIPE,
+                     stdout=PIPE,
+                     stderr=PIPE,
+                     universal_newlines=True)
+
+
+class _Win32Process(_Process):
+    """Concrete class to implement external subprocess on Windows."""
+
+    def spawn_process(self, cmd):
+        """Return a Popen object."""
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = subprocess.SW_HIDE
+
+        return Popen(cmd,
+                     stdin=PIPE,
+                     stdout=PIPE,
+                     stderr=PIPE,
+                     shell=True,
+                     startupinfo=startupinfo,
+                     universal_newlines=True)
+
+spawn_process = generic_factory(parent_class=_Process).spawn_process
