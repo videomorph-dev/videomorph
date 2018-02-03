@@ -20,10 +20,12 @@
 """This module contains some utilities and functions."""
 
 import os
+import subprocess
 from os.path import pathsep
 from locale import getdefaultlocale
 from subprocess import PIPE
 from subprocess import Popen
+from sys import platform
 
 
 def get_locale():
@@ -35,10 +37,23 @@ def get_locale():
 
 def spawn_process(cmd):
     """Return a Popen object."""
+    shell = False
+    startupinfo = None
+
+    # Hide cmd.exe window on Windows systems
+    if platform == 'win32':
+        shell = True
+        si = subprocess.STARTUPINFO()
+        si.dwFlags = subprocess.STARTF_USESHOWWINDOW
+        si.wShowWindow = subprocess.SW_HIDE
+        startupinfo = si
+
     return Popen(cmd,
                  stdin=PIPE,
                  stdout=PIPE,
                  stderr=PIPE,
+                 shell=shell,
+                 startupinfo=startupinfo,
                  universal_newlines=True)
 
 
