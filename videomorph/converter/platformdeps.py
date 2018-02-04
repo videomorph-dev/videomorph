@@ -20,10 +20,10 @@
 """This module provides System Paths creation classes."""
 
 import os
-import subprocess
 from os.path import expanduser
 from os.path import expandvars
 from os.path import join as join_path
+import subprocess
 from subprocess import PIPE
 from subprocess import Popen
 from sys import platform
@@ -177,7 +177,9 @@ def launcher_factory():
 
 class _Process:
     """Abstract class to implement external subprocess."""
+
     def spawn_process(self, cmd):
+        """Class to implement external subprocess on different platforms."""
         raise NotImplementedError('Must be implemented in subclasses')
 
 
