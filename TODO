@@ -12,7 +12,6 @@ Next version (1.4):
 
 BugFix:
     - App freezes with certain movies when reading ffprobe output on Windows platform
-    - cmd.exe window shows when running ffprobe on Windows platform
 
 Someday:
     - Pack in .rpm format
