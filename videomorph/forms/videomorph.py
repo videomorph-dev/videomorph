@@ -220,6 +220,7 @@ class VideoMorphMW(QMainWindow):
                                       statusTip=sub_tip,
                                       toolTip=sub_tip)
         self.chb_subtitle.setEnabled(False)
+        self.chb_subtitle.clicked.connect(self._option_check_boxes_clicked)
         vertical_layout.addWidget(self.label_other_options)
         vertical_layout.addWidget(self.chb_subtitle)
 
@@ -228,6 +229,7 @@ class VideoMorphMW(QMainWindow):
                                     statusTip=del_text,
                                     toolTip=del_text)
         self.chb_delete.setEnabled(False)
+        self.chb_delete.clicked.connect(self._option_check_boxes_clicked)
         vertical_layout.addWidget(self.chb_delete)
 
         tag_text = self.tr('Use Format Tag in Output Video File Name')
@@ -238,6 +240,7 @@ class VideoMorphMW(QMainWindow):
                                  statusTip=tag_tip_text,
                                  toolTip=tag_tip_text)
         self.chb_tag.setEnabled(False)
+        self.chb_tag.clicked.connect(self._option_check_boxes_clicked)
         vertical_layout.addWidget(self.chb_tag)
 
         shutdown_text = self.tr('Shutdown Computer when Conversion Finished')
@@ -1384,25 +1387,25 @@ class VideoMorphMW(QMainWindow):
             self.media_list.set_file_status(position=item.row(),
                                             status=STATUS.todo)
 
-            # Update total duration of the new tasks list
-            self.media_list_duration = self.media_list.duration
-
-            # Update the interface
-            self.update_interface(stop=False, stop_all=False, remove=False,
-                                  play_input=False, play_output=False)
         else:
-            rows = self.tb_tasks.rowCount()
-            if rows:
-                for row in range(rows):
-                    self.tb_tasks.item(row, COLUMNS.QUALITY).setText(
-                        str(self.cb_quality.currentText()))
-                    self.update_table_progress_column(row)
-
-                self.update_interface(stop=False, stop_all=False, remove=False,
-                                      play_input=False, play_output=False)
+            self._update_all_table_rows(column=COLUMNS.QUALITY,
+                                        value=self.cb_quality.currentText())
 
             self._set_media_status()
-            self.media_list_duration = self.media_list.duration
+
+        # Update total duration of the new tasks list
+        self.media_list_duration = self.media_list.duration
+        # Update the interface
+        self.update_interface(stop=False, stop_all=False, remove=False,
+                              play_input=False, play_output=False)
+
+    def _update_all_table_rows(self, column, value):
+        rows = self.tb_tasks.rowCount()
+        if rows:
+            for row in range(rows):
+                self.tb_tasks.item(row, column).setText(
+                    str(value))
+                self.update_table_progress_column(row)
 
     def update_table_progress_column(self, row):
         """Update the progress column of conversion task list."""
@@ -1422,6 +1425,14 @@ class VideoMorphMW(QMainWindow):
         for media_file in self.media_list:
             media_file.status = STATUS.todo
         self.media_list.position = None
+
+    def _option_check_boxes_clicked(self):
+        self.update_interface(stop=False, stop_all=False, remove=False,
+                              play_input=False, play_output=False)
+
+        self._set_media_status()
+        self._update_all_table_rows(column=COLUMNS.PROGRESS, value=STATUS.todo)
+        self.media_list_duration = self.media_list.duration
 
     def update_interface(self, **i_vars):
         """Update the interface status.
