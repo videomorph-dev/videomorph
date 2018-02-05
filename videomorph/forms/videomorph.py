@@ -1435,7 +1435,8 @@ class VideoMorphMW(QMainWindow):
                               play_input=False, play_output=False)
 
         self._set_media_status()
-        self._update_all_table_rows(column=COLUMNS.PROGRESS, value=STATUS.todo)
+        self._update_all_table_rows(column=COLUMNS.PROGRESS,
+                                    value=self.tr('To Convert'))
         self.media_list_duration = self.media_list.duration
 
     def update_interface(self, **i_vars):
