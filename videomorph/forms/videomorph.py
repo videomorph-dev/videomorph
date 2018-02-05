@@ -220,6 +220,7 @@ class VideoMorphMW(QMainWindow):
                                       statusTip=sub_tip,
                                       toolTip=sub_tip)
         self.chb_subtitle.setEnabled(False)
+        self.chb_subtitle.clicked.connect(self._option_check_boxes_clicked)
         vertical_layout.addWidget(self.label_other_options)
         vertical_layout.addWidget(self.chb_subtitle)
 
@@ -228,6 +229,7 @@ class VideoMorphMW(QMainWindow):
                                     statusTip=del_text,
                                     toolTip=del_text)
         self.chb_delete.setEnabled(False)
+        self.chb_delete.clicked.connect(self._option_check_boxes_clicked)
         vertical_layout.addWidget(self.chb_delete)
 
         tag_text = self.tr('Use Format Tag in Output Video File Name')
@@ -238,6 +240,7 @@ class VideoMorphMW(QMainWindow):
                                  statusTip=tag_tip_text,
                                  toolTip=tag_tip_text)
         self.chb_tag.setEnabled(False)
+        self.chb_tag.clicked.connect(self._option_check_boxes_clicked)
         vertical_layout.addWidget(self.chb_tag)
 
         shutdown_text = self.tr('Shutdown Computer when Conversion Finished')
@@ -682,9 +685,6 @@ class VideoMorphMW(QMainWindow):
             icon = QIcon(':/formats/{0}.png'.format(profile_name))
             self.cb_profiles.setItemIcon(i, icon)
 
-        # self.cb_profiles.addItems(
-        #     self.profile.get_xml_profile_qualities().keys())
-
     def populate_quality_combo(self, combo):
         """Populate target quality combobox.
 
@@ -697,14 +697,15 @@ class VideoMorphMW(QMainWindow):
             combo.addItems(
                 self.profile.get_xml_profile_qualities()[current_profile])
 
-            self._update_media_files_status()
+            if self.tb_tasks.rowCount():
+                self._update_media_files_status()
             self.profile.update(new_quality=self.cb_quality.currentText())
 
     def output_directory(self):
         """Choose output directory."""
         directory = self._select_directory(
             dialog_title=self.tr('Choose Output Directory'),
-            source_dir=QDir.homePath())
+            source_dir=self.le_output.text())
 
         if directory:
             self.le_output.setText(directory)
@@ -815,7 +816,9 @@ class VideoMorphMW(QMainWindow):
 
             self._insert_table_item(
                 item_text=str(write_time(
-                    self.media_list.running_file_info('format_duration'))),
+                    self.media_list.get_file_info(
+                        position=row,
+                        info_param='format_duration'))),
                 row=row, column=COLUMNS.DURATION)
 
             self._insert_table_item(
@@ -1229,16 +1232,14 @@ class VideoMorphMW(QMainWindow):
                 self.pb_progress.setProperty("value", 0)
                 if self.chb_delete.checkState():
                     self.media_list.delete_running_file_input()
-            # Attempt to end the conversion process
-            self._end_encoding_process()
         else:
             # If the process was stopped
             if not self.conversion_lib.converter_is_running:
                 self.tb_tasks.item(
                     self.media_list.position,
                     COLUMNS.PROGRESS).setText(self.tr('Stopped!'))
-            # Attempt to end the conversion process
-            self._end_encoding_process()
+        # Attempt to end the conversion process
+        self._end_encoding_process()
 
     def _end_encoding_process(self):
         """End up the encoding process."""
@@ -1387,25 +1388,28 @@ class VideoMorphMW(QMainWindow):
             self.media_list.set_file_status(position=item.row(),
                                             status=STATUS.todo)
 
-            # Update total duration of the new tasks list
-            self.media_list_duration = self.media_list.duration
-
-            # Update the interface
-            self.update_interface(stop=False, stop_all=False, remove=False,
-                                  play_input=False, play_output=False)
         else:
-            rows = self.tb_tasks.rowCount()
-            if rows:
-                for row in range(rows):
-                    self.tb_tasks.item(row, COLUMNS.QUALITY).setText(
-                        str(self.cb_quality.currentText()))
-                    self.update_table_progress_column(row)
-
-                self.update_interface(stop=False, stop_all=False, remove=False,
-                                      play_input=False, play_output=False)
+            self._update_all_table_rows(column=COLUMNS.QUALITY,
+                                        value=self.cb_quality.currentText())
 
             self._set_media_status()
-            self.media_list_duration = self.media_list.duration
+
+        # Update total duration of the new tasks list
+        self.media_list_duration = self.media_list.duration
+        # Update the interface
+        self.update_interface(stop=False,
+                              stop_all=False,
+                              remove=False,
+                              play_input=False,
+                              play_output=False)
+
+    def _update_all_table_rows(self, column, value):
+        rows = self.tb_tasks.rowCount()
+        if rows:
+            for row in range(rows):
+                self.tb_tasks.item(row, column).setText(
+                    str(value))
+                self.update_table_progress_column(row)
 
     def update_table_progress_column(self, row):
         """Update the progress column of conversion task list."""
@@ -1425,6 +1429,15 @@ class VideoMorphMW(QMainWindow):
         for media_file in self.media_list:
             media_file.status = STATUS.todo
         self.media_list.position = None
+
+    def _option_check_boxes_clicked(self):
+        self.update_interface(stop=False, stop_all=False, remove=False,
+                              play_input=False, play_output=False)
+
+        self._set_media_status()
+        self._update_all_table_rows(column=COLUMNS.PROGRESS,
+                                    value=self.tr('To Convert'))
+        self.media_list_duration = self.media_list.duration
 
     def update_interface(self, **i_vars):
         """Update the interface status.

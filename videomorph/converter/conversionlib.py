@@ -275,11 +275,9 @@ class _ConversionTimer:
         """"Calculate total progress percentage."""
         if self._partial_time > self._operation_time_read:
             self._time_jump += self._partial_time
-            self._total_time = self._time_jump + self._operation_time_read
-            self._partial_time = self._operation_time_read
-        else:
-            self._total_time = self._time_jump + self._operation_time_read
-            self._partial_time = self._operation_time_read
+
+        self._total_time = self._time_jump + self._operation_time_read
+        self._partial_time = self._operation_time_read
 
         return int(self._total_time / float(list_duration) * 100)
 
