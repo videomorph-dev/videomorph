@@ -73,15 +73,13 @@ class ChangelogDialog(QtWidgets.QDialog):
             changes = []
             for line in changelog:
                 if line.startswith('    * '):
+                    line = line.strip('\n')
+                    line = line.strip('    * ')
                     if 'Release' in line:
-                        line = line.strip('\n')
-                        line = line.strip('    * ')
                         version = '<b>{0}</b>'.format(line)
                         changes.append(version)
                         changes.extend(['<ul>', '</ul>'])
                     else:
-                        line = line.strip('\n')
-                        line = line.strip('    * ')
                         line = '<li>{0}</li>'.format(line)
                         changes.insert(-1, line)
 
