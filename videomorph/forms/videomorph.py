@@ -704,7 +704,7 @@ class VideoMorphMW(QMainWindow):
         """Choose output directory."""
         directory = self._select_directory(
             dialog_title=self.tr('Choose Output Directory'),
-            source_dir=QDir.homePath())
+            source_dir=self.le_output.text())
 
         if directory:
             self.le_output.setText(directory)
