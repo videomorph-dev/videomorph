@@ -816,7 +816,9 @@ class VideoMorphMW(QMainWindow):
 
             self._insert_table_item(
                 item_text=str(write_time(
-                    self.media_list.running_file_info('format_duration'))),
+                    self.media_list.get_file_info(
+                        position=row,
+                        info_param='format_duration'))),
                 row=row, column=COLUMNS.DURATION)
 
             self._insert_table_item(
@@ -1395,11 +1397,9 @@ class VideoMorphMW(QMainWindow):
         # Update total duration of the new tasks list
         self.media_list_duration = self.media_list.duration
         # Update the interface
-        self.update_interface(convert=False,
-                              stop=False,
+        self.update_interface(stop=False,
                               stop_all=False,
                               remove=False,
-                              clear=False,
                               play_input=False,
                               play_output=False)
 
