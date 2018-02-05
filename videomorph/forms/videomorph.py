@@ -682,9 +682,6 @@ class VideoMorphMW(QMainWindow):
             icon = QIcon(':/formats/{0}.png'.format(profile_name))
             self.cb_profiles.setItemIcon(i, icon)
 
-        # self.cb_profiles.addItems(
-        #     self.profile.get_xml_profile_qualities().keys())
-
     def populate_quality_combo(self, combo):
         """Populate target quality combobox.
 
