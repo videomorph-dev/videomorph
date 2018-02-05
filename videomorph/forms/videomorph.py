@@ -697,7 +697,8 @@ class VideoMorphMW(QMainWindow):
             combo.addItems(
                 self.profile.get_xml_profile_qualities()[current_profile])
 
-            self._update_media_files_status()
+            if self.tb_tasks.rowCount():
+                self._update_media_files_status()
             self.profile.update(new_quality=self.cb_quality.currentText())
 
     def output_directory(self):
@@ -1229,16 +1230,14 @@ class VideoMorphMW(QMainWindow):
                 self.pb_progress.setProperty("value", 0)
                 if self.chb_delete.checkState():
                     self.media_list.delete_running_file_input()
-            # Attempt to end the conversion process
-            self._end_encoding_process()
         else:
             # If the process was stopped
             if not self.conversion_lib.converter_is_running:
                 self.tb_tasks.item(
                     self.media_list.position,
                     COLUMNS.PROGRESS).setText(self.tr('Stopped!'))
-            # Attempt to end the conversion process
-            self._end_encoding_process()
+        # Attempt to end the conversion process
+        self._end_encoding_process()
 
     def _end_encoding_process(self):
         """End up the encoding process."""
@@ -1396,8 +1395,13 @@ class VideoMorphMW(QMainWindow):
         # Update total duration of the new tasks list
         self.media_list_duration = self.media_list.duration
         # Update the interface
-        self.update_interface(stop=False, stop_all=False, remove=False,
-                              play_input=False, play_output=False)
+        self.update_interface(convert=False,
+                              stop=False,
+                              stop_all=False,
+                              remove=False,
+                              clear=False,
+                              play_input=False,
+                              play_output=False)
 
     def _update_all_table_rows(self, column, value):
         rows = self.tb_tasks.rowCount()
