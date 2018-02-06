@@ -71,11 +71,6 @@ class ConversionLib:
 class _LibraryPath:
     """Class to define platform dependent conversion tools."""
 
-    def __init__(self):
-        """Class initializer."""
-        self.library_path = self._get_library_path()
-        self.prober_path = self._get_prober_path()
-
     def _get_system_path(self, app):
         """Return the name of the conversion library installed on system."""
         local_dir = self._get_local_dir()
@@ -85,11 +80,13 @@ class _LibraryPath:
             return which(app)
         return None  # Not available library
 
-    def _get_library_path(self):
+    @property
+    def library_path(self):
         """Get conversion library path."""
         return self._get_system_path('ffmpeg')
 
-    def _get_prober_path(self):
+    @property
+    def prober_path(self):
         """Get prober path."""
         return self._get_system_path('ffprobe')
 
@@ -109,15 +106,17 @@ class _LinuxLibraryPath(_LibraryPath):
 class _Win32LibraryPath(_LibraryPath):
     """Class to define platform dependent conversion lib for Win32."""
 
-    def __init__(self):
-        """Class initializer."""
-        super(_Win32LibraryPath, self).__init__()
-        self.library_path += '.exe'
-        self.prober_path += '.exe'
-
     def _get_local_dir(self):
         """Return the local directory for ffmpeg library."""
         return join_path(BASE_DIR, 'ffmpeg', 'bin')
+
+    @property
+    def library_path(self):
+        return super(_Win32LibraryPath, self).library_path + '.exe'
+
+    @property
+    def prober_path(self):
+        return super(_Win32LibraryPath, self).prober_path + '.exe'
 
 
 def library_path_factory():
