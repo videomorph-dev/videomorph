@@ -448,20 +448,20 @@ class VideoMorphMW(QMainWindow):
 
         self.about_action = self._action_factory(
             icon=QIcon(':/icons/about.png'),
-            text=self.tr('&About') + ' ' + APP_NAME + ' ' + VERSION + '...',
+            text=self.tr('&About') + ' ' + APP_NAME,
             shortcut="Ctrl+H",
             tip=self.tr('About') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.about)
 
         self.changelog_action = self._action_factory(
             icon=QIcon(':/icons/changelog.png'),
-            text=self.tr('Changelog') + '...',
+            text=self.tr('Changelog'),
             tip=self.tr('Changelog'),
             callback=self.changelog)
 
         self.ffmpeg_doc_action = self._action_factory(
             icon=QIcon(':/icons/ffmpeg.png'),
-            text=self.tr('&Ffmpeg Documentation...'),
+            text=self.tr('&Ffmpeg Documentation'),
             shortcut="Ctrl+L",
             tip=self.tr('Open Ffmpeg On-Line Documentation'),
             callback=self.ffmpeg_doc)

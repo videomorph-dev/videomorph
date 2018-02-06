@@ -47,7 +47,7 @@ class AboutVMDialog(QDialog):
     def __init__(self, parent=None):
         """Class initializer."""
         super(AboutVMDialog, self).__init__(parent)
-        self.setWindowTitle(self.tr('About VideoMorph'))
+        self.setWindowTitle(self.tr('About'))
         self.resize(500, 404)
         self.horizontal_layout_3 = QHBoxLayout(self)
         self.vertical_layout_4 = QVBoxLayout()
