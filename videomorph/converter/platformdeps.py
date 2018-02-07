@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# File name: syspath.py
+# File name: platformdeps.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
@@ -17,7 +17,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module provides System Paths creation classes."""
+"""This module provides classes for handing platform dependent stuffs."""
 
 import os
 from os.path import expanduser
@@ -213,4 +213,7 @@ class _Win32Process(_Process):
                      startupinfo=startupinfo,
                      universal_newlines=True)
 
-spawn_process = generic_factory(parent_class=_Process).spawn_process
+
+def spawn_process(cmd):
+    """Launch processes on different platforms."""
+    return generic_factory(parent_class=_Process).spawn_process(cmd=cmd)
