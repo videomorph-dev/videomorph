@@ -22,6 +22,7 @@
 import gzip
 from os.path import exists
 from os.path import join as join_path
+import re
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -69,12 +70,14 @@ class ChangelogDialog(QtWidgets.QDialog):
         else:
             changelog_file = join_path(BASE_DIR, 'changelog.gz')
 
+        line_start_pattern = re.compile(r'\s+\*\s+')
+
         with gzip.open(changelog_file, 'rt', encoding='utf-8') as changelog:
             changes = []
             for line in changelog:
-                if line.startswith('    * '):
-                    line = line.strip('\n')
-                    line = line.strip('    * ')
+                start = line_start_pattern.match(line)
+                if start:
+                    line = line.strip('\n' + start.group())
                     if 'Release' in line:
                         version = '<b>{0}</b>'.format(line)
                         changes.append(version)
