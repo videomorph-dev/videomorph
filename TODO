@@ -9,6 +9,7 @@ Next version (2.0):
     - Improve the icons visualization
     - Pack as a .msi or setup.exe file for Windows platform
     - Automate the process of creating the Portable Edition on Linux and Windows
+    - Add notifications (text and sound) when video conversion is finished
 
 BugFix:
     - App freezes with certain movies when reading ffprobe output on Windows platform
