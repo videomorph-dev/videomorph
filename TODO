@@ -1,14 +1,15 @@
 TODO List:
 ----------
 
-Next version (1.4):
+Next version (2.0):
     - Implement a Dialog to generate the conversion commands using the ffmpeg options
     - Update and improve tests and coverage
     - Create an user manual
-    - Define a README.rst file to be used in source package
+    - Define a README.rst file to be included in source package
     - Improve the icons visualization
     - Pack as a .msi or setup.exe file for Windows platform
-    - Automate the process of creating the Portable Edition for Linux and Windows
+    - Automate the process of creating the Portable Edition on Linux and Windows
+    - Add notifications (text and sound) when video conversion is finished
 
 BugFix:
     - App freezes with certain movies when reading ffprobe output on Windows platform
