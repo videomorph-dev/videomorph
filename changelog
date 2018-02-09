@@ -1,3 +1,171 @@
+videomorph (1.3); urgency=high
+
+    * VideoMorph v1.3. Release Date: Thu, 15 Feb 2018
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 15 Feb 2018 10:00:00 -0500
+
+videomorph (1.2); urgency=high
+
+    * Problem with video file duration. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 4 Feb 2018 23:25:04 -0500
+
+videomorph (1.2); urgency=high
+
+    * Enable Convert action and update Progress column when user selects some option in Other Options
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 4 Feb 2018 21:57:07 -0500
+
+videomorph (1.2); urgency=low
+
+    * Hide cmd.exe window on Windows systems when running ffprobe
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 2 Feb 2018 22:48:25 -0500
+
+videomorph (1.2); urgency=medium
+
+    * Play output video on Windows platforms when converting
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 28 Jan 2018 23:09:30 -0500
+
+videomorph (1.2); urgency=high
+
+    * Problem with updating the interface when converter is running and the user plays a video. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 28 Jan 2018 18:06:16 -0500
+
+videomorph (1.2); urgency=high
+
+    * VideoMorph runs on Windows. Done
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 28 Jan 2018 00:20:19 -0500
+
+videomorph (1.2); urgency=high
+
+    * Update README.md with new installation details
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 28 Jan 2018 00:11:57 -0500
+
+videomorph (1.2); urgency=high
+
+    * Add an Option to shutdown machine when finishing conversion process
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 26 Jan 2018 22:45:23 -0500
+
+videomorph (1.2); urgency=high
+
+    * Update the setup.py to work with distutils or setuptools in GNU/Linux or on Windows
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 20 Jan 2018 17:56:54 -0500
+
+videomorph (1.2); urgency=high
+
+    * Update app icon to a file with ICO format for Windows compatibility
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 19 Jan 2018 21:39:29 -0500
+
+videomorph (1.2); urgency=high
+
+    * Remove support for avconv to concentrate in ffmpeg features
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 19 Jan 2018 19:42:50 -0500
+
+videomorph (1.2); urgency=low
+
+    * Use library paths to process videos directly instead of using utils.which
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 19 Jan 2018 19:18:17 -0500
+
+videomorph (1.2); urgency=high
+
+    * Problem with file names that contains periods. The output file name was cut. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 7 Jan 2018 18:29:34 -0500
+
+videomorph (1.2); urgency=medium
+
+    * Add a path separator os.path.pathsep to utils.which for portability
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 6 Jan 2018 22:19:51 -0500
+
+videomorph (1.2); urgency=high
+
+    * Remove file action activated when user double click on a video file to reproduce it. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 4 Jan 2018 18:30:45 -0500
+
+videomorph (1.2); urgency=low
+
+    * Open video file on Windows and Linux platform
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 3 Jan 2018 22:42:51 -0500
+
+videomorph (1.2); urgency=low
+
+    * Open ffmpeg documentation site with user browser on Windows
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 3 Jan 2018 20:26:55 -0500
+
+videomorph (1.2); urgency=high
+
+    * Problem with stopping conversion process for all files on Windows platform. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 2 Jan 2018 21:16:50 -0500
+
+videomorph (1.2); urgency=high
+
+    * Partially converted video not delete when user closes the app. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 2 Jan 2018 21:00:38 -0500
+
+videomorph (1.2); urgency=high
+
+    * Problem with conversion stopping on Windows. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 2 Jan 2018 10:41:12 -0500
+
+videomorph (1.2); urgency=high
+
+    * Use os.path join to build paths for portability
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 1 Jan 2018 14:17:33 -0500
+
+videomorph (1.2); urgency=low
+
+    * Set library and probe depending on the platform (GNU/Linux or Windows)
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 1 Jan 2018 14:17:33 -0500
+
+videomorph (1.2); urgency=low
+
+    * Centralize the Version handling, adding a VERSION file for better maintainability
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 30 Dec 2017 22:53:50 -0500
+
+videomorph (1.2); urgency=low
+
+    * Set paths to be used dynamically in GNU/Linux and Windows systems
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 25 Dec 2017 18:10:55 -0500
+
+videomorph (1.2); urgency=high
+
+    * Problem: App did not save configuration state if the user closes it when no conversion task is running. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 22 Dec 2017 23:46:53 -0500
+
+videomorph (1.2); urgency=high
+
+    * Adding platformdeps.py module to handle the system path with platform independence
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 22 Dec 2017 20:44:11 -0500
+
+videomorph (1.2); urgency=high
+
+    * Problem reading from changelo.gz. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 14 Nov 2017 21:14:17 -0500
+
 videomorph (1.2) xenial; urgency=high
 
     * VideoMorph v1.2. Release Date: Tue, 7 Nov 2017

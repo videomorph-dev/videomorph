@@ -2,7 +2,7 @@
 #
 # File name: utils.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,8 @@
 """This module contains some utilities and functions."""
 
 import os
+from os.path import pathsep
 from locale import getdefaultlocale
-from subprocess import PIPE
-from subprocess import Popen
 
 
 def get_locale():
@@ -32,27 +31,13 @@ def get_locale():
     # return 'es_ES'
 
 
-def spawn_process(cmd):
-    """Return a Popen object."""
-    return Popen(cmd,
-                 stdin=PIPE,
-                 stdout=PIPE,
-                 stderr=PIPE,
-                 universal_newlines=True)
-
-
-def open_with_user_preferred_app(url):
-    """Open a file or url with user's preferred app."""
-    spawn_process([which('xdg-open'), url])
-
-
 def which(app):
     """Detect if an app is installed in your system."""
     if app == '':
         raise ValueError('Invalid app name')
 
     path = os.environ.get('PATH', os.defpath)
-    for directory in path.split(':'):
+    for directory in path.split(pathsep):
         app_path = os.path.join(directory, app)
         if os.path.exists(app_path) and os.access(app_path, os.X_OK):
             return app_path
@@ -73,8 +58,8 @@ def write_time(time_in_secs):
         string = str(string)
         if len(string) == 1:
             return '0' + string
-        else:
-            return string
+
+        return string
 
     hours = int(time / 3600)
     minutes = int(time / 60) - hours * 60
@@ -87,5 +72,6 @@ def write_time(time_in_secs):
     elif minutes:  # @return the time in 00m:00s format
         return ':'.join(['{0}m'.format(fix(minutes)),
                          '{0}s'.format(fix(secs))])
-    else:  # @return the time in 00s format
-        return '{0}s'.format(fix(str(secs)))
+
+    # @return the time in 00s format
+    return '{0}s'.format(fix(str(secs)))

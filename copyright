@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: videomorph
-Upstream-Contact: codeshard@openmailbox.org
-Source: https://github.com/codeshard/videomorph
+Upstream-Contact: lpozor78@gmail.com
+Source: https://github.com/videomorph-dev/videomorph
 
 Files: *
 Copyright: 2016-2017 VideoMorph Development Team

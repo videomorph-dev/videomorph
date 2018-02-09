@@ -2,7 +2,7 @@
 #
 # File name: about.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@
 """This module provides a dialog to show app information."""
 
 from os.path import isfile
+from os.path import join as join_path
 
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QPixmap
@@ -37,7 +38,7 @@ from PyQt5.QtWidgets import (QDialog,
 
 from videomorph.converter import APP_NAME
 from videomorph.converter import BASE_DIR
-from videomorph.converter import LINUX_PATHS
+from videomorph.converter import SYS_PATHS
 from videomorph.converter import VERSION
 
 
@@ -46,7 +47,7 @@ class AboutVMDialog(QDialog):
     def __init__(self, parent=None):
         """Class initializer."""
         super(AboutVMDialog, self).__init__(parent)
-        self.setWindowTitle(self.tr('About VideoMorph'))
+        self.setWindowTitle(self.tr('About'))
         self.resize(500, 404)
         self.horizontal_layout_3 = QHBoxLayout(self)
         self.vertical_layout_4 = QVBoxLayout()
@@ -115,7 +116,7 @@ class AboutVMDialog(QDialog):
             "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">Developers:</span></p>\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ozkar L. Garcell - Project leader & Publisher</p>\n"
-            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">&lt;codeshard@openmailbox.org&gt;</p>\n"
+            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">&lt;ozkar.garcell@gmail.com&gt;</p>\n"
             "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Leodanis Pozo Ramos - Main developer & ArtWork</p>\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">&lt;lpozor78@gmail.org&gt;</p>\n"
@@ -128,6 +129,7 @@ class AboutVMDialog(QDialog):
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Carlos Parra Zaldivar - Tester</p>\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Maikel Llamaret Heredia - Tester & ArtWork</p>\n"
             "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Leonel Salazar Videaux - Tester & Publisher</p>\n"
+            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Osmel Cruz - ArtWork</p>\n"
             "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt; font-weight:600;\"><br /></p></body></html>"
         ))
 
@@ -138,21 +140,24 @@ class AboutVMDialog(QDialog):
             "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
             "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">An easy to use and lightweight video converter</span></p>\n"
             "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;\"><br /></p>\n"
-            "<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">VideoMorph</span><span style=\" font-size:11pt;\"> is a small GUI front-end for </span><a href=\"http://ffmpeg.org/\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">ffmpeg</span></a><span style=\" font-size:11pt;\"> and avconv, based on code from </span><a href=\"https://github.com/senko/python-video-converter\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">python-video-converter</span></a><span style=\" font-size:11pt;\"> and presets idea from </span><a href=\"http://qwinff.github.io/\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">QWinFF</span></a><span style=\" font-size:11pt;\">.</span></p>\n"
+            "<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">VideoMorph</span><span style=\" font-size:11pt;\"> is a GUI front-end for </span><a href=\"http://ffmpeg.org/\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">ffmpeg</span></a><span style=\" font-size:11pt;\">, based on code from </span><a href=\"https://github.com/senko/python-video-converter\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">python-video-converter</span></a><span style=\" font-size:11pt;\"> and presets idea from </span><a href=\"http://qwinff.github.io/\"><span style=\" font-size:11pt; text-decoration: underline; color:#2980b9;\">QWinFF</span></a><span style=\" font-size:11pt;\">.</span></p>\n"
             "<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;\"><br /></p>\n"
-            "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://github.com/codeshard/videomorph\"><span style=\" text-decoration: underline; color:#2980b9;\">https://github.com/codeshard/videomorph</span></a></p></body></html>"
+            "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://github.com/videomorph-dev/videomorph\"><span style=\" text-decoration: underline; color:#2980b9;\">https://github.com/videomorph-dev/videomorph</span></a></p></body></html>"
         ))
 
         self.plain_text_edit.setPlainText(self.get_license_text())
 
     def get_license_text(self):
         """Get the license text from the license file."""
-        if isfile(LINUX_PATHS['doc'] + '/LICENSE'):
-            license_path = LINUX_PATHS['doc'] + '/LICENSE'
-        elif isfile(BASE_DIR + '/LICENSE'):
-            license_path = BASE_DIR + '/LICENSE'
-        elif isfile('/usr/share/common-licenses/Apache-2.0'):
-            license_path = '/usr/share/common-licenses/Apache-2.0'
+        doc_license = join_path(SYS_PATHS.doc, 'LICENSE')
+        basedir_license = join_path(BASE_DIR, 'LICENSE')
+        deb_license = '/usr/share/common-licenses/Apache-2.0'
+        if isfile(doc_license):
+            license_path = doc_license
+        elif isfile(basedir_license):
+            license_path = basedir_license
+        elif isfile(deb_license):
+            license_path = deb_license
         else:
             return (self.tr('See License at:') + '\n\n' +
                     'http://www.apache.org/licenses/LICENSE-2.0')

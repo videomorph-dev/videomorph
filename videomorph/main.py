@@ -2,7 +2,7 @@
 #
 # File name: main.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@
 import sys
 from os import sep
 from os.path import exists
+from os.path import join as join_path
 
 from PyQt5.QtCore import QLibraryInfo
 from PyQt5.QtCore import QTranslator
@@ -31,7 +32,7 @@ from PyQt5.QtWidgets import qApp
 
 from .converter import BASE_DIR
 from .converter import LOCALE
-from .converter import LINUX_PATHS
+from .converter import SYS_PATHS
 from .converter import VM_PATHS
 from .converter.console import run_on_console
 from .forms.videomorph import VideoMorphMW
@@ -45,12 +46,12 @@ def main():
     # Setup app translator
     app_translator = QTranslator()
 
-    if exists(BASE_DIR + '{0}{1}'.format(sep, VM_PATHS['i18n'])):
+    if exists(join_path(BASE_DIR, VM_PATHS.i18n)):
         app_translator.load(BASE_DIR + '{0}{1}{2}videomorph_{3}'.format(
-            sep, VM_PATHS['i18n'], sep, LOCALE))
+            sep, VM_PATHS.i18n, sep, LOCALE))
     else:
         app_translator.load(
-            LINUX_PATHS['i18n'] + '{0}videomorph_{1}'.format(sep, LOCALE))
+            SYS_PATHS.i18n + '{0}videomorph_{1}'.format(sep, LOCALE))
 
     app.installTranslator(app_translator)
     qt_translator = QTranslator()
@@ -67,7 +68,7 @@ def run_app(app):
     # Create the Main Window
     main_win = VideoMorphMW()
     # Check for conversion library and run
-    if main_win.conversion_lib.get_system_library_name() is not None:
+    if main_win.conversion_lib.library_path:
         if len(sys.argv) > 1:  # If it is running from console
             run_on_console(app, main_win)
         else:  # Or is running on GUI
@@ -77,8 +78,7 @@ def run_app(app):
         msg_box = QMessageBox(
             QMessageBox.Critical,
             main_win.tr('Error!'),
-            main_win.tr('Ffmpeg or Avconv Libraries '
-                        'not Found in your System'),
+            main_win.no_library_msg,
             QMessageBox.NoButton, main_win)
         msg_box.addButton("&Ok", QMessageBox.AcceptRole)
         if msg_box.exec_() == QMessageBox.AcceptRole:

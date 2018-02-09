@@ -2,7 +2,7 @@
 #
 # File name: profile.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,14 +24,14 @@ from collections import OrderedDict
 from distutils.errors import DistutilsFileError
 from distutils.dir_util import mkpath
 from distutils.file_util import copy_file
-from os import sep
 from os.path import exists, getsize
 from os.path import getmtime
+from os.path import join as join_path
 from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
 from . import BASE_DIR
-from . import LINUX_PATHS
+from . import SYS_PATHS
 from . import LOCALE
 from . import VM_PATHS
 from . import VALID_VIDEO_EXT
@@ -159,8 +159,7 @@ class _XMLProfile:
 
     def _user_xml_file_path(self, file_name):
         """Return the path to the profiles file."""
-        return (self._user_xml_files_directory() +
-                '{0}{1}'.format(sep, file_name))
+        return join_path(self._user_xml_files_directory(), file_name)
 
     def _insert_xml_elements(self, xml_profile, xml_preset, xml_root):
         """Insert an xml elemnte into an xml root."""
@@ -224,19 +223,18 @@ class _XMLProfile:
     @staticmethod
     def _user_xml_files_directory():
         """Return the user xml directory path."""
-        return LINUX_PATHS['config'] + '{0}{1}'.format(sep, 'profiles')
+        return join_path(SYS_PATHS.config, 'profiles')
 
     @staticmethod
     def _sys_xml_file_path(file_name):
         """Return the path to xml profiles file in the system."""
-        file_path = LINUX_PATHS['profiles'] + '{0}{1}'.format(sep, file_name)
+        file_path = join_path(SYS_PATHS.profiles, file_name)
         if exists(file_path):
             # if VideoMorph is installed
             return file_path
-        else:
-            # if not installed
-            return BASE_DIR + '{0}{1}{2}{3}'.format(
-                sep, VM_PATHS['profiles'], sep, file_name)
+
+        # if not installed
+        return join_path(BASE_DIR, VM_PATHS.profiles, file_name)
 
     @staticmethod
     def _create_xml_preset(preset, params, extension):
