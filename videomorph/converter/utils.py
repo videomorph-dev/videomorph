@@ -26,9 +26,9 @@ from locale import getdefaultlocale
 
 def get_locale():
     """Return the default locale string."""
-    # return ('es_ES' if getdefaultlocale()[0] == 'es_CU' else
-    #         getdefaultlocale()[0])
-    return 'es_ES'
+    return ('es_ES' if getdefaultlocale()[0] == 'es_CU' else
+            getdefaultlocale()[0])
+    # return 'es_ES'
 
 
 def which(app):
