@@ -818,7 +818,7 @@ class VideoMorphMW(QMainWindow):
                 item_text=str(write_time(
                     self.media_list.get_file_info(
                         position=row,
-                        info_param='format_duration'))),
+                        info_param='duration'))),
                 row=row, column=COLUMNS.DURATION)
 
             self._insert_table_item(
@@ -1321,8 +1321,7 @@ class VideoMorphMW(QMainWindow):
 
         self.timer.update_cum_times()
 
-        file_duration = float(self.media_list.running_file_info(
-            'format_duration'))
+        file_duration = float(self.media_list.running_file_info('duration'))
 
         operation_progress = self.timer.operation_progress(
             file_duration=file_duration)
@@ -1357,8 +1356,7 @@ class VideoMorphMW(QMainWindow):
 
     def _update_status_bar(self):
         """Update the status bar while converting."""
-        file_duration = float(self.media_list.running_file_info(
-            'format_duration'))
+        file_duration = float(self.media_list.running_file_info('duration'))
 
         self.statusBar().showMessage(
             self.tr('Converting: {m}\t\t\t '
