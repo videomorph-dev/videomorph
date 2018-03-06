@@ -25,6 +25,7 @@ from os.path import join as join_path
 from os.path import dirname
 from os.path import exists
 from os.path import isdir
+from os.path import isfile
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -57,10 +58,13 @@ from PyQt5.QtWidgets import (QMainWindow,
 
 
 from videomorph.converter import APP_NAME
-from videomorph.converter import VERSION
+from videomorph.converter import BASE_DIR
+from videomorph.converter import LOCALE
 from videomorph.converter import STATUS
-from videomorph.converter import VIDEO_FILTERS
 from videomorph.converter import SYS_PATHS
+from videomorph.converter import VERSION
+from videomorph.converter import VIDEO_FILTERS
+from videomorph.converter import VM_PATHS
 from videomorph.converter.console import search_directory_recursively
 from videomorph.converter.conversionlib import ConversionLib
 from videomorph.converter.media import MediaList
@@ -352,14 +356,14 @@ class VideoMorphMW(QMainWindow):
         """Create actions."""
         self.open_media_file_action = self._action_factory(
             icon=QIcon(':/icons/video-file.png'),
-            text=self.tr('&Open Files...'),
+            text=self.tr('&Add Files...'),
             shortcut="Ctrl+O",
             tip=self.tr('Add Video Files to the List of Conversion Tasks'),
             callback=self.open_media_files)
 
         self.open_media_dir_action = self._action_factory(
             icon=QIcon(':/icons/add-folder.png'),
-            text=self.tr('Open &Directory...'),
+            text=self.tr('Add &Directory...'),
             shortcut="Ctrl+D",
             tip=self.tr('Add all the Video Files in a Directory '
                         'to the List of Conversion Tasks'),
@@ -447,11 +451,16 @@ class VideoMorphMW(QMainWindow):
             callback=self.stop_all_files_encoding)
 
         self.about_action = self._action_factory(
-            icon=QIcon(':/icons/about.png'),
             text=self.tr('&About') + ' ' + APP_NAME,
-            shortcut="Ctrl+H",
             tip=self.tr('About') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.about)
+
+        self.help_content_action = self._action_factory(
+            icon=QIcon(':/icons/about.png'),
+            text=self.tr('&Contents'),
+            shortcut="Ctrl+H",
+            tip=self.tr('Help Contents'),
+            callback=self.help_content)
 
         self.changelog_action = self._action_factory(
             icon=QIcon(':/icons/changelog.png'),
@@ -513,10 +522,12 @@ class VideoMorphMW(QMainWindow):
         self.conversion_menu.addAction(self.stop_all_action)
         # Help menu
         self.help_menu = self.menuBar().addMenu(self.tr('&Help'))
-        self.help_menu.addAction(self.about_action)
+        self.help_menu.addAction(self.help_content_action)
         self.help_menu.addAction(self.changelog_action)
         self.help_menu.addSeparator()
         self.help_menu.addAction(self.ffmpeg_doc_action)
+        self.help_menu.addSeparator()
+        self.help_menu.addAction(self.about_action)
 
     def _create_toolbar(self):
         """Create a toolbar and add it to the interface."""
@@ -665,6 +676,23 @@ class VideoMorphMW(QMainWindow):
         launcher = launcher_factory()
         launcher.open_with_user_browser(
             url='https://ffmpeg.org/documentation.html')
+
+    @staticmethod
+    def help_content():
+        """Open ffmpeg documentation page."""
+        if LOCALE == 'es_ES':
+            file_name = 'manual_es.html'
+        else:
+            file_name = 'manual_en.html'
+
+        file_path = join_path(SYS_PATHS.help, file_name)
+        if isfile(file_path):
+            url = join_path('file:', file_path)
+        else:
+            url = join_path('file:', BASE_DIR, VM_PATHS.help, file_name)
+
+        launcher = launcher_factory()
+        launcher.open_with_user_browser(url=url)
 
     @staticmethod
     def shutdown_machine():
