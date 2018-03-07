@@ -83,6 +83,10 @@ LINUX_DATA_FILES = dict(
         (SYS_PATHS.doc,
          ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
           'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
+        # User's manual
+        (SYS_PATHS.help,
+         [VM_PATHS.help + '/manual_es.html',
+          VM_PATHS.help + '/manual_en.html']),
         # Man page
         (SYS_PATHS.man,
          [VM_PATHS.man + '/videomorph.1.gz'])])
@@ -104,7 +108,11 @@ WIN32_DATA_FILES = dict(
         # Documentation files
         (SYS_PATHS.doc,
          ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
-          'copyright', 'changelog.gz', 'TODO', 'screenshot.png'])])
+          'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
+        # User's manual
+        (SYS_PATHS.help,
+         [VM_PATHS.help + '/manual_es.html',
+          VM_PATHS.help + '/manual_en.html'])])
 
 
 SETUP_PARAMS = COMMONS
