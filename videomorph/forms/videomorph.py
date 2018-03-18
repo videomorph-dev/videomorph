@@ -586,6 +586,7 @@ class VideoMorphMW(QMainWindow):
             if int(self.tb_tasks.currentColumn()) == COLUMNS.NAME:
                 self.play_input_media_file()
 
+        row = self.tb_tasks.currentIndex().row()
         if self.conversion_lib.converter_is_running:
             self.update_interface(presets=False,
                                   profiles=False,
@@ -599,8 +600,12 @@ class VideoMorphMW(QMainWindow):
                                   tag_chb=False,
                                   play_input=False,
                                   play_output=False)
-        else:
+        elif self.media_list.get_file_status(row) == STATUS.todo:
             self.update_interface(stop=False, stop_all=False, remove=False,
+                                  play_input=False, play_output=False)
+        else:
+            self.update_interface(stop=False, stop_all=False,
+                                  remove=False, convert=False,
                                   play_input=False, play_output=False)
 
     @staticmethod
@@ -681,9 +686,9 @@ class VideoMorphMW(QMainWindow):
     def help_content():
         """Open ffmpeg documentation page."""
         if LOCALE == 'es_ES':
-            file_name = 'manual_es.html'
+            file_name = 'manual_es.pdf'
         else:
-            file_name = 'manual_en.html'
+            file_name = 'manual_en.pdf'
 
         file_path = join_path(SYS_PATHS.help, file_name)
         if isfile(file_path):
@@ -899,7 +904,27 @@ class VideoMorphMW(QMainWindow):
         """Play the input video using an available video player."""
         row = self.tb_tasks.currentIndex().row()
         self._play_media_file(file_path=self.media_list.get_file_path(row))
-        self.tb_tasks.setCurrentItem(None)
+
+        if self.conversion_lib.converter_is_running:
+            self.update_interface(presets=False,
+                                  profiles=False,
+                                  subtitles_chb=False,
+                                  add_costume_profile=False,
+                                  convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  output_dir=False,
+                                  delete_chb=False,
+                                  tag_chb=False,
+                                  play_input=False,
+                                  play_output=False)
+        elif self.media_list.get_file_status(row) == STATUS.todo:
+            self.update_interface(stop=False, stop_all=False, remove=False,
+                                  play_input=False, play_output=False)
+        else:
+            self.update_interface(stop=False, stop_all=False,
+                                  remove=False, convert=False,
+                                  play_input=False, play_output=False)
 
     def play_output_media_file(self, path):
         """Play the output video using an available video player."""
@@ -908,7 +933,27 @@ class VideoMorphMW(QMainWindow):
             output_dir=self.le_output.text(),
             tagged_output=self.chb_tag.checkState())
         self._play_media_file(file_path=path)
-        self.tb_tasks.setCurrentItem(None)
+
+        if self.conversion_lib.converter_is_running:
+            self.update_interface(presets=False,
+                                  profiles=False,
+                                  subtitles_chb=False,
+                                  add_costume_profile=False,
+                                  convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  output_dir=False,
+                                  delete_chb=False,
+                                  tag_chb=False,
+                                  play_input=False,
+                                  play_output=False)
+        elif self.media_list.get_file_status(row) == STATUS.todo:
+            self.update_interface(stop=False, stop_all=False, remove=False,
+                                  play_input=False, play_output=False)
+        else:
+            self.update_interface(stop=False, stop_all=False,
+                                  remove=False, convert=False,
+                                  play_input=False, play_output=False)
 
     def _play_media_file(self, file_path):
         """Play a video using an available video player."""
