@@ -12,6 +12,8 @@ added_files = [('../VERSION', ''),
                ('../screenshot.png', ''),
                ('../share/videomorph/profiles/customized.xml', 'share/videomorph/profiles'),
                ('../share/videomorph/profiles/default.xml', 'share/videomorph/profiles'),
+               ('../share/doc/videomorph/manual/manual_en.html', 'share/doc/videomorph/manual'),
+               ('../share/doc/videomorph/manual/manual_es.html', 'share/doc/videomorph/manual'),
                ('../share/videomorph/translations/videomorph_es.qm', 'share/videomorph/translations'),
                ('../share/icons/videomorph.ico', 'share/icons'),
                ('../ffmpeg-win32/', 'ffmpeg')]

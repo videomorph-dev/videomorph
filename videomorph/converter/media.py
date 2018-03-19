@@ -186,7 +186,7 @@ class MediaList(list):
     @property
     def duration(self):
         """Return the duration time of MediaList counting files todo only."""
-        return sum(float(media.get_info('format_duration')) for
+        return sum(float(media.get_info('duration')) for
                    media in self if media.status == STATUS.todo)
 
     @property
@@ -199,7 +199,7 @@ class MediaList(list):
         # Invalid metadata
         try:
             # Duration is not a valid float() argument
-            duration = float(media_file.get_info('format_duration'))
+            duration = float(media_file.get_info('duration'))
         except (TypeError, ValueError):
             raise InvalidMetadataError('Invalid file duration')
 
@@ -376,6 +376,6 @@ class _MediaFile:
             for format_line in probe_file:
                 format_line = format_line.strip()
                 if format_line.startswith('duration'):
-                    info['format_duration'] = __get_value(format_line)
+                    info['duration'] = __get_value(format_line)
                     break
         return info
