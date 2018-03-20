@@ -85,8 +85,8 @@ LINUX_DATA_FILES = dict(
           'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
         # User's manual
         (SYS_PATHS.help,
-         [VM_PATHS.help + '/manual_es.html',
-          VM_PATHS.help + '/manual_en.html']),
+         [VM_PATHS.help + '/manual_es.pdf',
+          VM_PATHS.help + '/manual_en.pdf']),
         # Man page
         (SYS_PATHS.man,
          [VM_PATHS.man + '/videomorph.1.gz'])])
@@ -111,8 +111,8 @@ WIN32_DATA_FILES = dict(
           'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
         # User's manual
         (SYS_PATHS.help,
-         [VM_PATHS.help + '/manual_es.html',
-          VM_PATHS.help + '/manual_en.html'])])
+         [VM_PATHS.help + '/manual_es.pdf',
+          VM_PATHS.help + '/manual_en.pdf'])])
 
 
 SETUP_PARAMS = COMMONS
