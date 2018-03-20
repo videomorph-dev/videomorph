@@ -2,7 +2,7 @@ Package: videomorph
 Version: 1.3
 Architecture: all
 Maintainer: VideoMorph Development Team <lpozor78@gmail.com>
-Installed-Size: 3313.69
+Installed-Size: 4020.24
 Section: video
 Priority: optional
 Depends: ffmpeg, python3-pyqt5, python3 (>=3.4)
