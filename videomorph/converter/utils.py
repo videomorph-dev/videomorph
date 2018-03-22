@@ -54,7 +54,7 @@ def write_time(time_in_secs):
         raise ValueError('Time must be positive.')
 
     def fix(string):
-        """Fix a number so it always contain two characters."""
+        """Fix a number so it always contains two characters."""
         string = str(string)
         if len(string) == 1:
             return '0' + string
