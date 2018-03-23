@@ -475,6 +475,13 @@ class VideoMorphMW(QMainWindow):
             tip=self.tr('Open Ffmpeg On-Line Documentation'),
             callback=self.ffmpeg_doc)
 
+        self.videomorph_web_action = self._action_factory(
+            icon=QIcon(':/logo/videomorph.png'),
+            text=APP_NAME + ' ' + self.tr('&Web Page'),
+            shortcut="Ctrl+V",
+            tip=self.tr('Open') + ' ' + APP_NAME + ' ' + self.tr('Web Page'),
+            callback=self.videomorph_web)
+
         self.exit_action = self._action_factory(
             icon=QIcon(':/icons/exit.png'),
             text=self.tr('E&xit'),
@@ -524,6 +531,7 @@ class VideoMorphMW(QMainWindow):
         self.help_menu = self.menuBar().addMenu(self.tr('&Help'))
         self.help_menu.addAction(self.help_content_action)
         self.help_menu.addAction(self.changelog_action)
+        self.help_menu.addAction(self.videomorph_web_action)
         self.help_menu.addSeparator()
         self.help_menu.addAction(self.ffmpeg_doc_action)
         self.help_menu.addSeparator()
@@ -675,12 +683,19 @@ class VideoMorphMW(QMainWindow):
         changelog_dlg = ChangelogDialog(parent=self)
         changelog_dlg.exec_()
 
-    @staticmethod
-    def ffmpeg_doc():
+    def ffmpeg_doc(self):
         """Open ffmpeg documentation page."""
+        self._open_url(url='https://ffmpeg.org/documentation.html')
+
+    def videomorph_web(self):
+        """Open VideoMorph Web page."""
+        self._open_url(url='http://videomorph.webmisolutions.com')
+
+    @staticmethod
+    def _open_url(url):
+        """Open URL."""
         launcher = launcher_factory()
-        launcher.open_with_user_browser(
-            url='https://ffmpeg.org/documentation.html')
+        launcher.open_with_user_browser(url=url)
 
     @staticmethod
     def help_content():
