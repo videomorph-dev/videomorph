@@ -66,6 +66,14 @@
             <preset_name_es>FLV Pantalla Panorámica (16:9)</preset_name_es>
         </FLVWidescreen>
     </FLV>
+    <MOV>
+        <MOVGeneric>
+            <preset_name>MOV Generic</preset_name>
+            <preset_params>-acodec aac -vcodec libx264 -f mov</preset_params>
+            <file_extension>.mov</file_extension>
+            <preset_name_es>MOV Genérico</preset_name_es>
+        </MOVGeneric>
+    </MOV>
     <MP4>
         <MP4HighQuality>
             <preset_name>MP4 High Quality</preset_name>
