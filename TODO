@@ -11,7 +11,6 @@ Next version (2.0):
 
 BugFix:
     - App freezes with certain movies when reading ffprobe output on Windows platform
-    - Drag and Drop doesn't work on Windows Platform
 
 Someday:
     - Pack in .rpm format
