@@ -3,6 +3,7 @@ TODO List:
 
 Next version (2.0):
     - Implement a Dialog to generate the conversion commands using the ffmpeg options
+    - Add access to VideoMorph Blog on Internet
     - Update and improve tests and coverage
     - Define a README.rst file to be included in source package
     - Improve the icons visualization
