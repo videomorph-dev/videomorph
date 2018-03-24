@@ -162,7 +162,7 @@ class _XMLProfile:
         return join_path(self._user_xml_files_directory(), file_name)
 
     def _insert_xml_elements(self, xml_profile, xml_preset, xml_root):
-        """Insert an xml elemnte into an xml root."""
+        """Insert an xml element into an xml root."""
         for i, elem in enumerate(xml_root[:]):
             if elem.tag == xml_profile.tag:
                 xml_root[i].insert(0, xml_preset)
