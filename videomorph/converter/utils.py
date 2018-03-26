@@ -20,7 +20,9 @@
 """This module contains some utilities and functions."""
 
 import os
+from os.path import exists
 from os.path import pathsep
+from os.path import join as join_path
 from locale import getdefaultlocale
 
 
@@ -36,10 +38,10 @@ def which(app):
     if app == '':
         raise ValueError('Invalid app name')
 
-    path = os.environ.get('PATH', os.defpath)
-    for directory in path.split(pathsep):
-        app_path = os.path.join(directory, app)
-        if os.path.exists(app_path) and os.access(app_path, os.X_OK):
+    sys_path_var = os.environ.get('PATH', os.defpath)
+    for path in sys_path_var.split(pathsep):
+        app_path = join_path(path, app)
+        if exists(app_path) and os.access(app_path, os.X_OK):
             return app_path
 
 
