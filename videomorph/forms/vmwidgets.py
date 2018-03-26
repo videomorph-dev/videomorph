@@ -20,6 +20,7 @@
 """This module provides customized widgets for VideoMorph."""
 
 from functools import partial
+from urllib.request import url2pathname
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTableWidget
@@ -62,15 +63,15 @@ class TasksListTable(QTableWidget):
 
     def dragEnterEvent(self, event):
         """Drag Enter Event."""
-        if event.mimeData().hasFormat('text/plain'):
+        if event.mimeData().hasUrls():
             event.accept()
         else:
             event.ignore()
 
     def dragMoveEvent(self, event):
         """Drag Move Event."""
-        if event.mimeData().hasFormat('text/plain'):
-            event.setDropAction(Qt.MoveAction)
+        if event.mimeData().hasUrls():
+            event.setDropAction(Qt.CopyAction)
             event.accept()
         else:
             event.ignore()
@@ -82,7 +83,8 @@ class TasksListTable(QTableWidget):
         for url in event.mimeData().urls():
             extension = '.{0}'.format(url.path().split('.')[-1])
             if extension in VALID_VIDEO_EXT:
-                files.append(url.path())
+                file_path = url2pathname(url.path())
+                files.append(file_path)
 
         if files:
             self._window.add_media_files(*files)
