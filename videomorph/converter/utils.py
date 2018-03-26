@@ -48,32 +48,24 @@ def which(app):
 def write_time(time_in_secs):
     """Return time in 00h:00m:00s format."""
     try:
-        time = int(round(float(time_in_secs)))
+        time = round(float(time_in_secs))
     except (TypeError, ValueError):
         raise ValueError('Invalid time measure.')
 
     if time < 0:
         raise ValueError('Time must be positive.')
 
-    def fix(string):
-        """Fix a number so it always contains two characters."""
-        string = str(string)
-        if len(string) == 1:
-            return '0' + string
-
-        return string
-
-    hours = int(time / 3600)
-    minutes = int(time / 60) - hours * 60
+    hours = time // 3600
+    minutes = time // 60 - hours * 60
     secs = time - minutes * 60 - hours * 3600
 
-    if hours:  # @return the time in 00h:00m:00s format
-        return ':'.join(['{0}h'.format(fix(hours)),
-                         '{0}m'.format(fix(minutes)),
-                         '{0}s'.format(fix(secs))])
-    elif minutes:  # @return the time in 00m:00s format
-        return ':'.join(['{0}m'.format(fix(minutes)),
-                         '{0}s'.format(fix(secs))])
+    if hours:  # return the time in 00h:00m:00s format
+        return '{hours:02d}h:{minutes:02d}m:{secs:02d}s'.format(
+            hours=hours, minutes=minutes, secs=secs)
 
-    # @return the time in 00s format
-    return '{0}s'.format(fix(str(secs)))
+    if minutes:  # return the time in 00m:00s format
+        return '{minutes:02d}m:{secs:02d}s'.format(minutes=minutes,
+                                                   secs=secs)
+
+    # return the time in 00s format
+    return '{secs:02d}s'.format(secs=secs)
