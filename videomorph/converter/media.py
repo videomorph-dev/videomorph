@@ -65,7 +65,7 @@ class MediaList(list):
             files_paths (iterable): list of files paths
         Yield:
             Element 1: Total number of video files to process
-            Element 2,...: file path for the video file processed
+            Element 2,...: file path for the processed video file
         """
         files_paths_to_add = self._filter_by_path(files_paths)
 
