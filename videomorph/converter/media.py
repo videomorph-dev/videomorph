@@ -227,7 +227,7 @@ class MediaList(list):
         return files_paths
 
     def _file_not_added(self, file_path):
-        """Determine if a video file is in the list already."""
+        """Determine if a video file is already in the list."""
         for file in self:
             if file.input_path == file_path:
                 return False
