@@ -102,11 +102,11 @@ class MediaList(list):
         return self[position].input_path
 
     def get_file_status(self, position):
-        """Return the video file status."""
+        """Return the video file conversion status."""
         return self[position].status
 
     def set_file_status(self, position, status):
-        """Set the video file status."""
+        """Set the video file conversion status."""
         self[position].status = status
 
     def get_file_info(self, position, info_param):
@@ -191,7 +191,7 @@ class MediaList(list):
 
     @property
     def _running_file(self):
-        """Return the file that is currently running."""
+        """Return the file currently running."""
         return self[self.position]
 
     def _add_file(self, media_file):
@@ -221,10 +221,10 @@ class MediaList(list):
                               self._file_not_added(file_path)]
             if not filtered_paths:
                 return None
-        else:
-            filtered_paths = files_paths
 
-        return filtered_paths
+            return filtered_paths
+
+        return files_paths
 
     def _file_not_added(self, file_path):
         """Determine if a video file is in the list already."""
