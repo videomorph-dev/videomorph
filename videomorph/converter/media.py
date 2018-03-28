@@ -24,9 +24,9 @@ from collections import deque
 from os import W_OK
 from os import access
 from os import remove
-from os import sep
 from os.path import basename
 from os.path import exists
+from os.path import join as join_path
 
 from . import CPU_CORES
 from . import STATUS
@@ -316,20 +316,15 @@ class _MediaFile:
 
     def get_output_file_name(self, output_dir, tagged_output):
         """Return the name of the output video file."""
-        file_name = basename(self.get_output_path(output_dir, tagged_output))
-
-        return file_name
+        return basename(self.get_output_path(output_dir, tagged_output))
 
     def get_output_path(self, output_dir, tagged_output):
         """Return the the output file input_path."""
         tag = self._profile.quality_tag if tagged_output else ''
 
-        output_file_path = (output_dir +
-                            sep +  # multi-platform input_path separator
-                            tag +
-                            self.get_name() +
-                            self._profile.extension)
-        return output_file_path
+        output_file_name = tag + self.get_name() + self._profile.extension
+
+        return join_path(output_dir, output_file_name)
 
     @property
     def _subtitle_path(self):
