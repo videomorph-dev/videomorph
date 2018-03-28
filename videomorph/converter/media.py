@@ -181,7 +181,7 @@ class MediaList(list):
     @property
     def length(self):
         """Return the number of elements in the list."""
-        return len(self)
+        return self.__len__()
 
     @property
     def duration(self):
