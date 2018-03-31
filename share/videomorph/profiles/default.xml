@@ -1,69 +1,75 @@
 <?xml version="1.0"?>
 <video_profiles>
     <AVI>
-        <AVIMSCompatible>
-            <preset_name>MS Compatible</preset_name>
+        <AVIMSCompatible640x480>
+            <preset_name>MS Compatible 640x480</preset_name>
             <preset_params>-acodec libmp3lame -vcodec msmpeg4 -b:a 192k -b:v 1000k -s 640x480 -ar 44100</preset_params>
             <file_extension>.avi</file_extension>
-            <preset_name_es>Compatible MS</preset_name_es>
-        </AVIMSCompatible>
+            <preset_name_es>Compatible MS 640x480</preset_name_es>
+        </AVIMSCompatible640x480>
+        <AVIMSCompatible720x480>
+            <preset_name>MS Compatible 720x480</preset_name>
+            <preset_params>-acodec libmp3lame -vcodec msmpeg4 -b:a 192k -b:v 1000k -s 720x480 -ar 44100</preset_params>
+            <file_extension>.avi</file_extension>
+            <preset_name_es>Compatible MS 720x480</preset_name_es>
+        </AVIMSCompatible720x480>
         <AVIXVIDFullscreen>
-            <preset_name>XVID Fullscreen (4:3)</preset_name>
+            <preset_name>XVID Fullscreen 640x480 (4:3)</preset_name>
             <preset_params>-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 640x480 -aspect 4:3 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2</preset_params>
             <file_extension>.avi</file_extension>
-            <preset_name_es>XVID Pantalla Completa (4:3)</preset_name_es>
+            <preset_name_es>XVID Pantalla Completa 640x480 (4:3)</preset_name_es>
         </AVIXVIDFullscreen>
         <AVIXVIDWidescreen>
-            <preset_name>XVID Widescreen (16:9)</preset_name>
+            <preset_name>XVID Widescreen 704x384 (16:9)</preset_name>
             <preset_params>-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 704x384 -aspect 16:9 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2</preset_params>
             <file_extension>.avi</file_extension>
-            <preset_name_es>XVID Pantalla Panorámica (16:9)</preset_name_es>
+            <preset_name_es>XVID Pantalla Panorámica 704x384 (16:9)</preset_name_es>
         </AVIXVIDWidescreen>
     </AVI>
     <DVD>
         <DVDFullscreen>
-            <preset_name>DVD Fullscreen (4:3)</preset_name>
+            <preset_name>DVD Fullscreen 352x480 (4:3)</preset_name>
             <preset_params>-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 4:3 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2</preset_params>
             <file_extension>.mpg</file_extension>
-            <preset_name_es>DVD Pantalla Completa (4:3)</preset_name_es>
+            <preset_name_es>DVD Pantalla Completa 352x480 (4:3)</preset_name_es>
         </DVDFullscreen>
         <DVDWidescreen>
-            <preset_name>DVD Widescreen (16:9)</preset_name>
+            <preset_name>DVD Widescreen 352x480 (16:9)</preset_name>
             <preset_params>-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 16:9 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2</preset_params>
             <file_extension>.mpg</file_extension>
-            <preset_name_es>DVD Pantalla Panorámica (16:9)</preset_name_es>
+            <preset_name_es>DVD Pantalla Panorámica 352x480 (16:9)</preset_name_es>
         </DVDWidescreen>
         <DVDFullscreenHighQuality>
-            <preset_name>DVD Fullscreen (4:3) High Quality</preset_name>
+            <preset_name>DVD Fullscreen 720x480 (4:3) High Quality</preset_name>
             <preset_params>-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 4:3 -b:v 8000k -mbd rd -cmp 0 -subcmp 2</preset_params>
             <file_extension>.mpg</file_extension>
-            <preset_name_es>DVD Pantalla Completa (4:3) Alta Calidad</preset_name_es>
+            <preset_name_es>DVD Pantalla Completa 720x480 (4:3) Alta Calidad</preset_name_es>
         </DVDFullscreenHighQuality>
         <DVDWidescreenHighQuality>
-            <preset_name>DVD Widescreen (16:9) High Quality</preset_name>
+            <preset_name>DVD Widescreen 720x480 (16:9) High Quality</preset_name>
             <preset_params>-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 16:9 -b:v 8000k -g 12 -mbd rd -cmp 0 -subcmp 2</preset_params>
             <file_extension>.mpg</file_extension>
-            <preset_name_es>DVD Pantalla Panorámica (16:9) Alta Calidad</preset_name_es>
+            <preset_name_es>DVD Pantalla Panorámica 720x480 (16:9) Alta Calidad</preset_name_es>
         </DVDWidescreenHighQuality>
         <DVDLowQuality>
-            <preset_name>DVD Low Quality</preset_name>
+            <preset_name>DVD Low Quality 720x480</preset_name>
             <preset_params>-f dvd -target ntsc-dvd -b:v 5000k -r 29.97 -s 720x480 -ar 48000 -b:a 384k</preset_params>
             <file_extension>.mpg</file_extension>
-            <preset_name_es>DVD Baja Calidad</preset_name_es>
+            <preset_name_es>DVD Baja Calidad 720x480</preset_name_es>
         </DVDLowQuality>
     </DVD>
     <FLV>
         <FLVFullscreen>
-            <preset_name>FLV Fullscreen (4:3)</preset_name>
+            <preset_name>FLV Fullscreen 320x240 (4:3)</preset_name>
             <preset_params>-vcodec flv -f flv -r 29.97 -s 320x240 -aspect 4:3 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k</preset_params>
             <file_extension>.flv</file_extension>
-            <preset_name_es>FLV Pantalla Completa (4:3)</preset_name_es>
+            <preset_name_es>FLV Pantalla Completa 320x240 (4:3)</preset_name_es>
         </FLVFullscreen>
         <FLVWidescreen>
-            <preset_name>FLV Widescreen (16:9)</preset_name>
+            <preset_name>FLV Widescreen 320x180 (16:9)</preset_name>
             <preset_params>-vcodec flv -f flv -r 29.97 -s 320x180 -aspect 16:9 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k</preset_params>
             <file_extension>.flv</file_extension>
-            <preset_name_es>FLV Pantalla Panorámica (16:9)</preset_name_es>
+            <preset_name_es>FLV Pantalla Panorámica 320x180 (16:9)</preset_name_es>
         </FLVWidescreen>
     </FLV>
     <MOV>
