@@ -240,14 +240,20 @@ class _MediaFile:
     __slots__ = ('input_path',
                  '_profile',
                  'status',
-                 'info')
+                 'format_info',
+                 'video_stream_info',
+                 'audio_stream_info',
+                 'sub_stream_info')
 
     def __init__(self, file_path, profile):
         """Class initializer."""
         self._profile = profile
         self.input_path = file_path
         self.status = STATUS.todo
-        self.info = self._parse_probe()
+        self.format_info = self._parse_probe_format()
+        self.video_stream_info = self._parse_probe_video_stream()
+        self.audio_stream_info = self._parse_probe_audio_stream()
+        self.sub_stream_info = self._parse_probe_sub_stream()
 
     def get_name(self, with_extension=False):
         """Return the file name."""
@@ -260,7 +266,7 @@ class _MediaFile:
 
     def get_info(self, info_param):
         """Return an info attribute from a given video file."""
-        return self.info.get(info_param)
+        return self.format_info.get(info_param)
 
     def build_conversion_cmd(self, output_dir, target_quality,
                              tagged_output, subtitle):
@@ -351,26 +357,72 @@ class _MediaFile:
 
         return []
 
-    def _probe(self):
+    def _probe(self, args):
         """Return the prober output as a file like object."""
         prober_run = spawn_process([self._profile.prober,
-                                    '-show_format',
+                                    *args,
                                     self.input_path])
 
         return prober_run.stdout
 
-    def _parse_probe(self):
+    def _parse_probe(self, selected_params, cmd):
         """Parse the prober output."""
         info = {}
 
-        def __get_value(line_):
-            """Prepare the data for parsing."""
-            return line_.split('=')[-1].strip()
+        with self._probe(cmd) as probe_file:
+            stream_count = -1
 
-        with self._probe() as probe_file:
             for format_line in probe_file:
                 format_line = format_line.strip()
-                if format_line.startswith('duration'):
-                    info['duration'] = __get_value(format_line)
-                    break
+                kv = format_line.split('=')
+
+                if '[STREAM]' in format_line:
+                    stream_count += 1
+
+                if '=' in format_line and kv[0] in selected_params:
+                    if not kv[0] in info:
+                        info[kv[0]] = kv[1]
+                    else:
+                        info[kv[0] + '_{0}'.format(stream_count)] = kv[1]
+
         return info
+
+    def _parse_probe_format(self):
+        """Parse the prober output."""
+        selected_params = {'filename',
+                           'nb_streams',
+                           'format_name',
+                           'format_long_name',
+                           'duration',
+                           'size',
+                           'bit_rate'}
+
+        return self._parse_probe(selected_params=selected_params,
+                                 cmd=['-show_format'])
+
+    def _parse_probe_video_stream(self):
+        """Parse the prober output."""
+        selected_params = {'codec_name',
+                           'codec_long_name',
+                           'width',
+                           'height'}
+
+        return self._parse_probe(selected_params=selected_params,
+                                 cmd=['-show_streams', '-select_streams', 'v'])
+
+    def _parse_probe_audio_stream(self):
+        """Parse the prober output."""
+        selected_params = {'codec_name',
+                           'codec_long_name'}
+
+        return self._parse_probe(selected_params=selected_params,
+                                 cmd=['-show_streams', '-select_streams', 'a'])
+
+    def _parse_probe_sub_stream(self):
+        """Parse the prober output."""
+        selected_params = {'codec_name',
+                           'codec_long_name',
+                           'TAG:language'}
+
+        return self._parse_probe(selected_params=selected_params,
+                                 cmd=['-show_streams', '-select_streams', 's'])
