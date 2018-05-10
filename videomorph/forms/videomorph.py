@@ -38,6 +38,7 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QWidget,
                              QVBoxLayout,
                              QHBoxLayout,
+                             QGridLayout,
                              QSizePolicy,
                              QGroupBox,
                              QLabel,
@@ -322,6 +323,112 @@ class VideoMorphMW(QMainWindow):
         self.pb_total_progress.setProperty('value', 0)
         vertical_layout.addWidget(self.pb_total_progress)
         self.vertical_layout_2.addWidget(gb_progress)
+
+    def _group_info(self):
+        """Define the Info group."""
+        self.verticalLayout = QVBoxLayout(self.central_widget)
+        self.gb_general = QGroupBox(self.central_widget)
+        self.gb_general.setTitle(self.tr('General'))
+        self.verticalLayout_2 = QVBoxLayout(self.gb_general)
+        self.gridLayout = QGridLayout()
+
+        self.label_file_name = QLabel(self.gb_general)
+        self.gridLayout.addWidget(self.label_file_name, 0, 0, 1, 1)
+        self.label_file_name.setText(self.tr('File Name:'))
+        self.label_file_name_value = QLabel(self.gb_general)
+        self.label_file_name_value.setText("")
+        self.gridLayout.addWidget(self.label_file_name_value, 0, 1, 1, 1)
+
+        self.label_size = QLabel(self.gb_general)
+        self.gridLayout.addWidget(self.label_size, 1, 0, 1, 1)
+        self.label_size.setText(self.tr('Size:'))
+        self.label_size_value = QLabel(self.gb_general)
+        self.label_size_value.setText("")
+        self.gridLayout.addWidget(self.label_size_value, 1, 1, 1, 1)
+
+        self.label_duration = QLabel(self.gb_general)
+        self.gridLayout.addWidget(self.label_duration, 2, 0, 1, 1)
+        self.label_duration.setText(self.tr('Duration:'))
+        self.label_duration_value = QLabel(self.gb_general)
+        self.label_duration_value.setText("")
+        self.gridLayout.addWidget(self.label_duration_value, 2, 1, 1, 1)
+
+        self.label_format_name = QLabel(self.gb_general)
+        self.gridLayout.addWidget(self.label_format_name, 3, 0, 1, 1)
+        self.label_format_name.setText(self.tr('Format Name:'))
+        self.label_format_name_value = QLabel(self.gb_general)
+        self.label_format_name_value.setText("")
+        self.gridLayout.addWidget(self.label_format_name_value, 3, 1, 1, 1)
+
+        self.label_format_long_name = QLabel(self.gb_general)
+        self.gridLayout.addWidget(self.label_format_long_name, 4, 0, 1, 1)
+        self.label_format_long_name.setText(self.tr('Format Long Name:'))
+        self.label_format_long_name_value = QLabel(self.gb_general)
+        self.label_format_long_name_value.setText("")
+        self.gridLayout.addWidget(self.label_format_long_name_value, 4, 1, 1, 1)
+
+        self.verticalLayout_2.addLayout(self.gridLayout)
+        self.verticalLayout.addWidget(self.gb_general)
+        self.gb_video = QGroupBox(self.central_widget)
+        self.gb_video.setTitle(self.tr('Video'))
+        self.verticalLayout_3 = QVBoxLayout(self.gb_video)
+        self.gridLayout_2 = QGridLayout()
+
+        self.label_bit_rate = QLabel(self.gb_video)
+        self.gridLayout_2.addWidget(self.label_bit_rate, 2, 0, 1, 1)
+        self.label_bit_rate.setText(self.tr('Bit Rate:'))
+        self.label_bit_rate_value = QLabel(self.gb_video)
+        self.label_bit_rate_value.setText("")
+
+        self.label_width = QLabel(self.gb_video)
+        self.gridLayout_2.addWidget(self.label_width, 3, 0, 1, 1)
+        self.label_width.setText(self.tr('Width:'))
+        self.label_width_value = QLabel(self.gb_video)
+        self.label_width_value.setText("")
+        self.gridLayout_2.addWidget(self.label_width_value, 3, 1, 1, 1)
+
+        self.label_height = QLabel(self.gb_video)
+        self.gridLayout_2.addWidget(self.label_height, 4, 0, 1, 1)
+        self.label_height.setText(self.tr('Height:'))
+        self.label_height_value = QLabel(self.gb_video)
+        self.label_height_value.setText("")
+        self.gridLayout_2.addWidget(self.label_height_value, 4, 1, 1, 1)
+
+        self.label_15 = QLabel(self.gb_video)
+        self.label_15.setText("")
+        self.gridLayout_2.addWidget(self.label_15, 1, 1, 1, 1)
+
+        self.label_11 = QLabel(self.gb_video)
+        self.gridLayout_2.addWidget(self.label_11, 0, 0, 1, 1)
+        self.label_17 = QLabel(self.gb_video)
+        self.label_17.setText("")
+        self.gridLayout_2.addWidget(self.label_17, 0, 1, 1, 1)
+        self.label_12 = QLabel(self.gb_video)
+        self.gridLayout_2.addWidget(self.label_12, 1, 0, 1, 1)
+
+        self.gridLayout_2.addWidget(self.label_bit_rate_value, 2, 1, 1, 1)
+        self.verticalLayout_3.addLayout(self.gridLayout_2)
+        self.verticalLayout.addWidget(self.gb_video)
+        self.groupBox1_3 = QGroupBox(self.widget)
+        self.verticalLayout_4 = QVBoxLayout(self.groupBox1_3)
+        self.gridLayout_3 = QGridLayout()
+        self.label_21 = QLabel(self.groupBox1_3)
+        self.gridLayout_3.addWidget(self.label_21, 1, 0, 1, 1)
+        self.label_20 = QLabel(self.groupBox1_3)
+        self.label_20.setText("")
+        self.gridLayout_3.addWidget(self.label_20, 1, 1, 1, 1)
+        self.label_19 = QLabel(self.groupBox1_3)
+        self.gridLayout_3.addWidget(self.label_19, 0, 0, 1, 1)
+        self.label_22 = QLabel(self.groupBox1_3)
+        self.label_22.setText("")
+        self.gridLayout_3.addWidget(self.label_22, 0, 1, 1, 1)
+        self.verticalLayout_4.addLayout(self.gridLayout_3)
+        self.verticalLayout.addWidget(self.groupBox1_3)
+        self.label_11.setText(_translate("Dialog", "Codec Name:"))
+        self.label_12.setText(_translate("Dialog", "Codec Long Name:"))
+        self.groupBox1_3.setTitle(_translate("Dialog", "Audio"))
+        self.label_21.setText(_translate("Dialog", "Codec Long Name:"))
+        self.label_19.setText(_translate("Dialog", "Codec Name:"))
 
     def _action_factory(self, text, callback, enabled=True, **kwargs):
         """Helper method used for creating actions.
