@@ -2,7 +2,7 @@
 #
 # File name: videomorph.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,10 +21,11 @@
 
 from collections import OrderedDict
 from functools import partial
-from os import sep
+from os.path import join as join_path
 from os.path import dirname
 from os.path import exists
 from os.path import isdir
+from os.path import isfile
 
 from PyQt5.QtCore import (QSize,
                           Qt,
@@ -52,28 +53,31 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QFileDialog,
                              QMessageBox,
                              QProgressDialog,
-                             QToolButton)
+                             QToolButton,
+                             qApp)
 
-from . import videomorph_qrc
-from . import COLUMNS
-from .vmwidgets import TasksListTable
+
 from videomorph.converter import APP_NAME
-from videomorph.converter import VERSION
-from videomorph.converter import CONV_LIB
+from videomorph.converter import BASE_DIR
+from videomorph.converter import LOCALE
 from videomorph.converter import STATUS
+from videomorph.converter import SYS_PATHS
+from videomorph.converter import VERSION
 from videomorph.converter import VIDEO_FILTERS
+from videomorph.converter import VM_PATHS
 from videomorph.converter.console import search_directory_recursively
 from videomorph.converter.conversionlib import ConversionLib
-from videomorph.converter.conversionlib import PlayerNotFoundError
 from videomorph.converter.media import MediaList
+from videomorph.converter.platformdeps import PlayerNotFoundError
+from videomorph.converter.platformdeps import launcher_factory
 from videomorph.converter.profile import ConversionProfile
-from videomorph.converter.utils import open_with_user_preferred_app
-from videomorph.converter.utils import which
 from videomorph.converter.utils import write_time
+from . import COLUMNS
+from . import videomorph_qrc
+from .vmwidgets import TasksListTable
 from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
 from .changelog import ChangelogDialog
-from .settings import SettingsDialog
 
 
 class VideoMorphMW(QMainWindow):
@@ -92,7 +96,7 @@ class VideoMorphMW(QMainWindow):
         self._set_window_title()
         # Define and set app icon
         icon = QIcon()
-        icon.addPixmap(QPixmap(':/logo/videomorph.png'))
+        icon.addPixmap(QPixmap(':/icons/videomorph.ico'))
         self.setWindowIcon(icon)
         # Define app central widget
         self.central_widget = QWidget(self)
@@ -119,7 +123,9 @@ class VideoMorphMW(QMainWindow):
         # Create actions
         self._create_actions()
 
-        # Create conversion library
+        # Conversion library
+        self.no_library_msg = self.tr('Ffmpeg Library not Found'
+                                      ' in your System')
         self.conversion_lib = ConversionLib()
         self.conversion_lib.setup_converter(
             reader=self._ready_read,
@@ -134,7 +140,7 @@ class VideoMorphMW(QMainWindow):
 
         # Create the conversion profile object only once
         self.profile = ConversionProfile(
-            prober=self.conversion_lib.prober)
+            prober=self.conversion_lib.prober_path)
 
         # Create the Media list object
         self.media_list = MediaList(profile=self.profile)
@@ -186,7 +192,8 @@ class VideoMorphMW(QMainWindow):
         horizontal_layout_1.addItem(spacer_item)
         vertical_layout.addLayout(horizontal_layout_1)
         profile_tip = self.tr('Select a Video Format')
-        self.cb_profiles = QComboBox(gb_settings, statusTip=profile_tip,
+        self.cb_profiles = QComboBox(gb_settings,
+                                     statusTip=profile_tip,
                                      toolTip=profile_tip)
         self.cb_profiles.setMinimumSize(QSize(200, 0))
         self.cb_profiles.setIconSize(QSize(22, 22))
@@ -200,7 +207,8 @@ class VideoMorphMW(QMainWindow):
         horizontal_layout_2.addItem(spacer_item_1)
         vertical_layout.addLayout(horizontal_layout_2)
         preset_tip = self.tr('Select a Video Target Quality')
-        self.cb_quality = QComboBox(gb_settings, statusTip=preset_tip,
+        self.cb_quality = QComboBox(gb_settings,
+                                    statusTip=preset_tip,
                                     toolTip=preset_tip)
         self.cb_quality.setMinimumSize(QSize(200, 0))
 
@@ -216,6 +224,7 @@ class VideoMorphMW(QMainWindow):
                                       statusTip=sub_tip,
                                       toolTip=sub_tip)
         self.chb_subtitle.setEnabled(False)
+        self.chb_subtitle.clicked.connect(self._option_check_boxes_clicked)
         vertical_layout.addWidget(self.label_other_options)
         vertical_layout.addWidget(self.chb_subtitle)
 
@@ -224,6 +233,7 @@ class VideoMorphMW(QMainWindow):
                                     statusTip=del_text,
                                     toolTip=del_text)
         self.chb_delete.setEnabled(False)
+        self.chb_delete.clicked.connect(self._option_check_boxes_clicked)
         vertical_layout.addWidget(self.chb_delete)
 
         tag_text = self.tr('Use Format Tag in Output Video File Name')
@@ -234,7 +244,15 @@ class VideoMorphMW(QMainWindow):
                                  statusTip=tag_tip_text,
                                  toolTip=tag_tip_text)
         self.chb_tag.setEnabled(False)
+        self.chb_tag.clicked.connect(self._option_check_boxes_clicked)
         vertical_layout.addWidget(self.chb_tag)
+
+        shutdown_text = self.tr('Shutdown Computer when Conversion Finished')
+        self.chb_shutdown = QCheckBox(shutdown_text,
+                                      statusTip=shutdown_text,
+                                      toolTip=shutdown_text)
+        self.chb_shutdown.setEnabled(False)
+        vertical_layout.addWidget(self.chb_shutdown)
 
         horizontal_layout.addLayout(vertical_layout)
         self.vertical_layout_1.addWidget(gb_settings)
@@ -338,14 +356,14 @@ class VideoMorphMW(QMainWindow):
         """Create actions."""
         self.open_media_file_action = self._action_factory(
             icon=QIcon(':/icons/video-file.png'),
-            text=self.tr('&Open Files...'),
+            text=self.tr('&Add Files...'),
             shortcut="Ctrl+O",
             tip=self.tr('Add Video Files to the List of Conversion Tasks'),
             callback=self.open_media_files)
 
         self.open_media_dir_action = self._action_factory(
             icon=QIcon(':/icons/add-folder.png'),
-            text=self.tr('Open &Directory...'),
+            text=self.tr('Add &Directory...'),
             shortcut="Ctrl+D",
             tip=self.tr('Add all the Video Files in a Directory '
                         'to the List of Conversion Tasks'),
@@ -433,21 +451,26 @@ class VideoMorphMW(QMainWindow):
             callback=self.stop_all_files_encoding)
 
         self.about_action = self._action_factory(
-            icon=QIcon(':/icons/about.png'),
-            text=self.tr('&About') + ' ' + APP_NAME + ' ' + VERSION + '...',
-            shortcut="Ctrl+H",
+            text=self.tr('&About') + ' ' + APP_NAME,
             tip=self.tr('About') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.about)
 
+        self.help_content_action = self._action_factory(
+            icon=QIcon(':/icons/about.png'),
+            text=self.tr('&Contents'),
+            shortcut="Ctrl+H",
+            tip=self.tr('Help Contents'),
+            callback=self.help_content)
+
         self.changelog_action = self._action_factory(
             icon=QIcon(':/icons/changelog.png'),
-            text=self.tr('Changelog') + '...',
+            text=self.tr('Changelog'),
             tip=self.tr('Changelog'),
             callback=self.changelog)
 
         self.ffmpeg_doc_action = self._action_factory(
             icon=QIcon(':/icons/ffmpeg.png'),
-            text=self.tr('&Ffmpeg Documentation...'),
+            text=self.tr('&Ffmpeg Documentation'),
             shortcut="Ctrl+L",
             tip=self.tr('Open Ffmpeg On-Line Documentation'),
             callback=self.ffmpeg_doc)
@@ -458,13 +481,6 @@ class VideoMorphMW(QMainWindow):
             shortcut="Ctrl+Q",
             tip=self.tr('Exit') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.close)
-
-        self.settings_action = self._action_factory(
-            icon=QIcon(':/icons/settings.png'),
-            text=self.tr('&Settings...'),
-            shortcut="Ctrl+S",
-            tip=self.tr('Open Settings Dialog'),
-            callback=self.settings)
 
     def _create_context_menu(self):
         first_separator = QAction(self)
@@ -488,8 +504,6 @@ class VideoMorphMW(QMainWindow):
         self.file_menu.addAction(self.open_media_file_action)
         self.file_menu.addAction(self.open_media_dir_action)
         self.file_menu.addSeparator()
-        self.file_menu.addAction(self.settings_action)
-        self.file_menu.addSeparator()
         self.file_menu.addAction(self.exit_action)
         # Edit menu
         self.edit_menu = self.menuBar().addMenu(self.tr('&Edit'))
@@ -508,10 +522,12 @@ class VideoMorphMW(QMainWindow):
         self.conversion_menu.addAction(self.stop_all_action)
         # Help menu
         self.help_menu = self.menuBar().addMenu(self.tr('&Help'))
-        self.help_menu.addAction(self.about_action)
+        self.help_menu.addAction(self.help_content_action)
         self.help_menu.addAction(self.changelog_action)
         self.help_menu.addSeparator()
         self.help_menu.addAction(self.ffmpeg_doc_action)
+        self.help_menu.addSeparator()
+        self.help_menu.addAction(self.about_action)
 
     def _create_toolbar(self):
         """Create a toolbar and add it to the interface."""
@@ -526,7 +542,7 @@ class VideoMorphMW(QMainWindow):
         self.tool_bar.addAction(self.stop_action)
         self.tool_bar.addAction(self.stop_all_action)
         self.tool_bar.addSeparator()
-        self.tool_bar.addAction(self.settings_action)
+        self.tool_bar.addAction(self.exit_action)
         self.tool_bar.setIconSize(QSize(28, 28))
         # Add the toolbar to main window
         self.addToolBar(Qt.TopToolBarArea, self.tool_bar)
@@ -570,18 +586,36 @@ class VideoMorphMW(QMainWindow):
             if int(self.tb_tasks.currentColumn()) == COLUMNS.NAME:
                 self.play_input_media_file()
 
-        self.update_interface(stop=False, stop_all=False, remove=False,
-                              play_input=False, play_output=False)
+        row = self.tb_tasks.currentIndex().row()
+        if self.conversion_lib.converter_is_running:
+            self.update_interface(presets=False,
+                                  profiles=False,
+                                  subtitles_chb=False,
+                                  add_costume_profile=False,
+                                  convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  output_dir=False,
+                                  delete_chb=False,
+                                  tag_chb=False,
+                                  play_input=False,
+                                  play_output=False)
+        elif self.media_list.get_file_status(row) == STATUS.todo:
+            self.update_interface(stop=False, stop_all=False, remove=False,
+                                  play_input=False, play_output=False)
+        else:
+            self.update_interface(stop=False, stop_all=False,
+                                  remove=False, convert=False,
+                                  play_input=False, play_output=False)
 
     @staticmethod
     def _get_settings_file():
-        return QSettings('{0}{1}.videomorph{2}config.ini'.format(
-            QDir.homePath(), sep, sep), QSettings.IniFormat)
+        return QSettings(join_path(SYS_PATHS.config, 'config.ini'),
+                         QSettings.IniFormat)
 
     def _create_initial_settings(self):
         """Create initial settings file."""
-        if not exists('{0}{1}.videomorph{2}config.ini'.format(
-                QDir.homePath(), sep, sep)):
+        if not exists(join_path(SYS_PATHS.config, 'config.ini')):
             self._write_app_settings(pos=QPoint(100, 50),
                                      size=QSize(1096, 510),
                                      profile_index=0,
@@ -605,8 +639,6 @@ class VideoMorphMW(QMainWindow):
             self.le_output.setText(output_dir)
         if 'source_dir' in settings.allKeys():
             self.source_dir = str(settings.value('source_dir'))
-        if 'conversion_lib' in settings.allKeys():
-            self.conversion_lib.name = settings.value('conversion_lib')
 
     def _write_app_settings(self, **app_settings):
         """Write app settings on exit.
@@ -622,8 +654,7 @@ class VideoMorphMW(QMainWindow):
             profile_index=self.cb_profiles.currentIndex(),
             preset_index=self.cb_quality.currentIndex(),
             source_dir=self.source_dir,
-            output_dir=self.le_output.text(),
-            conv_lib=self.conversion_lib.name)
+            output_dir=self.le_output.text())
 
         if app_settings:
             settings.update(app_settings)
@@ -647,27 +678,33 @@ class VideoMorphMW(QMainWindow):
     @staticmethod
     def ffmpeg_doc():
         """Open ffmpeg documentation page."""
-        open_with_user_preferred_app(
+        launcher = launcher_factory()
+        launcher.open_with_user_browser(
             url='https://ffmpeg.org/documentation.html')
 
-    def settings(self):
-        """Open a Setting Dialog to define the conversion library to use."""
-        settings_dlg = SettingsDialog(parent=self)
-        if self.conversion_lib.name == CONV_LIB.ffmpeg:
-            settings_dlg.radio_btn_ffmpeg.setChecked(True)
-        elif self.conversion_lib.name == CONV_LIB.avconv:
-            settings_dlg.radio_btn_avconv.setChecked(True)
+    @staticmethod
+    def help_content():
+        """Open ffmpeg documentation page."""
+        if LOCALE == 'es_ES':
+            file_name = 'manual_es.pdf'
+        else:
+            file_name = 'manual_en.pdf'
 
-        if not which(CONV_LIB.ffmpeg):
-            settings_dlg.radio_btn_ffmpeg.setEnabled(False)
-        elif not which(CONV_LIB.avconv):
-            settings_dlg.radio_btn_avconv.setEnabled(False)
+        file_path = join_path(SYS_PATHS.help, file_name)
+        if isfile(file_path):
+            url = join_path('file:', file_path)
+        else:
+            url = join_path('file:', BASE_DIR, VM_PATHS.help, file_name)
 
-        if settings_dlg.exec_():
-            if settings_dlg.radio_btn_ffmpeg.isChecked():
-                self.conversion_lib.name = CONV_LIB.ffmpeg
-            elif settings_dlg.radio_btn_avconv.isChecked():
-                self.conversion_lib.name = CONV_LIB.avconv
+        launcher = launcher_factory()
+        launcher.open_with_user_browser(url=url)
+
+    @staticmethod
+    def shutdown_machine():
+        """Shutdown machine when conversion is finished."""
+        launcher = launcher_factory()
+        qApp.closeAllWindows()
+        launcher.shutdown_machine()
 
     def populate_profiles_combo(self):
         """Populate profiles combobox."""
@@ -681,9 +718,6 @@ class VideoMorphMW(QMainWindow):
             icon = QIcon(':/formats/{0}.png'.format(profile_name))
             self.cb_profiles.setItemIcon(i, icon)
 
-        # self.cb_profiles.addItems(
-        #     self.profile.get_xml_profile_qualities().keys())
-
     def populate_quality_combo(self, combo):
         """Populate target quality combobox.
 
@@ -696,14 +730,15 @@ class VideoMorphMW(QMainWindow):
             combo.addItems(
                 self.profile.get_xml_profile_qualities()[current_profile])
 
-            self._update_media_files_status()
+            if self.tb_tasks.rowCount():
+                self._update_media_files_status()
             self.profile.update(new_quality=self.cb_quality.currentText())
 
     def output_directory(self):
         """Choose output directory."""
         directory = self._select_directory(
             dialog_title=self.tr('Choose Output Directory'),
-            source_dir=QDir.homePath())
+            source_dir=self.le_output.text())
 
         if directory:
             self.le_output.setText(directory)
@@ -776,6 +811,7 @@ class VideoMorphMW(QMainWindow):
                                       subtitles_chb=False,
                                       delete_chb=False,
                                       tag_chb=False,
+                                      shutdown_chb=False,
                                       play_input=False,
                                       play_output=False)
             else:
@@ -813,7 +849,9 @@ class VideoMorphMW(QMainWindow):
 
             self._insert_table_item(
                 item_text=str(write_time(
-                    self.media_list.running_file_info('format_duration'))),
+                    self.media_list.get_file_info(
+                        position=row,
+                        info_param='duration'))),
                 row=row, column=COLUMNS.DURATION)
 
             self._insert_table_item(
@@ -844,7 +882,6 @@ class VideoMorphMW(QMainWindow):
                                   clear=False,
                                   remove=False,
                                   output_dir=False,
-                                  settings=False,
                                   delete_chb=False,
                                   tag_chb=False,
                                   play_input=False,
@@ -867,7 +904,27 @@ class VideoMorphMW(QMainWindow):
         """Play the input video using an available video player."""
         row = self.tb_tasks.currentIndex().row()
         self._play_media_file(file_path=self.media_list.get_file_path(row))
-        self.tb_tasks.setCurrentItem(None)
+
+        if self.conversion_lib.converter_is_running:
+            self.update_interface(presets=False,
+                                  profiles=False,
+                                  subtitles_chb=False,
+                                  add_costume_profile=False,
+                                  convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  output_dir=False,
+                                  delete_chb=False,
+                                  tag_chb=False,
+                                  play_input=False,
+                                  play_output=False)
+        elif self.media_list.get_file_status(row) == STATUS.todo:
+            self.update_interface(stop=False, stop_all=False, remove=False,
+                                  play_input=False, play_output=False)
+        else:
+            self.update_interface(stop=False, stop_all=False,
+                                  remove=False, convert=False,
+                                  play_input=False, play_output=False)
 
     def play_output_media_file(self, path):
         """Play the output video using an available video player."""
@@ -876,7 +933,27 @@ class VideoMorphMW(QMainWindow):
             output_dir=self.le_output.text(),
             tagged_output=self.chb_tag.checkState())
         self._play_media_file(file_path=path)
-        self.tb_tasks.setCurrentItem(None)
+
+        if self.conversion_lib.converter_is_running:
+            self.update_interface(presets=False,
+                                  profiles=False,
+                                  subtitles_chb=False,
+                                  add_costume_profile=False,
+                                  convert=False,
+                                  clear=False,
+                                  remove=False,
+                                  output_dir=False,
+                                  delete_chb=False,
+                                  tag_chb=False,
+                                  play_input=False,
+                                  play_output=False)
+        elif self.media_list.get_file_status(row) == STATUS.todo:
+            self.update_interface(stop=False, stop_all=False, remove=False,
+                                  play_input=False, play_output=False)
+        else:
+            self.update_interface(stop=False, stop_all=False,
+                                  remove=False, convert=False,
+                                  play_input=False, play_output=False)
 
     def _play_media_file(self, file_path):
         """Play a video using an available video player."""
@@ -952,6 +1029,7 @@ class VideoMorphMW(QMainWindow):
                                   subtitles_chb=False,
                                   delete_chb=False,
                                   tag_chb=False,
+                                  shutdown_chb=False,
                                   play_input=False,
                                   play_output=False)
 
@@ -1029,27 +1107,26 @@ class VideoMorphMW(QMainWindow):
     def _select_files(self, dialog_title, files_filter,
                       source_dir=QDir.homePath(), single_file=False):
         # Validate source_dir
-        source_dir = source_dir if isdir(source_dir) else QDir.homePath()
+        source_directory = source_dir if isdir(source_dir) else QDir.homePath()
 
         # Select media files and store their path
         if single_file:
             files_paths, _ = QFileDialog.getOpenFileName(self,
                                                          dialog_title,
-                                                         source_dir,
+                                                         source_directory,
                                                          files_filter)
         else:
             files_paths, _ = QFileDialog.getOpenFileNames(self,
                                                           dialog_title,
-                                                          source_dir,
+                                                          source_directory,
                                                           files_filter)
 
-        if not files_paths:
+        if files_paths:
             # Update the source directory
-            self.source_dir = source_dir
-            return None
+            if not single_file:
+                self.source_dir = dirname(files_paths[0])
         else:
-            # Update the source directory
-            self.source_dir = dirname(files_paths[0])
+            return None
 
         return files_paths
 
@@ -1084,6 +1161,7 @@ class VideoMorphMW(QMainWindow):
                                   subtitles_chb=False,
                                   delete_chb=False,
                                   tag_chb=False,
+                                  shutdown_chb=False,
                                   play_input=False,
                                   play_output=False)
 
@@ -1098,7 +1176,6 @@ class VideoMorphMW(QMainWindow):
                               clear=False,
                               remove=False,
                               output_dir=False,
-                              settings=False,
                               delete_chb=False,
                               tag_chb=False,
                               play_input=False,
@@ -1181,6 +1258,8 @@ class VideoMorphMW(QMainWindow):
 
     def stop_file_encoding(self):
         """Stop file encoding process and continue with the list."""
+        # Terminate the file encoding
+        self.conversion_lib.stop_converter()
         # Set _MediaFile.status attribute
         self.media_list.running_file_status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
@@ -1190,12 +1269,11 @@ class VideoMorphMW(QMainWindow):
         # Update the list duration and partial time for total progress bar
         self.timer.reset_progress_times()
         self.media_list_duration = self.media_list.duration
-        # Terminate the file encoding
-        self.conversion_lib.stop_converter()
 
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
         # Delete the file when conversion is stopped by the user
+        self.conversion_lib.stop_converter()
         self.media_list.delete_running_file_output(
             output_dir=self.le_output.text(),
             tagged_output=self.chb_tag.checkState())
@@ -1207,8 +1285,6 @@ class VideoMorphMW(QMainWindow):
                 self.tb_tasks.item(
                     self.media_list.position,
                     COLUMNS.PROGRESS).setText(self.tr('Stopped!'))
-
-        self.conversion_lib.stop_converter()
 
         # Update the list duration and partial time for total progress bar
         self.timer.reset_progress_times()
@@ -1229,21 +1305,20 @@ class VideoMorphMW(QMainWindow):
                 self.pb_progress.setProperty("value", 0)
                 if self.chb_delete.checkState():
                     self.media_list.delete_running_file_input()
-            # Attempt to end the conversion process
-            self._end_encoding_process()
         else:
             # If the process was stopped
             if not self.conversion_lib.converter_is_running:
                 self.tb_tasks.item(
                     self.media_list.position,
                     COLUMNS.PROGRESS).setText(self.tr('Stopped!'))
-            # Attempt to end the conversion process
-            self._end_encoding_process()
+        # Attempt to end the conversion process
+        self._end_encoding_process()
 
     def _end_encoding_process(self):
         """End up the encoding process."""
         # Test if encoding process is finished
         if self.media_list.is_exhausted:
+
             if self.conversion_lib.library_error is not None:
                 self._show_message_box(
                     type_=QMessageBox.Critical,
@@ -1253,6 +1328,9 @@ class VideoMorphMW(QMainWindow):
                     self.conversion_lib.library_error)
                 self.conversion_lib.library_error = None
             elif not self.media_list.all_stopped:
+                if self.chb_shutdown.checkState():
+                    self.shutdown_machine()
+                    return
                 self._show_message_box(
                     type_=QMessageBox.Information,
                     title=self.tr('Information!'),
@@ -1316,8 +1394,7 @@ class VideoMorphMW(QMainWindow):
 
         self.timer.update_cum_times()
 
-        file_duration = float(self.media_list.running_file_info(
-            'format_duration'))
+        file_duration = float(self.media_list.running_file_info('duration'))
 
         operation_progress = self.timer.operation_progress(
             file_duration=file_duration)
@@ -1352,8 +1429,7 @@ class VideoMorphMW(QMainWindow):
 
     def _update_status_bar(self):
         """Update the status bar while converting."""
-        file_duration = float(self.media_list.running_file_info(
-            'format_duration'))
+        file_duration = float(self.media_list.running_file_info('duration'))
 
         self.statusBar().showMessage(
             self.tr('Converting: {m}\t\t\t '
@@ -1383,25 +1459,28 @@ class VideoMorphMW(QMainWindow):
             self.media_list.set_file_status(position=item.row(),
                                             status=STATUS.todo)
 
-            # Update total duration of the new tasks list
-            self.media_list_duration = self.media_list.duration
-
-            # Update the interface
-            self.update_interface(stop=False, stop_all=False, remove=False,
-                                  play_input=False, play_output=False)
         else:
-            rows = self.tb_tasks.rowCount()
-            if rows:
-                for row in range(rows):
-                    self.tb_tasks.item(row, COLUMNS.QUALITY).setText(
-                        str(self.cb_quality.currentText()))
-                    self.update_table_progress_column(row)
-
-                self.update_interface(stop=False, stop_all=False, remove=False,
-                                      play_input=False, play_output=False)
+            self._update_all_table_rows(column=COLUMNS.QUALITY,
+                                        value=self.cb_quality.currentText())
 
             self._set_media_status()
-            self.media_list_duration = self.media_list.duration
+
+        # Update total duration of the new tasks list
+        self.media_list_duration = self.media_list.duration
+        # Update the interface
+        self.update_interface(stop=False,
+                              stop_all=False,
+                              remove=False,
+                              play_input=False,
+                              play_output=False)
+
+    def _update_all_table_rows(self, column, value):
+        rows = self.tb_tasks.rowCount()
+        if rows:
+            for row in range(rows):
+                self.tb_tasks.item(row, column).setText(
+                    str(value))
+                self.update_table_progress_column(row)
 
     def update_table_progress_column(self, row):
         """Update the progress column of conversion task list."""
@@ -1414,12 +1493,22 @@ class VideoMorphMW(QMainWindow):
         self.chb_delete.setChecked(False)
         self.chb_tag.setChecked(False)
         self.chb_subtitle.setChecked(False)
+        self.chb_shutdown.setChecked(False)
 
     def _set_media_status(self):
         """Update media files state of conversion."""
         for media_file in self.media_list:
             media_file.status = STATUS.todo
         self.media_list.position = None
+
+    def _option_check_boxes_clicked(self):
+        self.update_interface(stop=False, stop_all=False, remove=False,
+                              play_input=False, play_output=False)
+
+        self._set_media_status()
+        self._update_all_table_rows(column=COLUMNS.PROGRESS,
+                                    value=self.tr('To Convert'))
+        self.media_list_duration = self.media_list.duration
 
     def update_interface(self, **i_vars):
         """Update the interface status.
@@ -1437,10 +1526,10 @@ class VideoMorphMW(QMainWindow):
                          profiles=True,
                          add_costume_profile=True,
                          output_dir=True,
-                         settings=True,
                          subtitles_chb=True,
                          delete_chb=True,
                          tag_chb=True,
+                         shutdown_chb=True,
                          play_input=True,
                          play_output=True)
 
@@ -1459,9 +1548,9 @@ class VideoMorphMW(QMainWindow):
         self.chb_subtitle.setEnabled(variables['subtitles_chb'])
         self.chb_delete.setEnabled(variables['delete_chb'])
         self.chb_tag.setEnabled(variables['tag_chb'])
+        self.chb_shutdown.setEnabled(variables['shutdown_chb'])
         self.play_input_media_file_action.setEnabled(variables['play_input'])
         self.play_output_media_file_action.setEnabled(variables['play_output'])
-        self.settings_action.setEnabled(variables['settings'])
         self.tb_tasks.setCurrentItem(None)
 
     def _enable_context_menu_action(self):

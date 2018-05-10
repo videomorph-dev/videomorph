@@ -1,0 +1,3 @@
+include install.sh
+include uninstall.sh
+include share/icons/videomorph.ico

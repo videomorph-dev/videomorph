@@ -2,7 +2,7 @@
 #
 # File name: __init__.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,21 +21,35 @@
 
 from collections import namedtuple
 from os import cpu_count
-from os.path import expanduser
 from os.path import dirname
+from os.path import exists
 from os.path import join as join_path
 
+from .platformdeps import sys_path_factory
+from .platformdeps import VMPaths
 from .utils import get_locale
 
-APP_NAME = 'VideoMorph'
-VERSION = '1.2'
-BASE_DIR = dirname(dirname(dirname(__file__)))
-LOCALE = get_locale()
-PACKAGE_NAME = APP_NAME.lower()
-MAINTAINER = APP_NAME + ' ' + 'Development Team'
 
-ConvLib = namedtuple('ConvLib', 'ffmpeg avconv')
-CONV_LIB = ConvLib('ffmpeg', 'avconv')
+SYS_PATHS = sys_path_factory()
+BASE_DIR = dirname(dirname(dirname(__file__)))
+
+
+def get_version():
+    """Return app's version number."""
+    if exists(join_path(SYS_PATHS.doc, 'VERSION')):
+        version_file = join_path(SYS_PATHS.doc, 'VERSION')
+    else:
+        version_file = join_path(BASE_DIR, 'VERSION')
+
+    with open(version_file, 'r', encoding='UTF-8') as ver_file:
+        version = ver_file.readline().strip('\n')
+
+    return version
+
+
+APP_NAME = 'VideoMorph'
+VERSION = get_version()
+LOCALE = get_locale()
 
 LIBRARY_ERRORS = ('Unknown encoder', 'Unrecognized option', 'Invalid argument')
 
@@ -47,9 +61,6 @@ VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
 
 VALID_VIDEO_EXT = {ext.lstrip('*') for ext in VIDEO_FILTERS.split()}
 
-Prober = namedtuple('Prober', 'ffprobe avprobe')
-PROBER = Prober('ffprobe', 'avprobe')
-
 MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
 STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
 
@@ -60,32 +71,4 @@ CPU_CORES = (cpu_count() - 1 if
              cpu_count() is not None
              else 0)
 
-PLAYERS = ['vlc',
-           'xplayer',
-           'totem',
-           'kmplayer',
-           'smplayer',
-           'mplayer',
-           'banshee',
-           'mpv',
-           'gxine',
-           'xine-ui',
-           'gmlive',
-           'dragon',
-           'ffplay']
-
-VM_PATHS = {'apps': 'share/applications',
-            'icons': 'share/icons',
-            'i18n': 'share/videomorph/translations',
-            'profiles': 'share/videomorph/profiles',
-            'doc': 'share/doc/videomorph',
-            'man': 'share/man',
-            'bin': 'bin'}
-
-LINUX_PATHS = {'apps': '/usr/share/applications',
-               'config': join_path(expanduser('~'), '.videomorph'),
-               'icons': '/usr/share/icons',
-               'i18n': '/usr/share/videomorph/translations',
-               'profiles': '/usr/share/videomorph/profiles',
-               'doc': '/usr/share/doc/videomorph',
-               'man': '/usr/share/man/man1'}
+VM_PATHS = VMPaths()

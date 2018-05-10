@@ -1,9 +1,9 @@
 # VideoMorph
 
-[![Build Status](https://travis-ci.org/codeshard/videomorph.png?branch=master)](https://travis-ci.org/codeshard/videomorph)
-[![codecov.io](https://codecov.io/github/codeshard/videomorph/coverage.svg?branch=master)](https://codecov.io/github/codeshard/videomorph?branch=master)
+[![Build Status](https://travis-ci.org/videomorph-dev/videomorph.png?branch=master)](https://travis-ci.org/videomorph-dev/videomorph)
+[![codecov.io](https://codecov.io/github/videomorph-dev/videomorph/coverage.svg?branch=master)](https://codecov.io/github/videomorph-dev/videomorph?branch=master)
 
-VideoMorph is a small GUI wrapper for [ffmpeg](http://ffmpeg.org),
+VideoMorph is a GUI wrapper for [ffmpeg](http://ffmpeg.org),
 based on code from [python-video-converter](https://github.com/senko/python-video-converter)
 and presets idea from [QWinFF](http://qwinff.github.io) and
 [FF Multi Converter](https://github.com/Ilias95/FF-Multi-Converter).
@@ -30,18 +30,23 @@ To install the package:
 
 This only installs VideoMorph. The [ffmpeg](http://ffmpeg.org) package should be installed
 or compiled in your distribution.
+On Windows platform you need to have Python >= 3.4, PyQt5 and ffmpeg library installed.
+The videomorph.exe will be placed at path\to\Python3x\Scripts. You'll need to have setuptools
+installed on your Windows system.
 
-    or (in Debian based distros only):
+In Debian based distros:
 
     sudo install.sh
 
-This should install VideoMorph and its dependencies, including [ffmpeg](http://ffmpeg.org) package.
+This should install VideoMorph and its dependencies, including [ffmpeg](http://ffmpeg.org) library, from
+your current repository.
 
-To install the .deb file
+To install from the .deb package in Debian based distros, we recommend you to
+use GDebi Packages Installer and follow the instructions, just that... This should install VideoMorph
+and its dependencies from your current repository.
 
-    use GDebi Packages Installer and follow the instructions, just that...
-
-This should install VideoMorph and its dependencies from your distro repo.
+To use a Portable Edition (PE), decompress the .tar.gz or the .zip file (GNU/Linux and Windows respectively)
+in any directory, and then double click on videomorph or videomorph.exe depending on your platform
 
 ## Acknowledgements
 
@@ -65,9 +70,9 @@ under LGPL/GPL
 
 ## Authors and Copyright
 
-Code & Artwork by:
+Code, Artwork and l10n by:
 
- - [Ozkar L. Garcell](mailto:codeshard@openmailbox.org)
+ - [Ozkar L. Garcell](mailto:ozkar.garcell@gmail.com)
  - [Leodanis Pozo Ramos](mailto:lpozor78@gmail.com)
 
 Contributors:

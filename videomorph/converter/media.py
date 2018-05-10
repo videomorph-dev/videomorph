@@ -2,7 +2,7 @@
 #
 # File name: media.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,8 +30,7 @@ from os.path import exists
 
 from . import CPU_CORES
 from . import STATUS
-from .utils import spawn_process
-from .utils import which
+from .platformdeps import spawn_process
 
 
 class MediaError(Exception):
@@ -158,8 +157,8 @@ class MediaList(list):
         """self._position getter."""
         if self._position is None:
             return -1
-        else:
-            return self._position
+
+        return self._position
 
     @position.setter
     def position(self, value):
@@ -177,7 +176,6 @@ class MediaList(list):
         for file in self:
             if file.status != STATUS.stopped:
                 return False
-
         return True
 
     @property
@@ -188,7 +186,7 @@ class MediaList(list):
     @property
     def duration(self):
         """Return the duration time of MediaList counting files todo only."""
-        return sum(float(media.get_info('format_duration')) for
+        return sum(float(media.get_info('duration')) for
                    media in self if media.status == STATUS.todo)
 
     @property
@@ -201,7 +199,7 @@ class MediaList(list):
         # Invalid metadata
         try:
             # Duration is not a valid float() argument
-            duration = float(media_file.get_info('format_duration'))
+            duration = float(media_file.get_info('duration'))
         except (TypeError, ValueError):
             raise InvalidMetadataError('Invalid file duration')
 
@@ -295,10 +293,14 @@ class _MediaFile:
 
     def delete_output(self, output_dir, tagged_output):
         """Delete the output file if conversion is stopped."""
-        try:
-            remove(self.get_output_path(output_dir, tagged_output))
-        except FileNotFoundError:
-            pass
+        while True:
+            try:
+                remove(self.get_output_path(output_dir, tagged_output))
+                break
+            except FileNotFoundError:
+                break
+            except PermissionError:
+                continue
 
     def delete_input(self):
         """Delete the input file (and subtitle) when conversion is finished."""
@@ -356,7 +358,7 @@ class _MediaFile:
 
     def _probe(self):
         """Return the prober output as a file like object."""
-        prober_run = spawn_process([which(self._profile.prober),
+        prober_run = spawn_process([self._profile.prober,
                                     '-show_format',
                                     self.input_path])
 
@@ -374,6 +376,6 @@ class _MediaFile:
             for format_line in probe_file:
                 format_line = format_line.strip()
                 if format_line.startswith('duration'):
-                    info['format_duration'] = __get_value(format_line)
+                    info['duration'] = __get_value(format_line)
                     break
         return info

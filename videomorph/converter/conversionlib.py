@@ -2,7 +2,7 @@
 #
 # File name: conversionlib.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,24 +20,19 @@
 """This module provides the definition of the ConversionLib class."""
 
 import re
+from os.path import isdir
+from os.path import join as join_path
 from time import time
 
 from PyQt5.QtCore import QProcess
 
-from . import CONV_LIB
+from . import BASE_DIR
 from . import LIBRARY_ERRORS
 from . import LIBRARY_PARAM_REGEX
-from . import PLAYERS
-from . import PROBER
+from .platformdeps import launcher_factory
+from .platformdeps import generic_factory
 from .utils import write_time
-from .utils import spawn_process
-from .utils import open_with_user_preferred_app
 from .utils import which
-
-
-class PlayerNotFoundError(Exception):
-    """Exception to handle Player not found error."""
-    pass
 
 
 class ConversionLib:
@@ -45,8 +40,10 @@ class ConversionLib:
 
     def __init__(self):
         """Class initializer."""
-        self._name = self.get_system_library_name()
-        self._converter = _Converter(conversion_lib_name=self.name)
+        library = library_path_factory()
+        self._library_path = library.library_path
+        self.prober_path = library.prober_path
+        self._converter = _Converter(library_path=self.library_path)
         self.library_error = None
         self.reader = _OutputReader()
         self.timer = _ConversionTimer()
@@ -59,59 +56,80 @@ class ConversionLib:
         """Catch the library error when running."""
         self.library_error = self.reader.catch_library_error()
 
-    def run_player(self, file_path):
-        """Play a video file with user default player."""
-        if which('xdg-open') is not None:
-            open_with_user_preferred_app(url=file_path)
-        else:
-            player = self._get_player()
-            spawn_process([which(player), file_path])
-
-    @property
-    def name(self):
-        """Return the name of the conversion library."""
-        return self._name
-
-    @name.setter
-    def name(self, library_name):
-        """Set the name of the conversion library."""
-        self._name = library_name
-
-    @property
-    def prober(self):
-        """Return the prober of the conversion library."""
-        if self._name == CONV_LIB.ffmpeg:
-            return PROBER.ffprobe
-        elif self._name == CONV_LIB.avconv:
-            return PROBER.avprobe
-        else:
-            return None
-
     @staticmethod
-    def get_system_library_name():
+    def run_player(file_path):
+        """Play a video file with user default player."""
+        launcher = launcher_factory()
+        launcher.open_with_user_app(url=file_path)
+
+    @property
+    def library_path(self):
+        """Return the name of the conversion library."""
+        return self._library_path
+
+
+class _LibraryPath:
+    """Class to define platform dependent conversion tools."""
+
+    def _get_system_path(self, app):
         """Return the name of the conversion library installed on system."""
-        if which(CONV_LIB.ffmpeg):
-            return CONV_LIB.ffmpeg  # Default library
-        elif which(CONV_LIB.avconv):
-            return CONV_LIB.avconv  # Alternative library
+        local_dir = self._get_local_dir()
+        if isdir(local_dir):
+            return join_path(local_dir, app)
+        if which(app):
+            return which(app)
         return None  # Not available library
 
-    @staticmethod
-    def _get_player():
-        """Return a player from a list of popular players."""
-        for player in PLAYERS:
-            if which(player):
-                return player
+    @property
+    def library_path(self):
+        """Get conversion library path."""
+        return self._get_system_path('ffmpeg')
 
-        raise PlayerNotFoundError('Player not found')
+    @property
+    def prober_path(self):
+        """Get prober path."""
+        return self._get_system_path('ffprobe')
+
+    def _get_local_dir(self):
+        """Return the local directory for ffmpeg library."""
+        raise NotImplementedError('Must be implemented in subclasses')
+
+
+class _LinuxLibraryPath(_LibraryPath):
+    """Class to define platform dependent conversion lib for Linux."""
+
+    def _get_local_dir(self):
+        """Return the local directory for ffmpeg library."""
+        return join_path(BASE_DIR, 'ffmpeg')
+
+
+class _Win32LibraryPath(_LibraryPath):
+    """Class to define platform dependent conversion lib for Win32."""
+
+    def _get_local_dir(self):
+        """Return the local directory for ffmpeg library."""
+        return join_path(BASE_DIR, 'ffmpeg', 'bin')
+
+    @property
+    def library_path(self):
+        return super(_Win32LibraryPath, self).library_path + '.exe'
+
+    @property
+    def prober_path(self):
+        return super(_Win32LibraryPath, self).prober_path + '.exe'
+
+
+def library_path_factory():
+    """Factory method to create the appropriate lib name."""
+    return generic_factory(parent_class=_LibraryPath)
 
 
 class _Converter:
     """_Converter class to provide conversion functionality."""
 
-    def __init__(self, conversion_lib_name):
+    def __init__(self, library_path):
         """Class initializer."""
-        self._conversion_lib = conversion_lib_name
+        self._library_path = library_path
         self._process = QProcess()
 
     def setup_converter(self, reader, finisher, process_channel):
@@ -122,7 +140,7 @@ class _Converter:
 
     def start_converter(self, cmd):
         """Start the encoding process."""
-        self._process.start(which(self._conversion_lib), cmd)
+        self._process.start(self._library_path, cmd)
 
     def stop_converter(self):
         """Terminate the encoding process."""
@@ -256,11 +274,9 @@ class _ConversionTimer:
         """"Calculate total progress percentage."""
         if self._partial_time > self._operation_time_read:
             self._time_jump += self._partial_time
-            self._total_time = self._time_jump + self._operation_time_read
-            self._partial_time = self._operation_time_read
-        else:
-            self._total_time = self._time_jump + self._operation_time_read
-            self._partial_time = self._operation_time_read
+
+        self._total_time = self._time_jump + self._operation_time_read
+        self._partial_time = self._operation_time_read
 
         return int(self._total_time / float(list_duration) * 100)
 

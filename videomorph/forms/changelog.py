@@ -2,7 +2,7 @@
 #
 # File name: about.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg and avconv.
+#   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,13 +21,14 @@
 
 import gzip
 from os.path import exists
-from os.path import sep
+from os.path import join as join_path
+import re
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from videomorph.converter import APP_NAME
 from videomorph.converter import BASE_DIR
-from videomorph.converter import LINUX_PATHS
+from videomorph.converter import SYS_PATHS
 from videomorph.converter import VERSION
 
 
@@ -63,25 +64,25 @@ class ChangelogDialog(QtWidgets.QDialog):
 
     def _generate_changelog(self):
         """Return a human readable changelog."""
-        changelog_path = LINUX_PATHS['doc'] + '{0}changelog.gz'.format(sep)
+        changelog_path = join_path(SYS_PATHS.doc, 'changelog.gz')
         if exists(changelog_path):
             changelog_file = changelog_path
         else:
-            changelog_file = BASE_DIR + '{0}changelog.gz'.format(sep)
+            changelog_file = join_path(BASE_DIR, 'changelog.gz')
+
+        line_start_pattern = re.compile(r'\s+\*\s+')
 
         with gzip.open(changelog_file, 'rt', encoding='utf-8') as changelog:
             changes = []
             for line in changelog:
-                if line.startswith('    * '):
+                start = line_start_pattern.match(line)
+                if start:
+                    line = line.strip('\n' + start.group())
                     if 'Release' in line:
-                        line = line.strip('\n')
-                        line = line.strip('    * ')
                         version = '<b>{0}</b>'.format(line)
                         changes.append(version)
                         changes.extend(['<ul>', '</ul>'])
                     else:
-                        line = line.strip('\n')
-                        line = line.strip('    * ')
                         line = '<li>{0}</li>'.format(line)
                         changes.insert(-1, line)
 
