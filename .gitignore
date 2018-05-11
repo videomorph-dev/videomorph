@@ -73,6 +73,7 @@ tests/Dad.mpg
 
 # Temporary directory
 Temp/
+*.py~
 
 # FFmpeg library
 ffmpeg*
