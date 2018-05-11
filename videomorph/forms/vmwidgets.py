@@ -81,7 +81,7 @@ class TasksListTable(QTableWidget):
         files = []
 
         for url in event.mimeData().urls():
-            extension = '.{0}'.format(url.path().split('.')[-1])
+            extension = '.{0}'.format(url.path().split('.')[-1]).lower()
             if extension in VALID_VIDEO_EXT:
                 file_path = url2pathname(url.path())
                 files.append(file_path)
