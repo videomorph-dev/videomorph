@@ -21,9 +21,8 @@
 
 import re
 from collections import OrderedDict
-from distutils.errors import DistutilsFileError
-from distutils.dir_util import mkpath
-from distutils.file_util import copy_file
+from shutil import copy2
+from os import makedirs
 from os.path import exists, getsize
 from os.path import getmtime
 from os.path import join as join_path
@@ -107,10 +106,10 @@ class _XMLProfile:
         """Export a file with the conversion profiles."""
         # Raise PermissionError if user don't have write permission
         try:
-            copy_file(src=self._user_xml_file_path(
+            copy2(src=self._user_xml_file_path(
                 file_name=self._xml_files.customized),
                       dst=dst_dir)
-        except DistutilsFileError:
+        except OSError:
             raise PermissionError
 
     def import_xml_profiles(self, src_file):
@@ -118,8 +117,8 @@ class _XMLProfile:
         try:
             dst_directory = self._user_xml_file_path(
                 self._xml_files.customized)
-            copy_file(src=src_file, dst=dst_directory)
-        except DistutilsFileError:
+            copy2(src=src_file, dst=dst_directory)
+        except OSError:
             raise PermissionError
 
     def get_xml_profile_attr(self, target_quality, attr_name='preset_params'):
@@ -162,7 +161,7 @@ class _XMLProfile:
         return join_path(self._user_xml_files_directory(), file_name)
 
     def _insert_xml_elements(self, xml_profile, xml_preset, xml_root):
-        """Insert an xml elemnte into an xml root."""
+        """Insert an xml element into an xml root."""
         for i, elem in enumerate(xml_root[:]):
             if elem.tag == xml_profile.tag:
                 xml_root[i].insert(0, xml_preset)
@@ -184,7 +183,7 @@ class _XMLProfile:
 
     def _create_xml_files(self):
         """Create a xml file with the conversion profiles."""
-        mkpath(self._user_xml_files_directory())
+        makedirs(self._user_xml_files_directory(), exist_ok=True)
 
         for xml_file in self._xml_files:
             if not self._xml_file_is_correct(xml_file):
@@ -195,7 +194,7 @@ class _XMLProfile:
         xml_file_sys_path = self._sys_xml_file_path(file_name)
         xml_file_user_path = self._user_xml_file_path(file_name)
 
-        copy_file(src=xml_file_sys_path, dst=xml_file_user_path)
+        copy2(src=xml_file_sys_path, dst=xml_file_user_path)
 
     def _xml_file_is_correct(self, file_name):
         """Validate xml files in user config directory."""
