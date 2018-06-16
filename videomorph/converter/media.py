@@ -404,6 +404,7 @@ class _MediaFile:
         """Parse the prober output."""
         selected_params = {'codec_name',
                            'codec_long_name',
+                           'bit_rate',
                            'width',
                            'height'}
 
