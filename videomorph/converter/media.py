@@ -111,7 +111,7 @@ class MediaList(list):
 
     def get_file_info(self, position, info_param):
         """Return general streaming info from a video file."""
-        return self[position].get_info(info_param)
+        return self[position].get_format_info(info_param)
 
     def running_file_name(self, with_extension=False):
         """Return the running file name."""
@@ -119,7 +119,7 @@ class MediaList(list):
 
     def running_file_info(self, info_param):
         """Return running file info."""
-        return self._running_file.get_info(info_param)
+        return self._running_file.get_format_info(info_param)
 
     @property
     def running_file_status(self):
@@ -186,7 +186,7 @@ class MediaList(list):
     @property
     def duration(self):
         """Return the duration time of MediaList counting files todo only."""
-        return sum(float(media.get_info('duration')) for
+        return sum(float(media.get_format_info('duration')) for
                    media in self if media.status == STATUS.todo)
 
     @property
@@ -199,7 +199,7 @@ class MediaList(list):
         # Invalid metadata
         try:
             # Duration is not a valid float() argument
-            duration = float(media_file.get_info('duration'))
+            duration = float(media_file.get_format_info('duration'))
         except (TypeError, ValueError):
             raise InvalidMetadataError('Invalid file duration')
 
@@ -207,7 +207,7 @@ class MediaList(list):
         if duration > 0:
             self.append(media_file)
         else:
-            raise InvalidMetadataError('File is zero length')
+            raise InvalidMetadataError('File is zero size')
 
     def _media_files_generator(self, files_paths):
         """Yield _MediaFile objects to be added to MediaList."""
@@ -264,7 +264,7 @@ class _MediaFile:
             return full_file_name
         return file_name
 
-    def get_info(self, info_param):
+    def get_format_info(self, info_param):
         """Return an info attribute from a given video file."""
         return self.format_info.get(info_param)
 
@@ -325,16 +325,14 @@ class _MediaFile:
         return basename(self.get_output_path(output_dir, tagged_output))
 
     def get_output_path(self, output_dir, tagged_output):
-        """Return the the output file input_path."""
+        """Return the the output file path."""
         tag = self._profile.quality_tag if tagged_output else ''
-
         output_file_name = tag + self.get_name() + self._profile.extension
-
         return join_path(output_dir, output_file_name)
 
     @property
     def _subtitle_path(self):
-        """Returns the subtitle input_path if exit."""
+        """Return the subtitle path if exit."""
         extension = self.input_path.split('.')[-1]
         subtitle_path = self.input_path.strip('.' + extension) + '.srt'
 
@@ -344,7 +342,7 @@ class _MediaFile:
             raise FileNotFoundError('Subtitle file not found')
 
     def _process_subtitles(self, subtitle):
-        # Process subtitles if available
+        """Process subtitles if available."""
         if subtitle:
             try:
                 subtitle_opt = ['-vf',
