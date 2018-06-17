@@ -38,7 +38,6 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QWidget,
                              QVBoxLayout,
                              QHBoxLayout,
-                             QGridLayout,
                              QSizePolicy,
                              QGroupBox,
                              QLabel,
@@ -79,6 +78,7 @@ from .vmwidgets import TasksListTable
 from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
 from .changelog import ChangelogDialog
+from .info import InfoDialog
 
 
 class VideoMorphMW(QMainWindow):
@@ -106,17 +106,14 @@ class VideoMorphMW(QMainWindow):
         self.horizontal_layout = QHBoxLayout()
         self.vertical_layout_1 = QVBoxLayout()
         self.vertical_layout_2 = QVBoxLayout()
-        self.vertical_layout_3 = QVBoxLayout()
         # Define groups
         self._group_settings()
         self._fix_layout()
         self._group_tasks_list()
-        self._group_info()
         self._group_output_directory()
         self._group_progress()
         # Add layouts
         self.horizontal_layout.addLayout(self.vertical_layout_2)
-        self.horizontal_layout.addLayout(self.vertical_layout_3)
         self.vertical_layout.addLayout(self.horizontal_layout)
         # Set central widget
         self.setCentralWidget(self.central_widget)
@@ -281,7 +278,6 @@ class VideoMorphMW(QMainWindow):
         horizontal_layout.addWidget(self.tb_tasks)
         self.vertical_layout_2.addWidget(gb_tasks)
         self.tb_tasks.doubleClicked.connect(self._update_edit_triggers)
-        self.tb_tasks.cellClicked.connect(self._show_video_info)
 
     def _group_output_directory(self):
         """Define the output directory Group arrangement."""
@@ -327,141 +323,6 @@ class VideoMorphMW(QMainWindow):
         self.pb_total_progress.setProperty('value', 0)
         vertical_layout.addWidget(self.pb_total_progress)
         self.vertical_layout_2.addWidget(gb_progress)
-
-    def _group_info(self):
-        """Define the Info group."""
-        whole_layout = QVBoxLayout()
-
-        gb_general = QGroupBox(self.central_widget)
-        gb_general.setTitle(self.tr('General'))
-
-        general_layout = QVBoxLayout(gb_general)
-
-        general_grid = QGridLayout()
-
-        label_file_name = QLabel(gb_general)
-        label_file_name.setText(self.tr('File Name:'))
-
-        self.label_file_name_value = QLabel(gb_general)
-        self.label_file_name_value.setText("")
-
-        label_size = QLabel(gb_general)
-        label_size.setText(self.tr('Size:'))
-
-        self.label_size_value = QLabel(gb_general)
-        self.label_size_value.setText("")
-
-        label_duration = QLabel(gb_general)
-        label_duration.setText(self.tr('Duration:'))
-
-        self.label_duration_value = QLabel(gb_general)
-        self.label_duration_value.setText("")
-
-        label_format_name = QLabel(gb_general)
-        label_format_name.setText(self.tr('Format Name:'))
-
-        self.label_format_name_value = QLabel(gb_general)
-        self.label_format_name_value.setText("")
-
-        label_format_long_name = QLabel(gb_general)
-        label_format_long_name.setText(self.tr('Format Long Name:'))
-
-        self.label_format_long_name_value = QLabel(gb_general)
-        self.label_format_long_name_value.setText("")
-
-        general_grid.addWidget(label_file_name, 0, 0, 1, 1)
-        general_grid.addWidget(self.label_file_name_value, 0, 1, 1, 1)
-        general_grid.addWidget(label_size, 1, 0, 1, 1)
-        general_grid.addWidget(self.label_size_value, 1, 1, 1, 1)
-        general_grid.addWidget(label_duration, 2, 0, 1, 1)
-        general_grid.addWidget(self.label_duration_value, 2, 1, 1, 1)
-        general_grid.addWidget(label_format_name, 3, 0, 1, 1)
-        general_grid.addWidget(self.label_format_name_value, 3, 1, 1, 1)
-        general_grid.addWidget(label_format_long_name, 4, 0, 1, 1)
-        general_grid.addWidget(self.label_format_long_name_value, 4, 1, 1, 1)
-
-        general_layout.addLayout(general_grid)
-
-        gb_video = QGroupBox(self.central_widget)
-        gb_video.setTitle(self.tr('Video'))
-        video_layout = QVBoxLayout(gb_video)
-        video_grid = QGridLayout()
-
-        label_bit_rate = QLabel(gb_video)
-        label_bit_rate.setText(self.tr('Bit Rate:'))
-
-        self.label_bit_rate_value = QLabel(gb_video)
-        self.label_bit_rate_value.setText("")
-
-        label_width = QLabel(gb_video)
-        label_width.setText(self.tr('Width:'))
-
-        self.label_width_value = QLabel(gb_video)
-        self.label_width_value.setText("")
-
-        label_height = QLabel(gb_video)
-        label_height.setText(self.tr('Height:'))
-
-        self.label_height_value = QLabel(gb_video)
-        self.label_height_value.setText("")
-
-        label_codec_long_name = QLabel(gb_video)
-        label_codec_long_name.setText(self.tr('Codec Long Name:'))
-
-        self.label_codec_long_name_value = QLabel(gb_video)
-        self.label_codec_long_name_value.setText("")
-
-        label_codec_name = QLabel(gb_video)
-        label_codec_name.setText(self.tr('Codec Name:'))
-
-        self.label_codec_name_value = QLabel(gb_video)
-        self.label_codec_name_value.setText("")
-
-        video_grid.addWidget(label_bit_rate, 2, 0, 1, 1)
-        video_grid.addWidget(self.label_bit_rate_value, 2, 1, 1, 1)
-        video_grid.addWidget(label_width, 3, 0, 1, 1)
-        video_grid.addWidget(self.label_width_value, 3, 1, 1, 1)
-        video_grid.addWidget(label_height, 4, 0, 1, 1)
-        video_grid.addWidget(self.label_height_value, 4, 1, 1, 1)
-        video_grid.addWidget(label_codec_long_name, 1, 0, 1, 1)
-        video_grid.addWidget(self.label_codec_long_name_value, 1, 1, 1, 1)
-        video_grid.addWidget(label_codec_name, 0, 0, 1, 1)
-        video_grid.addWidget(self.label_codec_name_value, 0, 1, 1, 1)
-
-        video_layout.addLayout(video_grid)
-
-        gb_audio = QGroupBox(self.central_widget)
-        gb_audio.setTitle(self.tr('Audio'))
-
-        audio_layout = QVBoxLayout(gb_audio)
-
-        audio_grid = QGridLayout()
-
-        label_acodec_name = QLabel(gb_audio)
-        label_acodec_name.setText(self.tr('Codec Name:'))
-
-        self.label_acodec_name_value = QLabel(gb_audio)
-        self.label_acodec_name_value.setText("")
-
-        label_acodec_long_name = QLabel(gb_audio)
-        label_acodec_long_name.setText(self.tr('Codec Long Name:'))
-
-        self.label_acodec_long_name_value = QLabel(gb_audio)
-        self.label_acodec_long_name_value.setText("")
-
-        audio_grid.addWidget(label_acodec_name, 0, 0, 1, 1)
-        audio_grid.addWidget(self.label_acodec_name_value, 0, 1, 1, 1)
-        audio_grid.addWidget(label_acodec_long_name, 1, 0, 1, 1)
-        audio_grid.addWidget(self.label_acodec_long_name_value, 1, 1, 1, 1)
-
-        audio_layout.addLayout(audio_grid)
-
-        whole_layout.addWidget(gb_general)
-        whole_layout.addWidget(gb_video)
-        whole_layout.addWidget(gb_audio)
-        whole_layout.addStretch()
-
-        self.vertical_layout_3.addLayout(whole_layout)
 
     def _action_factory(self, text, callback, enabled=True, **kwargs):
         """Helper method used for creating actions.
@@ -629,6 +490,11 @@ class VideoMorphMW(QMainWindow):
             tip=self.tr('Exit') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.close)
 
+        self.info_action = self._action_factory(
+            text=self.tr('Properties...'),
+            tip=self.tr('Show Video Properties'),
+            callback=self.show_video_info)
+
     def _create_context_menu(self):
         first_separator = QAction(self)
         first_separator.setSeparator(True)
@@ -643,6 +509,7 @@ class VideoMorphMW(QMainWindow):
         self.tb_tasks.addAction(second_separator)
         self.tb_tasks.addAction(self.play_input_media_file_action)
         self.tb_tasks.addAction(self.play_output_media_file_action)
+        self.tb_tasks.addAction(self.info_action)
 
     def _create_main_menu(self):
         """Create main app menu."""
@@ -756,28 +623,6 @@ class VideoMorphMW(QMainWindow):
                                   remove=False, convert=False,
                                   play_input=False, play_output=False)
 
-    def _show_video_info(self, position):
-        """Show video info on the Info Panel."""
-        media_file = self.media_list.get_file(position)
-
-        self.label_file_name_value.setText(media_file.format_info['filename'])
-        self.label_size_value.setText(media_file.format_info['size'])
-        self.label_duration_value.setText(media_file.format_info['duration'])
-        self.label_format_name_value.setText(
-            media_file.format_info['format_name'])
-        self.label_format_long_name_value.setText(
-            media_file.format_info['format_long_name'])
-
-        self.label_codec_name_value.setText(
-            media_file.video_stream_info['codec_name'])
-        self.label_codec_long_name_value.setText(
-            media_file.video_stream_info['codec_long_name'])
-        self.label_bit_rate_value.setText(
-            media_file.video_stream_info['bit_rate'])
-        self.label_width_value.setText(media_file.video_stream_info['width'])
-        self.label_height_value.setText(media_file.video_stream_info['height'])
-
-
     @staticmethod
     def _get_settings_file():
         return QSettings(join_path(SYS_PATHS.config, 'config.ini'),
@@ -852,6 +697,14 @@ class VideoMorphMW(QMainWindow):
     def videomorph_web(self):
         """Open VideoMorph Web page."""
         self._open_url(url='http://videomorph.webmisolutions.com')
+
+    def show_video_info(self):
+        """Show video info on the Info Panel."""
+        position = self.tb_tasks.currentRow()
+        info_dlg = InfoDialog(parent=self,
+                              position=position,
+                              media_list=self.media_list)
+        info_dlg.show()
 
     @staticmethod
     def _open_url(url):
