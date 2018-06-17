@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# File name: about.py
+# File name: changelog.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2017 VideoMorph Development Team

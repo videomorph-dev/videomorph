@@ -78,6 +78,7 @@ from .vmwidgets import TasksListTable
 from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
 from .changelog import ChangelogDialog
+from .info import InfoDialog
 
 
 class VideoMorphMW(QMainWindow):
@@ -100,7 +101,7 @@ class VideoMorphMW(QMainWindow):
         self.setWindowIcon(icon)
         # Define app central widget
         self.central_widget = QWidget(self)
-        # Difine layouts
+        # Define layouts
         self.vertical_layout = QVBoxLayout(self.central_widget)
         self.horizontal_layout = QHBoxLayout()
         self.vertical_layout_1 = QVBoxLayout()
@@ -489,6 +490,11 @@ class VideoMorphMW(QMainWindow):
             tip=self.tr('Exit') + ' ' + APP_NAME + ' ' + VERSION,
             callback=self.close)
 
+        self.info_action = self._action_factory(
+            text=self.tr('Properties...'),
+            tip=self.tr('Show Video Properties'),
+            callback=self.show_video_info)
+
     def _create_context_menu(self):
         first_separator = QAction(self)
         first_separator.setSeparator(True)
@@ -503,6 +509,7 @@ class VideoMorphMW(QMainWindow):
         self.tb_tasks.addAction(second_separator)
         self.tb_tasks.addAction(self.play_input_media_file_action)
         self.tb_tasks.addAction(self.play_output_media_file_action)
+        self.tb_tasks.addAction(self.info_action)
 
     def _create_main_menu(self):
         """Create main app menu."""
@@ -690,6 +697,14 @@ class VideoMorphMW(QMainWindow):
     def videomorph_web(self):
         """Open VideoMorph Web page."""
         self._open_url(url='http://videomorph.webmisolutions.com')
+
+    def show_video_info(self):
+        """Show video info on the Info Panel."""
+        position = self.tb_tasks.currentRow()
+        info_dlg = InfoDialog(parent=self,
+                              position=position,
+                              media_list=self.media_list)
+        info_dlg.show()
 
     @staticmethod
     def _open_url(url):
