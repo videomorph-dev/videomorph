@@ -1349,14 +1349,14 @@ class VideoMorphMW(QMainWindow):
         # Test if encoding process is finished
         if self.media_list.is_exhausted:
 
-            if self.conversion_lib.library_error is not None:
+            if self.conversion_lib.error is not None:
                 self._show_message_box(
                     type_=QMessageBox.Critical,
                     title='Error!',
                     msg=self.tr('The Conversion Library has '
                                 'Failed with Error:') + ' ' +
-                    self.conversion_lib.library_error)
-                self.conversion_lib.library_error = None
+                    self.conversion_lib.error)
+                self.conversion_lib.error = None
             elif not self.media_list.all_stopped:
                 if self.chb_shutdown.checkState():
                     self.shutdown_machine()

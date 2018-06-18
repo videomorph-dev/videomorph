@@ -52,11 +52,6 @@ APP_NAME = 'VideoMorph'
 VERSION = get_version()
 LOCALE = get_locale()
 
-LIBRARY_ERRORS = ('Unknown encoder', 'Unrecognized option', 'Invalid argument')
-
-LIBRARY_PARAM_REGEX = {'bitrate': r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
-                       'time': r'time=([0-9.:]+) '}
-
 VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
                  ' *.flv *.vob *.ts *.3gp *.ogv *.mpg *.mp4 *.avi')
 
