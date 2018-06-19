@@ -108,7 +108,7 @@ class _XMLProfile:
         try:
             copy2(src=self._user_xml_file_path(
                 file_name=self._xml_files.customized),
-                      dst=dst_dir)
+                  dst=dst_dir)
         except OSError:
             raise PermissionError
 
