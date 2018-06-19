@@ -33,7 +33,7 @@ from . import VALID_VIDEO_EXT
 
 
 def run_on_console(app, main_win):
-    """Provides option to run VideoMorph from the command line."""
+    """Provide options to run VideoMorph from the command line."""
 
     # Add a parser for command line
     parser = argparse.ArgumentParser(description=APP_NAME + ' ' + VERSION)
@@ -61,7 +61,7 @@ def run_on_console(app, main_win):
             if exists(file):
                 files.append(abspath(file))
             else:
-                print("Video File: {0}, doesn't exit".format(file),
+                print("Video file: {0}, doesn't exit".format(file),
                       file=sys.stderr)
 
     if args.input_dir:

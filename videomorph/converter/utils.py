@@ -20,7 +20,9 @@
 """This module contains some utilities and functions."""
 
 import os
+from os.path import exists
 from os.path import pathsep
+from os.path import join as join_path
 from locale import getdefaultlocale
 
 
@@ -36,42 +38,34 @@ def which(app):
     if app == '':
         raise ValueError('Invalid app name')
 
-    path = os.environ.get('PATH', os.defpath)
-    for directory in path.split(pathsep):
-        app_path = os.path.join(directory, app)
-        if os.path.exists(app_path) and os.access(app_path, os.X_OK):
+    sys_path_var = os.environ.get('PATH', os.defpath)
+    for path in sys_path_var.split(pathsep):
+        app_path = join_path(path, app)
+        if exists(app_path) and os.access(app_path, os.X_OK):
             return app_path
 
 
 def write_time(time_in_secs):
     """Return time in 00h:00m:00s format."""
     try:
-        time = int(round(float(time_in_secs)))
+        time = round(float(time_in_secs))
     except (TypeError, ValueError):
         raise ValueError('Invalid time measure.')
 
     if time < 0:
         raise ValueError('Time must be positive.')
 
-    def fix(string):
-        """Fix a number so it always contain two characters."""
-        string = str(string)
-        if len(string) == 1:
-            return '0' + string
-
-        return string
-
-    hours = int(time / 3600)
-    minutes = int(time / 60) - hours * 60
+    hours = time // 3600
+    minutes = time // 60 - hours * 60
     secs = time - minutes * 60 - hours * 3600
 
-    if hours:  # @return the time in 00h:00m:00s format
-        return ':'.join(['{0}h'.format(fix(hours)),
-                         '{0}m'.format(fix(minutes)),
-                         '{0}s'.format(fix(secs))])
-    elif minutes:  # @return the time in 00m:00s format
-        return ':'.join(['{0}m'.format(fix(minutes)),
-                         '{0}s'.format(fix(secs))])
+    if hours:  # return the time in 00h:00m:00s format
+        return '{hours:02d}h:{minutes:02d}m:{secs:02d}s'.format(
+            hours=hours, minutes=minutes, secs=secs)
 
-    # @return the time in 00s format
-    return '{0}s'.format(fix(str(secs)))
+    if minutes:  # return the time in 00m:00s format
+        return '{minutes:02d}m:{secs:02d}s'.format(minutes=minutes,
+                                                   secs=secs)
+
+    # return the time in 00s format
+    return '{secs:02d}s'.format(secs=secs)

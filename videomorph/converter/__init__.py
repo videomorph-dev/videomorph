@@ -22,7 +22,6 @@
 from collections import namedtuple
 from os import cpu_count
 from os.path import dirname
-from os.path import exists
 from os.path import join as join_path
 
 from .platformdeps import sys_path_factory
@@ -36,13 +35,15 @@ BASE_DIR = dirname(dirname(dirname(__file__)))
 
 def get_version():
     """Return app's version number."""
-    if exists(join_path(SYS_PATHS.doc, 'VERSION')):
-        version_file = join_path(SYS_PATHS.doc, 'VERSION')
-    else:
-        version_file = join_path(BASE_DIR, 'VERSION')
+    try:
+        version_file = open(join_path(SYS_PATHS.doc, 'VERSION'),
+                            'r', encoding='UTF-8')
+    except FileNotFoundError:
+        version_file = open(join_path(BASE_DIR, 'VERSION'),
+                            'r', encoding='UTF-8')
 
-    with open(version_file, 'r', encoding='UTF-8') as ver_file:
-        version = ver_file.readline().strip('\n')
+    with version_file:
+        version = version_file.readline().strip('\n')
 
     return version
 
@@ -51,18 +52,13 @@ APP_NAME = 'VideoMorph'
 VERSION = get_version()
 LOCALE = get_locale()
 
-LIBRARY_ERRORS = ('Unknown encoder', 'Unrecognized option', 'Invalid argument')
-
-LIBRARY_PARAM_REGEX = {'bitrate': r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
-                       'time': r'time=([0-9.:]+) '}
-
 VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
                  ' *.flv *.vob *.ts *.3gp *.ogv *.mpg *.mp4 *.avi')
 
 VALID_VIDEO_EXT = {ext.lstrip('*') for ext in VIDEO_FILTERS.split()}
 
 MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
-STATUS = MediaFileStatus('To convert', 'Done!', 'Stopped!')
+STATUS = MediaFileStatus('Todo', 'Done', 'Stopped')
 
 XMLFiles = namedtuple('XMLFiles', 'default customized')
 XML_FILES = XMLFiles('default.xml', 'customized.xml')

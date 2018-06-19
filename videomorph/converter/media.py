@@ -24,9 +24,9 @@ from collections import deque
 from os import W_OK
 from os import access
 from os import remove
-from os import sep
 from os.path import basename
 from os.path import exists
+from os.path import join as join_path
 
 from . import CPU_CORES
 from . import STATUS
@@ -65,7 +65,7 @@ class MediaList(list):
             files_paths (iterable): list of files paths
         Yield:
             Element 1: Total number of video files to process
-            Element 2,...: file path for the video file processed
+            Element 2,...: file path for the processed video file
         """
         files_paths_to_add = self._filter_by_path(files_paths)
 
@@ -102,16 +102,16 @@ class MediaList(list):
         return self[position].input_path
 
     def get_file_status(self, position):
-        """Return the video file status."""
+        """Return the video file conversion status."""
         return self[position].status
 
     def set_file_status(self, position, status):
-        """Set the video file status."""
+        """Set the video file conversion status."""
         self[position].status = status
 
     def get_file_info(self, position, info_param):
         """Return general streaming info from a video file."""
-        return self[position].get_info(info_param)
+        return self[position].get_format_info(info_param)
 
     def running_file_name(self, with_extension=False):
         """Return the running file name."""
@@ -119,7 +119,7 @@ class MediaList(list):
 
     def running_file_info(self, info_param):
         """Return running file info."""
-        return self._running_file.get_info(info_param)
+        return self._running_file.get_format_info(info_param)
 
     @property
     def running_file_status(self):
@@ -181,17 +181,17 @@ class MediaList(list):
     @property
     def length(self):
         """Return the number of elements in the list."""
-        return len(self)
+        return self.__len__()
 
     @property
     def duration(self):
         """Return the duration time of MediaList counting files todo only."""
-        return sum(float(media.get_info('duration')) for
+        return sum(float(media.get_format_info('duration')) for
                    media in self if media.status == STATUS.todo)
 
     @property
     def _running_file(self):
-        """Return the file that is currently running."""
+        """Return the file currently running."""
         return self[self.position]
 
     def _add_file(self, media_file):
@@ -199,7 +199,7 @@ class MediaList(list):
         # Invalid metadata
         try:
             # Duration is not a valid float() argument
-            duration = float(media_file.get_info('duration'))
+            duration = float(media_file.get_format_info('duration'))
         except (TypeError, ValueError):
             raise InvalidMetadataError('Invalid file duration')
 
@@ -207,7 +207,7 @@ class MediaList(list):
         if duration > 0:
             self.append(media_file)
         else:
-            raise InvalidMetadataError('File is zero length')
+            raise InvalidMetadataError('File is zero size')
 
     def _media_files_generator(self, files_paths):
         """Yield _MediaFile objects to be added to MediaList."""
@@ -221,13 +221,13 @@ class MediaList(list):
                               self._file_not_added(file_path)]
             if not filtered_paths:
                 return None
-        else:
-            filtered_paths = files_paths
 
-        return filtered_paths
+            return filtered_paths
+
+        return files_paths
 
     def _file_not_added(self, file_path):
-        """Determine if a video file is in the list already."""
+        """Determine if a video file is already in the list."""
         for file in self:
             if file.input_path == file_path:
                 return False
@@ -240,14 +240,20 @@ class _MediaFile:
     __slots__ = ('input_path',
                  '_profile',
                  'status',
-                 'info')
+                 'format_info',
+                 'video_stream_info',
+                 'audio_stream_info',
+                 'sub_stream_info')
 
     def __init__(self, file_path, profile):
         """Class initializer."""
         self._profile = profile
         self.input_path = file_path
         self.status = STATUS.todo
-        self.info = self._parse_probe()
+        self.format_info = self._parse_probe_format()
+        self.video_stream_info = self._parse_probe_video_stream()
+        self.audio_stream_info = self._parse_probe_audio_stream()
+        self.sub_stream_info = self._parse_probe_sub_stream()
 
     def get_name(self, with_extension=False):
         """Return the file name."""
@@ -258,9 +264,9 @@ class _MediaFile:
             return full_file_name
         return file_name
 
-    def get_info(self, info_param):
+    def get_format_info(self, info_param):
         """Return an info attribute from a given video file."""
-        return self.info.get(info_param)
+        return self.format_info.get(info_param)
 
     def build_conversion_cmd(self, output_dir, target_quality,
                              tagged_output, subtitle):
@@ -316,24 +322,17 @@ class _MediaFile:
 
     def get_output_file_name(self, output_dir, tagged_output):
         """Return the name of the output video file."""
-        file_name = basename(self.get_output_path(output_dir, tagged_output))
-
-        return file_name
+        return basename(self.get_output_path(output_dir, tagged_output))
 
     def get_output_path(self, output_dir, tagged_output):
-        """Return the the output file input_path."""
+        """Return the the output file path."""
         tag = self._profile.quality_tag if tagged_output else ''
-
-        output_file_path = (output_dir +
-                            sep +  # multi-platform input_path separator
-                            tag +
-                            self.get_name() +
-                            self._profile.extension)
-        return output_file_path
+        output_file_name = tag + self.get_name() + self._profile.extension
+        return join_path(output_dir, output_file_name)
 
     @property
     def _subtitle_path(self):
-        """Returns the subtitle input_path if exit."""
+        """Return the subtitle path if exit."""
         extension = self.input_path.split('.')[-1]
         subtitle_path = self.input_path.strip('.' + extension) + '.srt'
 
@@ -343,7 +342,7 @@ class _MediaFile:
             raise FileNotFoundError('Subtitle file not found')
 
     def _process_subtitles(self, subtitle):
-        # Process subtitles if available
+        """Process subtitles if available."""
         if subtitle:
             try:
                 subtitle_opt = ['-vf',
@@ -356,26 +355,73 @@ class _MediaFile:
 
         return []
 
-    def _probe(self):
+    def _probe(self, args):
         """Return the prober output as a file like object."""
         prober_run = spawn_process([self._profile.prober,
-                                    '-show_format',
+                                    *args,
                                     self.input_path])
 
         return prober_run.stdout
 
-    def _parse_probe(self):
+    def _parse_probe(self, selected_params, cmd):
         """Parse the prober output."""
         info = {}
 
-        def __get_value(line_):
-            """Prepare the data for parsing."""
-            return line_.split('=')[-1].strip()
+        with self._probe(cmd) as probe_file:
+            stream_count = -1
 
-        with self._probe() as probe_file:
             for format_line in probe_file:
                 format_line = format_line.strip()
-                if format_line.startswith('duration'):
-                    info['duration'] = __get_value(format_line)
-                    break
+                kv = format_line.split('=')
+
+                if '[STREAM]' in format_line:
+                    stream_count += 1
+
+                if '=' in format_line and kv[0] in selected_params:
+                    if not kv[0] in info:
+                        info[kv[0]] = kv[1]
+                    else:
+                        info[kv[0] + '_{0}'.format(stream_count)] = kv[1]
+
         return info
+
+    def _parse_probe_format(self):
+        """Parse the prober output."""
+        selected_params = {'filename',
+                           'nb_streams',
+                           'format_name',
+                           'format_long_name',
+                           'duration',
+                           'size',
+                           'bit_rate'}
+
+        return self._parse_probe(selected_params=selected_params,
+                                 cmd=['-show_format'])
+
+    def _parse_probe_video_stream(self):
+        """Parse the prober output."""
+        selected_params = {'codec_name',
+                           'codec_long_name',
+                           'bit_rate',
+                           'width',
+                           'height'}
+
+        return self._parse_probe(selected_params=selected_params,
+                                 cmd=['-show_streams', '-select_streams', 'v'])
+
+    def _parse_probe_audio_stream(self):
+        """Parse the prober output."""
+        selected_params = {'codec_name',
+                           'codec_long_name'}
+
+        return self._parse_probe(selected_params=selected_params,
+                                 cmd=['-show_streams', '-select_streams', 'a'])
+
+    def _parse_probe_sub_stream(self):
+        """Parse the prober output."""
+        selected_params = {'codec_name',
+                           'codec_long_name',
+                           'TAG:language'}
+
+        return self._parse_probe(selected_params=selected_params,
+                                 cmd=['-show_streams', '-select_streams', 's'])

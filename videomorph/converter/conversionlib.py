@@ -27,8 +27,6 @@ from time import time
 from PyQt5.QtCore import QProcess
 
 from . import BASE_DIR
-from . import LIBRARY_ERRORS
-from . import LIBRARY_PARAM_REGEX
 from .platformdeps import launcher_factory
 from .platformdeps import generic_factory
 from .utils import write_time
@@ -44,7 +42,7 @@ class ConversionLib:
         self._library_path = library.library_path
         self.prober_path = library.prober_path
         self._converter = _Converter(library_path=self.library_path)
-        self.library_error = None
+        self.error = None
         self.reader = _OutputReader()
         self.timer = _ConversionTimer()
 
@@ -54,7 +52,7 @@ class ConversionLib:
 
     def catch_errors(self):
         """Catch the library error when running."""
-        self.library_error = self.reader.catch_library_error()
+        self.error = self.reader.catch_library_error()
 
     @staticmethod
     def run_player(file_path):
@@ -183,8 +181,12 @@ class _OutputReader:
 
     def __init__(self):
         """Class initializer."""
-        self._params_regex = LIBRARY_PARAM_REGEX
-        self._library_errors = LIBRARY_ERRORS
+        self._params_regex = {
+            'bitrate': r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
+            'time': r'time=([0-9.:]+) '}
+        self._library_errors = ('Unknown encoder',
+                                'Unrecognized option',
+                                'Invalid argument')
         self._process_output = None
 
     def read(self):
