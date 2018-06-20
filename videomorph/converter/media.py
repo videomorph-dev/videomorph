@@ -357,9 +357,9 @@ class _MediaFile:
 
     def _probe(self, args):
         """Return the prober output as a file like object."""
-        prober_run = spawn_process([self._profile.prober,
-                                    *args,
-                                    self.input_path])
+        process_args = [self._profile.prober, self.input_path]
+        process_args[1:-1] = args
+        prober_run = spawn_process(process_args)
 
         return prober_run.stdout
 
@@ -372,16 +372,16 @@ class _MediaFile:
 
             for format_line in probe_file:
                 format_line = format_line.strip()
-                kv = format_line.split('=')
+                param = format_line.split('=')
 
                 if '[STREAM]' in format_line:
                     stream_count += 1
 
-                if '=' in format_line and kv[0] in selected_params:
-                    if not kv[0] in info:
-                        info[kv[0]] = kv[1]
+                if '=' in format_line and param[0] in selected_params:
+                    if not param[0] in info:
+                        info[param[0]] = param[1]
                     else:
-                        info[kv[0] + '_{0}'.format(stream_count)] = kv[1]
+                        info[param[0] + '_{0}'.format(stream_count)] = param[1]
 
         return info
 
