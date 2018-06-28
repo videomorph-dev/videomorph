@@ -117,6 +117,10 @@ class _Launcher:
         """Shutdown computer."""
         raise NotImplementedError('Must be implemented in subclasses')
 
+    def notify(self, app_name, icon, msg):
+        """Show system notification."""
+        raise NotImplementedError('Must be implemented in subclasses')
+
 
 class _LinuxLauncher(_Launcher):
     """Concrete class to implement external apps launcher in Linux."""
@@ -157,6 +161,12 @@ class _LinuxLauncher(_Launcher):
         """Shutdown computer."""
         spawn_process(['shutdown', 'now'])
 
+    def notify(self, app_name, icon, msg):
+        """Show system notification."""
+        notifier = which('notify-send')
+        if notifier is not None:
+            spawn_process([notifier, '-i', icon, app_name, msg])
+
 
 class _Win32Launcher(_Launcher):
     """Concrete class to implement external apps launcher in Linux."""
@@ -168,6 +178,10 @@ class _Win32Launcher(_Launcher):
     def shutdown_machine(self):
         """Shutdown computer."""
         spawn_process(['shutdown', '/s'])
+
+    def notify(self, app_name, icon, msg):
+        """Show system notification."""
+        pass
 
 
 def launcher_factory():

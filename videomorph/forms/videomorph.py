@@ -706,6 +706,16 @@ class VideoMorphMW(QMainWindow):
                               media_list=self.media_list)
         info_dlg.show()
 
+    def notify(self, file_name):
+        launcher = launcher_factory()
+        if exists(join_path(BASE_DIR, VM_PATHS.icons)):
+            icon = join_path(BASE_DIR, VM_PATHS.icons, 'videomorph.png')
+        else:
+            icon = join_path(SYS_PATHS.icons, 'videomorph.png')
+        launcher.notify(APP_NAME, icon=icon,
+                        msg=file_name + ': ' +
+                            self.tr('Successfully converted'))
+
     @staticmethod
     def _open_url(url):
         """Open URL."""
@@ -1323,6 +1333,8 @@ class VideoMorphMW(QMainWindow):
     def _finish_file_encoding(self):
         """Finish the file encoding process."""
         if self.media_list.running_file_status != STATUS.stopped:
+            self.notify(file_name='"' + self.media_list.running_file_name(
+                with_extension=True) + '"')
             # Close and kill the converterprocess
             self.conversion_lib.close_converter()
             # Check if the process finished OK
