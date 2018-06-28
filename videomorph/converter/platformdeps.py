@@ -162,7 +162,7 @@ class _LinuxLauncher(_Launcher):
         spawn_process(['shutdown', 'now'])
 
     def notify(self, app_name, icon, msg):
-        """Show system notification."""
+        """Show system notification on Linux."""
         notifier = which('notify-send')
         if notifier is not None:
             spawn_process([notifier, '-i', icon, app_name, msg])
