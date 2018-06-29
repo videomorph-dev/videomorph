@@ -493,6 +493,7 @@ class VideoMorphMW(QMainWindow):
         self.info_action = self._action_factory(
             text=self.tr('Properties...'),
             tip=self.tr('Show Video Properties'),
+            enabled=False,
             callback=self.show_video_info)
 
     def _create_context_menu(self):
@@ -613,15 +614,14 @@ class VideoMorphMW(QMainWindow):
                                   output_dir=False,
                                   delete_chb=False,
                                   tag_chb=False,
-                                  play_input=False,
-                                  play_output=False)
+                                  info=False)
         elif self.media_list.get_file_status(row) == STATUS.todo:
             self.update_interface(stop=False, stop_all=False, remove=False,
-                                  play_input=False, play_output=False)
+                                  info=False)
         else:
             self.update_interface(stop=False, stop_all=False,
                                   remove=False, convert=False,
-                                  play_input=False, play_output=False)
+                                  info=False)
 
     @staticmethod
     def _get_settings_file():
@@ -854,13 +854,11 @@ class VideoMorphMW(QMainWindow):
                                       delete_chb=False,
                                       tag_chb=False,
                                       shutdown_chb=False,
-                                      play_input=False,
-                                      play_output=False)
+                                      info=False)
             else:
                 # Update ui
                 self.update_interface(stop=False, stop_all=False,
-                                      remove=False, play_input=False,
-                                      play_output=False)
+                                      remove=False, info=False)
 
     def _load_files(self, source_dir=QDir.homePath()):
         """Load video files."""
@@ -927,13 +925,15 @@ class VideoMorphMW(QMainWindow):
                                   delete_chb=False,
                                   tag_chb=False,
                                   play_input=False,
-                                  play_output=False)
+                                  play_output=False,
+                                  info=False)
         else:
             # Update the files status
             self._set_media_status()
             # Update ui
             self.update_interface(stop=False, stop_all=False, remove=False,
-                                  play_input=False, play_output=False)
+                                  play_input=False, play_output=False,
+                                  info=False)
 
         self._fill_media_list(files)
 
@@ -959,14 +959,17 @@ class VideoMorphMW(QMainWindow):
                                   delete_chb=False,
                                   tag_chb=False,
                                   play_input=False,
-                                  play_output=False)
+                                  play_output=False,
+                                  info=False)
         elif self.media_list.get_file_status(row) == STATUS.todo:
             self.update_interface(stop=False, stop_all=False, remove=False,
-                                  play_input=False, play_output=False)
+                                  play_input=False, play_output=False,
+                                  info=False)
         else:
             self.update_interface(stop=False, stop_all=False,
                                   remove=False, convert=False,
-                                  play_input=False, play_output=False)
+                                  play_input=False, play_output=False,
+                                  info=False)
 
     def play_output_media_file(self, path):
         """Play the output video using an available video player."""
@@ -988,14 +991,17 @@ class VideoMorphMW(QMainWindow):
                                   delete_chb=False,
                                   tag_chb=False,
                                   play_input=False,
-                                  play_output=False)
+                                  play_output=False,
+                                  info=False)
         elif self.media_list.get_file_status(row) == STATUS.todo:
             self.update_interface(stop=False, stop_all=False, remove=False,
-                                  play_input=False, play_output=False)
+                                  play_input=False, play_output=False,
+                                  info=False)
         else:
             self.update_interface(stop=False, stop_all=False,
                                   remove=False, convert=False,
-                                  play_input=False, play_output=False)
+                                  play_input=False, play_output=False,
+                                  info=False)
 
     def _play_media_file(self, file_path):
         """Play a video using an available video player."""
@@ -1073,7 +1079,8 @@ class VideoMorphMW(QMainWindow):
                                   tag_chb=False,
                                   shutdown_chb=False,
                                   play_input=False,
-                                  play_output=False)
+                                  play_output=False,
+                                  info=False)
 
     def add_customized_profile(self):
         """Show dialog for adding conversion profiles."""
@@ -1205,7 +1212,8 @@ class VideoMorphMW(QMainWindow):
                                   tag_chb=False,
                                   shutdown_chb=False,
                                   play_input=False,
-                                  play_output=False)
+                                  play_output=False,
+                                  info=False)
 
     def start_encoding(self):
         """Start the encoding process."""
@@ -1220,8 +1228,7 @@ class VideoMorphMW(QMainWindow):
                               output_dir=False,
                               delete_chb=False,
                               tag_chb=False,
-                              play_input=False,
-                              play_output=False)
+                              info=False)
 
         # Increment the the MediaList index
         self.media_list.position += 1
@@ -1255,7 +1262,8 @@ class VideoMorphMW(QMainWindow):
                 self._reset_options_check_boxes()
                 self.update_interface(convert=False, stop=False,
                                       stop_all=False, remove=False,
-                                      play_input=False, play_output=False)
+                                      play_input=False, play_output=False,
+                                      info=False)
             except FileNotFoundError:
                 self._show_message_box(
                     type_=QMessageBox.Critical,
@@ -1273,7 +1281,8 @@ class VideoMorphMW(QMainWindow):
                 self._reset_options_check_boxes()
                 self.update_interface(stop=False,
                                       stop_all=False, remove=False,
-                                      play_input=False, play_output=False)
+                                      play_input=False, play_output=False,
+                                      info=False)
             except FileExistsError:
                 self._show_message_box(
                     type_=QMessageBox.Critical,
@@ -1294,7 +1303,8 @@ class VideoMorphMW(QMainWindow):
                 self._reset_options_check_boxes()
                 self.update_interface(stop=False,
                                       stop_all=False, remove=False,
-                                      play_input=False, play_output=False)
+                                      play_input=False, play_output=False,
+                                      info=False)
         else:
             self._end_encoding_process()
 
@@ -1398,7 +1408,8 @@ class VideoMorphMW(QMainWindow):
             # Update tool buttons
             self.update_interface(convert=False, stop=False,
                                   stop_all=False, remove=False,
-                                  play_input=False, play_output=False)
+                                  play_input=False, play_output=False,
+                                  info=False)
         else:
             self.start_encoding()
 
@@ -1516,7 +1527,8 @@ class VideoMorphMW(QMainWindow):
                               stop_all=False,
                               remove=False,
                               play_input=False,
-                              play_output=False)
+                              play_output=False,
+                              info=False)
 
     def _update_all_table_rows(self, column, value):
         rows = self.tb_tasks.rowCount()
@@ -1547,7 +1559,8 @@ class VideoMorphMW(QMainWindow):
 
     def _option_check_boxes_clicked(self):
         self.update_interface(stop=False, stop_all=False, remove=False,
-                              play_input=False, play_output=False)
+                              play_input=False, play_output=False,
+                              info=False)
 
         self._set_media_status()
         self._update_all_table_rows(column=COLUMNS.PROGRESS,
@@ -1575,7 +1588,8 @@ class VideoMorphMW(QMainWindow):
                          tag_chb=True,
                          shutdown_chb=True,
                          play_input=True,
-                         play_output=True)
+                         play_output=True,
+                         info=True)
 
         variables.update(i_vars)
 
@@ -1595,6 +1609,7 @@ class VideoMorphMW(QMainWindow):
         self.chb_shutdown.setEnabled(variables['shutdown_chb'])
         self.play_input_media_file_action.setEnabled(variables['play_input'])
         self.play_output_media_file_action.setEnabled(variables['play_output'])
+        self.info_action.setEnabled(variables['info'])
         self.tb_tasks.setCurrentItem(None)
 
     def _enable_context_menu_action(self):
@@ -1609,5 +1624,6 @@ class VideoMorphMW(QMainWindow):
             tagged_output=self.chb_tag.checkState())
         # Only enable the menu if output file exist and if it not .mp4,
         # cause .mp4 files doesn't run until conversion is finished
-        if exists(path) and self.cb_profiles.currentText() != 'MP4':
-            self.play_output_media_file_action.setEnabled(True)
+        self.play_output_media_file_action.setEnabled(
+            exists(path) and self.cb_profiles.currentText() != 'MP4')
+        self.info_action.setEnabled(bool(self.media_list.length))
