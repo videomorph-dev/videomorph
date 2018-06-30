@@ -79,6 +79,24 @@
             <file_extension>.mov</file_extension>
             <preset_name_es>MOV Genérico</preset_name_es>
         </MOVGeneric>
+        <QuicktimeMOVAuto>
+            <preset_name>Quicktime MOV Auto</preset_name>
+            <preset_params>-sameq</preset_params>
+            <file_extension>.mov</file_extension>
+            <preset_name_es>Quicktime MOV Auto</preset_name_es>
+        </QuicktimeMOVAuto>
+        <QuickTimeHHighquality>
+            <preset_name>QuickTime H.264 High quality</preset_name>
+            <preset_params>-crf 35.0 -vcodec libx264 -acodec libfaac -ar 48000 -ab 128kb -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1</preset_params>
+            <file_extension>.mov</file_extension>
+            <preset_name_es>QuickTime H.264 Alta Calidad</preset_name_es>
+        </QuickTimeHHighquality>
+        <QuickTimeHVeryHighQuality>
+            <preset_name>QuickTime H.264 Very High Quality</preset_name>
+            <preset_params>-crf 25.0 -vcodec libx264 -acodec libfaac -ar 48000 -ab 160kb -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1</preset_params>
+            <file_extension>.mp4</file_extension>
+            <preset_name_es>QuickTime H.264 Muy Alta Calidad</preset_name_es>
+        </QuickTimeHVeryHighQuality>
     </MOV>
     <MP4>
         <MP4HighQuality>
