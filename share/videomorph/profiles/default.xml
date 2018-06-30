@@ -114,11 +114,17 @@
     </MP4>
     <VCD>
         <VCDHighQuality>
-            <preset_name>VCD High Quality</preset_name>
+            <preset_name>NTSC VCD High Quality</preset_name>
             <preset_params>-f vcd -target ntsc-vcd -mbd rd -cmp 0 -subcmp 2</preset_params>
             <file_extension>.mpg</file_extension>
             <preset_name_es>VCD Alta Calidad</preset_name_es>
         </VCDHighQuality>
+        <PALVCDHighQuality>
+            <preset_name>PAL VCD High Quality</preset_name>
+            <preset_params>-f vcd -target pal-vcd -mbd rd -trellis -mv0 -cmp 0 -subcmp 2</preset_params>
+            <file_extension>.mpg</file_extension>
+            <preset_name_es>PAL VCD Alta Calidad</preset_name_es>
+        </PALVCDHighQuality>
     </VCD>
     <WEBM>
         <WEBMFullscreen>
@@ -153,13 +159,13 @@
             <preset_name>MP3 Good Quality (160 kb)</preset_name>
             <preset_params>-acodec libmp3lame -ab 160k -ac 2 -ar 44100 -vn</preset_params>
             <file_extension>.mp3</file_extension>
-            <preset_name_es>MP3 Good Quality (160 kb)</preset_name_es>
+            <preset_name_es>MP3 Buena Calidad (160 kb)</preset_name_es>
         </MP3GoodQualitykb>
         <MP3HighQualitykb>
             <preset_name>MP3 High Quality (192 kb)</preset_name>
             <preset_params>-acodec libmp3lame -ab 192k -ac 2 -ar 44100 -vn</preset_params>
             <file_extension>.mp3</file_extension>
-            <preset_name_es>MP3 High Quality (192 kb)</preset_name_es>
+            <preset_name_es>MP3 Alta Calidad (192 kb)</preset_name_es>
         </MP3HighQualitykb>
     </MP3>
 </video_profiles>
