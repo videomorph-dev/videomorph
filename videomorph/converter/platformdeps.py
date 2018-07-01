@@ -166,6 +166,11 @@ class _LinuxLauncher(_Launcher):
         notifier = which('notify-send')
         if notifier is not None:
             spawn_process([notifier, '-i', icon, app_name, msg])
+        players = ('paplay', 'aplay', 'play')
+        for player in map(which, players):
+            if player is not None:
+                spawn_process([player, sound])
+                break
 
 
 class _Win32Launcher(_Launcher):
@@ -181,8 +186,8 @@ class _Win32Launcher(_Launcher):
 
     def notify(self, app_name, icon, msg, sound=None):
         """Show system notification."""
-        from winsound import PlaySound
-        PlaySound(sound)
+        from winsound import PlaySound, MB_OK
+        PlaySound(sound, MB_OK)
 
 
 def launcher_factory():
