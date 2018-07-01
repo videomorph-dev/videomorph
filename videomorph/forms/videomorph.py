@@ -716,7 +716,9 @@ class VideoMorphMW(QMainWindow):
             icon = join_path(SYS_PATHS.icons, 'videomorph.png')
         launcher.notify(APP_NAME, icon=icon,
                         msg=file_name + ': ' +
-                            self.tr('Successfully converted'))
+                            self.tr('Successfully converted'),
+                        sound=join_path(BASE_DIR, VM_PATHS.icons,
+                                        'successful.wav'))
 
     @staticmethod
     def _open_url(url):
