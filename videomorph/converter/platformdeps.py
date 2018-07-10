@@ -117,7 +117,7 @@ class _Launcher:
         """Shutdown computer."""
         raise NotImplementedError('Must be implemented in subclasses')
 
-    def notify(self, app_name, icon, msg, sound=None):
+    def sound_notify(self, sound=None):
         """Show system notification."""
         raise NotImplementedError('Must be implemented in subclasses')
 
@@ -161,11 +161,8 @@ class _LinuxLauncher(_Launcher):
         """Shutdown computer."""
         spawn_process(['shutdown', 'now'])
 
-    def notify(self, app_name, icon, msg, sound=None):
+    def sound_notify(self, sound=None):
         """Show system notification on Linux."""
-        notifier = which('notify-send')
-        if notifier is not None:
-            spawn_process([notifier, '-i', icon, app_name, msg])
         players = ('paplay', 'aplay', 'play')
         for player in map(which, players):
             if player is not None:
@@ -184,10 +181,11 @@ class _Win32Launcher(_Launcher):
         """Shutdown computer."""
         spawn_process(['shutdown', '/s'])
 
-    def notify(self, app_name, icon, msg, sound=None):
+    def sound_notify(self, sound=None):
         """Show system notification."""
         from winsound import PlaySound, MB_OK
         PlaySound(sound, MB_OK)
+
 
 
 def launcher_factory():

@@ -45,6 +45,7 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QComboBox,
                              QCheckBox,
                              QProgressBar,
+                             QSystemTrayIcon,
                              QToolBar,
                              QTableWidgetItem,
                              QLineEdit,
@@ -99,6 +100,10 @@ class VideoMorphMW(QMainWindow):
         icon = QIcon()
         icon.addPixmap(QPixmap(':/icons/videomorph.ico'))
         self.setWindowIcon(icon)
+        # Tray Icon
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(icon)
+        self.tray_icon.show()
         # Define app central widget
         self.central_widget = QWidget(self)
         # Define layouts
@@ -709,16 +714,12 @@ class VideoMorphMW(QMainWindow):
     def notify(self, file_name):
         """Notify on conversion finished."""
         file_name = ''.join(('"', file_name, '"'))
+        msg = file_name + ': ' + self.tr('Successfully converted')
+        self.tray_icon.showMessage(APP_NAME, msg,
+                                   QSystemTrayIcon.Information, 2000)
         launcher = launcher_factory()
-        if exists(join_path(BASE_DIR, VM_PATHS.icons)):
-            icon = join_path(BASE_DIR, VM_PATHS.icons, 'videomorph.png')
-        else:
-            icon = join_path(SYS_PATHS.icons, 'videomorph.png')
-        launcher.notify(APP_NAME, icon=icon,
-                        msg=file_name + ': ' +
-                            self.tr('Successfully converted'),
-                        sound=join_path(BASE_DIR, VM_PATHS.icons,
-                                        'successful.wav'))
+        launcher.sound_notify(sound=join_path(BASE_DIR, VM_PATHS.icons,
+                              'successful.wav'))
 
     @staticmethod
     def _open_url(url):
