@@ -712,14 +712,17 @@ class VideoMorphMW(QMainWindow):
         info_dlg.show()
 
     def notify(self, file_name):
-        """Notify on conversion finished."""
+        """Notify when conversion finished."""
         file_name = ''.join(('"', file_name, '"'))
         msg = file_name + ': ' + self.tr('Successfully converted')
         self.tray_icon.showMessage(APP_NAME, msg,
                                    QSystemTrayIcon.Information, 2000)
+        if exists(join_path(BASE_DIR, VM_PATHS.sounds)):
+            sound = join_path(BASE_DIR, VM_PATHS.sounds, 'successful.wav')
+        else:
+            sound = join_path(SYS_PATHS.sounds, 'successful.wav')
         launcher = launcher_factory()
-        launcher.sound_notify(sound=join_path(BASE_DIR, VM_PATHS.icons,
-                              'successful.wav'))
+        launcher.sound_notify(sound)
 
     @staticmethod
     def _open_url(url):

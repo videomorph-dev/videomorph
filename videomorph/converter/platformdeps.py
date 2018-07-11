@@ -189,7 +189,6 @@ class _Win32Launcher(_Launcher):
         PlaySound(sound, MB_OK)
 
 
-
 def launcher_factory():
     """Factory method to create the appropriate launcher."""
     return generic_factory(parent_class=_Launcher)
