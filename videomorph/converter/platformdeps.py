@@ -57,6 +57,7 @@ class VMPaths:
         self.icons = 'share/icons'
         self.i18n = 'share/videomorph/translations'
         self.profiles = 'share/videomorph/profiles'
+        self.sounds = 'share/videomorph/sounds'
         self.doc = 'share/doc/videomorph'
         self.help = join_path(self.doc, 'manual')
         self.man = 'share/man/man1'
@@ -86,6 +87,7 @@ class _Win32Paths(VMPaths):
         self.icons = join_path(program_files, r'VideoMorph\icons')
         self.i18n = join_path(program_files, r'VideoMorph\translations')
         self.profiles = join_path(program_files, r'VideoMorph\profiles')
+        self.sounds = join_path(program_files, r'VideoMorph\sounds')
         self.doc = join_path(program_files, r'VideoMorph\doc')
         self.help = join_path(self.doc, 'manual')
         self.man = join_path(program_files, r'VideoMorph\man')
