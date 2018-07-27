@@ -14,4 +14,4 @@ install:
 script:
   - flake8 --select=D1 codeshard/videomorph/*.py
 after_success:
-  - codecov
+  - codecov --token=a8c919d0-73e9-41da-ac14-2fbb6d4d57b8
