@@ -6,12 +6,11 @@ env:
   - PEP8=1
   - COV=1
 before_install:
-  - pip install codecov
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 install:
-  - pip install flake8 pep8-naming flake8-debugger flake8-docstrings
+  - pip install flake8 pep8-naming flake8-debugger flake8-docstrings codecov
 script:
   - flake8 --select=D1 codeshard/videomorph/*.py
 after_success:
-  - codecov --token=a8c919d0-73e9-41da-ac14-2fbb6d4d57b8
+  - codecov
