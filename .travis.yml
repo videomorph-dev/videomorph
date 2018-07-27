@@ -13,4 +13,4 @@ install:
 script:
   - flake8 --select=D1 codeshard/videomorph/*.py
 after_success:
-  - codecov
+  - nosetests --with-coverage
