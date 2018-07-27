@@ -10,7 +10,7 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 install:
-  - pip install flake8 pep8-naming flake8-debugger flake8-docstrings codecov PyQt5
+  - pip install flake8 pep8-naming flake8-debugger flake8-docstrings codecov sip==4.19.8 PyQt5
 script:
   - flake8 --select=D1 codeshard/videomorph/*.py
 after_success:
