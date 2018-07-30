@@ -2,15 +2,9 @@ sudo: false
 dist: xenial
 language: python
 group: edge
-python: 
- - 3.4
- - 3.5
 
 matrix:
   include:
-    - os: linux
-      python: 3.4
-      env: TESTENV=py34-pyqt571 QT_API=pyqt5 PEP8=1 COV=1
     - os: linux
       python: 3.5
       env: TESTENV=py35-pyqt571 QT_API=pyqt5 PEP8=1 COV=1
