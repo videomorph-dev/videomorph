@@ -34,4 +34,4 @@ script:
   - flake8 --select=D1 videomorph/*.py
 
 after_success:
-  - codecov
+  - nosetests --with-coverage
