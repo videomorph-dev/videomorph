@@ -29,7 +29,7 @@ cache:
 install:
   - pip install pip --upgrade
   - pip install nose flake8 pep8-naming flake8-debugger flake8-docstrings codecov
-  - pip install PyQt5==5.7
+  - pip install PyQt5==5.7.1
 
 script:
   - flake8 --select=D1 videomorph/*.py
