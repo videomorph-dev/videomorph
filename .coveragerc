@@ -1,18 +1,16 @@
 [run]
+branch = True
 source = videomorph
-branch = true
-omit =
-    videomorph/__main__.py
-    */__init__.py
 
 [report]
 exclude_lines =
     pragma: no cover
     def __repr__
-    raise AssertionError
+    if .debug:
     raise NotImplementedError
-    raise utils\.Unreachable
-    if __name__ == ["']__main__["']:
-
-[xml]
-output=coverage.xml
+    if __name__ == .__main__.:
+ignore_errors = True
+omit =
+    venv/*
+    tests/*
+    setup.py
