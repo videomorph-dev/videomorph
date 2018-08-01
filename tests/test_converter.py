@@ -23,8 +23,6 @@
 import nose
 from PyQt5.QtCore import QProcess
 
-from videomorph.converter import CONV_LIB
-from videomorph.converter import PROBER
 from videomorph.converter import media
 from videomorph.converter.conversionlib import ConversionLib
 from videomorph.converter.profile import ConversionProfile
@@ -32,7 +30,7 @@ from videomorph.converter.profile import ConversionProfile
 conv_lib = ConversionLib()
 
 profile = ConversionProfile(prober=conv_lib.prober_path)
-profile.update(new_quality='DVD Fullscreen (4:3)')
+profile.update(new_quality='DVD Fullscreen 352x480 (4:3)')
 
 media_list = media.MediaList(profile)
 
@@ -47,24 +45,18 @@ def teardown():
 
 
 # Set of test for converter module
-def test_get_system_lib():
-    """Test the system library."""
-    assert conv_lib.get_system_library_name() == CONV_LIB.ffmpeg
+def test_get_library_path():
+    """Test the library path."""
+    assert conv_lib.library_path in {'/usr/bin/ffmpeg', '/usr/local/bin/ffmpeg'}
 
 
-def test_name():
-    """Test conversion library name."""
-    assert conv_lib.name == CONV_LIB.ffmpeg
-
-
-def test_prober():
-    """Test the prober name."""
-    assert conv_lib.prober_path == PROBER.ffprobe
+def test_prober_path():
+    """Test the prober path."""
+    assert conv_lib.prober_path in {'/usr/bin/ffprobe', '/usr/local/bin/ffprbe'}
 
 
 def test_start_converter():
     """Test start converter."""
-
     gen = media_list.populate(('Dad.mpg',))
     next(gen)
     next(gen)
@@ -73,7 +65,7 @@ def test_start_converter():
         output_dir='.',
         subtitle=False,
         tagged_output=True,
-        target_quality='DVD Fullscreen (4:3)')
+        target_quality='DVD Fullscreen 352x480 (4:3)')
 
     conv_lib.start_converter(cmd)
 
