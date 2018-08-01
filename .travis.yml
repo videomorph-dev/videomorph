@@ -30,3 +30,4 @@ script:
 
 after_success:
   - nosetests --with-coverage
+  - codecov
