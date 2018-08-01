@@ -22,13 +22,14 @@
 
 import nose
 
+from videomorph.converter.conversionlib import ConversionLib
 from videomorph.converter.media import MediaList
 from videomorph.converter.profile import ConversionProfile
-from videomorph.converter import PROBER
 from videomorph.converter import STATUS
 
+conv_lib = ConversionLib()
 
-profile = ConversionProfile(prober=PROBER.ffprobe)
+profile = ConversionProfile(prober=conv_lib.prober_path)
 profile.update(new_quality='DVD Fullscreen (4:3)')
 
 media_list = MediaList(profile=profile)
@@ -139,19 +140,28 @@ def test_build_conversion_cmd():
         output_dir='.',
         tagged_output=True,
         subtitle=True,
-        target_quality='DVD Fullscreen (4:3)') == ['-i', 'Dad.mpg', '-f',
-                                                   'dvd', '-target',
-                                                   'ntsc-dvd', '-vcodec',
-                                                   'mpeg2video', '-r',
-                                                   '29.97', '-s', '352x480',
-                                                   '-aspect', '4:3', '-b:v',
-                                                   '4000k', '-mbd', 'rd',
-                                                   '-cmp', '2', '-subcmp',
-                                                   '2', '-acodec', 'mp2',
-                                                   '-b:a', '192k', '-ar',
-                                                   '48000', '-ac', '2',
-                                                   '-threads', '3', '-y',
-                                                   './[DVDF]-Dad.mpg']
+        target_quality='DVD Fullscreen 352x480 (4:3)') == ['-i', 'Dad.mpg',
+                                                           '-f', 'dvd',
+                                                           '-target',
+                                                           'ntsc-dvd',
+                                                           '-vcodec',
+                                                           'mpeg2video', '-r',
+                                                           '29.97', '-s',
+                                                           '352x480',
+                                                           '-aspect', '4:3',
+                                                           '-b:v',
+                                                           '4000k', '-mbd',
+                                                           'rd',
+                                                           '-cmp', '2',
+                                                           '-subcmp',
+                                                           '2', '-acodec',
+                                                           'mp2',
+                                                           '-b:a', '192k',
+                                                           '-ar',
+                                                           '48000', '-ac', '2',
+                                                           '-threads', '3',
+                                                           '-y',
+                                                           './[DVDF]-Dad.mpg']
 
 
 if __name__ == '__main__':
