@@ -72,6 +72,9 @@ LINUX_DATA_FILES = dict(
         # App icon
         (SYS_PATHS.icons,
          [VM_PATHS.icons + '/videomorph.png']),
+        # App sounds
+        (SYS_PATHS.sounds,
+         [VM_PATHS.sounds + '/successful.wav']),
         # App translation file
         (SYS_PATHS.i18n,
          [VM_PATHS.i18n + '/videomorph_es.qm']),
@@ -98,6 +101,9 @@ WIN32_DATA_FILES = dict(
     data_files=[  # App icon
         (SYS_PATHS.icons,
          [VM_PATHS.icons + '/videomorph.ico']),
+        # App sounds
+        (SYS_PATHS.sounds,
+         [VM_PATHS.sounds + '/successful.wav']),
         # App translation file
         (SYS_PATHS.i18n,
          [VM_PATHS.i18n + '/videomorph_es.qm']),
@@ -131,14 +137,3 @@ elif platform == 'win32':
 
 if __name__ == '__main__':
     setup(**SETUP_PARAMS)
-
-    # if platform == 'win32':
-    #     import os
-    #     from sys import prefix
-    #     from os.path import exists
-    #     from os.path import expandvars
-    #     from os.path import join as join_path
-    #
-    #     exe_path = join_path(prefix, 'Scripts', APP_NAME.lower() + '.exe')
-    #     if exists(exe_path):
-    #         os.link(source=exe_path, link_name=APP_NAME + VERSION)

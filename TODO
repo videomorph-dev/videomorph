@@ -4,7 +4,6 @@ TODO List:
 Next version (2.0):
     - Implement a Dialog to generate the conversion commands using the ffmpeg options
     - Update and improve tests and coverage
-    - Create an user manual
     - Define a README.rst file to be included in source package
     - Improve the icons visualization
     - Automate the process of creating the Portable Edition on Linux and Windows
@@ -16,6 +15,7 @@ BugFix:
 Someday:
     - Pack in .rpm format
     - Pack for Arch Linux
+    - Simplify the process of updating the UI (videomorph.update_interface())
     - Pack as standard binary package, not as a Python package
     - Implement the main window interface in a separated module, maybe mainwindow.py
     - Implement an alternative class for _Converter (subprocess maybe) to decouple from PyQt5
@@ -24,5 +24,5 @@ Someday:
     - Move the HTML text hardcoded in about.py to a file distributed as doc. Read the about
       info from that file as done with the license
     - Define a git work flow for the project
-    - Pack in Flatpak or Snap
+    - Pack in Flatpack or Snap
     - Implement model/view/controller pattern

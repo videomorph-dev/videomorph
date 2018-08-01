@@ -150,7 +150,10 @@ class _XMLProfile:
                         # Create the dict with values in english
                         values.append(item[0].text)
 
-                qualities_per_profile[element.tag] = values
+                if element.tag not in qualities_per_profile:
+                    qualities_per_profile[element.tag] = values
+                else:
+                    qualities_per_profile[element.tag] += values
                 # Reinitialize values
                 values = []
 

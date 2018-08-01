@@ -57,6 +57,7 @@ class VMPaths:
         self.icons = 'share/icons'
         self.i18n = 'share/videomorph/translations'
         self.profiles = 'share/videomorph/profiles'
+        self.sounds = 'share/videomorph/sounds'
         self.doc = 'share/doc/videomorph'
         self.help = join_path(self.doc, 'manual')
         self.man = 'share/man/man1'
@@ -86,6 +87,7 @@ class _Win32Paths(VMPaths):
         self.icons = join_path(program_files, r'VideoMorph\icons')
         self.i18n = join_path(program_files, r'VideoMorph\translations')
         self.profiles = join_path(program_files, r'VideoMorph\profiles')
+        self.sounds = join_path(program_files, r'VideoMorph\sounds')
         self.doc = join_path(program_files, r'VideoMorph\doc')
         self.help = join_path(self.doc, 'manual')
         self.man = join_path(program_files, r'VideoMorph\man')
@@ -115,6 +117,10 @@ class _Launcher:
 
     def shutdown_machine(self):
         """Shutdown computer."""
+        raise NotImplementedError('Must be implemented in subclasses')
+
+    def sound_notify(self, sound=None):
+        """Show system notification."""
         raise NotImplementedError('Must be implemented in subclasses')
 
 
@@ -157,6 +163,14 @@ class _LinuxLauncher(_Launcher):
         """Shutdown computer."""
         spawn_process(['shutdown', 'now'])
 
+    def sound_notify(self, sound=None):
+        """Show system notification on Linux."""
+        players = ('paplay', 'aplay', 'play')
+        for player in map(which, players):
+            if player is not None:
+                spawn_process([player, sound])
+                break
+
 
 class _Win32Launcher(_Launcher):
     """Concrete class to implement external apps launcher in Linux."""
@@ -168,6 +182,11 @@ class _Win32Launcher(_Launcher):
     def shutdown_machine(self):
         """Shutdown computer."""
         spawn_process(['shutdown', '/s'])
+
+    def sound_notify(self, sound=None):
+        """Show system notification."""
+        from winsound import PlaySound, MB_OK
+        PlaySound(sound, MB_OK)
 
 
 def launcher_factory():

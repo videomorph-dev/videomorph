@@ -88,6 +88,6 @@ Contributors:
  - [Leonel Salazar Videaux](http://debianhlg.cubava.cu/)
  - Osmel Cruz
 
-##Copyright
+## Copyright
 
 Copyright 2016-2017 VideoMorph Development Team.

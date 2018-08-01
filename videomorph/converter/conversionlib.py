@@ -110,11 +110,15 @@ class _Win32LibraryPath(_LibraryPath):
 
     @property
     def library_path(self):
-        return super(_Win32LibraryPath, self).library_path + '.exe'
+        path = super(_Win32LibraryPath, self).library_path
+        if path is not None:
+            return path + '.exe'
 
     @property
     def prober_path(self):
-        return super(_Win32LibraryPath, self).prober_path + '.exe'
+        path = super(_Win32LibraryPath, self).prober_path
+        if path is not None:
+            return path + '.exe'
 
 
 def library_path_factory():

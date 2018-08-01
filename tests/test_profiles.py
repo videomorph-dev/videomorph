@@ -57,36 +57,8 @@ def test_get_xml_profile_attr():
 def test_get_xml_profile_qualities():
     """Test get_xml_profile_qualities."""
     qualities = profile.get_xml_profile_qualities()
-
-    assert qualities == OrderedDict(
-        [('AVI',
-          ['MS Compatible',
-           'XVID Fullscreen (4:3)',
-           'XVID Widescreen (16:9)']),
-         ('DVD',
-          ['DVD Fullscreen (4:3)',
-           'DVD Widescreen (16:9)',
-           'DVD Fullscreen (4:3) High Quality',
-           'DVD Widescreen (16:9) High Quality',
-           'DVD Low Quality']),
-         ('FLV',
-          ['FLV Fullscreen (4:3)',
-           'FLV Widescreen (16:9)']),
-         ('MP4',
-          ['MP4 High Quality',
-           'MP4 Very High Quality',
-           'MP4 Super High Quality',
-           'MP4 Fullscreen (4:3)',
-           'MP4 Widescreen (16:9)']),
-         ('VCD',
-          ['VCD High Quality']),
-         ('WEBM',
-          ['WEBM Fullscreen (4:3)',
-           'WEBM Widescreen (16:9)']),
-         ('WMV',
-          ['WMV Generic']),
-         ('MP3',
-          ['Extract Audio mp3'])])
+    print(qualities)
+    assert qualities == OrderedDict([('AVI', ['MS Compatible 640x480', 'MS Compatible 720x480', 'XVID Fullscreen 640x480 (4:3)', 'XVID Widescreen 704x384 (16:9)']), ('DVD', ['DVD Fullscreen 352x480 (4:3)', 'DVD Widescreen 352x480 (16:9)', 'DVD Fullscreen 720x480 (4:3) High Quality', 'DVD Widescreen 720x480 (16:9) High Quality', 'DVD Low Quality 720x480']), ('FLV', ['FLV Fullscreen 320x240 (4:3)', 'FLV Widescreen 320x180 (16:9)']), ('MOV', ['MOV Generic', 'Quicktime MOV Auto', 'QuickTime H.264 High quality', 'QuickTime H.264 Very High Quality']), ('MP4', ['MP4 High Quality', 'MP4 Very High Quality', 'MP4 Super High Quality', 'MP4 Fullscreen (4:3)', 'MP4 Widescreen (16:9)']), ('VCD', ['NTSC VCD High Quality', 'PAL VCD High Quality']), ('WEBM', ['WEBM Fullscreen (4:3)', 'WEBM Widescreen (16:9)']), ('WMV', ['WMV Generic']), ('MP3', ['Extract Audio mp3', 'MP3 Good Quality (160 kb)', 'MP3 High Quality (192 kb)'])])
 
 
 # Tests for _Profile class
