@@ -32,12 +32,21 @@ def test_convert_none():
 
 
 @nose.tools.raises(ValueError)
-def test_convert_wrong_data_types():
-    """Convert wrong data types."""
+def test_convert_sting():
+    """Convert string data type."""
     assert utils.write_time('string')
+
+
+@nose.tools.raises(ValueError)
+def test_convert_tuple():
+    """Convert wrong data type."""
     assert utils.write_time((1, 2))
+
+
+@nose.tools.raises(ValueError)
+def test_convert_wrong_data_types():
+    """Convert list data type."""
     assert utils.write_time([1, 2])
-    assert utils.write_time({'time': 25})
 
 
 def test_convert_0():
@@ -66,7 +75,7 @@ def test_convert_3661():
 
 
 @nose.tools.raises(ValueError)
-def test_raise_value_error():
+def test_convert_negative_time():
     """Test for negative time value (raises a ValueError)."""
     utils.write_time(-1)
 
