@@ -46,12 +46,12 @@ def teardown():
 
 # Set of test for converter module
 def test_get_library_path():
-    """Test the library path."""
+    """Test ConversionLib.library_path."""
     assert conv_lib.library_path in {'/usr/bin/ffmpeg', '/usr/local/bin/ffmpeg'}
 
 
 def test_prober_path():
-    """Test the prober path."""
+    """Test the ConversionLib.prober_path."""
     assert conv_lib.prober_path in {'/usr/bin/ffprobe', '/usr/local/bin/ffprbe'}
 
 
