@@ -293,6 +293,6 @@ class ConversionProfile:
         tag = ''.join(tag_regex.findall(self._quality))
 
         if not tag:
-            tag = ''.join([word[0] for word in self._quality.split()]).upper()
+            tag = ''.join(word[0] for word in self._quality.split()).upper()
 
         return '[' + tag + ']-'
