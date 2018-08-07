@@ -167,17 +167,15 @@ class TestMedia:
         self.media_list.clear()
         assert not self.media_list
 
-    @staticmethod
-    def test_populate_files_count():
+    def test_populate_files_count(self):
         """Test MediaList.populate() yield amount of video files."""
-        media_list = MediaList(profile=profile)
+        media_list = MediaList(profile=self.profile)
         gen = media_list.populate(('Dad.mpg',))
         assert next(gen) == 1
 
-    @staticmethod
-    def test_populate_first_file_name():
+    def test_populate_first_file_name(self):
         """Test MediaList.populate() yield first video file name."""
-        media_list = MediaList(profile=profile)
+        media_list = MediaList(profile=self.profile)
         gen = media_list.populate(('Dad.mpg',))
         next(gen)
         assert next(gen) == 'Dad.mpg'
