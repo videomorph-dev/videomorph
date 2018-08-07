@@ -46,6 +46,15 @@ class TestConversionLib:
     def tearDownClass(cls):
         cls.media_list.get_file(0).delete_output('.', tagged_output=True)
 
+    def get_conversion_cmd(self):
+        """Return a conversion command."""
+        cmd = self.media_list.get_file(position=0).build_conversion_cmd(
+            output_dir='.',
+            subtitle=False,
+            tagged_output=True,
+            target_quality='FLV Fullscreen 320x240 (4:3)')
+        return cmd
+
     def test_get_library_path(self):
         """Test ConversionLib.library_path."""
         assert self.conv_lib.library_path in {'/usr/bin/ffmpeg',
@@ -58,15 +67,28 @@ class TestConversionLib:
 
     def test_start_converter(self):
         """Test ConversionLib.start_converter()."""
-        cmd = self.media_list.get_file(position=0).build_conversion_cmd(
-            output_dir='.',
-            subtitle=False,
-            tagged_output=True,
-            target_quality='FLV Fullscreen 320x240 (4:3)')
-
-        self.conv_lib.start_converter(cmd)
+        self.conv_lib.start_converter(cmd=self.get_conversion_cmd())
 
         assert self.conv_lib.converter_state() == QProcess.Starting
+        self.conv_lib.stop_converter()
+
+    def test_read_converter_output(self):
+        """Test ConversionLib.read_converter_output()."""
+        self.conv_lib.start_converter(cmd=self.get_conversion_cmd())
+        assert len(self.conv_lib.read_converter_output())
+        self.conv_lib.stop_converter()
+
+    def test_catch_library_error_true(self):
+        """Test _OutputReader.catch_library_error() -> true."""
+        self.conv_lib.reader.update_read('Some random output with '
+                                         'Unknown encoder error')
+        assert self.conv_lib.reader.catch_library_error() == 'Unknown encoder'
+
+    def test_catch_library_error_false(self):
+        """Test _OutputReader.catch_library_error() -> false."""
+        self.conv_lib.reader.update_read('Some random output with '
+                                         'no error')
+        assert self.conv_lib.reader.catch_library_error() is None
 
     def test_stop_converter(self):
         """Test ConversionLib.stop_converter()."""
