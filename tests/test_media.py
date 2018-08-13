@@ -94,6 +94,15 @@ class TestMedia:
         self.media_list.position = 0
         assert self.media_list.running_file_info('filename') == 'Dad.mpg'
 
+    def test_running_file_status(self):
+        """Test MediaList.running_file_status()."""
+        assert self.media_list.running_file_status == STATUS.todo
+
+    def test_set_running_file_status(self):
+        """Test MediaList.running_file_status."""
+        self.media_list.running_file_status = STATUS.done
+        assert self.media_list.running_file_status == STATUS.done
+
     def test_running_file_output_name(self):
         """Test MediaList.running_file_output_name()."""
         assert self.media_list.running_file_output_name('.', False) == 'Dad.mpg'
@@ -134,7 +143,7 @@ class TestMedia:
         next(gen)
 
     def test_build_conversion_cmd(self):
-        """Test build_conversion_cmd."""
+        """Test _MediaFile.build_conversion_cmd."""
         assert self.media_list.get_file(0).build_conversion_cmd(
             output_dir='.',
             tagged_output=True,
@@ -161,6 +170,44 @@ class TestMedia:
                                                                '-threads', '3',
                                                                '-y',
                                                                './[DVDF]-Dad.mpg']
+
+    def test_running_file_conversion_cmd(self):
+        """Test MediaList.running_file_conversion_cmd()."""
+        assert self.media_list.running_file_conversion_cmd(
+            output_dir='.',
+            tagged_output=True,
+            subtitle=True,
+            target_quality='DVD Fullscreen 352x480 (4:3)') == ['-i', 'Dad.mpg',
+                                                               '-f', 'dvd',
+                                                               '-target',
+                                                               'ntsc-dvd',
+                                                               '-vcodec',
+                                                               'mpeg2video', '-r',
+                                                               '29.97', '-s',
+                                                               '352x480',
+                                                               '-aspect', '4:3',
+                                                               '-b:v',
+                                                               '4000k', '-mbd',
+                                                               'rd',
+                                                               '-cmp', '2',
+                                                               '-subcmp',
+                                                               '2', '-acodec',
+                                                               'mp2',
+                                                               '-b:a', '192k',
+                                                               '-ar',
+                                                               '48000', '-ac', '2',
+                                                               '-threads', '3',
+                                                               '-y',
+                                                               './[DVDF]-Dad.mpg']
+
+    @nose.tools.raises(PermissionError)
+    def test_running_file_conversion_cmd_permission_error(self):
+        """Test MediaList.running_file_conversion_cmd() -> PermissionError."""
+        self.media_list.running_file_conversion_cmd(
+            output_dir='/',
+            tagged_output=True,
+            subtitle=True,
+            target_quality='DVD Fullscreen 352x480 (4:3)')
 
     def test_clear(self):
         """Test MediaList.clear()."""
