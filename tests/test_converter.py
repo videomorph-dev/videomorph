@@ -27,55 +27,73 @@ from videomorph.converter import media
 from videomorph.converter.conversionlib import ConversionLib
 from videomorph.converter.profile import ConversionProfile
 
-conv_lib = ConversionLib()
 
-profile = ConversionProfile(prober=conv_lib.prober_path)
-profile.update(new_quality='DVD Fullscreen 352x480 (4:3)')
+class TestConversionLib:
+    conv_lib = ConversionLib()
 
-media_list = media.MediaList(profile)
+    profile = ConversionProfile(prober=conv_lib.prober_path)
+    profile.update(new_quality='FLV Fullscreen 320x240 (4:3)')
 
+    media_list = media.MediaList(profile)
 
-def teardown():
-    """Clean up when finished."""
-    media_list.clear()
-    gen = media_list.populate(('Dad.mpg',))
-    next(gen)
-    next(gen)
-    media_list.get_file(0).delete_output('.', tagged_output=True)
+    @classmethod
+    def setUpClass(cls):
+        gen = cls.media_list.populate(('Dad.mpg',))
+        next(gen)
+        next(gen)
 
+    @classmethod
+    def tearDownClass(cls):
+        cls.media_list.get_file(0).delete_output('.', tagged_output=True)
 
-# Set of test for converter module
-def test_get_library_path():
-    """Test ConversionLib.library_path."""
-    assert conv_lib.library_path in {'/usr/bin/ffmpeg', '/usr/local/bin/ffmpeg'}
+    def get_conversion_cmd(self):
+        """Return a conversion command."""
+        cmd = self.media_list.get_file(position=0).build_conversion_cmd(
+            output_dir='.',
+            subtitle=False,
+            tagged_output=True,
+            target_quality='FLV Fullscreen 320x240 (4:3)')
+        return cmd
 
+    def test_get_library_path(self):
+        """Test ConversionLib.library_path."""
+        assert self.conv_lib.library_path in {'/usr/bin/ffmpeg',
+                                              '/usr/local/bin/ffmpeg'}
 
-def test_prober_path():
-    """Test the ConversionLib.prober_path."""
-    assert conv_lib.prober_path in {'/usr/bin/ffprobe', '/usr/local/bin/ffprbe'}
+    def test_prober_path(self):
+        """Test the ConversionLib.prober_path."""
+        assert self.conv_lib.prober_path in {'/usr/bin/ffprobe',
+                                             '/usr/local/bin/ffprbe'}
 
+    def test_start_converter(self):
+        """Test ConversionLib.start_converter()."""
+        self.conv_lib.start_converter(cmd=self.get_conversion_cmd())
 
-def test_start_converter():
-    """Test start converter."""
-    gen = media_list.populate(('Dad.mpg',))
-    next(gen)
-    next(gen)
+        assert self.conv_lib.converter_state() == QProcess.Starting
+        self.conv_lib.stop_converter()
 
-    cmd = media_list.get_file(position=0).build_conversion_cmd(
-        output_dir='.',
-        subtitle=False,
-        tagged_output=True,
-        target_quality='DVD Fullscreen 352x480 (4:3)')
+    def test_read_converter_output(self):
+        """Test ConversionLib.read_converter_output()."""
+        self.conv_lib.start_converter(cmd=self.get_conversion_cmd())
+        assert len(self.conv_lib.read_converter_output())
+        self.conv_lib.stop_converter()
 
-    conv_lib.start_converter(cmd)
+    def test_catch_library_error_true(self):
+        """Test _OutputReader.catch_library_error() -> true."""
+        self.conv_lib.reader.update_read('Some random output with '
+                                         'Unknown encoder error')
+        assert self.conv_lib.reader.catch_library_error() == 'Unknown encoder'
 
-    assert conv_lib.converter_state() == QProcess.Starting
+    def test_catch_library_error_false(self):
+        """Test _OutputReader.catch_library_error() -> false."""
+        self.conv_lib.reader.update_read('Some random output with '
+                                         'no error')
+        assert self.conv_lib.reader.catch_library_error() is None
 
-
-def test_stop_converter():
-    """Test stop converter."""
-    conv_lib.stop_converter()
-    assert not conv_lib.converter_is_running
+    def test_stop_converter(self):
+        """Test ConversionLib.stop_converter()."""
+        self.conv_lib.stop_converter()
+        assert not self.conv_lib.converter_is_running
 
 
 if __name__ == '__main__':
