@@ -104,7 +104,7 @@ class _XMLProfile:
 
     def export_xml_profiles(self, dst_dir):
         """Export a file with the conversion profiles."""
-        # Raise PermissionError if user don't have write permission
+        # Raise PermissionError if user doesn't have write permission
         try:
             copy2(src=self._user_xml_file_path(
                 file_name=self._xml_files.customized),
@@ -135,7 +135,7 @@ class _XMLProfile:
                             item[3].text == target_quality):
                         return item[param_map[attr_name]].text
 
-    def get_xml_profile_qualities(self):
+    def get_xml_profile_qualities(self, locale):
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
         values = []
@@ -143,7 +143,7 @@ class _XMLProfile:
         for xml_file in self._xml_files:
             for element in self._get_xml_root(xml_file):
                 for item in element:
-                    if LOCALE == 'es_ES':
+                    if locale == 'es_ES':
                         # Create the dict with values in spanish
                         values.append(item[3].text)
                     else:
@@ -293,6 +293,6 @@ class ConversionProfile:
         tag = ''.join(tag_regex.findall(self._quality))
 
         if not tag:
-            tag = ''.join([word[0] for word in self._quality.split()]).upper()
+            tag = ''.join(word[0] for word in self._quality.split()).upper()
 
         return '[' + tag + ']-'
