@@ -91,7 +91,6 @@ class VideoMorphMW(QMainWindow):
 
         self.media_list_duration = 0.0
 
-        # App interface setup
         # Window size
         self.resize(680, 576)
         # Set window title
@@ -104,29 +103,27 @@ class VideoMorphMW(QMainWindow):
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(icon)
         self.tray_icon.show()
-        # Define app central widget
+
         self.central_widget = QWidget(self)
-        # Define layouts
+
         self.vertical_layout = QVBoxLayout(self.central_widget)
         self.horizontal_layout = QHBoxLayout()
         self.vertical_layout_1 = QVBoxLayout()
         self.vertical_layout_2 = QVBoxLayout()
-        # Define groups
+
         self._group_settings()
         self._fix_layout()
         self._group_tasks_list()
         self._group_output_directory()
         self._group_progress()
-        # Add layouts
+
         self.horizontal_layout.addLayout(self.vertical_layout_2)
         self.vertical_layout.addLayout(self.horizontal_layout)
-        # Set central widget
+
         self.setCentralWidget(self.central_widget)
 
-        # Default Source directory
         self.source_dir = QDir.homePath()
 
-        # Create actions
         self._create_actions()
 
         # Conversion library
@@ -137,39 +134,28 @@ class VideoMorphMW(QMainWindow):
             reader=self._ready_read,
             finisher=self._finish_file_encoding,
             process_channel=QProcess.MergedChannels)
-        # Create reader and timer
         self.reader = self.conversion_lib.reader
         self.timer = self.conversion_lib.timer
 
-        # Create initial Settings if not created
         self._create_initial_settings()
 
-        # Create the conversion profile object only once
         self.profile = ConversionProfile(
             prober=self.conversion_lib.prober_path)
 
-        # Create the Media list object
         self.media_list = MediaList(profile=self.profile)
 
-        # Populate PROFILES combo box
         self.populate_profiles_combo()
 
-        # Read app settings
         self._read_app_settings()
 
-        # Create app main menu bar
         self._create_main_menu()
 
-        # Create context menu
         self._create_context_menu()
 
-        # Create the toolbar
         self._create_toolbar()
 
-        # Create app status bar
         self._create_status_bar()
 
-        # Set tool buttons style
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         self._update_ui_when_no_file()
