@@ -132,5 +132,5 @@ class TargetQualityDelegate(QItemDelegate):
         self.parent.media_list.set_file_status(position=index.row(),
                                                status=STATUS.todo)
         self.parent.total_duration = self.parent.media_list.duration
-        self.parent._update_ui_when_ready()
+        self.parent.update_ui_when_ready()
         self.parent.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)

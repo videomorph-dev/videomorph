@@ -22,7 +22,8 @@
 from os.path import basename
 
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QLabel, QPushButton, QVBoxLayout, QGroupBox, QGridLayout
+from PyQt5.QtWidgets import (QLabel, QPushButton, QVBoxLayout, QGroupBox,
+                             QGridLayout)
 
 
 class InfoDialog(QtWidgets.QDialog):

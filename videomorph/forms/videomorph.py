@@ -595,7 +595,7 @@ class VideoMorphMW(QMainWindow):
         if self.conversion_lib.converter_is_running:
             self._update_ui_when_converter_running()
         elif self.media_list.get_file_status(row) == STATUS.todo:
-            self._update_ui_when_ready()
+            self.update_ui_when_ready()
         else:
             self._update_ui_when_problem()
 
@@ -823,7 +823,7 @@ class VideoMorphMW(QMainWindow):
             if not self.media_list.length:
                 self._update_ui_when_no_file()
             else:
-                self._update_ui_when_ready()
+                self.update_ui_when_ready()
 
     def _load_files(self, source_dir=QDir.homePath()):
         """Load video files."""
@@ -885,7 +885,7 @@ class VideoMorphMW(QMainWindow):
             # Update the files status
             self._set_media_status()
             # Update ui
-            self._update_ui_when_ready()
+            self.update_ui_when_ready()
 
         self._fill_media_list(files)
 
@@ -1352,7 +1352,7 @@ class VideoMorphMW(QMainWindow):
         # Update total duration of the new tasks list
         self.media_list_duration = self.media_list.duration
         # Update the interface
-        self._update_ui_when_ready()
+        self.update_ui_when_ready()
 
     def _update_all_table_rows(self, column, value):
         rows = self.tb_tasks.rowCount()
@@ -1382,7 +1382,7 @@ class VideoMorphMW(QMainWindow):
         self.media_list.position = None
 
     def _on_modify_conversion_option(self):
-        self._update_ui_when_ready()
+        self.update_ui_when_ready()
         self._set_media_status()
         self._update_all_table_rows(column=COLUMNS.PROGRESS,
                                     value=self.tr('To Convert'))
@@ -1454,7 +1454,8 @@ class VideoMorphMW(QMainWindow):
                         play_output=False,
                         info=False)
 
-    def _update_ui_when_ready(self):
+    def update_ui_when_ready(self):
+        """Update UI when app is ready to start conversion."""
         self._update_ui(stop=False,
                         stop_all=False,
                         remove=False,
@@ -1466,7 +1467,7 @@ class VideoMorphMW(QMainWindow):
         if self.conversion_lib.converter_is_running:
             self._update_ui_when_converter_running()
         elif self.media_list.get_file_status(row) == STATUS.todo:
-            self._update_ui_when_ready()
+            self.update_ui_when_ready()
         else:
             self._update_ui_when_problem()
 
@@ -1503,7 +1504,7 @@ class VideoMorphMW(QMainWindow):
         self._reset_progress_bars()
         self._set_window_title()
         self._reset_options_check_boxes()
-        self._update_ui_when_ready()
+        self.update_ui_when_ready()
 
     def _enable_context_menu_action(self):
         if not self.conversion_lib.converter_is_running:
