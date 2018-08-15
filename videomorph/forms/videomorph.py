@@ -765,7 +765,7 @@ class VideoMorphMW(QMainWindow):
             self._on_modify_conversion_option()
 
     def closeEvent(self, event):
-        """Things to todo on close."""
+        """Things to do on close."""
         # Close communication and kill the encoding process
         if self.conversion_lib.converter_is_running:
             # ask for confirmation
