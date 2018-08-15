@@ -36,7 +36,8 @@ class TestMedia:
     profile = ConversionProfile(prober=conv_lib.prober_path)
     profile.update(new_quality='DVD Fullscreen 352x480 (4:3)')
 
-    def setUp(self):
+    def setup(self):
+        """Setup method."""
         self.media_list = MediaList(profile=self.profile)
         self.gen = self.media_list.populate(('Dad.mpg',))
         next(self.gen)
@@ -50,9 +51,9 @@ class TestMedia:
     def test_delete_file(self):
         """Test MediaList.delete_file()."""
         # Be sure there is one element in the list
-        assert len(self.media_list) == 1
+        assert self.media_list
         self.media_list.delete_file(position=0)
-        assert len(self.media_list) == 0
+        assert not self.media_list
 
     def test_get_file_object(self):
         """Test MediaList.get_file()."""

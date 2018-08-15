@@ -31,7 +31,6 @@ from xml.etree.ElementTree import ParseError
 
 from . import BASE_DIR
 from . import SYS_PATHS
-from . import LOCALE
 from . import VM_PATHS
 from . import VALID_VIDEO_EXT
 from . import XML_FILES
