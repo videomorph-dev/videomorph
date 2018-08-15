@@ -15,7 +15,6 @@ BugFix:
 Someday:
     - Pack in .rpm format
     - Pack for Arch Linux
-    - Simplify the process of updating the UI (videomorph.update_interface())
     - Pack as standard binary package, not as a Python package
     - Implement the main window interface in a separated module, maybe mainwindow.py
     - Implement an alternative class for _Converter (subprocess maybe) to decouple from PyQt5
