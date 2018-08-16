@@ -315,7 +315,6 @@ class VideoMorphMW(QMainWindow):
         Args:
             text (str): Text to show in the action
             callback (method): Method to be called when action is triggered
-            enabled (bool): Set the action enabled or not
         kwargs:
             checkable (bool): Turn the action checkable or not
             shortcut (str): Define the key shortcut to run the action
