@@ -193,10 +193,6 @@ class _OutputReader:
                                 'Invalid argument')
         self._process_output = None
 
-    def read(self):
-        """Return the process output."""
-        return self._process_output
-
     def update_read(self, process_output):
         """Update the process output."""
         self._process_output = process_output
