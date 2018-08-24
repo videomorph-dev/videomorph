@@ -46,6 +46,7 @@ from PyQt5.QtWidgets import (QMainWindow,
                              QCheckBox,
                              QProgressBar,
                              QSystemTrayIcon,
+                             QMenu,
                              QToolBar,
                              QTableWidgetItem,
                              QLineEdit,
@@ -100,10 +101,6 @@ class VideoMorphMW(QMainWindow):
         icon = QIcon()
         icon.addPixmap(QPixmap(':/icons/videomorph.ico'))
         self.setWindowIcon(icon)
-        # Tray Icon
-        self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(icon)
-        self.tray_icon.show()
         # Define app central widget
         self.central_widget = QWidget(self)
         # Define layouts
@@ -128,6 +125,9 @@ class VideoMorphMW(QMainWindow):
 
         # Create actions
         self._create_actions()
+
+        # Tray Icon
+        self._create_sys_tray_icon(icon)
 
         # Conversion library
         self.no_library_msg = self.tr('Ffmpeg Library not Found'
@@ -173,6 +173,24 @@ class VideoMorphMW(QMainWindow):
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         self._update_ui_when_no_file()
+
+    def _create_sys_tray_icon(self, icon):
+        self.tray_icon_menu = QMenu(self)
+        self.tray_icon_menu.addAction(self.open_media_file_action)
+        self.tray_icon_menu.addAction(self.open_media_dir_action)
+        self.tray_icon_menu.addSeparator()
+        self.tray_icon_menu.addAction(self.clear_media_list_action)
+        self.tray_icon_menu.addSeparator()
+        self.tray_icon_menu.addAction(self.convert_action)
+        self.tray_icon_menu.addAction(self.stop_all_action)
+        self.tray_icon_menu.addSeparator()
+        self.tray_icon_menu.addAction(self.exit_action)
+
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(icon)
+        self.tray_icon.setContextMenu(self.tray_icon_menu)
+
+        self.tray_icon.show()
 
     def _group_settings(self):
         """Settings group."""
