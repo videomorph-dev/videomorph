@@ -53,7 +53,7 @@ VERSION = get_version()
 LOCALE = get_locale()
 
 VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
-                 ' *.flv *.vob *.ts *.3gp *.ogv *.mpg *.mp4 *.avi')
+                 ' *.flv *.vob *.ts *.mts *.3gp *.ogv *.mpg *.mp4 *.avi')
 
 VALID_VIDEO_EXT = {ext.lstrip('*') for ext in VIDEO_FILTERS.split()}
 
