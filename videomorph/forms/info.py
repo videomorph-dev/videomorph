@@ -25,6 +25,9 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (QLabel, QPushButton, QVBoxLayout, QGroupBox,
                              QGridLayout)
 
+from videomorph.converter.utils import write_size
+from videomorph.converter.utils import write_time
+
 
 class InfoDialog(QtWidgets.QDialog):
     """Changelog Dialog."""
@@ -186,8 +189,10 @@ class InfoDialog(QtWidgets.QDialog):
         file_path = media_file.format_info['filename']
         filename = basename(file_path)
         self.label_file_name_value.setText(filename)
-        self.label_size_value.setText(media_file.format_info['size'])
-        self.label_duration_value.setText(media_file.format_info['duration'])
+        self.label_size_value.setText(
+            write_size(media_file.format_info['size']))
+        self.label_duration_value.setText(
+            write_time(media_file.format_info['duration']))
         self.label_format_name_value.setText(
             media_file.format_info['format_name'])
         self.label_format_long_name_value.setText(
