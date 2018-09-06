@@ -20,7 +20,10 @@
 """This module defines the converter package."""
 
 from collections import namedtuple
-from os import cpu_count
+try:
+    from os import cpu_count
+except ImportError:
+    cpu_count = None
 from os.path import dirname
 from os.path import join as join_path
 
