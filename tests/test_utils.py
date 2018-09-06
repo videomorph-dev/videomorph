@@ -102,5 +102,31 @@ def test_get_locale():
     assert utils.get_locale() == getdefaultlocale()[0] or 'es_ES'
 
 
+def test_write_size0():
+    """Test write_size() with zero."""
+    assert utils.write_size(0) == '0.0KiB'
+
+
+@nose.tools.raises(ValueError)
+def test_write_size_negative():
+    """Test write_size() with negative size."""
+    assert utils.write_size(-1)
+
+
+def test_write_size_kib():
+    """Test write_size() with KiB."""
+    assert utils.write_size(1024) == '1.0KiB'
+
+
+def test_write_size_mib():
+    """Test write_size() with MiB."""
+    assert utils.write_size(1024 * 2048) == '2.0MiB'
+
+
+def test_write_size_gib():
+    """Test write_size() with GiB."""
+    assert utils.write_size(1585558454) == '1.5GiB'
+
+
 if __name__ == '__main__':
     nose.runmodule()
