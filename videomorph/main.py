@@ -47,11 +47,11 @@ def main():
     app_translator = QTranslator()
 
     if exists(join_path(BASE_DIR, VM_PATHS.i18n)):
-        app_translator.load(BASE_DIR + '{0}{1}{2}videomorph_{3}'.format(
-            sep, VM_PATHS.i18n, sep, LOCALE))
+        app_translator.load(join_path(
+            BASE_DIR, VM_PATHS.i18n, 'videomorph_{0}'.format(LOCALE)))
     else:
-        app_translator.load(
-            SYS_PATHS.i18n + '{0}videomorph_{1}'.format(sep, LOCALE))
+        app_translator.load(join_path(
+            SYS_PATHS.i18n, 'videomorph_{0}'.format(LOCALE)))
 
     app.installTranslator(app_translator)
     qt_translator = QTranslator()
