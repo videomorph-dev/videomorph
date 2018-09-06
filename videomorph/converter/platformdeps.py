@@ -166,7 +166,7 @@ class _LinuxLauncher(_Launcher):
     def sound_notify(self, sound=None):
         """Show system notification on Linux."""
         players = ('paplay', 'aplay', 'play')
-        for player in map(which, players):
+        for player in (which(p) for p in players):
             if player is not None:
                 spawn_process([player, sound])
                 break
