@@ -44,6 +44,7 @@ from videomorph.converter import VERSION
 
 class AboutVMDialog(QDialog):
     """Dialog to show info about VideoMorph."""
+
     def __init__(self, parent=None):
         """Class initializer."""
         super(AboutVMDialog, self).__init__(parent)

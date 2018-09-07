@@ -20,7 +20,6 @@
 """This module contains the main function for VideoMorph."""
 
 import sys
-from os import sep
 from os.path import exists
 from os.path import join as join_path
 
