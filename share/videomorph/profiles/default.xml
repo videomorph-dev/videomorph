@@ -130,22 +130,22 @@
             <preset_name_es>MP4 Pantalla Panorámica (16:9)</preset_name_es>
         </MP4Widescreen>
         <MP4_H265FullScreen>
-            <preset_name>MP4 H.265 Fullscreen (4:3)</preset_name>
+            <preset_name>MP4 H.265 Fullscreen (4:3) High Compression</preset_name>
             <preset_params>-c:v libx265 -preset medium -crf 28 -s 640x480 -c:a aac -b:a 128k -strict -2</preset_params>
             <file_extension>.mp4</file_extension>
-            <preset_name_es>MP4 H.265 Pantalla Completa (4:3)</preset_name_es>
+            <preset_name_es>MP4 H.265 Pantalla Completa (4:3) Alta Compresión</preset_name_es>
         </MP4_H265FullScreen>
         <MP4_H265Pantallapanoramica>
-            <preset_name>MP4 H.265 Widescreen (16:9)</preset_name>
+            <preset_name>MP4 H.265 Widescreen (16:9) High Compression</preset_name>
             <preset_params>-c:v libx265 -preset medium -crf 28 -s 704x384 -c:a aac -b:a 128k -strict -2</preset_params>
             <file_extension>.mp4</file_extension>
-            <preset_name_es>MP4 H.265 Pantalla Panorámica (16:9)</preset_name_es>
+            <preset_name_es>MP4 H.265 Pantalla Panorámica (16:9) Alta Compresión</preset_name_es>
         </MP4_H265Pantallapanoramica>
         <MP4_H265NoResizing>
-            <preset_name>MP4 H.265 Not Resizing</preset_name>
+            <preset_name>MP4 H.265 Not Resizing High Compression</preset_name>
             <preset_params>-c:v libx265 -preset medium -crf 28  -c:a aac -b:a 128k -strict -2</preset_params>
             <file_extension>.mp4</file_extension>
-            <preset_name_es>MP4 H.265 Sin Redimensionar</preset_name_es>
+            <preset_name_es>MP4 H.265 Sin Redimensionar Alta Compresión</preset_name_es>
         </MP4_H265NoResizing>
     </MP4>
     <VCD>
@@ -192,16 +192,16 @@
             <preset_name_es>Extraer Audio mp3</preset_name_es>
         </ExtractAudiomp3>
         <MP3GoodQualitykb>
-            <preset_name>MP3 Good Quality (160 kb)</preset_name>
+            <preset_name>MP3 Good Quality (160 Kbps)</preset_name>
             <preset_params>-acodec libmp3lame -ab 160k -ac 2 -ar 44100 -vn</preset_params>
             <file_extension>.mp3</file_extension>
-            <preset_name_es>MP3 Buena Calidad (160 kb)</preset_name_es>
+            <preset_name_es>MP3 Buena Calidad (160 Kbps)</preset_name_es>
         </MP3GoodQualitykb>
         <MP3HighQualitykb>
-            <preset_name>MP3 High Quality (192 kb)</preset_name>
+            <preset_name>MP3 High Quality (192 Kbps)</preset_name>
             <preset_params>-acodec libmp3lame -ab 192k -ac 2 -ar 44100 -vn</preset_params>
             <file_extension>.mp3</file_extension>
-            <preset_name_es>MP3 Alta Calidad (192 kb)</preset_name_es>
+            <preset_name_es>MP3 Alta Calidad (192 Kbps)</preset_name_es>
         </MP3HighQualitykb>
     </MP3>
 </video_profiles>
