@@ -93,4 +93,4 @@ Contributors:
 
 ## Copyright
 
-Copyright 2016-2017 VideoMorph Development Team.
+Copyright 2016-2018 VideoMorph Development Team.
