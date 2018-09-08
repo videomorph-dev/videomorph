@@ -4,7 +4,7 @@
 # File name: test_utils.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2017 VideoMorph Development Team
+#   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -100,6 +100,32 @@ def test_get_locale():
     """Test get_locale."""
     from locale import getdefaultlocale
     assert utils.get_locale() == getdefaultlocale()[0] or 'es_ES'
+
+
+def test_write_size0():
+    """Test write_size() with zero."""
+    assert utils.write_size(0) == '0.0KiB'
+
+
+@nose.tools.raises(ValueError)
+def test_write_size_negative():
+    """Test write_size() with negative size."""
+    assert utils.write_size(-1)
+
+
+def test_write_size_kib():
+    """Test write_size() with KiB."""
+    assert utils.write_size(1024) == '1.0KiB'
+
+
+def test_write_size_mib():
+    """Test write_size() with MiB."""
+    assert utils.write_size(1024 * 2048) == '2.0MiB'
+
+
+def test_write_size_gib():
+    """Test write_size() with GiB."""
+    assert utils.write_size(1585558454) == '1.5GiB'
 
 
 if __name__ == '__main__':

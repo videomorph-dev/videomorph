@@ -3,7 +3,7 @@
 # File name: main.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2017 VideoMorph Development Team
+#   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 """This module contains the main function for VideoMorph."""
 
 import sys
-from os import sep
 from os.path import exists
 from os.path import join as join_path
 
@@ -47,11 +46,11 @@ def main():
     app_translator = QTranslator()
 
     if exists(join_path(BASE_DIR, VM_PATHS.i18n)):
-        app_translator.load(BASE_DIR + '{0}{1}{2}videomorph_{3}'.format(
-            sep, VM_PATHS.i18n, sep, LOCALE))
+        app_translator.load(join_path(
+            BASE_DIR, VM_PATHS.i18n, 'videomorph_{0}'.format(LOCALE)))
     else:
-        app_translator.load(
-            SYS_PATHS.i18n + '{0}videomorph_{1}'.format(sep, LOCALE))
+        app_translator.load(join_path(
+            SYS_PATHS.i18n, 'videomorph_{0}'.format(LOCALE)))
 
     app.installTranslator(app_translator)
     qt_translator = QTranslator()
