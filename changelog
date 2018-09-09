@@ -136,6 +136,18 @@ videomorph (1.3.1); urgency=high
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 23 Jun 2018 10:00:00 -0500
 
+videomorph (1.3.1); urgency=medium
+
+    * Add a Dialog to show information about videos
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 15 Jun 2018 22:24:34 -0500
+
+videomorph (1.3.1); urgency=medium
+
+    * Add option to open VideoMorph Web Page under "Help" menu
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 15 Jun 2018 22:10:12 -0500
+
 videomorph (1.3); urgency=high
 
     * Problem with Ubuntu 18.04 and distutils.errors import. Fixed.
