@@ -11,6 +11,9 @@ BugFix:
     - App freezes with certain movies when reading ffprobe output on Windows platform
 
 Someday:
+    - Add french translation
+    - Add portuguese translation
+    - Write a Disclaimer about Ffmpeg options in customized profiles, available codecs and input video quality
     - Pack in .rpm format
     - Pack for Arch Linux
     - Pack as standard binary package, not as a Python package
