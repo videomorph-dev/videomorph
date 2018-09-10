@@ -3,7 +3,7 @@
 # File name: profile.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2017 VideoMorph Development Team
+#   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ from xml.etree.ElementTree import ParseError
 
 from . import BASE_DIR
 from . import SYS_PATHS
-from . import LOCALE
 from . import VM_PATHS
 from . import VALID_VIDEO_EXT
 from . import XML_FILES
@@ -138,26 +137,26 @@ class _XMLProfile:
     def get_xml_profile_qualities(self, locale):
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
-        values = []
 
         for xml_file in self._xml_files:
             for element in self._get_xml_root(xml_file):
-                for item in element:
-                    if locale == 'es_ES':
-                        # Create the dict with values in spanish
-                        values.append(item[3].text)
-                    else:
-                        # Create the dict with values in english
-                        values.append(item[0].text)
-
+                qualities = self._get_qualities(element, locale)
                 if element.tag not in qualities_per_profile:
-                    qualities_per_profile[element.tag] = values
+                    qualities_per_profile[element.tag] = qualities
                 else:
-                    qualities_per_profile[element.tag] += values
-                # Reinitialize values
-                values = []
+                    qualities_per_profile[element.tag] += qualities
 
         return qualities_per_profile
+
+    @staticmethod
+    def _get_qualities(element, locale):
+        qualities = []
+        for item in element:
+            if locale == 'es_ES':
+                qualities.append(item[3].text)
+            else:
+                qualities.append(item[0].text)
+        return qualities
 
     def _user_xml_file_path(self, file_name):
         """Return the path to the profiles file."""

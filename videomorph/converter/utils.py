@@ -3,7 +3,7 @@
 # File name: utils.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2017 VideoMorph Development Team
+#   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -69,3 +69,23 @@ def write_time(time_in_secs):
 
     # return the time in 00s format
     return '{secs:02d}s'.format(secs=secs)
+
+
+def write_size(size_in_bytes):
+    """Return size in appropriate measure."""
+    try:
+        size = round(float(size_in_bytes))
+    except (TypeError, ValueError):
+        raise ValueError('Invalid size measure.')
+
+    if size < 0:
+        raise ValueError('Size must be positive.')
+
+    kib = size / 1024
+    if kib <= 1024:
+        return str(round(kib, 1)) + 'KiB'
+    mib = kib / 1024
+    if mib <= 1024:
+        return str(round(mib, 1)) + 'MiB'
+    gib = mib / 1024
+    return str(round(gib, 1)) + 'GiB'
