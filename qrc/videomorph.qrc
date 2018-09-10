@@ -26,6 +26,7 @@
     <file>./video-player-output.png</file>
   </qresource>
     <qresource prefix="formats">
+    <file>./OGV.png</file>
     <file>./AVI.png</file>
     <file>./DVD.png</file>
     <file>./FLV.png</file>

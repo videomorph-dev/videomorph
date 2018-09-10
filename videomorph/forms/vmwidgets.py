@@ -3,7 +3,7 @@
 # File name: vmwidgets.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2017 VideoMorph Development Team
+#   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -128,21 +128,9 @@ class TargetQualityDelegate(QItemDelegate):
 
     def update(self, editor, index):
         """Update several things in the interface."""
-        # Update table Progress field if file is: Done or Stopped
         self.parent.update_table_progress_column(row=index.row())
-
-        # Update file status
         self.parent.media_list.set_file_status(position=index.row(),
                                                status=STATUS.todo)
-        # Update total duration of the new tasks list
         self.parent.total_duration = self.parent.media_list.duration
-
-        # Update the interface
-        self.parent.update_interface(clear=False,
-                                     stop=False,
-                                     stop_all=False,
-                                     remove=False,
-                                     play_input=False,
-                                     play_output=False)
-
+        self.parent.update_ui_when_ready()
         self.parent.tb_tasks.setEditTriggers(QAbstractItemView.NoEditTriggers)

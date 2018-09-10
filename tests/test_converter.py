@@ -4,7 +4,7 @@
 # File name: test_converter.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2017 VideoMorph Development Team
+#   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ from videomorph.converter.profile import ConversionProfile
 
 
 class TestConversionLib:
+    """Class for testing ConversionLib."""
     conv_lib = ConversionLib()
 
     profile = ConversionProfile(prober=conv_lib.prober_path)
@@ -37,13 +38,15 @@ class TestConversionLib:
     media_list = media.MediaList(profile)
 
     @classmethod
-    def setUpClass(cls):
+    def setup_class(cls):
+        """Setup method to run before all test."""
         gen = cls.media_list.populate(('Dad.mpg',))
         next(gen)
         next(gen)
 
     @classmethod
-    def tearDownClass(cls):
+    def teardown_class(cls):
+        """Teardown method to run after all test."""
         cls.media_list.get_file(0).delete_output('.', tagged_output=True)
 
     def get_conversion_cmd(self):
@@ -75,7 +78,7 @@ class TestConversionLib:
     def test_read_converter_output(self):
         """Test ConversionLib.read_converter_output()."""
         self.conv_lib.start_converter(cmd=self.get_conversion_cmd())
-        assert len(self.conv_lib.read_converter_output())
+        assert self.conv_lib.read_converter_output()
         self.conv_lib.stop_converter()
 
     def test_catch_library_error_true(self):

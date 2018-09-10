@@ -8,8 +8,7 @@
 
 VideoMorph is a GUI wrapper for [ffmpeg](http://ffmpeg.org),
 based on general ideas from [python-video-converter](https://github.com/senko/python-video-converter)
-and presets idea from [QWinFF](http://qwinff.github.io) and
-[FF Multi Converter](https://github.com/Ilias95/FF-Multi-Converter).
+and presets idea from [QWinFF](http://qwinff.github.io).
 
 ## Screenshot
 
@@ -68,7 +67,7 @@ On Windows you may use the installers we provide.
 
 ## Contributing
 
-Just clone the repo and make a pull request!
+Read VideoMorph's Manifest, then just clone the repo and make a pull request!
 
 ## Licensing and Patents
 
@@ -93,4 +92,4 @@ Contributors:
 
 ## Copyright
 
-Copyright 2016-2017 VideoMorph Development Team.
+Copyright 2016-2018 VideoMorph Development Team.
