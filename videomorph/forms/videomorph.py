@@ -1385,11 +1385,12 @@ class VideoMorphMW(QMainWindow):
         self.media_list.position = None
 
     def _on_modify_conversion_option(self):
-        self.update_ui_when_ready()
-        self._set_media_status()
-        self._update_all_table_rows(column=COLUMNS.PROGRESS,
-                                    value=self.tr('To Convert'))
-        self.media_list_duration = self.media_list.duration
+        if self.media_list.length:
+            self.update_ui_when_ready()
+            self._set_media_status()
+            self._update_all_table_rows(column=COLUMNS.PROGRESS,
+                                        value=self.tr('To Convert'))
+            self.media_list_duration = self.media_list.duration
 
     def _update_ui(self, **i_vars):
         """Update the interface status.
