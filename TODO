@@ -6,6 +6,8 @@ Next version (2.0):
     - Define a README.rst file to be included in source package
     - Improve the icons visualization
     - Automate the process of creating the Portable Edition on Linux and Windows
+    - Add a Minimize to Tray option
+    - Add options to rotate videos clockwise and counter clockwise to correct some videos orientation
 
 BugFix:
     - App freezes with certain movies when reading ffprobe output on Windows platform
