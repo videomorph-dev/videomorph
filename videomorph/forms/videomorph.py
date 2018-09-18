@@ -594,13 +594,7 @@ class VideoMorphMW(QMainWindow):
             if int(self.tb_tasks.currentColumn()) == COLUMNS.NAME:
                 self.play_input_media_file()
 
-        row = self.tb_tasks.currentIndex().row()
-        if self.conversion_lib.converter_is_running:
-            self._update_ui_when_converter_running()
-        elif self.media_list.get_file_status(row) == STATUS.todo:
-            self.update_ui_when_ready()
-        else:
-            self._update_ui_when_problem()
+        self._update_ui_when_playing(row=self.tb_tasks.currentIndex().row())
 
     @staticmethod
     def _get_settings_file():
@@ -903,12 +897,16 @@ class VideoMorphMW(QMainWindow):
         self._play_media_file(file_path=self.media_list.get_file_path(row))
         self._update_ui_when_playing(row)
 
-    def play_output_media_file(self):
-        """Play the output video using an available video player."""
-        row = self.tb_tasks.currentIndex().row()
+    def _get_output_path(self, row):
         path = self.media_list.get_file(row).get_output_path(
             output_dir=self.le_output.text(),
             tagged_output=self.chb_tag.checkState())
+        return path
+
+    def play_output_media_file(self):
+        """Play the output video using an available video player."""
+        row = self.tb_tasks.currentIndex().row()
+        path = self._get_output_path(row)
         self._play_media_file(file_path=path)
         self._update_ui_when_playing(row)
 
@@ -1516,10 +1514,7 @@ class VideoMorphMW(QMainWindow):
 
         self.play_input_media_file_action.setEnabled(True)
 
-        row = self.tb_tasks.currentIndex().row()
-        path = self.media_list.get_file(row).get_output_path(
-            output_dir=self.le_output.text(),
-            tagged_output=self.chb_tag.checkState())
+        path = self._get_output_path(row=self.tb_tasks.currentIndex().row())
         # Only enable the menu if output file exist and if it not .mp4,
         # cause .mp4 files doesn't run until conversion is finished
         self.play_output_media_file_action.setEnabled(

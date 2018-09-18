@@ -108,17 +108,18 @@ class _Win32LibraryPath(_LibraryPath):
         """Return the local directory for ffmpeg library."""
         return join_path(BASE_DIR, 'ffmpeg', 'bin')
 
-    @property
-    def library_path(self):
-        path = super(_Win32LibraryPath, self).library_path
+    def _get_path(self, attr):
+        path = getattr(super(_Win32LibraryPath, self), attr)
         if path is not None:
             return path + '.exe'
 
     @property
+    def library_path(self):
+        return self._get_path('library_path')
+
+    @property
     def prober_path(self):
-        path = super(_Win32LibraryPath, self).prober_path
-        if path is not None:
-            return path + '.exe'
+        return self._get_path('prober_path')
 
 
 def library_path_factory():
