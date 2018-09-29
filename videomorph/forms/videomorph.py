@@ -327,7 +327,7 @@ class VideoMorphMW(QMainWindow):
         vertical_layout.addWidget(self.pb_total_progress)
         self.vertical_layout_2.addWidget(gb_progress)
 
-    def _action_factory(self, text, callback, **kwargs):
+    def _action_factory(self, **kwargs):
         """Helper method used for creating actions.
 
         Args:
@@ -339,154 +339,171 @@ class VideoMorphMW(QMainWindow):
             icon (QIcon): Icon for the action
             tip (str): Tip to show in status bar or hint
         """
-        action = QAction(text, self, triggered=callback)
+        action = QAction(kwargs['text'], self, triggered=kwargs['callback'])
 
-        if 'icon' in kwargs:
+        try:
             action.setIcon(kwargs['icon'])
-        if 'shortcut' in kwargs:
+        except KeyError:
+            pass
+
+        try:
             action.setShortcut(kwargs['shortcut'])
-        if 'tip' in kwargs:
+        except KeyError:
+            pass
+
+        try:
             action.setToolTip(kwargs['tip'])
             action.setStatusTip(kwargs['tip'])
-        if 'checkable' in kwargs:
+        except KeyError:
+            pass
+
+        try:
             action.setCheckable(kwargs['checkable'])
+        except KeyError:
+            pass
 
         return action
 
     def _create_actions(self):
         """Create actions."""
-        self.open_media_file_action = self._action_factory(
-            icon=QIcon(':/icons/video-file.png'),
-            text=self.tr('&Add Files...'),
-            shortcut="Ctrl+O",
-            tip=self.tr('Add Video Files to the List of Conversion Tasks'),
-            callback=self.open_media_files)
+        actions = {'open_media_file_action':
+                   dict(icon=QIcon(':/icons/video-file.png'),
+                        text=self.tr('&Add Files...'),
+                        shortcut="Ctrl+O",
+                        tip=self.tr('Add Video Files to the '
+                                    'List of Conversion Tasks'),
+                        callback=self.open_media_files),
 
-        self.open_media_dir_action = self._action_factory(
-            icon=QIcon(':/icons/add-folder.png'),
-            text=self.tr('Add &Directory...'),
-            shortcut="Ctrl+D",
-            tip=self.tr('Add all the Video Files in a Directory '
-                        'to the List of Conversion Tasks'),
-            callback=self.open_media_dir)
+                   'open_media_dir_action':
+                   dict(icon=QIcon(':/icons/add-folder.png'),
+                        text=self.tr('Add &Directory...'),
+                        shortcut="Ctrl+D",
+                        tip=self.tr('Add all the Video Files in a Directory '
+                                    'to the List of Conversion Tasks'),
+                        callback=self.open_media_dir),
 
-        self.add_profile_action = self._action_factory(
-            icon=QIcon(':/icons/add-profile.png'),
-            text=self.tr('&Add Customized Profile...'),
-            shortcut="Ctrl+F",
-            tip=self.tr('Add Customized Profile'),
-            callback=self.add_customized_profile)
+                   'add_profile_action':
+                   dict(icon=QIcon(':/icons/add-profile.png'),
+                        text=self.tr('&Add Customized Profile...'),
+                        shortcut="Ctrl+F",
+                        tip=self.tr('Add Customized Profile'),
+                        callback=self.add_customized_profile),
 
-        self.export_profile_action = self._action_factory(
-            icon=QIcon(':/icons/export.png'),
-            text=self.tr('&Export Conversion Profiles...'),
-            shortcut="Ctrl+E",
-            tip=self.tr('Export Conversion Profiles'),
-            callback=self.export_profiles)
+                   'export_profile_action':
+                   dict(icon=QIcon(':/icons/export.png'),
+                        text=self.tr('&Export Conversion Profiles...'),
+                        shortcut="Ctrl+E",
+                        tip=self.tr('Export Conversion Profiles'),
+                        callback=self.export_profiles),
 
-        self.import_profile_action = self._action_factory(
-            icon=QIcon(':/icons/import.png'),
-            text=self.tr('&Import Conversion Profiles...'),
-            shortcut="Ctrl+I",
-            tip=self.tr('Import Conversion Profiles'),
-            callback=self.import_profiles)
+                   'import_profile_action':
+                   dict(icon=QIcon(':/icons/import.png'),
+                        text=self.tr('&Import Conversion Profiles...'),
+                        shortcut="Ctrl+I",
+                        tip=self.tr('Import Conversion Profiles'),
+                        callback=self.import_profiles),
 
-        self.restore_profile_action = self._action_factory(
-            icon=QIcon(':/icons/default-profile.png'),
-            text=self.tr('&Restore the Default Conversion Profiles'),
-            tip=self.tr('Restore the Default Conversion Profiles'),
-            callback=self.restore_profiles)
+                   'restore_profile_action':
+                   dict(icon=QIcon(':/icons/default-profile.png'),
+                        text=self.tr('&Restore the Default '
+                                     'Conversion Profiles'),
+                        tip=self.tr('Restore the Default Conversion Profiles'),
+                        callback=self.restore_profiles),
 
-        self.play_input_media_file_action = self._action_factory(
-            icon=QIcon(':/icons/video-player-input.png'),
-            text=self.tr('Play Input Video File'),
-            callback=self.play_input_media_file)
+                   'play_input_media_file_action':
+                   dict(icon=QIcon(':/icons/video-player-input.png'),
+                        text=self.tr('Play Input Video File'),
+                        callback=self.play_input_media_file),
 
-        self.play_output_media_file_action = self._action_factory(
-            icon=QIcon(':/icons/video-player-output.png'),
-            text=self.tr('Play Output Video File'),
-            callback=self.play_output_media_file)
+                   'play_output_media_file_action':
+                   dict(icon=QIcon(':/icons/video-player-output.png'),
+                        text=self.tr('Play Output Video File'),
+                        callback=self.play_output_media_file),
 
-        self.clear_media_list_action = self._action_factory(
-            icon=QIcon(':/icons/clear-list.png'),
-            text=self.tr('Clear &List'),
-            shortcut="Ctrl+Del",
-            tip=self.tr('Remove all Video Files from the '
-                        'List of Conversion Tasks'),
-            callback=self.clear_media_list)
+                   'clear_media_list_action':
+                   dict(icon=QIcon(':/icons/clear-list.png'),
+                        text=self.tr('Clear &List'),
+                        shortcut="Ctrl+Del",
+                        tip=self.tr('Remove all Video Files from the '
+                                    'List of Conversion Tasks'),
+                        callback=self.clear_media_list),
 
-        self.remove_media_file_action = self._action_factory(
-            icon=QIcon(':/icons/remove-file.png'),
-            text=self.tr('&Remove File'),
-            shortcut="Del",
-            tip=self.tr('Remove Selected Video File from the '
-                        'List of Conversion Tasks'),
-            callback=self.remove_media_file)
+                   'remove_media_file_action':
+                   dict(icon=QIcon(':/icons/remove-file.png'),
+                        text=self.tr('&Remove File'),
+                        shortcut="Del",
+                        tip=self.tr('Remove Selected Video File from the '
+                                    'List of Conversion Tasks'),
+                        callback=self.remove_media_file),
 
-        self.convert_action = self._action_factory(
-            icon=QIcon(':/icons/convert.png'),
-            text=self.tr('&Convert'),
-            shortcut="Ctrl+R",
-            tip=self.tr('Start Conversion Process'),
-            callback=self.start_encoding)
+                   'convert_action':
+                   dict(icon=QIcon(':/icons/convert.png'),
+                        text=self.tr('&Convert'),
+                        shortcut="Ctrl+R",
+                        tip=self.tr('Start Conversion Process'),
+                        callback=self.start_encoding),
 
-        self.stop_action = self._action_factory(
-            icon=QIcon(':/icons/stop.png'),
-            text=self.tr('&Stop'),
-            shortcut="Ctrl+P",
-            tip=self.tr('Stop Video File Conversion'),
-            callback=self.stop_file_encoding)
+                   'stop_action':
+                   dict(icon=QIcon(':/icons/stop.png'),
+                        text=self.tr('&Stop'),
+                        shortcut="Ctrl+P",
+                        tip=self.tr('Stop Video File Conversion'),
+                        callback=self.stop_file_encoding),
 
-        self.stop_all_action = self._action_factory(
-            icon=QIcon(':/icons/stop-all.png'),
-            text=self.tr('S&top All'),
-            shortcut="Ctrl+A",
-            tip=self.tr('Stop all Video Conversion Tasks'),
-            callback=self.stop_all_files_encoding)
+                   'stop_all_action':
+                   dict(icon=QIcon(':/icons/stop-all.png'),
+                        text=self.tr('S&top All'),
+                        shortcut="Ctrl+A",
+                        tip=self.tr('Stop all Video Conversion Tasks'),
+                        callback=self.stop_all_files_encoding),
 
-        self.about_action = self._action_factory(
-            text=self.tr('&About') + ' ' + APP_NAME,
-            tip=self.tr('About') + ' ' + APP_NAME + ' ' + VERSION,
-            callback=self.about)
+                   'about_action':
+                   dict(text=self.tr('&About') + ' ' + APP_NAME,
+                        tip=self.tr('About') + ' ' + APP_NAME + ' ' + VERSION,
+                        callback=self.about),
 
-        self.help_content_action = self._action_factory(
-            icon=QIcon(':/icons/about.png'),
-            text=self.tr('&Contents'),
-            shortcut="Ctrl+H",
-            tip=self.tr('Help Contents'),
-            callback=self.help_content)
+                   'help_content_action':
+                   dict(icon=QIcon(':/icons/about.png'),
+                        text=self.tr('&Contents'),
+                        shortcut="Ctrl+H",
+                        tip=self.tr('Help Contents'),
+                        callback=self.help_content),
 
-        self.changelog_action = self._action_factory(
-            icon=QIcon(':/icons/changelog.png'),
-            text=self.tr('Changelog'),
-            tip=self.tr('Changelog'),
-            callback=self.changelog)
+                   'changelog_action':
+                   dict(icon=QIcon(':/icons/changelog.png'),
+                        text=self.tr('Changelog'),
+                        tip=self.tr('Changelog'),
+                        callback=self.changelog),
 
-        self.ffmpeg_doc_action = self._action_factory(
-            icon=QIcon(':/icons/ffmpeg.png'),
-            text=self.tr('&Ffmpeg Documentation'),
-            shortcut="Ctrl+L",
-            tip=self.tr('Open Ffmpeg On-Line Documentation'),
-            callback=self.ffmpeg_doc)
+                   'ffmpeg_doc_action':
+                   dict(icon=QIcon(':/icons/ffmpeg.png'),
+                        text=self.tr('&Ffmpeg Documentation'),
+                        shortcut="Ctrl+L",
+                        tip=self.tr('Open Ffmpeg On-Line Documentation'),
+                        callback=self.ffmpeg_doc),
 
-        self.videomorph_web_action = self._action_factory(
-            icon=QIcon(':/logo/videomorph.png'),
-            text=APP_NAME + ' ' + self.tr('&Web Page'),
-            shortcut="Ctrl+V",
-            tip=self.tr('Open') + ' ' + APP_NAME + ' ' + self.tr('Web Page'),
-            callback=self.videomorph_web)
+                   'videomorph_web_action':
+                   dict(icon=QIcon(':/logo/videomorph.png'),
+                        text=APP_NAME + ' ' + self.tr('&Web Page'),
+                        shortcut="Ctrl+V",
+                        tip=self.tr('Open') + ' ' + APP_NAME + ' ' + self.tr(
+                            'Web Page'),
+                        callback=self.videomorph_web),
 
-        self.exit_action = self._action_factory(
-            icon=QIcon(':/icons/exit.png'),
-            text=self.tr('E&xit'),
-            shortcut="Ctrl+Q",
-            tip=self.tr('Exit') + ' ' + APP_NAME + ' ' + VERSION,
-            callback=self.close)
+                   'exit_action':
+                   dict(icon=QIcon(':/icons/exit.png'),
+                        text=self.tr('E&xit'),
+                        shortcut="Ctrl+Q",
+                        tip=self.tr('Exit') + ' ' + APP_NAME + ' ' + VERSION,
+                        callback=self.close),
 
-        self.info_action = self._action_factory(
-            text=self.tr('Properties...'),
-            tip=self.tr('Show Video Properties'),
-            callback=self.show_video_info)
+                   'info_action':
+                   dict(text=self.tr('Properties...'),
+                        tip=self.tr('Show Video Properties'),
+                        callback=self.show_video_info)}
+
+        for action in actions:
+            self.__dict__[action] = self._action_factory(**actions[action])
 
     def _create_context_menu(self):
         first_separator = QAction(self)
