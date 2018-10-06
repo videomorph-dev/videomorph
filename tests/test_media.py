@@ -170,7 +170,7 @@ class TestMedia:
                                                                '48000', '-ac', '2',
                                                                '-threads', '3',
                                                                '-y',
-                                                               './[DVDF]-Dad.mpg']
+                                                               '[DVDF]-Dad.mpg']
 
     def test_running_file_conversion_cmd(self):
         """Test MediaList.running_file_conversion_cmd()."""
@@ -199,7 +199,7 @@ class TestMedia:
                                                                '48000', '-ac', '2',
                                                                '-threads', '3',
                                                                '-y',
-                                                               './[DVDF]-Dad.mpg']
+                                                               '[DVDF]-Dad.mpg']
 
     @nose.tools.raises(PermissionError)
     def test_running_file_conversion_cmd_permission_error(self):
