@@ -292,7 +292,7 @@ class _MediaFile:
             shlex.split(self._profile.params) + \
             ['-threads', str(CPU_CORES)] + \
             ['-y', str(output_path)]
-        print(cmd)
+
         return cmd
 
     def delete_output(self, output_dir, tagged_output):
@@ -341,14 +341,18 @@ class _MediaFile:
 
     @property
     def _subtitle_path(self):
-        """Return the subtitle path if exit."""
-        extension = self.input_path.split('.')[-1]
-        subtitle_path = self.input_path.strip('.' + extension) + '.srt'
+        """Return the subtitle path as pathlib.Path if it exits."""
+        extensions = ['.srt', '.ssa', '.stl']
 
-        if exists(subtitle_path):
-            return subtitle_path
-        else:
-            raise FileNotFoundError('Subtitle file not found')
+        # Add uppercase extensions to check if subtitle file exists
+        [extensions.append(ext.upper()) for ext in extensions[:]]
+
+        for ext in extensions:
+            subtitle_path = self._input_path.with_suffix(ext)
+            if subtitle_path.exists():
+                return subtitle_path
+
+        raise FileNotFoundError('Subtitle file not found')
 
     def _process_subtitles(self, subtitle):
         """Process subtitles if available."""
