@@ -42,7 +42,7 @@ def which(app):
     for path in sys_paths:
         app_path = Path(path, app)
         if app_path.exists():
-            return str(app_path)
+            return app_path.__str__()
 
 
 def write_time(time_in_secs):

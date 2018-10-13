@@ -58,7 +58,7 @@ def run_on_console(app, main_win):
         for file in args.input_file:
             path = Path(file)
             if path.exists():
-                files.append(str(path))
+                files.append(path.__str__())
             else:
                 print("Video file: {0}, doesn't exit".format(file),
                       file=sys.stderr)
@@ -91,7 +91,7 @@ def search_directory_recursively(directory, files=None):
             for file_name in files_names:
                 path = Path(dir_path, file_name)
                 if path.suffix in VALID_VIDEO_EXT:
-                    files.append(str(path))
+                    files.append(path.__str__())
     else:
         raise IsADirectoryError("Directory: {0}, doesn't exist".format(
             directory))

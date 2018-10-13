@@ -46,7 +46,7 @@ class TestMedia:
     def test_populate(self):
         """Test MediaList.populate()."""
         assert len(self.media_list) == 1 == self.media_list.length
-        assert self.media_list[0].input_path == 'Dad.mpg'
+        assert self.media_list[0].input_path.__str__() == 'Dad.mpg'
 
     def test_delete_file(self):
         """Test MediaList.delete_file()."""
@@ -70,7 +70,7 @@ class TestMedia:
 
     def test_get_file_path(self):
         """Test MediaList.get_file_path()."""
-        assert self.media_list.get_file_path(position=0) == 'Dad.mpg'
+        assert self.media_list.get_file_path(position=0).__str__() == 'Dad.mpg'
 
     def test_get_file_status(self):
         """Test MediaList.get_file_status()."""
@@ -136,12 +136,11 @@ class TestMedia:
         """Test MediaList.duration()."""
         nose.tools.assert_almost_equal(self.media_list.duration, 120.72)
 
-    @nose.tools.raises(StopIteration)
     def test_add_file_twice(self):
         """Testing adding the same file twice."""
         assert self.media_list.length == 1
-        gen = self.media_list.populate(('Dad.mpg',))
-        next(gen)
+        self.media_list.populate(('Dad.mpg',))
+        assert self.media_list.length == 1
 
     def test_build_conversion_cmd(self):
         """Test _MediaFile.build_conversion_cmd."""

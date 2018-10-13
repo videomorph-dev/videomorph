@@ -74,7 +74,7 @@ class _LibraryPath:
         if local_dir.is_dir():
             app_path = local_dir.joinpath(app)
             if app_path.exists():
-                return str(app_path)
+                return app_path.__str__()
 
         app_path = which(app)
         if app_path:
