@@ -311,7 +311,7 @@ class _MediaFile:
             pass
 
         try:
-            self._subtitle_path.unlink()
+            self.subtitle_path.unlink()
         except FileNotFoundError:
             pass
 
@@ -332,11 +332,6 @@ class _MediaFile:
 
     @property
     def subtitle_path(self):
-        """Return subtitle path as str."""
-        return str(self._subtitle_path)
-
-    @property
-    def _subtitle_path(self):
         """Return the subtitle path as pathlib.Path if it exits."""
         extensions = ['.srt', '.ssa', '.stl']
 
@@ -357,7 +352,7 @@ class _MediaFile:
                 subtitle_opt = ['-vf',
                                 "subtitles='{0}':force_style='Fontsize=24'"
                                 ":charenc=cp1252".format(
-                                    self.subtitle_path)]
+                                    self.subtitle_path.__str__())]
                 return subtitle_opt
             except FileNotFoundError:
                 pass
