@@ -65,8 +65,8 @@ class TestConversionLib:
 
     def test_prober_path(self):
         """Test the ConversionLib.prober_path."""
-        assert self.conv_lib.prober_path in {'/usr/bin/ffprobe',
-                                             '/usr/local/bin/ffprbe'}
+        assert self.conv_lib.prober_path.__str__() in {'/usr/bin/ffprobe',
+                                                       '/usr/local/bin/ffprbe'}
 
     def test_start_converter(self):
         """Test ConversionLib.start_converter()."""

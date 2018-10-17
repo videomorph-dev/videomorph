@@ -57,13 +57,19 @@ def test_get_xml_profile_attr():
 def test_get_xml_profile_qualities_en():
     """Test get_xml_profile_qualities -> english."""
     qualities = profile.get_xml_profile_qualities('en_US')
-    assert qualities == OrderedDict([('AVI', ['MS Compatible 640x480', 'MS Compatible 720x480', 'XVID Fullscreen 640x480 (4:3)', 'XVID Widescreen 704x384 (16:9)']), ('DVD', ['DVD Fullscreen 352x480 (4:3)', 'DVD Widescreen 352x480 (16:9)', 'DVD Fullscreen 720x480 (4:3) High Quality', 'DVD Widescreen 720x480 (16:9) High Quality', 'DVD Low Quality 720x480']), ('FLV', ['FLV Fullscreen 320x240 (4:3)', 'FLV Widescreen 320x180 (16:9)']), ('MOV', ['MOV Generic', 'Quicktime MOV Auto', 'QuickTime H.264 High quality', 'QuickTime H.264 Very High Quality']), ('MP4', ['MP4 High Quality', 'MP4 Very High Quality', 'MP4 Super High Quality', 'MP4 Fullscreen (4:3)', 'MP4 Widescreen (16:9)']), ('VCD', ['NTSC VCD High Quality', 'PAL VCD High Quality']), ('WEBM', ['WEBM Fullscreen (4:3)', 'WEBM Widescreen (16:9)']), ('WMV', ['WMV Generic']), ('MP3', ['Extract Audio mp3', 'MP3 Good Quality (160 kb)', 'MP3 High Quality (192 kb)'])])
+    assert qualities['AVI'] == ['MS Compatible 640x480',
+                                'MS Compatible 720x480',
+                                'XVID Fullscreen 640x480 (4:3)',
+                                'XVID Widescreen 704x384 (16:9)']
 
 
 def test_get_xml_profile_qualities_es():
     """Test get_xml_profile_qualities -> spanish."""
     qualities = profile.get_xml_profile_qualities('es_ES')
-    assert qualities == OrderedDict([('AVI', ['Compatible MS 640x480', 'Compatible MS 720x480', 'XVID Pantalla Completa 640x480 (4:3)', 'XVID Pantalla Panorámica 704x384 (16:9)']), ('DVD', ['DVD Pantalla Completa 352x480 (4:3)', 'DVD Pantalla Panorámica 352x480 (16:9)', 'DVD Pantalla Completa 720x480 (4:3) Alta Calidad', 'DVD Pantalla Panorámica 720x480 (16:9) Alta Calidad', 'DVD Baja Calidad 720x480']), ('FLV', ['FLV Pantalla Completa 320x240 (4:3)', 'FLV Pantalla Panorámica 320x180 (16:9)']), ('MOV', ['MOV Genérico', 'Quicktime MOV Auto', 'QuickTime H.264 Alta Calidad', 'QuickTime H.264 Muy Alta Calidad']), ('MP4', ['MP4 Alta Calidad', 'MP4 Muy Alta Calidad', 'MP4 Súper Alta Calidad', 'MP4 Pantalla Completa (4:3)', 'MP4 Pantalla Panorámica (16:9)']), ('VCD', ['VCD Alta Calidad', 'PAL VCD Alta Calidad']), ('WEBM', ['WEBM Pantalla Completa (4:3)', 'WEBM Pantalla Panorámica (16:9)']), ('WMV', ['WMV Genérico']), ('MP3', ['Extraer Audio mp3', 'MP3 Buena Calidad (160 kb)', 'MP3 Alta Calidad (192 kb)'])])
+    assert qualities['AVI'] == ['Compatible MS 640x480',
+                                'Compatible MS 720x480',
+                                'XVID Pantalla Completa 640x480 (4:3)',
+                                'XVID Pantalla Panorámica 704x384 (16:9)']
 
 
 # Tests for _Profile class
