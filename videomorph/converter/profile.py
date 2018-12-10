@@ -180,8 +180,9 @@ class _XMLProfile:
             self._xml_files.customized)
 
         with open(xml_profiles_path, 'wb') as xml_file:
-            xml_file.write(b'<?xml version="1.0"?>\n')
-            ElementTree.ElementTree(xml_tree).write(xml_file, encoding='UTF-8')
+            ElementTree.ElementTree(xml_tree).write(xml_file,
+                                                    xml_declaration=True,
+                                                    encoding='UTF-8')
 
     def _create_xml_files(self):
         """Create a xml file with the conversion profiles."""
