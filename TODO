@@ -2,12 +2,11 @@
 
 ## Next Version (2.0)
 
-- Implement a Dialog to generate the conversion commands using the Ffmpeg options
 - Define a `README.rst` file to be included in source package
 - Improve the icons visualization and interface design
 - Automate the process of creating the Portable Edition on Linux and Windows
 - Add new presets for social media (Youtube, FB, etc.)
-- Launch a contest to gather information about most used presets
+- Launch some kind of survey to gather information about most used presets
 - Add an option to rotate video
 - Buy the domain name videomorph.info
 - Create a new web page for the app
@@ -19,6 +18,7 @@
 
 ## Someday
 
+- Implement a Dialog to generate the conversion commands using the Ffmpeg options
 - Add french translation
 - Add portuguese translation
 - Write a Disclaimer about Ffmpeg options in customized profiles, available codecs and input video quality
