@@ -6,23 +6,19 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/5f6cd3f7c20bccee2065/maintainability)](https://codeclimate.com/github/videomorph-dev/videomorph/maintainability)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/videomorph-dev/videomorph/pulls)
 
-VideoMorph is a GUI wrapper for [ffmpeg](http://ffmpeg.org),
-based on general ideas from [python-video-converter](https://github.com/senko/python-video-converter)
-and presets idea from [QWinFF](http://qwinff.github.io).
+VideoMorph is a GUI wrapper for [ffmpeg](http://ffmpeg.org), based on general ideas from [python-video-converter](https://github.com/senko/python-video-converter) and presets idea from [QWinFF](http://qwinff.github.io).
 
-## Screenshot
+## GUI Screenshot
 
 ![Screenshot](screenshot.png)
 
-## Goal
+## App Goal
 
-Unlike other video converters, VideoMorph focuses on a single goal:
-make video conversion simple, with an easy to use GUI and allowing
-the user to convert to the currently most popular video formats.
+Unlike other video converters, VideoMorph focuses on a single goal: make video conversion simple, fast and easy, by providing an user-friendly GUI and by allowing you to convert to the currently most popular video formats.
 
-VideoMorph GUI is simple and clean, focused on usability, removing annoying options rarely used.
-VideoMorph is a video converter, just that. If you want a video editor,
-VideoMorph isn't for you.
+VideoMorph's GUI aspire to be simple and clean, focused on usability, and free of annoying options rarely used.
+
+VideoMorph is a Video Converter, just that. If you want a video editor, VideoMorph isn't for you.
 
 ## Requirements
 
@@ -40,30 +36,30 @@ On Windows systems you also need:
 
 ## Installation
 
-To install the package:
+To install the application from the source file (TAR.GZ format package) on a GNU/Linux system, open a terminal and type this:
 
-    sudo python3 setup.py install # This does not install dependencies
+```console
+$ tar -xvf videomorph-x.x.tar.gz
+$ cd videomorph-x.x
+$ python3 setup.py build
+$ sudo python3 setup.py install
+```
 
-This only installs VideoMorph. The [ffmpeg](http://ffmpeg.org) package should be installed
-or compiled in your distribution. Idem for [PyQt5](https://riverbankcomputing.com/software/pyqt/download5).
+The preceding command doesn't install the requirements, so you'll have to install them manually.
 
-On Windows platform, the videomorph.exe file will be placed at path\to\Python3x\Scripts.
+On Debian based distros you can install it like this:
 
-On Debian based distros:
+```console
+$ sudo install.sh
+```
 
-    sudo install.sh
+This command should install VideoMorph and its dependencies, including [ffmpeg](http://ffmpeg.org) library and [PyQt5](https://riverbankcomputing.com/software/pyqt/download5), from your current repository.
 
-This should install VideoMorph and its dependencies, including [ffmpeg](http://ffmpeg.org) library and [PyQt5](https://riverbankcomputing.com/software/pyqt/download5), from
-your current repository.
+To install from the .DEB package on Debian based distros, it is recommended you to use GDebi Packages Installer and follow the instructions, just that... This should install VideoMorph and all the dependencies from your current repository.
 
-To install from the .deb package on Debian based distros, we recommend you to
-use GDebi Packages Installer and follow the instructions, just that... This should install VideoMorph
-and its dependencies from your current repository.
+To use a Portable Edition (PE), decompress the .TAR.GZ or the .ZIP file (GNU/Linux and Windows respectively) in any directory, and then double-click on videomorph or videomorph.exe depending on your platform.
 
-To use a Portable Edition (PE), decompress the .tar.gz or the .zip file (GNU/Linux and Windows respectively)
-in any directory, and then double click on videomorph or videomorph.exe depending on your platform.
-
-On Windows you may use the installers we provide.
+On Windows you should use the installers we provide.
 
 ## Contributing
 
@@ -71,10 +67,8 @@ Read VideoMorph's Manifest, then just clone the repo and make a pull request!
 
 ## Licensing and Patents
 
-VideoMorph is licensed under Apache License Version 2.0, more info at [http://www.apache.org/licenses/](http://www.apache.org/licenses/)
-Following the idea of [python-video-converter](https://github.com/senko/python-video-converter)
-VideoMorph only uses the [ffmpeg](http://ffmpeg.org) binary, so, VideoMorph doesn't need to be licensed
-under LGPL/GPL
+VideoMorph is licensed under [Apache License Version 2.0](http://www.apache.org/licenses/).
+Following the idea of [python-video-converter](https://github.com/senko/python-video-converter), VideoMorph only uses the [ffmpeg](http://ffmpeg.org) binaries, so, it doesn't need to be licensed under LGPL/GPL.
 
 ## Authors and Contributors
 
