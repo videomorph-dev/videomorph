@@ -76,6 +76,7 @@ from videomorph.platformdeps import launcher_factory
 from videomorph.profile import ConversionProfile
 from videomorph.utils import write_time
 from . import COLUMNS
+from . import videomorph_qrc
 from .vmwidgets import TasksListTable
 from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
