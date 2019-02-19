@@ -26,10 +26,10 @@ import re
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from videomorph.converter import APP_NAME
-from videomorph.converter import BASE_DIR
-from videomorph.converter import SYS_PATHS
-from videomorph.converter import VERSION
+from videomorph import APP_NAME
+from videomorph import BASE_DIR
+from videomorph import SYS_PATHS
+from videomorph import VERSION
 
 
 class ChangelogDialog(QtWidgets.QDialog):

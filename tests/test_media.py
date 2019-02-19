@@ -22,11 +22,11 @@
 
 import nose
 
-from videomorph.converter.conversionlib import ConversionLib
-from videomorph.converter.media import MediaList
-from videomorph.converter.media import _MediaFile
-from videomorph.converter.profile import ConversionProfile
-from videomorph.converter import STATUS
+from videomorph import ConversionLib
+from videomorph import MediaList
+from videomorph import _MediaFile
+from videomorph import ConversionProfile
+from videomorph import STATUS
 
 
 class TestMedia:

@@ -23,9 +23,9 @@
 import nose
 from PyQt5.QtCore import QProcess
 
-from videomorph.converter import media
-from videomorph.converter.conversionlib import ConversionLib
-from videomorph.converter.profile import ConversionProfile
+from videomorph import media
+from videomorph import ConversionLib
+from videomorph import ConversionProfile
 
 
 class TestConversionLib:

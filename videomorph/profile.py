@@ -29,11 +29,11 @@ from os.path import join as join_path
 from xml.etree import ElementTree
 from xml.etree.ElementTree import ParseError
 
-from . import BASE_DIR
-from . import SYS_PATHS
-from . import VM_PATHS
-from . import VALID_VIDEO_EXT
-from . import XML_FILES
+from videomorph import BASE_DIR
+from videomorph import SYS_PATHS
+from videomorph import VM_PATHS
+from videomorph import VALID_VIDEO_EXT
+from videomorph import XML_FILES
 
 
 class ProfileError(Exception):

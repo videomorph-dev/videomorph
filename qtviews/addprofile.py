@@ -24,12 +24,12 @@ from PyQt5.QtWidgets import (QDialog, QWidget, QVBoxLayout, QLabel,
                              QLineEdit, QSpacerItem, QDialogButtonBox,
                              QMessageBox, QCompleter)
 
-from videomorph.converter import LOCALE
-from videomorph.converter import VALID_VIDEO_EXT
-from videomorph.converter.profile import (ProfileBlankNameError,
-                                          ProfileBlankPresetError,
-                                          ProfileBlankParamsError,
-                                          ProfileExtensionError)
+from videomorph import LOCALE
+from videomorph import VALID_VIDEO_EXT
+from videomorph.profile import (ProfileBlankNameError,
+                                ProfileBlankPresetError,
+                                ProfileBlankParamsError,
+                                ProfileExtensionError)
 
 
 class AddProfileDialog(QDialog):

@@ -36,10 +36,10 @@ from PyQt5.QtWidgets import (QDialog,
                              QLabel,
                              QSpacerItem)
 
-from videomorph.converter import APP_NAME
-from videomorph.converter import BASE_DIR
-from videomorph.converter import SYS_PATHS
-from videomorph.converter import VERSION
+from videomorph import APP_NAME
+from videomorph import BASE_DIR
+from videomorph import SYS_PATHS
+from videomorph import VERSION
 
 
 class AboutVMDialog(QDialog):

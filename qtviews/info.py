@@ -25,8 +25,8 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (QLabel, QPushButton, QVBoxLayout, QGroupBox,
                              QGridLayout)
 
-from videomorph.converter.utils import write_size
-from videomorph.converter.utils import write_time
+from videomorph.utils import write_size
+from videomorph.utils import write_time
 
 
 class InfoDialog(QtWidgets.QDialog):

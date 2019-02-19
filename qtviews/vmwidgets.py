@@ -29,8 +29,8 @@ from PyQt5.QtWidgets import QHeaderView
 from PyQt5.QtWidgets import QItemDelegate
 from PyQt5.QtWidgets import QComboBox
 
-from videomorph.converter import STATUS
-from videomorph.converter import VALID_VIDEO_EXT
+from videomorph import STATUS
+from videomorph import VALID_VIDEO_EXT
 from . import COLUMNS
 
 

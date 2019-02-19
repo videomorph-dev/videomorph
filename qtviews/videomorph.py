@@ -59,23 +59,23 @@ from PyQt5.QtWidgets import (QMainWindow,
                              qApp)
 
 
-from videomorph.converter import APP_NAME
-from videomorph.converter import BASE_DIR
-from videomorph.converter import LOCALE
-from videomorph.converter import STATUS
-from videomorph.converter import SYS_PATHS
-from videomorph.converter import VERSION
-from videomorph.converter import VIDEO_FILTERS
-from videomorph.converter import VM_PATHS
-from videomorph.converter.console import search_directory_recursively
-from videomorph.converter.conversionlib import ConversionLib
-from videomorph.converter.media import MediaList
-from videomorph.converter.platformdeps import PlayerNotFoundError
-from videomorph.converter.platformdeps import launcher_factory
-from videomorph.converter.profile import ConversionProfile
-from videomorph.converter.utils import write_time
+
+from videomorph import APP_NAME
+from videomorph import BASE_DIR
+from videomorph import LOCALE
+from videomorph import STATUS
+from videomorph import SYS_PATHS
+from videomorph import VERSION
+from videomorph import VIDEO_FILTERS
+from videomorph import VM_PATHS
+from videomorph.console import search_directory_recursively
+from videomorph.conversionlib import ConversionLib
+from videomorph.media import MediaList
+from videomorph.platformdeps import PlayerNotFoundError
+from videomorph.platformdeps import launcher_factory
+from videomorph.profile import ConversionProfile
+from videomorph.utils import write_time
 from . import COLUMNS
-from . import videomorph_qrc
 from .vmwidgets import TasksListTable
 from .about import AboutVMDialog
 from .addprofile import AddProfileDialog

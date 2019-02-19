@@ -28,12 +28,12 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import qApp
 
-from .converter import BASE_DIR
-from .converter import LOCALE
-from .converter import SYS_PATHS
-from .converter import VM_PATHS
-from .converter.console import run_on_console
-from .forms.videomorph import VideoMorphMW
+from videomorph import BASE_DIR
+from videomorph import LOCALE
+from videomorph import SYS_PATHS
+from videomorph import VM_PATHS
+from videomorph.console import run_on_console
+from qtviews.videomorph import VideoMorphMW
 
 
 def main():

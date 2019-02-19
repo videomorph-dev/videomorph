@@ -17,4 +17,57 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module defines the videomorph package and the needed constants."""
+"""This module defines the converter package."""
+
+from collections import namedtuple
+try:
+    from os import cpu_count
+except ImportError:
+    cpu_count = None
+from os.path import dirname
+from os.path import join as join_path
+
+from .platformdeps import sys_path_factory
+from .platformdeps import VMPaths
+from .utils import get_locale
+
+
+SYS_PATHS = sys_path_factory()
+BASE_DIR = dirname(dirname(__file__))
+
+
+def get_version():
+    """Return app's version number."""
+    try:
+        version_file = open(join_path(SYS_PATHS.doc, 'VERSION'),
+                            'r', encoding='UTF-8')
+    except FileNotFoundError:
+        version_file = open(join_path(BASE_DIR, 'VERSION'),
+                            'r', encoding='UTF-8')
+
+    with version_file:
+        version = version_file.readline().strip('\n')
+
+    return version
+
+
+APP_NAME = 'VideoMorph'
+VERSION = get_version()
+LOCALE = get_locale()
+
+VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
+                 ' *.flv *.vob *.ts *.mts *.3gp *.ogv *.mpg *.mp4 *.avi')
+
+VALID_VIDEO_EXT = {ext.lstrip('*') for ext in VIDEO_FILTERS.split()}
+
+MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
+STATUS = MediaFileStatus('Todo', 'Done', 'Stopped')
+
+XMLFiles = namedtuple('XMLFiles', 'default customized')
+XML_FILES = XMLFiles('default.xml', 'customized.xml')
+
+CPU_CORES = (cpu_count() - 1 if
+             cpu_count() is not None
+             else 0)
+
+VM_PATHS = VMPaths()

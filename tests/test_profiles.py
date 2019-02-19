@@ -20,12 +20,10 @@
 
 """This module provides tests for profile.py module."""
 
-from collections import OrderedDict
-
 import nose
 
-from videomorph.converter.profile import ConversionProfile
-from videomorph.converter.conversionlib import ConversionLib
+from videomorph import ConversionProfile
+from videomorph import ConversionLib
 
 
 profile = None

@@ -29,10 +29,10 @@ except ImportError:
     from distutils.core import setup
     USE_DISTUTILS = True
 
-from videomorph.converter import VERSION
-from videomorph.converter import APP_NAME
-from videomorph.converter import VM_PATHS
-from videomorph.converter import SYS_PATHS
+from videomorph import VERSION
+from videomorph import APP_NAME
+from videomorph import VM_PATHS
+from videomorph import SYS_PATHS
 
 LONG_DESCRIPTION = """Video Converter based on ffmpeg, Python 3 and PyQt5.
 Unlike other video converters, VideoMorph focuses on a single goal:

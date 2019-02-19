@@ -25,7 +25,7 @@ from time import time
 
 from PyQt5.QtCore import QProcess
 
-from . import BASE_DIR
+from videomorph import BASE_DIR
 from .platformdeps import launcher_factory
 from .platformdeps import generic_factory
 from .utils import write_time

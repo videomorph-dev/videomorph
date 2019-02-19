@@ -25,9 +25,9 @@ from os import walk
 from os.path import isdir
 from pathlib import Path
 
-from . import APP_NAME
-from . import VERSION
-from . import VALID_VIDEO_EXT
+from videomorph import APP_NAME
+from videomorph import VERSION
+from videomorph import VALID_VIDEO_EXT
 
 
 def run_on_console(app, main_win):

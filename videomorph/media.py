@@ -25,8 +25,8 @@ from os import W_OK
 from os import access
 from pathlib import Path
 
-from . import CPU_CORES
-from . import STATUS
+from videomorph import CPU_CORES
+from videomorph import STATUS
 from .platformdeps import spawn_process
 
 
