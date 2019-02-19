@@ -14,11 +14,11 @@ VideoMorph is a GUI wrapper for [ffmpeg](http://ffmpeg.org), based on general id
 
 ## App Goal
 
-Unlike other video converters, VideoMorph focuses on a single goal: make video conversion simple, fast and easy, by providing an user-friendly GUI and by allowing you to convert to the currently most popular video formats.
+Unlike other video converters, VideoMorph focuses on a single goal: **make video conversion simple, fast and easy**, by providing an user-friendly GUI and by allowing you to convert your videos to the currently most popular formats (`AVI`, `MP4`, `MPG`, `WEBM`, `DVD`, `VCD`, `FLV`, `MOV`, `WMV`, `OGV`).
 
-VideoMorph's GUI aspire to be simple and clean, focused on usability, and free of annoying options rarely used.
+VideoMorph's GUI is intended to be simple and clean, focused on usability and free of awkward and rarely used options.
 
-VideoMorph is a Video Converter, just that. If you want a video editor, VideoMorph isn't for you.
+VideoMorph is a video converter, just that. If you want a video editor, VideoMorph isn't for you.
 
 ## Requirements
 
@@ -30,13 +30,13 @@ VideoMorph uses the following libraries and programs:
 
 You should install these programs and libraries for VideoMorph to work properly.
 
-On Windows systems you also need:
+On Windows systems you'll also need:
 
  - [setuptools](https://pypi.python.org/pypi/setuptools)
 
 ## Installation
 
-To install the application from the source file (TAR.GZ format package) on a GNU/Linux system, open a terminal and type this:
+To install the application from the source file (`TAR.GZ` format package) on a GNU/Linux system, open a command-line and type this:
 
 ```console
 $ tar -xvf videomorph-x.x.tar.gz
@@ -45,9 +45,9 @@ $ python3 setup.py build
 $ sudo python3 setup.py install
 ```
 
-The preceding command doesn't install the requirements, so you'll have to install them manually.
+The preceding commands doesn't install the requirements, so you'll have to install them manually.
 
-On Debian based distros you can install it like this:
+On Debian based Linux distributions you can install VideoMorph by typing at your command-line:
 
 ```console
 $ sudo install.sh
@@ -55,11 +55,11 @@ $ sudo install.sh
 
 This command should install VideoMorph and its dependencies, including [ffmpeg](http://ffmpeg.org) library and [PyQt5](https://riverbankcomputing.com/software/pyqt/download5), from your current repository.
 
-To install from the .DEB package on Debian based distros, it is recommended you to use GDebi Packages Installer and follow the instructions, just that... This should install VideoMorph and all the dependencies from your current repository.
+To install from the `DEB` package on Debian based distros, it is recommended you to use [GDebi]() packages installer and follow the instructions, just that... This should install VideoMorph and all its dependencies from your current repository.
 
-To use a Portable Edition (PE), decompress the .TAR.GZ or the .ZIP file (GNU/Linux and Windows respectively) in any directory, and then double-click on videomorph or videomorph.exe depending on your platform.
+To use a Portable Edition (PE), decompress the `TAR.GZ` or the `ZIP` file (GNU/Linux and Windows respectively) in any directory, and then double-click on `videomorph` or `videomorph.exe` depending on your platform.
 
-On Windows you should use the installers we provide.
+On Windows you can use the installers we provide.
 
 ## Contributing
 
