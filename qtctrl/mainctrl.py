@@ -36,6 +36,8 @@ from videomorph import SYS_PATHS
 from videomorph import VM_PATHS
 from videomorph.console import run_on_console
 from qtviews.videomorph import VideoMorphMW
+from qtviews.about import AboutVMDialog
+from qtviews.changelog import ChangelogDialog
 
 
 class QtMainController:
@@ -66,9 +68,9 @@ class QtMainController:
         self.app.installTranslator(qt_translator)
 
         self.model = None
-        self.view = VideoMorphMW()
+        self.view = VideoMorphMW(self)
 
-    def run(self):
+    def run_app(self):
         """Run the app."""
 
         # Check for conversion library and run
@@ -87,3 +89,13 @@ class QtMainController:
             msg_box.addButton("&Ok", QMessageBox.AcceptRole)
             if msg_box.exec_() == QMessageBox.AcceptRole:
                 qApp.closeAllWindows()
+
+    def on_about_action_clicked(self):
+        """Show About dialog."""
+        about_dlg = AboutVMDialog(parent=self.view)
+        about_dlg.exec_()
+
+    def on_changelog_action_clicked(self):
+        """Show the changelog dialog."""
+        changelog_dlg = ChangelogDialog(parent=self.view)
+        changelog_dlg.exec_()

@@ -25,4 +25,4 @@ from qtctrl.mainctrl import QtMainController
 def main():
     """Main app function."""
     qt_ctrl = QtMainController()
-    qt_ctrl.run()
+    qt_ctrl.run_app()

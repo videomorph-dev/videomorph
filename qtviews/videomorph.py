@@ -87,10 +87,10 @@ from .info import InfoDialog
 class VideoMorphMW(QMainWindow):
     """VideoMorph Main Window class."""
 
-    def __init__(self):
+    def __init__(self, controller):
         """Class initializer."""
         super(VideoMorphMW, self).__init__()
-
+        self.controller = controller
         self.media_list_duration = 0.0
 
         # Window size
@@ -461,7 +461,7 @@ class VideoMorphMW(QMainWindow):
                    'about_action':
                    dict(text=self.tr('&About') + ' ' + APP_NAME,
                         tip=self.tr('About') + ' ' + APP_NAME + ' ' + VERSION,
-                        callback=self.about),
+                        callback=self.controller.on_about_action_clicked),
 
                    'help_content_action':
                    dict(icon=QIcon(':/icons/about.png'),
@@ -474,7 +474,7 @@ class VideoMorphMW(QMainWindow):
                    dict(icon=QIcon(':/icons/changelog.png'),
                         text=self.tr('Changelog'),
                         tip=self.tr('Changelog'),
-                        callback=self.changelog),
+                        callback=self.controller.on_changelog_action_clicked),
 
                    'ffmpeg_doc_action':
                    dict(icon=QIcon(':/icons/ffmpeg.png'),
@@ -670,16 +670,6 @@ class VideoMorphMW(QMainWindow):
 
     def _show_message_box(self, type_, title, msg):
         QMessageBox(type_, title, msg, QMessageBox.Ok, self).show()
-
-    def about(self):
-        """Show About dialog."""
-        about_dlg = AboutVMDialog(parent=self)
-        about_dlg.exec_()
-
-    def changelog(self):
-        """Show the changelog dialog."""
-        changelog_dlg = ChangelogDialog(parent=self)
-        changelog_dlg.exec_()
 
     def ffmpeg_doc(self):
         """Open ffmpeg documentation page."""
