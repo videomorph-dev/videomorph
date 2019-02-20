@@ -78,9 +78,7 @@ from videomorph.utils import write_time
 from . import COLUMNS
 from . import videomorph_qrc
 from .vmwidgets import TasksListTable
-from .about import AboutVMDialog
 from .addprofile import AddProfileDialog
-from .changelog import ChangelogDialog
 from .info import InfoDialog
 
 
