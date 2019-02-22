@@ -30,6 +30,7 @@ from PyQt5.QtCore import QProcess
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import qApp
+from PyQt5.QtWidgets import QAbstractItemView
 
 from videomorph import BASE_DIR
 from videomorph import LOCALE
@@ -40,10 +41,12 @@ from videomorph.conversionlib import ConversionLib
 from videomorph.console import run_on_console
 from videomorph.media import MediaList
 from videomorph.profile import ConversionProfile
+from videomorph.platformdeps import launcher_factory
 from qtviews import COLUMNS
 from qtviews.videomorph import VideoMorphMW
 from qtviews.about import AboutVMDialog
 from qtviews.changelog import ChangelogDialog
+from qtviews.info import InfoDialog
 
 
 class QtMainController:
@@ -154,7 +157,46 @@ class QtMainController:
         about_dlg = AboutVMDialog(parent=self.view)
         about_dlg.exec_()
 
+    def on_show_video_info_action_clicked(self):
+        """Show video info on the Info Panel."""
+        position = self.tasks_table.currentRow()
+        info_dlg = InfoDialog(parent=self,
+                              position=position,
+                              media_list=self.vc.media_list)
+        info_dlg.show()
+
     def on_changelog_action_clicked(self):
         """Show the changelog dialog."""
         changelog_dlg = ChangelogDialog(parent=self.view)
         changelog_dlg.exec_()
+
+    def on_ffmpeg_doc_action_clicked(self):
+        """Open ffmpeg documentation page."""
+        self._open_url(url='https://ffmpeg.org/documentation.html')
+
+    def on_videomorph_web_action_clicked(self):
+        """Open VideoMorph Web page."""
+        self._open_url(url='http://videomorph.webmisolutions.com')
+
+    def on_tasks_list_double_clicked(self):
+        """Toggle Edit triggers on task table."""
+        if (int(self.view.tasks_table.currentColumn()) == COLUMNS.QUALITY and not
+                self.conversion_lib.converter_is_running):
+            self.view.tasks_table.setEditTriggers(QAbstractItemView.AllEditTriggers)
+        else:
+            self.view.tasks_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+            if int(self.view.tasks_table.currentColumn()) == COLUMNS.NAME:
+                self.view.play_input_media_file()
+
+        self.view.update_ui_when_playing(row=self.view.tasks_table.currentIndex().row())
+
+    def on_profiles_combo_item_changed(self, combo):
+        qualities = self.profile.get_xml_profile_qualities(LOCALE)
+        self.view.populate_quality_combo(combo, qualities)
+        self.profile.update(new_quality=self.view.quality_combo.currentText())
+
+    @staticmethod
+    def _open_url(url):
+        """Open URL."""
+        launcher = launcher_factory()
+        launcher.open_with_user_browser(url=url)
