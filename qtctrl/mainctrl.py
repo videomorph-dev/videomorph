@@ -123,7 +123,7 @@ class QtMainController:
         else:
             # If the process was stopped
             if not self.conversion_lib.converter_is_running:
-                self.view.tb_tasks.item(
+                self.view.tasks_table.item(
                     self.media_list.position,
                     COLUMNS.PROGRESS).setText(self.tr('Stopped!'))
         # Attempt to end the conversion process
