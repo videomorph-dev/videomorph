@@ -44,21 +44,13 @@ def main():
     # Setup app translator
     app_translator = QTranslator()
 
-    translator_pwd = Path(BASE_DIR, VM_PATHS.i18n)
+    i18n_dir = Path(BASE_DIR, VM_PATHS.i18n)
+    i18n_file = i18n_dir.joinpath(''.join(('videomorph_', LOCALE[:2], '.qm')))
 
-    if translator_pwd.exists():
-        app_translator.load(
-            str(translator_pwd.joinpath('videomorph_{0}'.format(LOCALE))))
-    else:
-        translator_sys_path = Path(SYS_PATHS.i18n,
-                                   'videomorph_{0}'.format(LOCALE))
-        app_translator.load(str(translator_sys_path))
-
-    app.installTranslator(app_translator)
-    qt_translator = QTranslator()
-    qt_translator.load("qt_" + LOCALE,
-                       QLibraryInfo.location(QLibraryInfo.TranslationsPath))
-    app.installTranslator(qt_translator)
+    if i18n_file.exists():
+        translator = i18n_dir.joinpath('videomorph_{0}'.format(LOCALE)).__str__()
+        app_translator.load(translator)
+        app.installTranslator(app_translator)
 
     # Run the app
     run_app(app=app)
