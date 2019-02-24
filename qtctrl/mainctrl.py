@@ -56,14 +56,23 @@ class QtMainController:
         """Class initializer."""
         self.app = QApplication(sys.argv)
 
+        # Setup app translator
+        app_translator = QTranslator()
+        i18n_dir = Path(BASE_DIR, VM_PATHS.i18n)
+        i18n_file = i18n_dir.joinpath(
+            ''.join(('videomorph_', LOCALE[:2], '.qm')))
+        if i18n_file.exists():
+            translator = i18n_dir.joinpath(
+                'videomorph_{0}'.format(LOCALE)).__str__()
+            app_translator.load(translator)
+            self.app.installTranslator(app_translator)
+
         self._init_model()
 
         self.view = VideoMorphMW(self)
 
     def run_app(self):
         """Run the app."""
-        self.app.installTranslator(app_translator)
-        self.app.installTranslator(qt_translator)
         no_library_msg = self.view.tr('Ffmpeg Library not Found'
                                       ' in your System')
 
@@ -83,26 +92,6 @@ class QtMainController:
             msg_box.addButton("&Ok", QMessageBox.AcceptRole)
             if msg_box.exec_() == QMessageBox.AcceptRole:
                 qApp.closeAllWindows()
-
-    def _get_translators(self):
-        """Setup app translator."""
-        app_translator = QTranslator()
-
-        translator_pwd = Path(BASE_DIR, VM_PATHS.i18n)
-
-        if translator_pwd.exists():
-            app_translator.load(
-                str(translator_pwd.joinpath('videomorph_{0}'.format(LOCALE))))
-        else:
-            translator_sys_path = Path(SYS_PATHS.i18n,
-                                       'videomorph_{0}'.format(LOCALE))
-            app_translator.load(str(translator_sys_path))
-
-        qt_translator = QTranslator()
-        qt_translator.load("qt_" + LOCALE,
-                           QLibraryInfo.location(
-                               QLibraryInfo.TranslationsPath))
-
 
     def _init_model(self):
         self.media_list_duration = 0.0
