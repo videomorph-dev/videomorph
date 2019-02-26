@@ -596,7 +596,7 @@ class VideoMorphMW(QMainWindow):
             size=self.size(),
             profile_index=self.profiles_combo.currentIndex(),
             preset_index=self.quality_combo.currentIndex(),
-            source_dir=self.source_dir,
+            source_dir=self.vc.source_dir,
             output_dir=self.output_edit.text())
 
         if app_settings:

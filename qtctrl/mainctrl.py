@@ -43,7 +43,7 @@ from videomorph.media import MediaList
 from videomorph.profile import ConversionProfile
 from videomorph.platformdeps import launcher_factory
 from views import COLUMNS
-from views.videomorph import VideoMorphMW
+from views.vmui import VideoMorphMW
 from views.about import AboutVMDialog
 from views.changelog import ChangelogDialog
 from views.info import InfoDialog
