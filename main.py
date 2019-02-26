@@ -19,10 +19,9 @@
 
 """This module contains the main function for VideoMorph."""
 
-from qtctrl.mainctrl import QtMainController
-
+from views.uihandler import UiHandler
 
 def main():
     """Main app function."""
-    qt_ctrl = QtMainController()
-    qt_ctrl.run_app()
+    ui_handler = UiHandler()
+    ui_handler.run_app()
