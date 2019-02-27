@@ -69,21 +69,25 @@ class UiHandler:
                                       ' in your System')
 
         # Check for conversion library and run
-        if self.conversion_lib.library_path:
-            if len(sys.argv) > 1:  # If it is running from console
-                run_on_console(self.app, self.view)
-            else:  # Or is running on GUI
-                self.view.show()
-                sys.exit(self.app.exec_())
-        else:
-            msg_box = QMessageBox(
-                QMessageBox.Critical,
-                self.view.tr('Error!'),
-                no_library_msg,
-                QMessageBox.NoButton, self.view)
-            msg_box.addButton("&Ok", QMessageBox.AcceptRole)
-            if msg_box.exec_() == QMessageBox.AcceptRole:
-                qApp.closeAllWindows()
+        # if self.conversion_lib.library_path:
+        #     if len(sys.argv) > 1:  # If it is running from console
+        #         run_on_console(self.app, self.view)
+        #     else:  # Or is running on GUI
+        #         self.view.show()
+        #         sys.exit(self.app.exec_())
+        # else:
+        #     msg_box = QMessageBox(
+        #         QMessageBox.Critical,
+        #         self.view.tr('Error!'),
+        #         no_library_msg,
+        #         QMessageBox.NoButton, self.view)
+        #     msg_box.addButton("&Ok", QMessageBox.AcceptRole)
+        #     if msg_box.exec_() == QMessageBox.AcceptRole:
+        #         qApp.closeAllWindows()
+        #
+        # For testing only
+        self.view.show()
+        sys.exit(self.app.exec_())
 
     def on_about_action_clicked(self):
         """Show About dialog."""
@@ -222,9 +226,10 @@ class UiHandler:
     #     launcher = launcher_factory()
     #     launcher.sound_notify(sound)
     #
-    # @staticmethod
-    # def help_content():
-    #     """Open ffmpeg documentation page."""
+    @staticmethod
+    def on_help_content():
+        """Open ffmpeg documentation page."""
+        pass
     #     if LOCALE == 'es_ES':
     #         file_name = 'manual_es.pdf'
     #     else:
@@ -412,8 +417,9 @@ class UiHandler:
     #     # After adding files to the list, recalculate the list duration
     #     self.vmh.media_list_duration = self.vmh.media_list.duration
     #
-    # def play_input_media_file(self):
-    #     """Play the input video using an available video player."""
+    def on_play_input_media_file(self):
+        """Play the input video using an available video player."""
+        pass
     #     row = self.tasks_table.currentIndex().row()
     #     self._play_media_file(file_path=self.vmh.media_list.get_file_path(row))
     #     self.update_ui_when_playing(row)
@@ -424,8 +430,9 @@ class UiHandler:
     #         tagged_output=self.tag_chb.checkState())
     #     return path
     #
-    # def play_output_media_file(self):
-    #     """Play the output video using an available video player."""
+    def on_play_output_media_file(self):
+        """Play the output video using an available video player."""
+        pass
     #     row = self.tasks_table.currentIndex().row()
     #     path = self._get_output_path(row)
     #     self._play_media_file(file_path=path)
@@ -471,8 +478,9 @@ class UiHandler:
     #             title=self.tr('Error!'),
     #             msg=self.tr('No Video Files Found in:' + ' ' + directory))
     #
-    # def remove_media_file(self):
-    #     """Remove selected media file from the list."""
+    def on_remove_media_file(self):
+        """Remove selected media file from the list."""
+        pass
     #     file_row = self.tasks_table.currentItem().row()
     #
     #     msg_box = QMessageBox(
@@ -598,8 +606,9 @@ class UiHandler:
     #
     #     return files_paths
     #
-    # def clear_media_list(self):
-    #     """Clear media conversion list with user confirmation."""
+    def on_clear_media_list(self):
+        """Clear media conversion list with user confirmation."""
+        pass
     #     msg_box = QMessageBox(
     #         QMessageBox.Warning,
     #         self.tr('Warning!'),
@@ -619,8 +628,9 @@ class UiHandler:
     #         self._reset_options_check_boxes()
     #         self.update_ui_when_no_file()
     #
-    # def start_encoding(self):
-    #     """Start the encoding process."""
+    def on_start_encoding(self):
+        """Start the encoding process."""
+        pass
     #     self.update_ui_when_converter_running()
     #
     #     self.vmh.media_list.position += 1
@@ -668,8 +678,9 @@ class UiHandler:
     #     else:
     #         self._end_encoding_process()
     #
-    # def stop_file_encoding(self):
-    #     """Stop file encoding process and continue with the list."""
+    def on_stop_file_encoding(self):
+        """Stop file encoding process and continue with the list."""
+        pass
     #     # Terminate the file encoding
     #     self.vmh.conversion_lib.stop_converter()
     #     # Set _MediaFile.status attribute
@@ -682,8 +693,9 @@ class UiHandler:
     #     self.vmh.timer.reset_progress_times()
     #     self.vmh.media_list_duration = self.vmh.media_list.duration
     #
-    # def stop_all_files_encoding(self):
-    #     """Stop the conversion process for all the files in list."""
+    def on_stop_all_files_encoding(self):
+        """Stop the conversion process for all the files in list."""
+        pass
     #     # Delete the file when conversion is stopped by the user
     #     self.vmh.conversion_lib.stop_converter()
     #     self.vmh.media_list.delete_running_file_output(

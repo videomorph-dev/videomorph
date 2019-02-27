@@ -38,50 +38,20 @@ from videomorph import STATUS
 from videomorph import SYS_PATHS
 from videomorph import VM_PATHS
 from videomorph.conversionlib import ConversionLib
-from videomorph.console import run_on_console
 from videomorph.media import MediaList
 from videomorph.profile import ConversionProfile
-from videomorph.platformdeps import launcher_factory
-from qtviews import COLUMNS
-from qtviews.videomorph import VideoMorphMW
-from qtviews.about import AboutVMDialog
-from qtviews.changelog import ChangelogDialog
-from qtviews.info import InfoDialog
 
 
-class QtMainController:
+class VMController:
     """Class to provide main controller for Qt GUI."""
 
     def __init__(self):
         """Class initializer."""
-        self.app = QApplication(sys.argv)
-
-        # Setup app translator
-        app_translator = QTranslator()
-
-        translator_pwd = Path(BASE_DIR, VM_PATHS.i18n)
-
-        if translator_pwd.exists():
-            app_translator.load(
-                str(translator_pwd.joinpath('videomorph_{0}'.format(LOCALE))))
-        else:
-            translator_sys_path = Path(SYS_PATHS.i18n,
-                                       'videomorph_{0}'.format(LOCALE))
-            app_translator.load(str(translator_sys_path))
-
-        self.app.installTranslator(app_translator)
-        qt_translator = QTranslator()
-        qt_translator.load("qt_" + LOCALE,
-                           QLibraryInfo.location(
-                               QLibraryInfo.TranslationsPath))
-        self.app.installTranslator(qt_translator)
 
         self._init_model()
 
-        self.view = VideoMorphMW(self)
-
-        self.no_library_msg = self.view.tr('Ffmpeg Library not Found'
-                                           ' in your System')
+        # self.no_library_msg = self.view.tr('Ffmpeg Library not Found'
+        #                                    ' in your System')
 
     def _init_model(self):
         self.media_list_duration = 0.0
@@ -132,71 +102,3 @@ class QtMainController:
         # Attempt to end the conversion process
         self._end_encoding_process()
 
-    def run_app(self):
-        """Run the app."""
-
-        # Check for conversion library and run
-        if self.conversion_lib.library_path:
-            if len(sys.argv) > 1:  # If it is running from console
-                run_on_console(self.app, self.view)
-            else:  # Or is running on GUI
-                self.view.show()
-                sys.exit(self.app.exec_())
-        else:
-            msg_box = QMessageBox(
-                QMessageBox.Critical,
-                self.view.tr('Error!'),
-                self.view.no_library_msg,
-                QMessageBox.NoButton, self.view)
-            msg_box.addButton("&Ok", QMessageBox.AcceptRole)
-            if msg_box.exec_() == QMessageBox.AcceptRole:
-                qApp.closeAllWindows()
-
-    def on_about_action_clicked(self):
-        """Show About dialog."""
-        about_dlg = AboutVMDialog(parent=self.view)
-        about_dlg.exec_()
-
-    def on_show_video_info_action_clicked(self):
-        """Show video info on the Info Panel."""
-        position = self.tasks_table.currentRow()
-        info_dlg = InfoDialog(parent=self,
-                              position=position,
-                              media_list=self.vc.media_list)
-        info_dlg.show()
-
-    def on_changelog_action_clicked(self):
-        """Show the changelog dialog."""
-        changelog_dlg = ChangelogDialog(parent=self.view)
-        changelog_dlg.exec_()
-
-    def on_ffmpeg_doc_action_clicked(self):
-        """Open ffmpeg documentation page."""
-        self._open_url(url='https://ffmpeg.org/documentation.html')
-
-    def on_videomorph_web_action_clicked(self):
-        """Open VideoMorph Web page."""
-        self._open_url(url='http://videomorph.webmisolutions.com')
-
-    def on_tasks_list_double_clicked(self):
-        """Toggle Edit triggers on task table."""
-        if (int(self.view.tasks_table.currentColumn()) == COLUMNS.QUALITY and not
-                self.conversion_lib.converter_is_running):
-            self.view.tasks_table.setEditTriggers(QAbstractItemView.AllEditTriggers)
-        else:
-            self.view.tasks_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-            if int(self.view.tasks_table.currentColumn()) == COLUMNS.NAME:
-                self.view.play_input_media_file()
-
-        self.view.update_ui_when_playing(row=self.view.tasks_table.currentIndex().row())
-
-    def on_profiles_combo_item_changed(self, combo):
-        qualities = self.profile.get_xml_profile_qualities(LOCALE)
-        self.view.populate_quality_combo(combo, qualities)
-        self.profile.update(new_quality=self.view.quality_combo.currentText())
-
-    @staticmethod
-    def _open_url(url):
-        """Open URL."""
-        launcher = launcher_factory()
-        launcher.open_with_user_browser(url=url)

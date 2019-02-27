@@ -45,6 +45,7 @@ from PyQt5.QtWidgets import QToolButton
 
 from videomorph import APP_NAME
 from videomorph import VERSION
+
 from .vmwidgets import TasksListTable
 
 
@@ -60,8 +61,8 @@ class VMUi(QMainWindow):
         self.title = APP_NAME + ' ' + VERSION
         self.icon = self._get_app_icon()
         self._setup_ui()
-        self._create_initial_settings()
-        self._read_app_settings()
+        # self._create_initial_settings()
+        # self._read_app_settings()
 
     def _setup_ui(self):
         """Setup UI."""
@@ -75,7 +76,7 @@ class VMUi(QMainWindow):
         self._create_status_bar()
         self._create_sys_tray_icon(self.icon)
         self._create_context_menu()
-        self.update_ui_when_no_file()
+        # self.update_ui_when_no_file()
 
     def _create_general_layout(self):
         """General layout."""
@@ -99,8 +100,8 @@ class VMUi(QMainWindow):
     def _create_sys_tray_menu(self):
         """Create system tray menu."""
         tray_icon_menu = QMenu(self)
-        tray_icon_menu.addAction(self.open_media_file_action)
-        tray_icon_menu.addAction(self.open_media_dir_action)
+        tray_icon_menu.addAction(self.load_media_files_action)
+        tray_icon_menu.addAction(self.load_media_dir_action)
         tray_icon_menu.addSeparator()
         tray_icon_menu.addAction(self.clear_media_list_action)
         tray_icon_menu.addSeparator()
@@ -345,12 +346,12 @@ class VMUi(QMainWindow):
                    'play_input_media_file_action':
                    dict(icon=QIcon(':/icons/video-player-input.png'),
                         text=self.tr('Play Input Video File'),
-                        callback=self.play_input_media_file),
+                        callback=self.vmh.on_play_input_media_file),
 
                    'play_output_media_file_action':
                    dict(icon=QIcon(':/icons/video-player-output.png'),
                         text=self.tr('Play Output Video File'),
-                        callback=self.play_output_media_file),
+                        callback=self.vmh.on_play_output_media_file),
 
                    'clear_media_list_action':
                    dict(icon=QIcon(':/icons/clear-list.png'),
@@ -358,7 +359,7 @@ class VMUi(QMainWindow):
                         shortcut="Ctrl+Del",
                         tip=self.tr('Remove all Video Files from the '
                                     'List of Conversion Tasks'),
-                        callback=self.clear_media_list),
+                        callback=self.vmh.on_clear_media_list),
 
                    'remove_media_file_action':
                    dict(icon=QIcon(':/icons/remove-file.png'),
@@ -366,28 +367,28 @@ class VMUi(QMainWindow):
                         shortcut="Del",
                         tip=self.tr('Remove Selected Video File from the '
                                     'List of Conversion Tasks'),
-                        callback=self.remove_media_file),
+                        callback=self.vmh.on_remove_media_file),
 
                    'convert_action':
                    dict(icon=QIcon(':/icons/convert.png'),
                         text=self.tr('&Convert'),
                         shortcut="Ctrl+R",
                         tip=self.tr('Start Conversion Process'),
-                        callback=self.start_encoding),
+                        callback=self.vmh.on_start_encoding),
 
                    'stop_action':
                    dict(icon=QIcon(':/icons/stop.png'),
                         text=self.tr('&Stop'),
                         shortcut="Ctrl+P",
                         tip=self.tr('Stop Video File Conversion'),
-                        callback=self.stop_file_encoding),
+                        callback=self.vmh.on_stop_file_encoding),
 
                    'stop_all_action':
                    dict(icon=QIcon(':/icons/stop-all.png'),
                         text=self.tr('S&top All'),
                         shortcut="Ctrl+A",
                         tip=self.tr('Stop all Video Conversion Tasks'),
-                        callback=self.stop_all_files_encoding),
+                        callback=self.vmh.on_stop_all_files_encoding),
 
                    'about_action':
                    dict(text=self.tr('&About') + ' ' + APP_NAME,
@@ -399,7 +400,7 @@ class VMUi(QMainWindow):
                         text=self.tr('&Contents'),
                         shortcut="Ctrl+H",
                         tip=self.tr('Help Contents'),
-                        callback=self.help_content),
+                        callback=self.vmh.on_help_content),
 
                    'changelog_action':
                    dict(icon=QIcon(':/icons/changelog.png'),
@@ -444,7 +445,7 @@ class VMUi(QMainWindow):
         second_separator.setSeparator(True)
         self.tasks_table.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.tasks_table.addAction(self.load_media_files_action)
-        self.tasks_table.addAction(self.open_media_dir_action)
+        self.tasks_table.addAction(self.load_media_dir_action)
         self.tasks_table.addAction(first_separator)
         self.tasks_table.addAction(self.remove_media_file_action)
         self.tasks_table.addAction(self.clear_media_list_action)
@@ -457,8 +458,8 @@ class VMUi(QMainWindow):
         """Create main app menu."""
         # File menu
         self.file_menu = self.menuBar().addMenu(self.tr('&File'))
-        self.file_menu.addAction(self.open_media_file_action)
-        self.file_menu.addAction(self.open_media_dir_action)
+        self.file_menu.addAction(self.load_media_files_action)
+        self.file_menu.addAction(self.load_media_dir_action)
         self.file_menu.addSeparator()
         self.file_menu.addAction(self.exit_action)
         # Edit menu
@@ -490,7 +491,7 @@ class VMUi(QMainWindow):
         """Create a toolbar and add it to the interface."""
         self.tool_bar = QToolBar(self)
         # Add actions to the tool bar
-        self.tool_bar.addAction(self.open_media_file_action)
+        self.tool_bar.addAction(self.load_media_files_action)
         self.tool_bar.addSeparator()
         self.tool_bar.addAction(self.clear_media_list_action)
         self.tool_bar.addAction(self.remove_media_file_action)
