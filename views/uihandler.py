@@ -33,6 +33,7 @@ from PyQt5.QtWidgets import qApp
 from .vmui import VMUi
 from videomorph import BASE_DIR
 from videomorph import VM_PATHS
+from videomorph import SYS_PATHS
 from videomorph.console import run_on_console
 from videomorph import LOCALE
 from videomorph.platformdeps import launcher_factory
@@ -89,6 +90,8 @@ class UiHandler:
         self.view.show()
         sys.exit(self.app.exec_())
 
+    # EVENTS
+
     def on_about_action_clicked(self):
         """Show About dialog."""
         about_dlg = AboutVMDialog(parent=self.view)
@@ -96,11 +99,12 @@ class UiHandler:
 
     def on_show_video_info_action_clicked(self):
         """Show video info on the Info Panel."""
-        position = self.tasks_table.currentRow()
-        info_dlg = InfoDialog(parent=self,
-                              position=position,
-                              media_list=self.vc.media_list)
-        info_dlg.show()
+        pass
+        # position = self.tasks_table.currentRow()
+        # info_dlg = InfoDialog(parent=self,
+        #                       position=position,
+        #                       media_list=self.vc.media_list)
+        # info_dlg.show()
 
     def on_changelog_action_clicked(self):
         """Show the changelog dialog."""
@@ -117,22 +121,25 @@ class UiHandler:
 
     def on_tasks_list_double_clicked(self):
         """Toggle Edit triggers on task table."""
-        if (int(self.view.tasks_table.currentColumn()) == COLUMNS.QUALITY and not
-        self.conversion_lib.converter_is_running):
-            self.view.tasks_table.setEditTriggers(
-                QAbstractItemView.AllEditTriggers)
-        else:
-            self.view.tasks_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-            if int(self.view.tasks_table.currentColumn()) == COLUMNS.NAME:
-                self.view.play_input_media_file()
-
-        self.view.update_ui_when_playing(
-            row=self.view.tasks_table.currentIndex().row())
+        pass
+        # if (int(self.view.tasks_table.currentColumn()) == COLUMNS.QUALITY and not
+        # self.conversion_lib.converter_is_running):
+        #     self.view.tasks_table.setEditTriggers(
+        #         QAbstractItemView.AllEditTriggers)
+        # else:
+        #     self.view.tasks_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        #     if int(self.view.tasks_table.currentColumn()) == COLUMNS.NAME:
+        #         self.view.play_input_media_file()
+        #
+        # self.view.update_ui_when_playing(
+        #     row=self.view.tasks_table.currentIndex().row())
 
     def on_profiles_combo_item_changed(self, combo):
-        qualities = self.profile.get_xml_profile_qualities(LOCALE)
-        self.view.populate_quality_combo(combo, qualities)
-        self.profile.update(new_quality=self.view.quality_combo.currentText())
+        """Update quality combo box on profile combo changes."""
+        pass
+        # qualities = self.profile.get_xml_profile_qualities(LOCALE)
+        # self.view.populate_quality_combo(combo, qualities)
+        # self.profile.update(new_quality=self.view.quality_combo.currentText())
 
     @staticmethod
     def _open_url(url):
@@ -229,20 +236,20 @@ class UiHandler:
     @staticmethod
     def on_help_content():
         """Open ffmpeg documentation page."""
-        pass
-    #     if LOCALE == 'es_ES':
-    #         file_name = 'manual_es.pdf'
-    #     else:
-    #         file_name = 'manual_en.pdf'
-    #
-    #     file_path = join_path(SYS_PATHS.help, file_name)
-    #     if isfile(file_path):
-    #         url = join_path('file:', file_path)
-    #     else:
-    #         url = join_path('file:', BASE_DIR, VM_PATHS.help, file_name)
-    #
-    #     launcher = launcher_factory()
-    #     launcher.open_with_user_browser(url=url)
+        if LOCALE == 'es_ES':
+            file_name = 'manual_es.pdf'
+        else:
+            file_name = 'manual_en.pdf'
+
+        file_path = Path(SYS_PATHS.help, file_name)
+
+        if not file_path.is_file():
+            file_path = Path(BASE_DIR, VM_PATHS.help, file_name)
+
+        url = ''.join(('file:', file_path.__str__()))
+
+        launcher = launcher_factory()
+        launcher.open_with_user_browser(url=url)
     #
     # @staticmethod
     # def shutdown_machine():

@@ -45,7 +45,7 @@ from PyQt5.QtWidgets import QToolButton
 
 from videomorph import APP_NAME
 from videomorph import VERSION
-
+from . import videomorph_qrc
 from .vmwidgets import TasksListTable
 
 
@@ -66,7 +66,7 @@ class VMUi(QMainWindow):
 
     def _setup_ui(self):
         """Setup UI."""
-        self.resize(680, 576)
+        self.resize(950, 500)
         self.setWindowTitle(self.title)
         self.setWindowIcon(self.icon)
         self._create_actions()
