@@ -23,10 +23,7 @@ import shlex
 from collections import deque
 from os import W_OK
 from os import access
-from os import remove
-from os.path import basename
-from os.path import exists
-from os.path import join as join_path
+from pathlib import Path
 
 from . import CPU_CORES
 from . import STATUS
@@ -248,7 +245,7 @@ class _MediaFile:
     def __init__(self, file_path, profile):
         """Class initializer."""
         self._profile = profile
-        self.input_path = file_path
+        self.input_path = Path(file_path)
         self.status = STATUS.todo
         self.format_info = self._parse_probe_format()
         self.video_stream_info = self._parse_probe_video_stream()
@@ -257,12 +254,9 @@ class _MediaFile:
 
     def get_name(self, with_extension=False):
         """Return the file name."""
-        full_file_name = basename(self.input_path)
-        file_name = full_file_name[0:full_file_name.rfind('.')]
-
         if with_extension:
-            return full_file_name
-        return file_name
+            return self.input_path.name
+        return self.input_path.stem
 
     def get_format_info(self, info_param):
         """Return an info attribute from a given video file."""
@@ -274,7 +268,7 @@ class _MediaFile:
         if not access(output_dir, W_OK):
             raise PermissionError('Access denied')
 
-        if not exists(self.input_path):
+        if not self.input_path.exists():
             raise FileNotFoundError('Input video file not found')
 
         # Ensure the conversion_profile is up to date
@@ -284,16 +278,16 @@ class _MediaFile:
         subtitle_opt = self._process_subtitles(subtitle)
 
         # Get the output path
-        output_path = self.get_output_path(output_dir, tagged_output)
+        output_path = self._get_output_path(output_dir, tagged_output)
 
-        if exists(output_path):
+        if output_path.exists():
             raise FileExistsError('Video file already exits')
 
         # Build the conversion command
-        cmd = ['-i', self.input_path] + subtitle_opt + \
+        cmd = ['-i', self.input_path.__str__()] + subtitle_opt + \
             shlex.split(self._profile.params) + \
-              ['-threads', str(CPU_CORES)] + \
-            ['-y', output_path]
+            ['-threads', str(CPU_CORES)] + \
+            ['-y', output_path.__str__()]
 
         return cmd
 
@@ -301,7 +295,8 @@ class _MediaFile:
         """Delete the output file if conversion is stopped."""
         while True:
             try:
-                remove(self.get_output_path(output_dir, tagged_output))
+                output_path = self._get_output_path(output_dir, tagged_output)
+                output_path.unlink()
                 break
             except FileNotFoundError:
                 break
@@ -311,35 +306,44 @@ class _MediaFile:
     def delete_input(self):
         """Delete the input file (and subtitle) when conversion is finished."""
         try:
-            remove(self.input_path)
+            self.input_path.unlink()
         except FileNotFoundError:
             pass
 
         try:
-            remove(self._subtitle_path)
+            self.subtitle_path.unlink()
         except FileNotFoundError:
             pass
 
     def get_output_file_name(self, output_dir, tagged_output):
         """Return the name of the output video file."""
-        return basename(self.get_output_path(output_dir, tagged_output))
+        output_file = self._get_output_path(output_dir, tagged_output)
+        return output_file.name
 
     def get_output_path(self, output_dir, tagged_output):
-        """Return the the output file path."""
+        """Return the the output file path as str."""
+        return str(self._get_output_path(output_dir, tagged_output))
+
+    def _get_output_path(self, output_dir, tagged_output):
+        """Return the the output file path as pathlib.Path."""
         tag = self._profile.quality_tag if tagged_output else ''
         output_file_name = tag + self.get_name() + self._profile.extension
-        return join_path(output_dir, output_file_name)
+        return Path(output_dir, output_file_name)
 
     @property
-    def _subtitle_path(self):
-        """Return the subtitle path if exit."""
-        extension = self.input_path.split('.')[-1]
-        subtitle_path = self.input_path.strip('.' + extension) + '.srt'
+    def subtitle_path(self):
+        """Return the subtitle path as pathlib.Path if it exits."""
+        extensions = ['.srt', '.ssa', '.stl']
 
-        if exists(subtitle_path):
-            return subtitle_path
-        else:
-            raise FileNotFoundError('Subtitle file not found')
+        # Add uppercase extensions to check if subtitle file exists
+        [extensions.append(ext.upper()) for ext in extensions[:]]
+
+        for ext in extensions:
+            subtitle_path = self.input_path.with_suffix(ext)
+            if subtitle_path.exists():
+                return subtitle_path
+
+        raise FileNotFoundError('Subtitle file not found')
 
     def _process_subtitles(self, subtitle):
         """Process subtitles if available."""
@@ -348,7 +352,7 @@ class _MediaFile:
                 subtitle_opt = ['-vf',
                                 "subtitles='{0}':force_style='Fontsize=24'"
                                 ":charenc=cp1252".format(
-                                    self._subtitle_path)]
+                                    self.subtitle_path.__str__())]
                 return subtitle_opt
             except FileNotFoundError:
                 pass
@@ -357,7 +361,7 @@ class _MediaFile:
 
     def _probe(self, args):
         """Return the prober output as a file like object."""
-        process_args = [self._profile.prober, self.input_path]
+        process_args = [self._profile.prober, self.input_path.__str__()]
         process_args[1:-1] = args
         prober_run = spawn_process(process_args)
 

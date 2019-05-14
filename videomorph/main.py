@@ -20,8 +20,7 @@
 """This module contains the main function for VideoMorph."""
 
 import sys
-from os.path import exists
-from os.path import join as join_path
+from pathlib import Path
 
 from PyQt5.QtCore import QLibraryInfo
 from PyQt5.QtCore import QTranslator
@@ -45,12 +44,15 @@ def main():
     # Setup app translator
     app_translator = QTranslator()
 
-    if exists(join_path(BASE_DIR, VM_PATHS.i18n)):
-        app_translator.load(join_path(
-            BASE_DIR, VM_PATHS.i18n, 'videomorph_{0}'.format(LOCALE)))
+    translator_pwd = Path(BASE_DIR, VM_PATHS.i18n)
+
+    if translator_pwd.exists():
+        app_translator.load(
+            str(translator_pwd.joinpath('videomorph_{0}'.format(LOCALE))))
     else:
-        app_translator.load(join_path(
-            SYS_PATHS.i18n, 'videomorph_{0}'.format(LOCALE)))
+        translator_sys_path = Path(SYS_PATHS.i18n,
+                                   'videomorph_{0}'.format(LOCALE))
+        app_translator.load(str(translator_sys_path))
 
     app.installTranslator(app_translator)
     qt_translator = QTranslator()

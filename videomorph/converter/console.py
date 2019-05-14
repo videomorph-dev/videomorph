@@ -22,10 +22,8 @@
 import argparse
 import sys
 from os import walk
-from os.path import abspath
-from os.path import exists
 from os.path import isdir
-from os.path import join as join_path
+from pathlib import Path
 
 from . import APP_NAME
 from . import VERSION
@@ -58,8 +56,9 @@ def run_on_console(app, main_win):
 
     if args.input_file:
         for file in args.input_file:
-            if exists(file):
-                files.append(abspath(file))
+            path = Path(file)
+            if path.exists():
+                files.append(path.__str__())
             else:
                 print("Video file: {0}, doesn't exit".format(file),
                       file=sys.stderr)
@@ -90,9 +89,9 @@ def search_directory_recursively(directory, files=None):
     if isdir(directory):
         for dir_path, _, files_names in walk(directory):
             for file_name in files_names:
-                extension = '.{0}'.format(file_name.split('.')[-1])
-                if extension in VALID_VIDEO_EXT:
-                    files.append(abspath(join_path(dir_path, file_name)))
+                path = Path(dir_path, file_name)
+                if path.suffix in VALID_VIDEO_EXT:
+                    files.append(path.__str__())
     else:
         raise IsADirectoryError("Directory: {0}, doesn't exist".format(
             directory))

@@ -20,8 +20,7 @@
 """This module provides the definition of the ConversionLib class."""
 
 import re
-from os.path import isdir
-from os.path import join as join_path
+from pathlib import Path
 from time import time
 
 from PyQt5.QtCore import QProcess
@@ -72,10 +71,14 @@ class _LibraryPath:
     def _get_system_path(self, app):
         """Return the name of the conversion library installed on system."""
         local_dir = self._get_local_dir()
-        if isdir(local_dir):
-            return join_path(local_dir, app)
-        if which(app):
-            return which(app)
+        if local_dir.is_dir():
+            app_path = local_dir.joinpath(app)
+            if app_path.exists():
+                return app_path.__str__()
+
+        app_path = which(app)
+        if app_path:
+            return app_path
         return None  # Not available library
 
     @property
@@ -98,7 +101,7 @@ class _LinuxLibraryPath(_LibraryPath):
 
     def _get_local_dir(self):
         """Return the local directory for ffmpeg library."""
-        return join_path(BASE_DIR, 'ffmpeg')
+        return Path(BASE_DIR, 'ffmpeg')
 
 
 class _Win32LibraryPath(_LibraryPath):
@@ -106,19 +109,20 @@ class _Win32LibraryPath(_LibraryPath):
 
     def _get_local_dir(self):
         """Return the local directory for ffmpeg library."""
-        return join_path(BASE_DIR, 'ffmpeg', 'bin')
+        return Path(BASE_DIR, 'ffmpeg', 'bin')
+
+    def _get_path(self, attr):
+        path = getattr(super(_Win32LibraryPath, self), attr)
+        if path is not None:
+            return path + '.exe'
 
     @property
     def library_path(self):
-        path = super(_Win32LibraryPath, self).library_path
-        if path is not None:
-            return path + '.exe'
+        return self._get_path('library_path')
 
     @property
     def prober_path(self):
-        path = super(_Win32LibraryPath, self).prober_path
-        if path is not None:
-            return path + '.exe'
+        return self._get_path('prober_path')
 
 
 def library_path_factory():
