@@ -27,36 +27,37 @@ from os.path import exists
 from os.path import isdir
 from os.path import isfile
 
-from PyQt5.QtCore import (QSize,
-                          Qt,
-                          QSettings,
-                          QDir,
-                          QPoint,
-                          QProcess)
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import (QMainWindow,
-                             QWidget,
-                             QVBoxLayout,
-                             QHBoxLayout,
-                             QSizePolicy,
-                             QGroupBox,
-                             QLabel,
-                             QSpacerItem,
-                             QComboBox,
-                             QCheckBox,
-                             QProgressBar,
-                             QSystemTrayIcon,
-                             QMenu,
-                             QToolBar,
-                             QTableWidgetItem,
-                             QLineEdit,
-                             QAction,
-                             QAbstractItemView,
-                             QFileDialog,
-                             QMessageBox,
-                             QProgressDialog,
-                             QToolButton,
-                             qApp)
+from PyQt5.QtCore import QSize
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QSettings
+from PyQt5.QtCore import QDir
+from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import QProcess
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QAbstractItemView
+from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QGroupBox
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QSpacerItem
+from PyQt5.QtWidgets import QCheckBox
+from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QProgressBar
+from PyQt5.QtWidgets import QSystemTrayIcon
+from PyQt5.QtWidgets import QMenu
+from PyQt5.QtWidgets import QToolBar
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QProgressDialog
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtWidgets import qApp
 
 
 from videomorph.converter import APP_NAME
