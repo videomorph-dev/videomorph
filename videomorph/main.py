@@ -48,8 +48,8 @@ def main():
     i18n_file = i18n_dir.joinpath(''.join(('videomorph_', LOCALE[:2], '.qm')))
 
     if i18n_file.exists():
-        translator = i18n_dir.joinpath('videomorph_{0}'.format(LOCALE)).__str__()
-        app_translator.load(translator)
+        trans = i18n_dir.joinpath('videomorph_{0}'.format(LOCALE)).__str__()
+        app_translator.load(trans)
         app.installTranslator(app_translator)
 
     # Run the app
