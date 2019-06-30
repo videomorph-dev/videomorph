@@ -114,8 +114,7 @@ class VideoMorphMW(QMainWindow):
         self.reader = self.conversion_lib.reader
         self.timer = self.conversion_lib.timer
 
-        self.profile = Profile(
-            prober=self.conversion_lib.prober_path)
+        self.profile = Profile()
 
         self.media_list = MediaList(profile=self.profile)
 

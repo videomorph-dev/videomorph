@@ -64,11 +64,10 @@ class ProfileExtensionError(ProfileError):
 class Profile:
     """Base class for a Conversion Profile."""
 
-    def __init__(self, prober):
+    def __init__(self):
         """Class initializer."""
         self._xml_profile = _XMLProfile()
         self._quality = None
-        self.prober = prober
         self.extension = None
         self.params = None
 
