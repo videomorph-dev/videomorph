@@ -28,6 +28,7 @@ from pathlib import Path
 from . import CPU_CORES
 from . import STATUS
 from .platformdeps import spawn_process
+from .vmpath import PROBE_PATH
 
 
 class MediaError(Exception):
@@ -236,6 +237,7 @@ class _MediaFile:
 
     __slots__ = ('input_path',
                  '_profile',
+                 '_probe_path',
                  'status',
                  'format_info',
                  'video_stream_info',
@@ -245,6 +247,7 @@ class _MediaFile:
     def __init__(self, file_path, profile):
         """Class initializer."""
         self._profile = profile
+        self._probe_path = PROBE_PATH
         self.input_path = Path(file_path)
         self.status = STATUS.todo
         self.format_info = self._parse_probe_format()
@@ -361,7 +364,7 @@ class _MediaFile:
 
     def _probe(self, args):
         """Return the prober output as a file like object."""
-        process_args = [self._profile.prober, self.input_path.__str__()]
+        process_args = [self._probe_path, self.input_path.__str__()]
         process_args[1:-1] = args
         prober_run = spawn_process(process_args)
 
