@@ -88,3 +88,8 @@ class _Win32LibraryPath(_LibraryPath):
 def library_path_factory():
     """Factory method to create the appropriate lib name."""
     return generic_factory(parent_class=_LibraryPath)
+
+
+_PATHS = library_path_factory()
+LIBRARY_PATH = _PATHS.library_path
+PROBE_PATH = _PATHS.prober_path
