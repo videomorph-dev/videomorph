@@ -19,11 +19,11 @@
 
 """This module provides Model Class."""
 
-from .conversionlib import Library
-from .profile import ConversionProfile
+from .library import Library
+from .profile import Profile
 from .media import MediaList
-from .conversionlib import OutputReader
-from .conversionlib import ConversionTimer
+from .library import OutputReader
+from .library import ConversionTimer
 
 
 class VMModel:
@@ -33,7 +33,7 @@ class VMModel:
         self.library = Library()
         self.reader = OutputReader()
         self.timer = ConversionTimer()
-        self.profile = ConversionProfile()
+        self.profile = Profile()
         self.media_list = MediaList()
 
     def __getattr__(self, attr):

@@ -68,11 +68,11 @@ from videomorph.converter import VERSION
 from videomorph.converter import VIDEO_FILTERS
 from videomorph.converter import VM_PATHS
 from videomorph.converter.console import search_directory_recursively
-from videomorph.converter.conversionlib import Library
+from videomorph.converter.library import Library
 from videomorph.converter.media import MediaList
 from videomorph.converter.platformdeps import PlayerNotFoundError
 from videomorph.converter.platformdeps import launcher_factory
-from videomorph.converter.profile import ConversionProfile
+from videomorph.converter.profile import Profile
 from videomorph.converter.utils import write_time
 from . import COLUMNS
 from . import videomorph_qrc
@@ -114,7 +114,7 @@ class VideoMorphMW(QMainWindow):
         self.reader = self.conversion_lib.reader
         self.timer = self.conversion_lib.timer
 
-        self.profile = ConversionProfile(
+        self.profile = Profile(
             prober=self.conversion_lib.prober_path)
 
         self.media_list = MediaList(profile=self.profile)

@@ -24,8 +24,8 @@ from collections import OrderedDict
 
 import nose
 
-from videomorph.converter.profile import ConversionProfile
-from videomorph.converter.conversionlib import Library
+from videomorph.converter.profile import Profile
+from videomorph.converter.library import Library
 
 
 profile = None
@@ -35,7 +35,7 @@ conv = Library()
 def setup():
     """Function to setup the test."""
     global profile
-    profile = ConversionProfile(prober=conv.prober_path)
+    profile = Profile(prober=conv.prober_path)
     profile.update(new_quality='MP4 Fullscreen (4:3)')
 
 
