@@ -280,8 +280,8 @@ class _MediaFile:
         # Get the output path
         output_path = self._get_output_path(output_dir, tagged_output)
 
-        if output_path.exists():
-            raise FileExistsError('Video file already exits')
+        # if output_path.exists():
+        #     raise FileExistsError('Video file already exits')
 
         # Build the conversion command
         cmd = ['-i', self.input_path.__str__()] + subtitle_opt + \

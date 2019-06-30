@@ -1129,18 +1129,18 @@ class VideoMorphMW(QMainWindow):
                              with_extension=True) + ' ' +
                          self.tr('not Found')))
                 self._update_ui_when_error_on_conversion()
-            except FileExistsError:
-                self._show_message_box(
-                    type_=QMessageBox.Critical,
-                    title=self.tr('Error!'),
-                    msg=(self.tr('Video File:') + ' ' +
-                         self.media_list.running_file_output_name(
-                             output_dir=self.output_edit.text(),
-                             tagged_output=self.tag_chb.checkState()) + ' ' +
-                         self.tr('Already Exists in '
-                                 'Output Directory. Please, Change the '
-                                 'Output Directory')))
-                self._update_ui_when_error_on_conversion()
+            # except FileExistsError:
+            #     self._show_message_box(
+            #         type_=QMessageBox.Critical,
+            #         title=self.tr('Error!'),
+            #         msg=(self.tr('Video File:') + ' ' +
+            #              self.media_list.running_file_output_name(
+            #                  output_dir=self.output_edit.text(),
+            #                  tagged_output=self.tag_chb.checkState()) + ' ' +
+            #              self.tr('Already Exists in '
+            #                      'Output Directory. Please, Change the '
+            #                      'Output Directory')))
+            #     self._update_ui_when_error_on_conversion()
         else:
             self._end_encoding_process()
 
