@@ -68,7 +68,7 @@ from videomorph.converter import VERSION
 from videomorph.converter import VIDEO_FILTERS
 from videomorph.converter import VM_PATHS
 from videomorph.converter.console import search_directory_recursively
-from videomorph.converter.conversionlib import ConversionLib
+from videomorph.converter.conversionlib import Library
 from videomorph.converter.media import MediaList
 from videomorph.converter.platformdeps import PlayerNotFoundError
 from videomorph.converter.platformdeps import launcher_factory
@@ -105,7 +105,7 @@ class VideoMorphMW(QMainWindow):
 
     def _setup_model(self):
         """Setup the app model."""
-        self.conversion_lib = ConversionLib()
+        self.conversion_lib = Library()
         self.conversion_lib.setup_converter(
             reader=self._ready_read,
             finisher=self._finish_file_encoding,

@@ -22,7 +22,7 @@
 
 import nose
 
-from videomorph.converter.conversionlib import ConversionLib
+from videomorph.converter.conversionlib import Library
 from videomorph.converter.media import MediaList
 from videomorph.converter.media import _MediaFile
 from videomorph.converter.profile import ConversionProfile
@@ -32,7 +32,7 @@ from videomorph.converter import STATUS
 class TestMedia:
     """Class for testing media.py module."""
 
-    conv_lib = ConversionLib()
+    conv_lib = Library()
     profile = ConversionProfile(prober=conv_lib.prober_path)
     profile.update(new_quality='DVD Fullscreen 352x480 (4:3)')
 

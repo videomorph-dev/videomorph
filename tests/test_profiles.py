@@ -25,11 +25,11 @@ from collections import OrderedDict
 import nose
 
 from videomorph.converter.profile import ConversionProfile
-from videomorph.converter.conversionlib import ConversionLib
+from videomorph.converter.conversionlib import Library
 
 
 profile = None
-conv = ConversionLib()
+conv = Library()
 
 
 def setup():

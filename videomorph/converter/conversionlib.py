@@ -17,7 +17,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module provides the definition of the ConversionLib class."""
+"""This module provides the definition of the Library class."""
 
 from PyQt5.QtCore import QProcess
 
@@ -27,7 +27,7 @@ from .reader import OutputReader
 from .timer import ConversionTimer
 
 
-class ConversionLib:
+class Library:
     """Conversion Library class."""
 
     def __init__(self):
