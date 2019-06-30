@@ -22,9 +22,9 @@
 from PyQt5.QtCore import QProcess
 
 from .platformdeps import launcher_factory
-from .vmpath import library_path_factory
 from .reader import OutputReader
 from .timer import ConversionTimer
+from .vmpath import LIBRARY_PATH
 
 
 class Library:
@@ -32,10 +32,8 @@ class Library:
 
     def __init__(self):
         """Class initializer."""
-        library = library_path_factory()
-        self._library_path = library.library_path
-        self.prober_path = library.prober_path
-        self._converter = _Converter(library_path=self.library_path)
+        self._library_path = LIBRARY_PATH
+        self._converter = _Converter(library_path=self._library_path)
         self.error = None
         self.reader = OutputReader()
         self.timer = ConversionTimer()
