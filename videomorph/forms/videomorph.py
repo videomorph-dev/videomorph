@@ -105,14 +105,11 @@ class VideoMorphMW(QMainWindow):
 
     def _setup_model(self):
         """Setup the app model."""
-        self.conversion_lib = Library()
-        self.conversion_lib.setup_converter(
+        self.library = Library()
+        self.library.setup_converter(
             reader=self._ready_read,
             finisher=self._finish_file_encoding,
             process_channel=QProcess.MergedChannels)
-
-        self.reader = self.conversion_lib.reader
-        self.timer = self.conversion_lib.timer
 
         self.profile = Profile()
 
@@ -588,7 +585,7 @@ class VideoMorphMW(QMainWindow):
     def _update_edit_triggers(self):
         """Toggle Edit triggers on task table."""
         if (int(self.tasks_table.currentColumn()) == COLUMNS.QUALITY and not
-                self.conversion_lib.converter_is_running):
+                self.library.converter_is_running):
             self.tasks_table.setEditTriggers(QAbstractItemView.AllEditTriggers)
         else:
             self.tasks_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -766,7 +763,7 @@ class VideoMorphMW(QMainWindow):
     def closeEvent(self, event):
         """Things to do on close."""
         # Close communication and kill the encoding process
-        if self.conversion_lib.converter_is_running:
+        if self.library.converter_is_running:
             # ask for confirmation
             user_answer = QMessageBox.question(
                 self,
@@ -777,10 +774,10 @@ class VideoMorphMW(QMainWindow):
 
             if user_answer == QMessageBox.Yes:
                 # Disconnect the finished signal
-                self.conversion_lib.converter_finished_disconnect(
+                self.library.converter_finished_disconnect(
                     connected=self._finish_file_encoding)
-                self.conversion_lib.kill_converter()
-                self.conversion_lib.close_converter()
+                self.library.kill_converter()
+                self.library.close_converter()
                 self.media_list.delete_running_file_output(
                     output_dir=self.output_edit.text(),
                     tagged_output=self.tag_chb.checkState())
@@ -844,7 +841,7 @@ class VideoMorphMW(QMainWindow):
     def _create_table(self):
         self.tasks_table.setRowCount(self.media_list.length)
         # Call converter_is_running only once
-        converter_is_running = self.conversion_lib.converter_is_running
+        converter_is_running = self.library.converter_is_running
         for row in range(self.tasks_table.rowCount()):
             self._insert_table_item(
                 item_text=self.media_list.get_file_name(position=row,
@@ -878,7 +875,7 @@ class VideoMorphMW(QMainWindow):
         """
         # Update tool buttons so you can convert, or add_file, or clear...
         # only if there is not a conversion process running
-        if self.conversion_lib.converter_is_running:
+        if self.library.converter_is_running:
             self._update_ui_when_converter_running()
         else:
             # Update the files status
@@ -915,7 +912,7 @@ class VideoMorphMW(QMainWindow):
     def _play_media_file(self, file_path):
         """Play a video using an available video player."""
         try:
-            self.conversion_lib.run_player(file_path=file_path)
+            self.library.run_player(file_path=file_path)
         except PlayerNotFoundError:
             self._show_message_box(
                 type_=QMessageBox.Critical,
@@ -1099,7 +1096,7 @@ class VideoMorphMW(QMainWindow):
         self._update_ui_when_converter_running()
 
         self.media_list.position += 1
-        self.timer.operation_start_time = 0.0
+        self.library.timer.operation_start_time = 0.0
 
         if self.media_list.running_file_status == STATUS.todo:
             try:
@@ -1112,7 +1109,7 @@ class VideoMorphMW(QMainWindow):
                     tagged_output=self.tag_chb.checkState(),
                     subtitle=bool(self.subtitle_chb.checkState()))
                 # Then pass it to the _converter
-                self.conversion_lib.start_converter(cmd=conversion_cmd)
+                self.library.start_converter(cmd=conversion_cmd)
             except PermissionError:
                 self._show_message_box(
                     type_=QMessageBox.Critical,
@@ -1146,7 +1143,7 @@ class VideoMorphMW(QMainWindow):
     def stop_file_encoding(self):
         """Stop file encoding process and continue with the list."""
         # Terminate the file encoding
-        self.conversion_lib.stop_converter()
+        self.library.stop_converter()
         # Set _MediaFile.status attribute
         self.media_list.running_file_status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
@@ -1154,13 +1151,13 @@ class VideoMorphMW(QMainWindow):
             output_dir=self.output_edit.text(),
             tagged_output=self.tag_chb.checkState())
         # Update the list duration and partial time for total progress bar
-        self.timer.reset_progress_times()
+        self.library.timer.reset_progress_times()
         self.media_list_duration = self.media_list.duration
 
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
         # Delete the file when conversion is stopped by the user
-        self.conversion_lib.stop_converter()
+        self.library.stop_converter()
         self.media_list.delete_running_file_output(
             output_dir=self.output_edit.text(),
             tagged_output=self.tag_chb.checkState())
@@ -1174,7 +1171,7 @@ class VideoMorphMW(QMainWindow):
                     COLUMNS.PROGRESS).setText(self.tr('Stopped!'))
 
         # Update the list duration and partial time for total progress bar
-        self.timer.reset_progress_times()
+        self.library.timer.reset_progress_times()
         self.media_list_duration = self.media_list.duration
 
     def _finish_file_encoding(self):
@@ -1183,9 +1180,9 @@ class VideoMorphMW(QMainWindow):
             file_name = self.media_list.running_file_name(with_extension=True)
             self.notify(file_name)
             # Close and kill the converterprocess
-            self.conversion_lib.close_converter()
+            self.library.close_converter()
             # Check if the process finished OK
-            if (self.conversion_lib.converter_exit_status() ==
+            if (self.library.converter_exit_status() ==
                     QProcess.NormalExit):
                 # When finished a file conversion...
                 self.tasks_table.item(
@@ -1197,7 +1194,7 @@ class VideoMorphMW(QMainWindow):
                     self.media_list.delete_running_file_input()
         else:
             # If the process was stopped
-            if not self.conversion_lib.converter_is_running:
+            if not self.library.converter_is_running:
                 self.tasks_table.item(
                     self.media_list.position,
                     COLUMNS.PROGRESS).setText(self.tr('Stopped!'))
@@ -1209,14 +1206,14 @@ class VideoMorphMW(QMainWindow):
         # Test if encoding process is finished
         if self.media_list.is_exhausted:
 
-            if self.conversion_lib.error is not None:
+            if self.library.error is not None:
                 self._show_message_box(
                     type_=QMessageBox.Critical,
                     title='Error!',
                     msg=self.tr('The Conversion Library has '
                                 'Failed with Error:') + ' ' +
-                    self.conversion_lib.error)
-                self.conversion_lib.error = None
+                    self.library.error)
+                self.library.error = None
             elif not self.media_list.all_stopped:
                 if self.shutdown_chb.checkState():
                     self.shutdown_machine()
@@ -1236,9 +1233,9 @@ class VideoMorphMW(QMainWindow):
             self._reset_options_check_boxes()
             # Reset all progress related variables
             self._reset_progress_bars()
-            self.timer.reset_progress_times()
+            self.library.timer.reset_progress_times()
             self.media_list_duration = self.media_list.duration
-            self.timer.process_start_time = 0.0
+            self.library.timer.process_start_time = 0.0
             # Reset the position
             self.media_list.position = None
             # Update tool buttons
@@ -1253,37 +1250,37 @@ class VideoMorphMW(QMainWindow):
 
     def _ready_read(self):
         """Is called when the conversion process emit a new output."""
-        self.reader.update_read(
-            process_output=self.conversion_lib.read_converter_output())
+        self.library.reader.update_read(
+            process_output=self.library.read_converter_output())
 
         self._update_conversion_progress()
 
     def _update_conversion_progress(self):
         """Read the encoding output from the converter stdout."""
         # Initialize the process time
-        if not self.timer.process_start_time:
-            self.timer.init_process_start_time()
+        if not self.library.timer.process_start_time:
+            self.library.timer.init_process_start_time()
 
         # Initialize the operation time
-        if not self.timer.operation_start_time:
-            self.timer.init_operation_start_time()
+        if not self.library.timer.operation_start_time:
+            self.library.timer.init_operation_start_time()
 
         # Return if no time read
-        if not self.reader.has_time_read:
+        if not self.library.reader.has_time_read:
             # Catch the library errors only before time_read
-            self.conversion_lib.catch_errors()
+            self.library.catch_errors()
             return
 
-        self.timer.update_time(op_time_read_sec=self.reader.time)
+        self.library.timer.update_time(op_time_read_sec=self.library.reader.time)
 
-        self.timer.update_cum_times()
+        self.library.timer.update_cum_times()
 
         file_duration = float(self.media_list.running_file_info('duration'))
 
-        operation_progress = self.timer.operation_progress(
+        operation_progress = self.library.timer.operation_progress(
             file_duration=file_duration)
 
-        process_progress = self.timer.process_progress(
+        process_progress = self.library.timer.process_progress(
             list_duration=self.media_list_duration)
 
         self._update_progress(op_progress=operation_progress,
@@ -1322,10 +1319,10 @@ class VideoMorphMW(QMainWindow):
                     'Total Elapsed Time: {tet}').format(
                         m=self.media_list.running_file_name(
                             with_extension=True),
-                        br=self.reader.bitrate,
-                        ort=self.timer.operation_remaining_time(
+                        br=self.library.reader.bitrate,
+                        ort=self.library.timer.operation_remaining_time(
                             file_duration=file_duration),
-                        tet=write_time(self.timer.process_cum_time)))
+                        tet=write_time(self.library.timer.process_cum_time)))
 
     def _update_media_files_status(self):
         """Update file status."""
@@ -1465,7 +1462,7 @@ class VideoMorphMW(QMainWindow):
                         info=False)
 
     def _update_ui_when_playing(self, row):
-        if self.conversion_lib.converter_is_running:
+        if self.library.converter_is_running:
             self._update_ui_when_converter_running()
         elif self.media_list.get_file_status(row) == STATUS.todo:
             self.update_ui_when_ready()
@@ -1499,7 +1496,7 @@ class VideoMorphMW(QMainWindow):
                         info=False)
 
     def _update_ui_when_error_on_conversion(self):
-        self.timer.reset_progress_times()
+        self.library.timer.reset_progress_times()
         self.media_list_duration = self.media_list.duration
         self.media_list.position = None
         self._reset_progress_bars()
@@ -1508,7 +1505,7 @@ class VideoMorphMW(QMainWindow):
         self.update_ui_when_ready()
 
     def _enable_context_menu_action(self):
-        if not self.conversion_lib.converter_is_running:
+        if not self.library.converter_is_running:
             self.remove_media_file_action.setEnabled(True)
 
         self.play_input_media_file_action.setEnabled(True)

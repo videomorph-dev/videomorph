@@ -61,7 +61,7 @@ def run_app(app):
     # Create the Main Window
     main_win = VideoMorphMW()
     # Check for conversion library and run
-    if main_win.conversion_lib.library_path:
+    if main_win.library.path:
         if len(sys.argv) > 1:  # If it is running from console
             run_on_console(app, main_win)
         else:  # Or is running on GUI

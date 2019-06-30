@@ -32,8 +32,8 @@ class Library:
 
     def __init__(self):
         """Class initializer."""
-        self._library_path = LIBRARY_PATH
-        self._converter = _Converter(library_path=self._library_path)
+        self._path = LIBRARY_PATH
+        self._converter = _Converter(library_path=self._path)
         self.error = None
         self.reader = OutputReader()
         self.timer = ConversionTimer()
@@ -53,9 +53,9 @@ class Library:
         launcher.open_with_user_app(url=file_path)
 
     @property
-    def library_path(self):
+    def path(self):
         """Return the name of the conversion library."""
-        return self._library_path
+        return self._path
 
 
 class _Converter:

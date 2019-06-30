@@ -60,7 +60,7 @@ class TestConversionLib:
 
     def test_get_library_path(self):
         """Test Library.library_path."""
-        assert self.conv_lib.library_path in {'/usr/bin/ffmpeg',
+        assert self.conv_lib.path in {'/usr/bin/ffmpeg',
                                               '/usr/local/bin/ffmpeg'}
 
     def test_prober_path(self):
