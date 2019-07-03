@@ -74,6 +74,8 @@ from videomorph.converter.platformdeps import PlayerNotFoundError
 from videomorph.converter.platformdeps import launcher_factory
 from videomorph.converter.profile import Profile
 from videomorph.converter.utils import write_time
+from videomorph.converter.vmpath import LIBRARY_PATH
+
 from . import COLUMNS
 from . import videomorph_qrc
 from .vmwidgets import TasksListTable
@@ -105,7 +107,7 @@ class VideoMorphMW(QMainWindow):
 
     def _setup_model(self):
         """Setup the app model."""
-        self.library = Library()
+        self.library = Library(path=LIBRARY_PATH)
         self.library.setup_converter(
             reader=self._ready_read,
             finisher=self._finish_file_encoding,

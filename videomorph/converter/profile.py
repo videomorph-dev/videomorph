@@ -66,7 +66,7 @@ class Profile:
 
     def __init__(self):
         """Class initializer."""
-        self._xml_profile = _XMLProfile()
+        self._xml_profile = _XMLProfile(xml_files=XML_FILES)
         self._quality = None
         self.extension = None
         self.params = None
@@ -101,10 +101,10 @@ class Profile:
 class _XMLProfile:
     """Class to manage the xml profiles file."""
 
-    def __init__(self):
+    def __init__(self, xml_files):
         """Class initializer."""
         # Create xml files.
-        self._xml_files = XML_FILES
+        self._xml_files = xml_files
         self._create_xml_files()
 
     def restore_default_profiles(self):

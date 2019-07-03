@@ -24,15 +24,14 @@ from PyQt5.QtCore import QProcess
 from .platformdeps import launcher_factory
 from .reader import OutputReader
 from .timer import ConversionTimer
-from .vmpath import LIBRARY_PATH
 
 
 class Library:
     """Conversion Library class."""
 
-    def __init__(self):
+    def __init__(self, path):
         """Class initializer."""
-        self._path = LIBRARY_PATH
+        self._path = path
         self._converter = _Converter(library_path=self._path)
         self.error = None
         self.reader = OutputReader()
