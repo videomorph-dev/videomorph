@@ -2,6 +2,12 @@
 
 ## Next Version (2.0)
 
+- Implement a Dialog to generate the conversion commands using the ffmpeg options
+- Define a README.rst file to be included in source package
+- Improve the icons visualization
+- Automate the process of creating the Portable Edition on Linux and Windows
+- Add a Minimize to Tray option
+- Add options to rotate videos clockwise and counter clockwise to correct some videos orientation
 - Define a `README.rst` file to be included in source package
 - Improve the icons visualization and interface design
 - Automate the process of creating the Portable Edition on Linux and Windows
