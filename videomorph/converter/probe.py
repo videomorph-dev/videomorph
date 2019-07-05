@@ -33,18 +33,22 @@ class Probe:
 
     @property
     def format_info(self):
+        """Return general info about file."""
         return self._parse_probe_format()
 
     @property
     def video_info(self):
+        """Return general info about video stream."""
         return self._parse_probe_video_stream()
 
     @property
     def audio_info(self):
+        """Return general info about audio stream."""
         return self._parse_probe_audio_stream()
 
     @property
     def subtitle_info(self):
+        """Return general info about subtitle stream."""
         return self._parse_probe_sub_stream()
 
     def _probe(self, args):
