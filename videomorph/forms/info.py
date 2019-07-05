@@ -199,14 +199,14 @@ class InfoDialog(QtWidgets.QDialog):
             media_file.format_info['format_long_name'])
 
         self.label_codec_name_value.setText(
-            media_file.video_stream_info['codec_name'])
+            media_file.video_info['codec_name'])
         self.label_codec_long_name_value.setText(
-            media_file.video_stream_info['codec_long_name'])
+            media_file.video_info['codec_long_name'])
         self.label_bit_rate_value.setText(
-            media_file.video_stream_info['bit_rate'])
-        self.label_width_value.setText(media_file.video_stream_info['width'])
-        self.label_height_value.setText(media_file.video_stream_info['height'])
+            media_file.video_info['bit_rate'])
+        self.label_width_value.setText(media_file.video_info['width'])
+        self.label_height_value.setText(media_file.video_info['height'])
         self.label_acodec_name_value.setText(
-            media_file.audio_stream_info['codec_name'])
+            media_file.audio_info['codec_name'])
         self.label_acodec_long_name_value.setText(
-            media_file.audio_stream_info['codec_long_name'])
+            media_file.audio_info['codec_long_name'])
