@@ -108,7 +108,7 @@ class MediaList(list):
 
     def get_file_info(self, position, info_param):
         """Return general streaming info from a video file."""
-        return self[position].get_format_info(info_param)
+        return self[position].format_info[info_param]
 
     def running_file_name(self, with_extension=False):
         """Return the running file name."""
@@ -116,7 +116,7 @@ class MediaList(list):
 
     def running_file_info(self, info_param):
         """Return running file info."""
-        return self._running_file.get_format_info(info_param)
+        return self._running_file.format_info[info_param]
 
     @property
     def running_file_status(self):
@@ -183,7 +183,7 @@ class MediaList(list):
     @property
     def duration(self):
         """Return the duration time of MediaList counting files todo only."""
-        return sum(float(media.get_format_info('duration')) for
+        return sum(float(media.format_info['duration']) for
                    media in self if media.status == STATUS.todo)
 
     @property
@@ -196,7 +196,7 @@ class MediaList(list):
         # Invalid metadata
         try:
             # Duration is not a valid float() argument
-            duration = float(media_file.get_format_info('duration'))
+            duration = float(media_file.format_info['duration'])
         except (TypeError, ValueError):
             raise InvalidMetadataError('Invalid file duration')
 
@@ -255,10 +255,6 @@ class _MediaFile:
         if with_extension:
             return self.input_path.name
         return self.input_path.stem
-
-    def get_format_info(self, info_param):
-        """Return an info attribute from a given video file."""
-        return self._info.format_info.get(info_param)
 
     def build_conversion_cmd(self, output_dir, target_quality,
                              tagged_output, subtitle):
