@@ -2,10 +2,6 @@
 
 ## Next Version (2.0)
 
-- Implement a Dialog to generate the conversion commands using the ffmpeg options
-- Define a README.rst file to be included in source package
-- Improve the icons visualization
-- Automate the process of creating the Portable Edition on Linux and Windows
 - Add a Minimize to Tray option
 - Add options to rotate videos clockwise and counter clockwise to correct some videos orientation
 - Define a `README.rst` file to be included in source package
@@ -13,9 +9,8 @@
 - Automate the process of creating the Portable Edition on Linux and Windows
 - Add new presets for social media (Youtube, FB, etc.)
 - Launch some kind of survey to gather information about most used presets
-- Add an option to rotate video
 - Buy the domain name videomorph.info
-- Create a new web page for the app
+- Create a landing page for the app
 
 ## BugFix Version (1.4.1)
 
@@ -30,10 +25,8 @@
 - Write a Disclaimer about Ffmpeg options in customized profiles, available codecs and input video quality
 - Pack in `RPM` format
 - Pack for Arch Linux
-- Implement the main window interface in a separated module, maybe `mainwindow.py`
 - Implement an alternative class for `conversionlib._Converter` (`subprocess` maybe) to decouple from `PyQt5`
-- Move the business logic present in `videomorph.py`, `about.py` and other views to `converter` package
-  package
+- Move the business logic present in `videomorph.py`, `about.py` and other views to `converter` package package
 - Move the `HTML` text hardcoded in `about.py` to a file distributed as doc. Read the about info from that file as done with the License
 - Pack in AppImage, Flatpack or Snap
 - Implement model/view/controller pattern
