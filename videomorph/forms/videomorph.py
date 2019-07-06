@@ -550,6 +550,7 @@ class VideoMorphMW(QMainWindow):
         self.tool_bar = QToolBar(self)
         # Add actions to the tool bar
         self.tool_bar.addAction(self.open_media_file_action)
+        self.tool_bar.addAction(self.open_media_dir_action)
         self.tool_bar.addSeparator()
         self.tool_bar.addAction(self.clear_media_list_action)
         self.tool_bar.addAction(self.remove_media_file_action)
