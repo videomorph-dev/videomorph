@@ -172,7 +172,7 @@ class VideoMorphMW(QMainWindow):
     def _group_settings(self):
         """Settings group."""
         settings_gb = QGroupBox(self.central_widget)
-        settings_gb.setTitle(self.tr('Conversion Profile'))
+        settings_gb.setTitle(self.tr('Conversion Options'))
         size_policy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
@@ -182,7 +182,7 @@ class VideoMorphMW(QMainWindow):
 
         settings_layout = QVBoxLayout()
 
-        convert_label = QLabel(self.tr('Convert to:'))
+        convert_label = QLabel(self.tr('Target Format:'))
         settings_layout.addWidget(convert_label)
 
         profile_tip = self.tr('Select a Video Format')
@@ -270,18 +270,18 @@ class VideoMorphMW(QMainWindow):
     def _group_output_directory(self):
         """Define the output directory Group arrangement."""
         output_dir_gb = QGroupBox(self.central_widget)
-        output_dir_gb.setTitle(self.tr('Output Directory'))
+        output_dir_gb.setTitle(self.tr('Output Folder'))
 
         output_dir_layout = QHBoxLayout(output_dir_gb)
 
-        outputdir_tip = self.tr('Choose Output Directory')
+        outputdir_tip = self.tr('Choose the Output Folder')
         self.output_edit = QLineEdit(str(QDir.homePath()),
                                      statusTip=outputdir_tip,
                                      toolTip=outputdir_tip)
         self.output_edit.setReadOnly(True)
         output_dir_layout.addWidget(self.output_edit)
 
-        outputbtn_tip = self.tr('Choose Output Directory')
+        outputbtn_tip = self.tr('Choose the Output Folder')
         self.output_btn = QToolButton(output_dir_gb,
                                       statusTip=outputbtn_tip,
                                       toolTip=outputbtn_tip)
@@ -359,17 +359,17 @@ class VideoMorphMW(QMainWindow):
         """Create actions."""
         actions = {'open_media_file_action':
                    dict(icon=QIcon(':/icons/video-file.png'),
-                        text=self.tr('&Add Files...'),
+                        text=self.tr('&Add Videos...'),
                         shortcut="Ctrl+O",
-                        tip=self.tr('Add Video Files to the '
+                        tip=self.tr('Add Videos to the '
                                     'List of Conversion Tasks'),
                         callback=self.open_media_files),
 
                    'open_media_dir_action':
                    dict(icon=QIcon(':/icons/add-folder.png'),
-                        text=self.tr('Add &Directory...'),
+                        text=self.tr('Add &Folder...'),
                         shortcut="Ctrl+D",
-                        tip=self.tr('Add all the Video Files in a Directory '
+                        tip=self.tr('Add all the Video Files in a Folder '
                                     'to the List of Conversion Tasks'),
                         callback=self.open_media_dir),
 
@@ -403,27 +403,27 @@ class VideoMorphMW(QMainWindow):
 
                    'play_input_media_file_action':
                    dict(icon=QIcon(':/icons/video-player-input.png'),
-                        text=self.tr('Play Input Video File'),
+                        text=self.tr('Play Input Video'),
                         callback=self.play_input_media_file),
 
                    'play_output_media_file_action':
                    dict(icon=QIcon(':/icons/video-player-output.png'),
-                        text=self.tr('Play Output Video File'),
+                        text=self.tr('Play Output Video'),
                         callback=self.play_output_media_file),
 
                    'clear_media_list_action':
                    dict(icon=QIcon(':/icons/clear-list.png'),
                         text=self.tr('Clear &List'),
                         shortcut="Ctrl+Del",
-                        tip=self.tr('Remove all Video Files from the '
+                        tip=self.tr('Remove all the Video from the '
                                     'List of Conversion Tasks'),
                         callback=self.clear_media_list),
 
                    'remove_media_file_action':
                    dict(icon=QIcon(':/icons/remove-file.png'),
-                        text=self.tr('&Remove File'),
+                        text=self.tr('&Remove Video'),
                         shortcut="Del",
-                        tip=self.tr('Remove Selected Video File from the '
+                        tip=self.tr('Remove Selected Video from the '
                                     'List of Conversion Tasks'),
                         callback=self.remove_media_file),
 
@@ -438,14 +438,14 @@ class VideoMorphMW(QMainWindow):
                    dict(icon=QIcon(':/icons/stop.png'),
                         text=self.tr('&Stop'),
                         shortcut="Ctrl+P",
-                        tip=self.tr('Stop Video File Conversion'),
+                        tip=self.tr('Stop Current Video Conversion'),
                         callback=self.stop_file_encoding),
 
                    'stop_all_action':
                    dict(icon=QIcon(':/icons/stop-all.png'),
                         text=self.tr('S&top All'),
                         shortcut="Ctrl+A",
-                        tip=self.tr('Stop all Video Conversion Tasks'),
+                        tip=self.tr('Stop all Video Conversions'),
                         callback=self.stop_all_files_encoding),
 
                    'about_action':
@@ -574,7 +574,7 @@ class VideoMorphMW(QMainWindow):
         label.setAlignment(Qt.AlignLeft)
         progress_dlg = QProgressDialog(parent=self)
         progress_dlg.setFixedSize(500, 100)
-        progress_dlg.setWindowTitle(self.tr('Adding Video Files...'))
+        progress_dlg.setWindowTitle(self.tr('Adding Videos...'))
         progress_dlg.setCancelButtonText(self.tr('Cancel'))
         progress_dlg.setLabel(label)
         progress_dlg.setModal(True)
@@ -756,7 +756,7 @@ class VideoMorphMW(QMainWindow):
     def output_directory(self):
         """Choose output directory."""
         directory = self._select_directory(
-            dialog_title=self.tr('Choose Output Directory'),
+            dialog_title=self.tr('Choose Output Folder'),
             source_dir=self.output_edit.text())
 
         if directory:
@@ -802,7 +802,7 @@ class VideoMorphMW(QMainWindow):
             if not i:  # First element yielded
                 progress_dlg.setMaximum(element)
             else:  # Second and on...
-                progress_dlg.setLabelText(self.tr('Adding File: ') + element)
+                progress_dlg.setLabelText(self.tr('Adding Video: ') + element)
                 progress_dlg.setValue(i)
 
             if progress_dlg.wasCanceled():
@@ -811,9 +811,9 @@ class VideoMorphMW(QMainWindow):
         progress_dlg.close()
 
         if self.media_list.not_added_files:
-            msg = self.tr('Invalid Video File Information for:') + ' \n - ' + \
+            msg = self.tr('Invalid Video Information for:') + ' \n - ' + \
                   '\n - '.join(self.media_list.not_added_files) + '\n' + \
-                  self.tr('File not Added to the List of Conversion Tasks')
+                  self.tr('Video not Added to the List of Conversion Tasks')
             self._show_message_box(
                 type_=QMessageBox.Critical,
                 title=self.tr('Error!'),
@@ -827,8 +827,8 @@ class VideoMorphMW(QMainWindow):
     def _load_files(self, source_dir=QDir.homePath()):
         """Load video files."""
         files_paths = self._select_files(
-            dialog_title=self.tr('Select Video Files'),
-            files_filter=self.tr('Video Files') + ' ' +
+            dialog_title=self.tr('Select Videos'),
+            files_filter=self.tr('Videos') + ' ' +
             '(' + VIDEO_FILTERS + ')',
             source_dir=source_dir)
 
@@ -934,7 +934,7 @@ class VideoMorphMW(QMainWindow):
     def open_media_dir(self):
         """Add media files from a directory recursively."""
         directory = self._select_directory(
-            dialog_title=self.tr('Select Directory'),
+            dialog_title=self.tr('Select a Folder'),
             source_dir=self.source_dir)
 
         if not directory:
@@ -948,7 +948,7 @@ class VideoMorphMW(QMainWindow):
             self._show_message_box(
                 type_=QMessageBox.Critical,
                 title=self.tr('Error!'),
-                msg=self.tr('No Video Files Found in:' + ' ' + directory))
+                msg=self.tr('No Videos Found in:' + ' ' + directory))
 
     def remove_media_file(self):
         """Remove selected media file from the list."""
@@ -957,7 +957,7 @@ class VideoMorphMW(QMainWindow):
         msg_box = QMessageBox(
             QMessageBox.Warning,
             self.tr('Warning!'),
-            self.tr('Remove Video File from the List of Conversion Tasks?'),
+            self.tr('Remove Video from the List of Conversion Tasks?'),
             QMessageBox.NoButton, self)
 
         msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
@@ -988,7 +988,7 @@ class VideoMorphMW(QMainWindow):
             self._show_message_box(
                 type_=QMessageBox.Critical,
                 title=self.tr('Error!'),
-                msg=self.tr('Can not Write to Selected Directory'))
+                msg=self.tr('Can not Write to Selected Folder'))
         else:
             self._show_message_box(type_=QMessageBox.Information,
                                    title=self.tr('Information!'),
@@ -1006,7 +1006,7 @@ class VideoMorphMW(QMainWindow):
     def export_profiles(self):
         """Export conversion profiles."""
         directory = self._select_directory(
-            dialog_title=self.tr('Export to Directory'))
+            dialog_title=self.tr('Export to Folder'))
 
         if directory:
             msg_info = self.tr('Conversion Profiles Successfully Exported!')
@@ -1078,7 +1078,7 @@ class VideoMorphMW(QMainWindow):
         msg_box = QMessageBox(
             QMessageBox.Warning,
             self.tr('Warning!'),
-            self.tr('Remove all Conversion Tasks from the List?'),
+            self.tr('Remove all the Videos from the List?'),
             QMessageBox.NoButton, self)
 
         msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
@@ -1117,13 +1117,13 @@ class VideoMorphMW(QMainWindow):
                 self._show_message_box(
                     type_=QMessageBox.Critical,
                     title=self.tr('Error!'),
-                    msg=self.tr('Can not Write to Selected Directory'))
+                    msg=self.tr('Can not Write to Selected Folder'))
                 self._update_ui_when_error_on_conversion()
             except FileNotFoundError:
                 self._show_message_box(
                     type_=QMessageBox.Critical,
                     title=self.tr('Error!'),
-                    msg=(self.tr('Input Video File:') + ' ' +
+                    msg=(self.tr('Input Video:') + ' ' +
                          self.media_list.running_file_name(
                              with_extension=True) + ' ' +
                          self.tr('not Found')))
@@ -1224,12 +1224,12 @@ class VideoMorphMW(QMainWindow):
                 self._show_message_box(
                     type_=QMessageBox.Information,
                     title=self.tr('Information!'),
-                    msg=self.tr('Encoding Process Successfully Finished!'))
+                    msg=self.tr('Conversion Process Successfully Finished!'))
             else:
                 self._show_message_box(
                     type_=QMessageBox.Information,
                     title=self.tr('Information!'),
-                    msg=self.tr('Encoding Process Stopped by the User!'))
+                    msg=self.tr('Conversion Process Stopped by the User!'))
 
             self.setWindowTitle(self.title)
             self.statusBar().showMessage(self.tr('Ready'))

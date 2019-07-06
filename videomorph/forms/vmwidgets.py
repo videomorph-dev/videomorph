@@ -48,7 +48,7 @@ class TasksListTable(QTableWidget):
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.setHorizontalHeaderLabels(
-            [self.tr('File Name'),
+            [self.tr('Video Name'),
              self.tr('Duration'),
              self.tr('Target Quality'),
              self.tr('Progress')])
