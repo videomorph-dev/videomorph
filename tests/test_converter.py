@@ -35,7 +35,7 @@ class TestConversionLib:
     profile = Profile(prober=conv_lib.prober_path)
     profile.update(new_quality='FLV Fullscreen 320x240 (4:3)')
 
-    media_list = media.MediaList(profile)
+    media_list = media.TaskList(profile)
 
     @classmethod
     def setup_class(cls):
@@ -47,14 +47,14 @@ class TestConversionLib:
     @classmethod
     def teardown_class(cls):
         """Teardown method to run after all test."""
-        cls.media_list.get_file(0).delete_output('.', tagged_output=True)
+        cls.media_list.get_file(0).delete_output('.', tagged=True)
 
     def get_conversion_cmd(self):
         """Return a conversion command."""
         cmd = self.media_list.get_file(position=0).build_conversion_cmd(
             output_dir='.',
             subtitle=False,
-            tagged_output=True,
+            tagged=True,
             target_quality='FLV Fullscreen 320x240 (4:3)')
         return cmd
 

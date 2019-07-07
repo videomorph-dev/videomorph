@@ -129,7 +129,7 @@ class TargetQualityDelegate(QItemDelegate):
     def update(self, editor, index):
         """Update several things in the interface."""
         self.parent.update_table_progress_column(row=index.row())
-        self.parent.media_list.set_file_status(position=index.row(),
+        self.parent.media_list.set_task_status(position=index.row(),
                                                status=STATUS.todo)
         self.parent.total_duration = self.parent.media_list.duration
         self.parent.update_ui_when_ready()
