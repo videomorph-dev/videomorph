@@ -133,8 +133,9 @@ class VideoMorphMW(QMainWindow):
         self._create_context_menu()
         self._update_ui_when_no_file()
 
-    def _get_app_icon(self):
-        """Set window icon."""
+    @staticmethod
+    def _get_app_icon():
+        """Get app icon."""
         icon = QIcon()
         icon.addPixmap(QPixmap(':/icons/videomorph.ico'))
         return icon
