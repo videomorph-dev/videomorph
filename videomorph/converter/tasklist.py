@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# File name: media.py
+# File name: tasklist.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team

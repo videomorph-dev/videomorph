@@ -69,7 +69,7 @@ from videomorph.converter import VIDEO_FILTERS
 from videomorph.converter import VM_PATHS
 from videomorph.converter.console import search_directory_recursively
 from videomorph.converter.library import Library
-from videomorph.converter.media import TaskList
+from videomorph.converter.tasklist import TaskList
 from videomorph.converter.platformdeps import PlayerNotFoundError
 from videomorph.converter.platformdeps import launcher_factory
 from videomorph.converter.profile import Profile

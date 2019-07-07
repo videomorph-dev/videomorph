@@ -23,7 +23,7 @@
 import nose
 from PyQt5.QtCore import QProcess
 
-from videomorph.converter import media
+from videomorph.converter import tasklist
 from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
 
@@ -35,7 +35,7 @@ class TestConversionLib:
     profile = Profile(prober=conv_lib.prober_path)
     profile.update(new_quality='FLV Fullscreen 320x240 (4:3)')
 
-    media_list = media.TaskList(profile)
+    media_list = tasklist.TaskList(profile)
 
     @classmethod
     def setup_class(cls):

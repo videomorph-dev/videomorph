@@ -23,8 +23,8 @@
 import nose
 
 from videomorph.converter.library import Library
-from videomorph.converter.media import TaskList
-from videomorph.converter.media import Video
+from videomorph.converter.tasklist import TaskList
+from videomorph.converter.tasklist import Video
 from videomorph.converter.profile import Profile
 from videomorph.converter import STATUS
 
