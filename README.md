@@ -20,9 +20,11 @@ VideoMorph is a GUI wrapper for [Ffmpeg](http://ffmpeg.org), based on general id
 
 VideoMorph uses the following libraries, and programs:
 
- - [PyQt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/introduction.html)
- - [FFmpeg](http://ffmpeg.org)
- - [Python](https://python.org) > 3.4
+- [PyQt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/introduction.html)
+
+- [FFmpeg](http://ffmpeg.org)
+
+- [Python](https://python.org) > 3.4
 
 You need to install these programs, and libraries for VideoMorph to work properly.
 
@@ -43,6 +45,7 @@ If you're using Linux or Windows, then you can install VideoMorph by using the b
 You can install VideoMorph on Ubuntu by running the following steps:
 
 1. Download the `.deb` package
+
 2. Open a terminal, and run the following commands:
 
 ```console
@@ -59,7 +62,9 @@ You can also install VideoMorph's `.deb` package, by using GDebi, which is a GUI
 To install VideoMorph on your Windows system, you can:
 
 1. Download the installer that corresponds to your architecture
+
 2. Run the installer as `administrator`
+
 3. Follow on-screen instructions
 
 ### Installing Form the Source Packages
@@ -71,6 +76,7 @@ You can install VideoMorph from the source packages. Let's take a look at how to
 To install the application from the source package on a GNU/Linux system, do the following:
 
 1. Download the `.tar.gz` package
+
 2. Open a terminal, and type in this:
 
 ```console
@@ -109,7 +115,9 @@ This command will install VideoMorph, and its dependencies, (Ffmpeg, and PyQt5),
 To install VideoMorph from the source package on your Windows system, you need to:
 
 1. Download the `.zip` source package
+
 2. Decompress the `.zip` file
+
 3. Open your Windows' command-line (`cmd.exe`), and type the following commands:
 
 ```doscon
@@ -128,7 +136,9 @@ This will install VideoMorph on your system, but you'll need to manually install
 To use a Portable Edition (PE) of VideoMorph, you just need to:
 
 1. Download the PE package that matches your current system
+
 2. Decompress the `.tar.gz` or the `.zip` file (Linux and Windows respectively) in any directory
+
 3. Double-click on VideoMorph's executable (`videomorph` or `videomorph.exe`)
 
 ## How to Use VideoMorph
@@ -142,11 +152,17 @@ If you're a Python Developer, and want to contribute to VideoMorph's source code
 Any other type of contributions are also welcome. You can also reach out to contribute with:
 
 - Translations
+
 - Artwork and GUI improvementes
+
 - Customized conversion profiles or presets
+
 - Tutorials on how to use VideoMorph
+
 - Documentation
+
 - Feature requests
+
 - Bug reports
 
 Even a report on a typo in the GUI would be welcome, so it's your turn to talk. But remember that VideoMorph is just a video converter, not a video editor.
@@ -168,16 +184,23 @@ You also need to install the Ffmpeg library on your system.
 The members of the VideoMorph Development Team that have the capability to commit changes into the repo are:
 
 - [Ozkar L. Garcell](https://github.com/codeshard)
+
 - [Leodanis Pozo Ramos](https://github.com/lpozo)
+
 - [Leonel Salazar Videaux](https://github.com/leonel-lordford)
 
 ### Internal Contributions Procedure
 
 1. Work on new features, bug fixes, and other changes on a separated local branch
+
 2. Once the work is done, `push` the whole branch to the `videomorph-dev` repo
+
 3. Create a Pull Request (PR) against the `develop` branch
+
 4. Wait for review, feedback, and approval
+
 5. Merge the approved PR into the `develop` branch
+
 6. Delete the temporarily branch
 
 **Note:** The preceding procedure is intended to be used by the members of the VideoMorph Development Team.
@@ -187,9 +210,13 @@ The members of the VideoMorph Development Team that have the capability to commi
 External contributors must:
 
 - Fork the repo on GitHub
+
 - Work on modifications
+
 - Push modifications to the forked repo
+
 - Make a PR against the `develop` branch
+
 - Wait for review, feedback, and approval
 
 ### Branch Naming Conventions
@@ -201,13 +228,17 @@ The name for a branch will be like:
 Where:
 
 - `username` corresponds to the GitHub username
+
 - `i000` represents the issue number the branch is dealing with. If there is no issue to map the branch then `i000` will be used
+
 - `topic`, stands for a descriptive name that reflects the main goal of the branch (e.g: `john_i024_feature_mov_format`)
 
 ### Coding, and Docstrings Syle
 
 - VideoMorph's code will follow the coding style guidelines described in [PEP8](https://www.python.org/dev/peps/pep-0008/)
+
 - Docstrings in VideoMorph's code will follow the guidelines described in [PEP257](https://www.python.org/dev/peps/pep-0257/)
+
 - Tools like `pylint`, `pep8`, `flake`, and other can be used to ensure that coding style guides are met
 
 ### Commit Messaging Style
@@ -230,7 +261,7 @@ General rules for writing commit messages:
 
    ```
    Add support for MOV format
-   
+
    Add support for MOV format with several presets to give more
    default conversion options to the user.
    ```
@@ -249,13 +280,17 @@ Following the idea of [python-video-converter](https://github.com/senko/python-v
 Authors:
 
  - [Ozkar L. Garcell](mailto:ozkar.garcell@gmail.com)
+
  - [Leodanis Pozo Ramos](mailto:lpozor78@gmail.com)
 
 Contributors:
 
  - [Maikel Llamaret Heredia](http://gutl.jovenclub.cu)
+
  - [Carlos Parra Zaldivar](http://libreoffice.cubava.cu)
+
  - [Leonel Salazar Videaux](http://debianhlg.cubava.cu/)
+
  - Osmel Cruz
 
 ## Copyright
