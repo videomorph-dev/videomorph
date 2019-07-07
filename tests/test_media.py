@@ -24,7 +24,7 @@ import nose
 
 from videomorph.converter.library import Library
 from videomorph.converter.media import MediaList
-from videomorph.converter.media import _MediaFile
+from videomorph.converter.media import Video
 from videomorph.converter.profile import Profile
 from videomorph.converter import STATUS
 
@@ -57,7 +57,7 @@ class TestMedia:
 
     def test_get_file_object(self):
         """Test MediaList.get_file()."""
-        assert isinstance(self.media_list.get_file(0), _MediaFile)
+        assert isinstance(self.media_list.get_file(0), Video)
 
     def test_get_file_name(self):
         """Test MediaList.get_file_name()."""
@@ -143,7 +143,7 @@ class TestMedia:
         assert self.media_list.length == 1
 
     def test_build_conversion_cmd(self):
-        """Test _MediaFile.build_conversion_cmd."""
+        """Test Video.build_conversion_cmd."""
         assert self.media_list.get_file(0).build_conversion_cmd(
             output_dir='.',
             tagged_output=True,

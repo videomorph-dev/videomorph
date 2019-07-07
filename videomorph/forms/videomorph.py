@@ -795,7 +795,7 @@ class VideoMorphMW(QMainWindow):
             event.accept()
 
     def _fill_media_list(self, files_paths):
-        """Fill MediaList object with _MediaFile objects."""
+        """Fill MediaList object with Video objects."""
         progress_dlg = self._create_progress_dialog()
 
         for i, element in enumerate(self.media_list.populate(files_paths)):
@@ -1147,7 +1147,7 @@ class VideoMorphMW(QMainWindow):
         """Stop file encoding process and continue with the list."""
         # Terminate the file encoding
         self.library.stop_converter()
-        # Set _MediaFile.status attribute
+        # Set Video.status attribute
         self.media_list.running_file_status = STATUS.stopped
         # Delete the file when conversion is stopped by the user
         self.media_list.delete_running_file_output(
@@ -1165,7 +1165,7 @@ class VideoMorphMW(QMainWindow):
             output_dir=self.output_edit.text(),
             tagged_output=self.tag_chb.checkState())
         for media_file in self.media_list:
-            # Set _MediaFile.status attribute
+            # Set Video.status attribute
             if media_file.status != STATUS.done:
                 media_file.status = STATUS.stopped
                 self.media_list.position = self.media_list.index(media_file)
