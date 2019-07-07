@@ -74,7 +74,7 @@ class TaskList(list):
         """Delete a video file from the list."""
         del self[position]
 
-    def get_file(self, position):
+    def get_task(self, position):
         """Return a file object."""
         return self[position]
 

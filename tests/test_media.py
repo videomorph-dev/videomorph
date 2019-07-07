@@ -57,7 +57,7 @@ class TestMedia:
 
     def test_get_file_object(self):
         """Test TaskList.get_file()."""
-        assert isinstance(self.media_list.get_file(0), Video)
+        assert isinstance(self.media_list.get_task(0), Video)
 
     def test_get_file_name(self):
         """Test TaskList.get_file_name()."""
@@ -144,7 +144,7 @@ class TestMedia:
 
     def test_build_conversion_cmd(self):
         """Test Video.build_conversion_cmd."""
-        assert self.media_list.get_file(0).build_conversion_cmd(
+        assert self.media_list.get_task(0).build_conversion_cmd(
             output_dir='.',
             tagged=True,
             subtitle=True,

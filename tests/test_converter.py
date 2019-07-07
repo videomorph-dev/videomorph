@@ -47,11 +47,11 @@ class TestConversionLib:
     @classmethod
     def teardown_class(cls):
         """Teardown method to run after all test."""
-        cls.media_list.get_file(0).delete_output('.', tagged=True)
+        cls.media_list.get_task(0).delete_output('.', tagged=True)
 
     def get_conversion_cmd(self):
         """Return a conversion command."""
-        cmd = self.media_list.get_file(position=0).build_conversion_cmd(
+        cmd = self.media_list.get_task(position=0).build_conversion_cmd(
             output_dir='.',
             subtitle=False,
             tagged=True,

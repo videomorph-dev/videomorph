@@ -404,12 +404,12 @@ class VideoMorphMW(QMainWindow):
                    'play_input_media_file_action':
                    dict(icon=QIcon(':/icons/video-player-input.png'),
                         text=self.tr('Play Input Video'),
-                        callback=self.play_input_media_file),
+                        callback=self.play_video),
 
                    'play_output_media_file_action':
                    dict(icon=QIcon(':/icons/video-player-output.png'),
                         text=self.tr('Play Output Video'),
-                        callback=self.play_output_media_file),
+                        callback=self.play_video),
 
                    'clear_media_list_action':
                    dict(icon=QIcon(':/icons/clear-list.png'),
@@ -593,7 +593,7 @@ class VideoMorphMW(QMainWindow):
         else:
             self.tasks_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
             if int(self.tasks_table.currentColumn()) == COLUMNS.NAME:
-                self.play_input_media_file()
+                self.play_video()
 
         self._update_ui_when_playing(row=self.tasks_table.currentIndex().row())
 
@@ -678,7 +678,7 @@ class VideoMorphMW(QMainWindow):
         position = self.tasks_table.currentRow()
         info_dlg = InfoDialog(parent=self,
                               position=position,
-                              media_list=self.task_list)
+                              task_list=self.task_list)
         info_dlg.show()
 
     def notify(self, file_name):
@@ -893,24 +893,17 @@ class VideoMorphMW(QMainWindow):
         # After adding files to the list, recalculate the list duration
         self.task_list_duration = self.task_list.duration
 
-    def play_input_media_file(self):
-        """Play the input video using an available video player."""
+    def play_video(self):
+        """Play a video using an available video player."""
         row = self.tasks_table.currentIndex().row()
-        self._play_media_file(file_path=self.task_list.get_file_path(row))
+        video_path = self.task_list.get_file_path(row)
+        self._play_media_file(file_path=video_path)
         self._update_ui_when_playing(row)
 
     def _get_output_path(self, row):
-        path = self.task_list.get_file(row).get_output_path(
-            output_dir=self.output_edit.text(),
+        path = self.task_list.get_task(row).get_output_path(
             tagged=self.tag_chb.checkState())
         return path
-
-    def play_output_media_file(self):
-        """Play the output video using an available video player."""
-        row = self.tasks_table.currentIndex().row()
-        path = self._get_output_path(row)
-        self._play_media_file(file_path=path)
-        self._update_ui_when_playing(row)
 
     def _play_media_file(self, file_path):
         """Play a video using an available video player."""
