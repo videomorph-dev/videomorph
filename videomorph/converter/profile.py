@@ -34,31 +34,10 @@ from . import SYS_PATHS
 from . import VM_PATHS
 from . import VALID_VIDEO_EXT
 from . import XML_FILES
-
-
-class ProfileError(Exception):
-    """Base Exception."""
-    pass
-
-
-class ProfileBlankNameError(ProfileError):
-    """Exception for Profile Blank Name."""
-    pass
-
-
-class ProfileBlankPresetError(ProfileError):
-    """Exception form Profile Blank Preset."""
-    pass
-
-
-class ProfileBlankParamsError(ProfileError):
-    """Exception form Profile Blank Params."""
-    pass
-
-
-class ProfileExtensionError(ProfileError):
-    """Exception form Profile Extension Error."""
-    pass
+from .exceptions import ProfileBlankNameError
+from .exceptions import ProfileBlankParamsError
+from .exceptions import ProfileBlankPresetError
+from .exceptions import ProfileExtensionError
 
 
 class Profile:

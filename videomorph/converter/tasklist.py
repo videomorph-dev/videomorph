@@ -24,16 +24,7 @@ from collections import deque
 from . import STATUS
 from .video import Video
 from .task import Task
-
-
-class MediaError(Exception):
-    """General exception class."""
-    pass
-
-
-class InvalidMetadataError(MediaError):
-    """Exception to raise when the file don't have a valid metadata info."""
-    pass
+from .exceptions import InvalidMetadataError
 
 
 class TaskList(list):
