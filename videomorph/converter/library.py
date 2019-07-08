@@ -21,7 +21,7 @@
 
 from PyQt5.QtCore import QProcess
 
-from .platformdeps import launcher_factory
+from .launchers import launcher_factory
 from .reader import OutputReader
 from .timer import ConversionTimer
 

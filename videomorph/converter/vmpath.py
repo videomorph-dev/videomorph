@@ -26,7 +26,7 @@ from os.path import join as join_path
 from sys import prefix
 from pathlib import Path
 
-from .platformdeps import generic_factory
+from .launchers import generic_factory
 from .utils import which
 
 

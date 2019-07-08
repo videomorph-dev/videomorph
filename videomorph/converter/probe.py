@@ -20,7 +20,7 @@
 """This module provides Probe Class."""
 
 from .vmpath import PROBE_PATH
-from .platformdeps import spawn_process
+from .launchers import spawn_process
 
 
 class Probe:
