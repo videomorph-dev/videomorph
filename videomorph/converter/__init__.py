@@ -29,10 +29,9 @@ from os.path import join as join_path
 from .platformdeps import sys_path_factory
 from .platformdeps import VMPaths
 from .vmpath import BASE_DIR
+from .vmpath import SYS_PATHS
+from .vmpath import VM_PATHS
 from .utils import get_locale
-
-
-SYS_PATHS = sys_path_factory()
 
 
 def get_version():
@@ -68,5 +67,3 @@ XML_FILES = XMLFiles('default.xml', 'customized.xml')
 CPU_CORES = (cpu_count() - 1 if
              cpu_count() is not None
              else 0)
-
-VM_PATHS = VMPaths()

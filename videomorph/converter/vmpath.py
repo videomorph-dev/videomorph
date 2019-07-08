@@ -21,7 +21,9 @@
 
 from os.path import dirname
 from pathlib import Path
+from .platformdeps import sys_path_factory
 from .platformdeps import generic_factory
+from .platformdeps import VMPaths
 from .utils import which
 
 
@@ -96,3 +98,6 @@ def library_path_factory():
 _PATHS = library_path_factory()
 LIBRARY_PATH = _PATHS.library_path
 PROBE_PATH = _PATHS.prober_path
+
+SYS_PATHS = sys_path_factory()
+VM_PATHS = VMPaths()
