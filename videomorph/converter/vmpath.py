@@ -20,10 +20,13 @@
 """This module provides Path."""
 
 from os.path import dirname
+from os.path import expanduser
+from os.path import expandvars
+from os.path import join as join_path
+from sys import prefix
 from pathlib import Path
-from .platformdeps import sys_path_factory
+
 from .platformdeps import generic_factory
-from .platformdeps import VMPaths
 from .utils import which
 
 
@@ -98,6 +101,59 @@ def library_path_factory():
 _PATHS = library_path_factory()
 LIBRARY_PATH = _PATHS.library_path
 PROBE_PATH = _PATHS.prober_path
+
+
+class VMPaths:
+    """Class to define the base class for paths handling."""
+
+    def __init__(self):
+        """Class initializer."""
+        self.apps = 'share/applications'
+        self.config = join_path(expanduser('~'), '.videomorph')
+        self.icons = 'share/icons'
+        self.i18n = 'share/videomorph/translations'
+        self.profiles = 'share/videomorph/profiles'
+        self.sounds = 'share/videomorph/sounds'
+        self.doc = 'share/doc/videomorph'
+        self.help = join_path(self.doc, 'manual')
+        self.man = 'share/man/man1'
+        self.bin = 'bin'
+
+
+class _LinuxPaths(VMPaths):
+    """Class to define the paths to use in Linux systems."""
+
+    def __init__(self):
+        """Class initializer."""
+        super(_LinuxPaths, self).__init__()
+        for attr in self.__dict__:
+            if attr != 'config':
+                self.__dict__[attr] = join_path(prefix, self.__dict__[attr])
+
+
+class _Win32Paths(VMPaths):
+    """Class to define the paths to use on Windows32 systems."""
+
+    def __init__(self):
+        """Class initializer."""
+        super(_Win32Paths, self).__init__()
+        program_files = expandvars('%ProgramFiles%')
+        self.apps = join_path(program_files, r'VideoMorph')
+        self.config = join_path(expanduser('~'), '.videomorph')
+        self.icons = join_path(program_files, r'VideoMorph\icons')
+        self.i18n = join_path(program_files, r'VideoMorph\translations')
+        self.profiles = join_path(program_files, r'VideoMorph\profiles')
+        self.sounds = join_path(program_files, r'VideoMorph\sounds')
+        self.doc = join_path(program_files, r'VideoMorph\doc')
+        self.help = join_path(self.doc, 'manual')
+        self.man = join_path(program_files, r'VideoMorph\man')
+        self.bin = join_path(program_files, r'VideoMorph\bin')
+
+
+def sys_path_factory():
+    """Factory method to create the appropriate path."""
+    return generic_factory(parent_class=VMPaths)
+
 
 SYS_PATHS = sys_path_factory()
 VM_PATHS = VMPaths()

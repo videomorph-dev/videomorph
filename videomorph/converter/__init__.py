@@ -26,8 +26,6 @@ except ImportError:
     cpu_count = None
 from os.path import join as join_path
 
-from .platformdeps import sys_path_factory
-from .platformdeps import VMPaths
 from .vmpath import BASE_DIR
 from .vmpath import SYS_PATHS
 from .vmpath import VM_PATHS
