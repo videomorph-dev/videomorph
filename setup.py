@@ -84,7 +84,7 @@ LINUX_DATA_FILES = dict(
           VM_PATHS.profiles + '/customized.xml']),
         # Documentation files
         (SYS_PATHS.doc,
-         ['README.md', 'LICENSE', 'AUTHORS', 'VERSION',
+         ['README.md', 'LICENSE', 'VERSION',
           'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
         # User's manual
         (SYS_PATHS.help,
@@ -113,7 +113,7 @@ WIN32_DATA_FILES = dict(
           VM_PATHS.profiles + '/customized.xml']),
         # Documentation files
         (SYS_PATHS.doc,
-         ['README.md', 'LICENSE', 'AUTHORS', 'VERSION',
+         ['README.md', 'LICENSE', 'VERSION',
           'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
         # User's manual
         (SYS_PATHS.help,
