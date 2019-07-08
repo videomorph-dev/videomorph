@@ -61,6 +61,10 @@ docs/_build/
 
 # PyBuilder
 target/
+*.spec
+
+# InnoSetup iss files
+*.iss
 
 # Video file for testing
 tests/Dad.mpg
