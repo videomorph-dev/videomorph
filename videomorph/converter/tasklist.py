@@ -211,7 +211,7 @@ class TaskList(list):
 
     def _file_not_added(self, file_path):
         """Determine if a video file is already in the list."""
-        for file in self:
-            if file.input_path == file_path:
+        for task in self:
+            if task.video.path.__str__() == file_path:
                 return False
         return True
