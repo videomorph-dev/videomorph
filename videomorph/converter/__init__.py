@@ -24,16 +24,15 @@ try:
     from os import cpu_count
 except ImportError:
     cpu_count = None
-from os.path import dirname
 from os.path import join as join_path
 
 from .platformdeps import sys_path_factory
 from .platformdeps import VMPaths
+from .vmpath import BASE_DIR
 from .utils import get_locale
 
 
 SYS_PATHS = sys_path_factory()
-BASE_DIR = dirname(dirname(dirname(__file__)))
 
 
 def get_version():

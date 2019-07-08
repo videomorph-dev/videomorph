@@ -19,10 +19,13 @@
 
 """This module provides Path."""
 
+from os.path import dirname
 from pathlib import Path
-from . import BASE_DIR
 from .platformdeps import generic_factory
 from .utils import which
+
+
+BASE_DIR = dirname(dirname(dirname(__file__)))
 
 
 class _LibraryPath:
