@@ -58,7 +58,6 @@ from PyQt5.QtWidgets import QProgressDialog
 from PyQt5.QtWidgets import QToolButton
 from PyQt5.QtWidgets import qApp
 
-
 from videomorph.converter import APP_NAME
 from videomorph.converter import BASE_DIR
 from videomorph.converter import LOCALE

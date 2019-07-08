@@ -23,7 +23,7 @@ from os.path import basename
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (QLabel, QPushButton, QVBoxLayout, QGroupBox,
-                             QGridLayout)
+                             QGridLayout, QSpacerItem)
 
 from videomorph.converter.utils import write_size
 from videomorph.converter.utils import write_time
@@ -163,15 +163,10 @@ class InfoDialog(QtWidgets.QDialog):
         self.label_acodec_long_name_value = QLabel(gb_audio)
         self.label_acodec_long_name_value.setText("")
 
-        self.ok_button = QPushButton()
-        self.ok_button.setText('OK')
-        self.ok_button.clicked.connect(self.close)
-
         audio_grid.addWidget(label_acodec_name, 0, 0, 1, 1)
         audio_grid.addWidget(self.label_acodec_name_value, 0, 1, 1, 1)
         audio_grid.addWidget(label_acodec_long_name, 1, 0, 1, 1)
         audio_grid.addWidget(self.label_acodec_long_name_value, 1, 1, 1, 1)
-        audio_grid.addWidget(self.ok_button, 2, 2, 2, 2)
 
         audio_layout.addLayout(audio_grid)
 
@@ -179,6 +174,15 @@ class InfoDialog(QtWidgets.QDialog):
         whole_layout.addWidget(gb_video)
         whole_layout.addWidget(gb_audio)
 
+        self.ok_button = QPushButton()
+        self.ok_button.setText('OK')
+        self.ok_button.clicked.connect(self.close)
+        button_layout = QtWidgets.QHBoxLayout()
+        button_layout.addSpacerItem(
+            QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                        QtWidgets.QSizePolicy.Minimum))
+        button_layout.addWidget(self.ok_button)
+        whole_layout.addLayout(button_layout)
         self._show_video_info(self.position)
 
         self.setMinimumSize(whole_layout.minimumSize())
