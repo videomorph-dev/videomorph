@@ -24,7 +24,6 @@ try:
     from os import cpu_count
 except ImportError:
     cpu_count = None
-from os.path import join as join_path
 
 from .vmpath import BASE_DIR
 from .vmpath import SYS_PATHS
@@ -32,23 +31,8 @@ from .vmpath import VM_PATHS
 from .utils import get_locale
 
 
-def get_version():
-    """Return app's version number."""
-    try:
-        version_file = open(join_path(SYS_PATHS.doc, 'VERSION'),
-                            'r', encoding='UTF-8')
-    except FileNotFoundError:
-        version_file = open(join_path(BASE_DIR, 'VERSION'),
-                            'r', encoding='UTF-8')
-
-    with version_file:
-        version = version_file.readline().strip('\n')
-
-    return version
-
-
 APP_NAME = 'VideoMorph'
-VERSION = get_version()
+VERSION = '1.4'
 LOCALE = get_locale()
 
 VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
