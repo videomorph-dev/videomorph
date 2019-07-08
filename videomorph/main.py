@@ -52,14 +52,9 @@ def main():
         app_translator.load(trans)
         app.installTranslator(app_translator)
 
-    # Run the app
-    run_app(app=app)
-
-
-def run_app(app):
-    """Run the app."""
     # Create the Main Window
     main_win = VideoMorphMW()
+
     # Check for conversion library and run
     if main_win.library.path:
         if len(sys.argv) > 1:  # If it is running from console
