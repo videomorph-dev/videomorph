@@ -53,3 +53,7 @@ class ProfileBlankParamsError(ProfileError):
 class ProfileExtensionError(ProfileError):
     """Exception form Profile Extension Error."""
     pass
+
+class PlayerNotFoundError(Exception):
+    """Exception to handle Player not found error."""
+    pass

@@ -31,6 +31,7 @@ from sys import prefix
 import webbrowser
 
 from .utils import which
+from .exceptions import PlayerNotFoundError
 
 
 def generic_factory(parent_class):
@@ -38,11 +39,6 @@ def generic_factory(parent_class):
     for concrete_class in parent_class.__subclasses__():
         if concrete_class.__name__.lower().startswith('_' + platform):
             return concrete_class()
-
-
-class PlayerNotFoundError(Exception):
-    """Exception to handle Player not found error."""
-    pass
 
 
 # PATHS
