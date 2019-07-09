@@ -89,7 +89,7 @@ $ sudo python3 setup.py install
 
 The preceding commands will install VideoMorph, and part of its dependencies on your system. To complete the installation, you need to manually install Ffmpeg or use the Ffmpeg's packages from your distro's current repository.
 
-**Note:** If you install Ffmpeg from its sources, then you need to make sure that the commands `ffmpeg`, and `ffprobe` are in your system's PATH. To verify this, just run the following comands:
+**Note:** If you install Ffmpeg from its sources, then you need to make sure that the commands `ffmpeg`, and `ffprobe` are in your system's PATH. To verify this, just run the following commands:
 
 ```console
 $ which ffmpeg
@@ -153,7 +153,7 @@ Any other type of contributions are also welcome. You can also reach out to cont
 
 - Translations
 
-- Artwork and GUI improvementes
+- Artwork and GUI improvements
 
 - Customized conversion profiles or presets
 
@@ -179,7 +179,7 @@ $ source venv/bin/activate
 
 You also need to install the Ffmpeg library on your system.
 
-### Commit Responsibles
+### Commits
 
 The members of the VideoMorph Development Team that have the capability to commit changes into the repo are:
 
@@ -233,7 +233,7 @@ Where:
 
 - `topic`, stands for a descriptive name that reflects the main goal of the branch (e.g: `john_i024_feature_mov_format`)
 
-### Coding, and Docstrings Syle
+### Coding, and Docstrings Style
 
 - VideoMorph's code will follow the coding style guidelines described in [PEP8](https://www.python.org/dev/peps/pep-0008/)
 
