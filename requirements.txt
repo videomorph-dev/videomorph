@@ -1,0 +1,2 @@
+PyQt5==5.12.2
+setuptools==39.0.1

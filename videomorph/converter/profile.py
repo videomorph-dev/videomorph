@@ -17,7 +17,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module provides the ConversionProfile class."""
+"""This module provides the Profile class."""
 
 import re
 from collections import OrderedDict
@@ -34,40 +34,56 @@ from . import SYS_PATHS
 from . import VM_PATHS
 from . import VALID_VIDEO_EXT
 from . import XML_FILES
+from .exceptions import ProfileBlankNameError
+from .exceptions import ProfileBlankParamsError
+from .exceptions import ProfileBlankPresetError
+from .exceptions import ProfileExtensionError
 
 
-class ProfileError(Exception):
-    """Base Exception."""
-    pass
+class Profile:
+    """Base class for a Conversion Profile."""
 
+    def __init__(self):
+        """Class initializer."""
+        self._xml_profile = _XMLProfile(xml_files=XML_FILES)
+        self._quality = None
+        self.extension = None
+        self.params = None
 
-class ProfileBlankNameError(ProfileError):
-    """Exception for Profile Blank Name."""
-    pass
+    def __getattr__(self, attr):
+        """Delegate to manage the _XMLProfile object."""
+        return getattr(self._xml_profile, attr)
 
+    def update(self, new_quality):
+        """Set the target Quality and other parameters needed to get it."""
+        self._quality = new_quality
+        # Update the params and extension when the target quality change
+        self.params = self._xml_profile.get_xml_profile_attr(
+            target_quality=self._quality,
+            attr_name='preset_params')
+        self.extension = self._xml_profile.get_xml_profile_attr(
+            target_quality=self._quality,
+            attr_name='file_extension')
 
-class ProfileBlankPresetError(ProfileError):
-    """Exception form Profile Blank Preset."""
-    pass
+    @property
+    def quality_tag(self):
+        """Generate a tag from profile quality string."""
+        tag_regex = re.compile(r'[A-Z][0-9]?')
+        tag = ''.join(tag_regex.findall(self._quality))
 
+        if not tag:
+            tag = ''.join(word[0] for word in self._quality.split()).upper()
 
-class ProfileBlankParamsError(ProfileError):
-    """Exception form Profile Blank Params."""
-    pass
-
-
-class ProfileExtensionError(ProfileError):
-    """Exception form Profile Extension Error."""
-    pass
+        return '[' + tag + ']-'
 
 
 class _XMLProfile:
     """Class to manage the xml profiles file."""
 
-    def __init__(self):
+    def __init__(self, xml_files):
         """Class initializer."""
         # Create xml files.
-        self._xml_files = XML_FILES
+        self._xml_files = xml_files
         self._create_xml_files()
 
     def restore_default_profiles(self):
@@ -121,7 +137,7 @@ class _XMLProfile:
             raise PermissionError
 
     def get_xml_profile_attr(self, target_quality, attr_name='preset_params'):
-        """Return a param of ConversionProfile."""
+        """Return a param of Profile."""
         param_map = {'preset_name': 0,
                      'preset_params': 1,
                      'file_extension': 2,
@@ -133,6 +149,8 @@ class _XMLProfile:
                     if (item[0].text == target_quality or
                             item[3].text == target_quality):
                         return item[param_map[attr_name]].text
+
+        raise ValueError('Wrong quality or param.')
 
     def get_xml_profile_qualities(self, locale):
         """Return a list of available Qualities per conversion profile."""
@@ -180,8 +198,9 @@ class _XMLProfile:
             self._xml_files.customized)
 
         with open(xml_profiles_path, 'wb') as xml_file:
-            xml_file.write(b'<?xml version="1.0"?>\n')
-            ElementTree.ElementTree(xml_tree).write(xml_file, encoding='UTF-8')
+            ElementTree.ElementTree(xml_tree).write(xml_file,
+                                                    xml_declaration=True,
+                                                    encoding='UTF-8')
 
     def _create_xml_files(self):
         """Create a xml file with the conversion profiles."""
@@ -257,41 +276,3 @@ class _XMLProfile:
             xml_preset.insert(i, elem)
 
         return xml_preset
-
-
-class ConversionProfile:
-    """Base class for a Conversion Profile."""
-
-    def __init__(self, prober):
-        """Class initializer."""
-        self._xml_profile = _XMLProfile()
-        self._quality = None
-        self.prober = prober
-        self.extension = None
-        self.params = None
-
-    def __getattr__(self, attr):
-        """Delegate to manage the _XMLProfile object."""
-        return getattr(self._xml_profile, attr)
-
-    def update(self, new_quality):
-        """Set the target Quality and other parameters needed to get it."""
-        self._quality = new_quality
-        # Update the params and extension when the target quality change
-        self.params = self._xml_profile.get_xml_profile_attr(
-            target_quality=self._quality,
-            attr_name='preset_params')
-        self.extension = self._xml_profile.get_xml_profile_attr(
-            target_quality=self._quality,
-            attr_name='file_extension')
-
-    @property
-    def quality_tag(self):
-        """Generate a tag from profile quality string."""
-        tag_regex = re.compile(r'[A-Z][0-9]?')
-        tag = ''.join(tag_regex.findall(self._quality))
-
-        if not tag:
-            tag = ''.join(word[0] for word in self._quality.split()).upper()
-
-        return '[' + tag + ']-'

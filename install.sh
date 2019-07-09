@@ -1,7 +1,7 @@
 #!/bin/bash
-# VideoMorph installation script for Debian based distros
+# VideoMorph installation script for Ubuntu
 
-depends="ffmpeg python3 python3-pyqt5"
+depends="ffmpeg python3 python3-pyqt5 python3-setuptools"
 
 if type dpkg &> /dev/null
 then
