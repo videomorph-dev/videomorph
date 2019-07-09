@@ -136,45 +136,31 @@ def launcher_factory():
 
 # PROCESSES
 
-class _Process:
-    """Abstract class to implement external subprocess."""
+def spawn_process_linux(cmd):
+    """Return a Popen object on Linux systems."""
 
-    def spawn_process(self, cmd):
-        """Class to implement external subprocess on different platforms."""
-        raise NotImplementedError('Must be implemented in subclasses')
-
-
-class _LinuxProcess(_Process):
-    """Concrete class to implement external subprocess on Linux."""
-
-    def spawn_process(self, cmd):
-        """Return a Popen object."""
-
-        return Popen(cmd,
-                     stdin=PIPE,
-                     stdout=PIPE,
-                     stderr=PIPE,
-                     universal_newlines=True)
+    return Popen(cmd,
+                 stdin=PIPE,
+                 stdout=PIPE,
+                 stderr=PIPE,
+                 universal_newlines=True)
 
 
-class _Win32Process(_Process):
-    """Concrete class to implement external subprocess on Windows."""
+def spawn_process_win32(cmd):
+    """Return a Popen object on Windows systems."""
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
+    startupinfo.wShowWindow = subprocess.SW_HIDE
 
-    def spawn_process(self, cmd):
-        """Return a Popen object."""
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
-        startupinfo.wShowWindow = subprocess.SW_HIDE
-
-        return Popen(cmd,
-                     stdin=PIPE,
-                     stdout=PIPE,
-                     stderr=PIPE,
-                     shell=True,
-                     startupinfo=startupinfo,
-                     universal_newlines=True)
+    return Popen(cmd,
+                 stdin=PIPE,
+                 stdout=PIPE,
+                 stderr=PIPE,
+                 shell=True,
+                 startupinfo=startupinfo,
+                 universal_newlines=True)
 
 
 def spawn_process(cmd):
     """Launch processes on different platforms."""
-    return generic_factory(parent_class=_Process).spawn_process(cmd=cmd)
+    return globals()[spawn_process.__name__ + '_' + platform](cmd)
