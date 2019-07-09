@@ -80,9 +80,12 @@ class _Win32LibraryPath(_LibraryPath):
         return Path(BASE_DIR, 'ffmpeg', 'bin')
 
     def _get_path(self, attr):
-        path = getattr(super(_Win32LibraryPath, self), attr)
-        if path is not None:
-            return path + '.exe'
+        try:
+            path = getattr(super(_Win32LibraryPath, self), attr) + '.exe'
+        except TypeError:
+            path = None
+
+        return path
 
     @property
     def library_path(self):
