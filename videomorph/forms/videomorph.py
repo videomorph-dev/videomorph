@@ -782,7 +782,6 @@ class VideoMorphMW(QMainWindow):
                 self.library.kill_converter()
                 self.library.close_converter()
                 self.task_list.delete_running_file_output(
-                    output_dir=self.output_edit.text(),
                     tagged=self.tag_chb.checkState())
                 # Save settings
                 self._write_app_settings()
