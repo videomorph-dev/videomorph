@@ -112,7 +112,8 @@ class Task:
         extensions = ['.srt', '.ssa', '.stl']
 
         # Add uppercase extensions to check if subtitle file exists
-        [extensions.append(ext.upper()) for ext in extensions[:]]
+        for ext in extensions[:]:
+            extensions.append(ext.upper())
 
         for ext in extensions:
             subtitle_path = self.video.path.with_suffix(ext)
