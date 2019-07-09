@@ -150,6 +150,8 @@ class _XMLProfile:
                             item[3].text == target_quality):
                         return item[param_map[attr_name]].text
 
+        raise ValueError('Wrong quality or param.')
+
     def get_xml_profile_qualities(self, locale):
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
