@@ -140,15 +140,12 @@ class _LinuxPaths(VMPaths):
             if attr != 'config':
                 self.__dict__[attr] = join_path(prefix, self.__dict__[attr])
 
-class _DarwinPaths(VMPaths):
+class _DarwinPaths(_LinuxPaths):
     """Class to define the paths to use in Linux systems."""
 
     def __init__(self):
         """Class initializer."""
         super(_DarwinPaths, self).__init__()
-        for attr in self.__dict__:
-            if attr != 'config':
-                self.__dict__[attr] = join_path(prefix, self.__dict__[attr])
 
 class _Win32Paths(VMPaths):
     """Class to define the paths to use on Windows32 systems."""

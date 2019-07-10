@@ -111,52 +111,11 @@ class _LinuxLauncher(_Launcher):
                 spawn_process([player, sound])
                 break
 
-class _DarwinLauncher(_Launcher):
+class _DarwinLauncher(_LinuxLauncher):
     """Concrete class to implement external apps launcher in MacOS."""
 
     def __init__(self):
         super(_DarwinLauncher, self).__init__()
-        self.players = ['vlc',
-                        'xplayer',
-                        'totem',
-                        'kmplayer',
-                        'smplayer',
-                        'mplayer',
-                        'banshee',
-                        'mpv',
-                        'gxine',
-                        'xine-ui',
-                        'gmlive',
-                        'dragon',
-                        'ffplay']
-
-    def open_with_user_app(self, url):
-        """Open a file or url with user's preferred app."""
-        if which('xdg-open') is not None:
-            spawn_process([which('xdg-open'), url])
-        else:
-            player = self._get_player()
-            spawn_process([which(player), url])
-
-    def _get_player(self):
-        """Return a player from a list of popular players."""
-        for player in self.players:
-            if which(player):
-                return player
-
-        raise PlayerNotFoundError('Player not found')
-
-    def shutdown_machine(self):
-        """Shutdown computer."""
-        spawn_process(['shutdown', 'now'])
-
-    def sound_notify(self, sound=None):
-        """Show system notification on MacOS."""
-        players = ('paplay', 'aplay', 'play')
-        for player in (which(p) for p in players):
-            if player is not None:
-                spawn_process([player, sound])
-                break
 
 class _Win32Launcher(_Launcher):
     """Concrete class to implement external apps launcher in Linux."""
@@ -190,6 +149,11 @@ def spawn_process_linux(cmd):
                  stdout=PIPE,
                  stderr=PIPE,
                  universal_newlines=True)
+
+def spawn_process_darwin(cmd):
+    """Return a Popen object on MacOS systems."""
+
+    return spawn_process_linux(cmd)
 
 
 def spawn_process_win32(cmd):
