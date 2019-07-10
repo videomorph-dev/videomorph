@@ -58,7 +58,7 @@ COMMONS = dict(name=APP_NAME.lower(),
                packages=['videomorph',
                          'videomorph.converter',
                          'videomorph.forms'],
-               platforms=['linux', 'win32'],
+               platforms=['linux', 'darwin', 'win32'],
                keywords='multimedia, video conversion, common video formats')
 
 COMMONS_SETUPTOOLS = dict(
@@ -96,6 +96,36 @@ LINUX_DATA_FILES = dict(
 
 LINUX_DISTUTILS = dict(scripts=[VM_PATHS.bin + '/videomorph'])
 
+DARWIN_DATA_FILES = dict(
+    data_files=[  # Desktop entry
+        (SYS_PATHS.apps,
+         [VM_PATHS.apps + '/videomorph.desktop']),
+        # App icon
+        (SYS_PATHS.icons,
+         [VM_PATHS.icons + '/videomorph.png']),
+        # App sounds
+        (SYS_PATHS.sounds,
+         [VM_PATHS.sounds + '/successful.wav']),
+        # App translation file
+        (SYS_PATHS.i18n,
+         [VM_PATHS.i18n + '/videomorph_es.qm']),
+        # Default conversion profiles
+        (SYS_PATHS.profiles,
+         [VM_PATHS.profiles + '/default.xml',
+          VM_PATHS.profiles + '/customized.xml']),
+        # Documentation files
+        (SYS_PATHS.doc,
+         ['README.md', 'LICENSE', 'requirements.txt', 'howto-videomorph.gif',
+          'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
+        # User's manual
+        (SYS_PATHS.help,
+         [VM_PATHS.help + '/manual_es.pdf',
+          VM_PATHS.help + '/manual_en.pdf']),
+        # Man page
+        (SYS_PATHS.man,
+         [VM_PATHS.man + '/videomorph.1.gz'])])
+
+DARWIN_DISTUTILS = dict(scripts=[VM_PATHS.bin + '/videomorph'])
 
 WIN32_DATA_FILES = dict(
     data_files=[  # App icon
@@ -127,6 +157,12 @@ if platform == 'linux':
     SETUP_PARAMS.update(LINUX_DATA_FILES)
     if USE_DISTUTILS:
         SETUP_PARAMS.update(LINUX_DISTUTILS)
+    else:
+        SETUP_PARAMS.update(COMMONS_SETUPTOOLS)
+elif platform == 'darwin':
+    SETUP_PARAMS.update(DARWIN_DATA_FILES)
+    if USE_DISTUTILS:
+        SETUP_PARAMS.update(DARWIN_DISTUTILS)
     else:
         SETUP_PARAMS.update(COMMONS_SETUPTOOLS)
 elif platform == 'win32':
