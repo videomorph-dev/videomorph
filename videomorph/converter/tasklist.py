@@ -179,10 +179,10 @@ class TaskList(list):
     def _add_task(self, task):
         """Add a video file to the list."""
         # Invalid metadata
-        if 'duration' in task.video.format_info:
+        try:
             # Duration is not a valid float() argument
             duration = float(task.video.format_info['duration'])
-        else:
+        except (TypeError, ValueError):
             raise InvalidMetadataError('Invalid video duration')
 
         # Duration = 0
