@@ -36,7 +36,7 @@ def generic_factory(parent_class):
         if concrete_class.__name__.lower().startswith('_' + platform):
             return concrete_class()
 
-    raise ValueError('No implementation available for {0} in {1}'.format(platform, parent_class))
+    raise ValueError('No implementation available for {0}'.format(platform))
 
 
 # EXTERNAL APP LAUNCHER
