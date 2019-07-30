@@ -71,6 +71,13 @@ class _LinuxLibraryPath(_LibraryPath):
         """Return the local directory for ffmpeg library."""
         return Path(BASE_DIR, 'ffmpeg')
 
+class _DarwinLibraryPath(_LibraryPath):
+    """Class to define platform dependent conversion lib for MacOS."""
+
+    def _get_local_dir(self):
+        """Return the local directory for ffmpeg library."""
+        return Path(BASE_DIR, 'ffmpeg')
+
 
 class _Win32LibraryPath(_LibraryPath):
     """Class to define platform dependent conversion lib for Win32."""
@@ -133,6 +140,15 @@ class _LinuxPaths(VMPaths):
             if attr != 'config':
                 self.__dict__[attr] = join_path(prefix, self.__dict__[attr])
 
+class _DarwinPaths(VMPaths):
+    """Class to define the paths to use in MacOS systems."""
+
+    def __init__(self):
+        """Class initializer."""
+        super(_DarwinPaths, self).__init__()
+        for attr in self.__dict__:
+            if attr != 'config':
+                self.__dict__[attr] = join_path(prefix, self.__dict__[attr])
 
 class _Win32Paths(VMPaths):
     """Class to define the paths to use on Windows32 systems."""
