@@ -61,11 +61,16 @@ docs/_build/
 
 # PyBuilder
 target/
+*.spec
+
+# InnoSetup iss files
+*.iss
 
 # Video file for testing
 tests/Dad.mpg
 
 # DEB packages
+videomorph_deb/
 *.deb
 
 # .ui files

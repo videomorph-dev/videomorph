@@ -1,29 +1,32 @@
-TODO List:
-----------
+# TODO List for VideoMorph Development
 
-Next version (2.0):
-    - Implement a Dialog to generate the conversion commands using the ffmpeg options
-    - Define a README.rst file to be included in source package
-    - Improve the icons visualization
-    - Automate the process of creating the Portable Edition on Linux and Windows
-    - Add a Minimize to Tray option
-    - Add options to rotate videos clockwise and counter clockwise to correct some videos orientation
+## Next Version (2.0)
 
-BugFix:
-    - App freezes with certain movies when reading ffprobe output on Windows platform
+- Add a Minimize to Tray option
+- Add options to rotate videos clockwise and counter clockwise to correct some videos orientation
+- Define a `README.rst` file to be included in source package
+- Improve the icons visualization and interface design
+- Automate the process of creating the Portable Edition on Linux and Windows
+- Add new presets for social media (Youtube, FB, etc.)
+- Launch some kind of survey to gather information about most used presets
+- Buy the domain name videomorph.info
+- Create a landing page for the app
 
-Someday:
-    - Add french translation
-    - Add portuguese translation
-    - Write a Disclaimer about Ffmpeg options in customized profiles, available codecs and input video quality
-    - Pack in .rpm format
-    - Pack for Arch Linux
-    - Pack as standard binary package, not as a Python package
-    - Implement the main window interface in a separated module, maybe mainwindow.py
-    - Implement an alternative class for _Converter (subprocess maybe) to decouple from PyQt5
-    - Move the business logic present in videomorph.py, about.py and other views to converter
-      package
-    - Move the HTML text hardcoded in about.py to a file distributed as doc. Read the about
-      info from that file as done with the license
-    - Pack in Flatpack or Snap
-    - Implement model/view/controller pattern
+## BugFix Version (1.4.1)
+
+- App freezes with certain movies when reading `ffprobe` output on Windows platform
+- Problem with the tray icon on Manjaro/Plasma
+
+## Someday
+
+- Implement a Dialog to generate the conversion commands using the Ffmpeg options
+- Add french translation
+- Add portuguese translation
+- Write a Disclaimer about Ffmpeg options in customized profiles, available codecs and input video quality
+- Pack in `RPM` format
+- Pack for Arch Linux
+- Implement an alternative class for `conversionlib._Converter` (`subprocess` maybe) to decouple from `PyQt5`
+- Move the business logic present in `videomorph.py`, `about.py` and other views to `converter` package package
+- Move the `HTML` text hardcoded in `about.py` to a file distributed as doc. Read the about info from that file as done with the License
+- Pack in AppImage, Flatpack or Snap
+- Implement model/view/controller pattern

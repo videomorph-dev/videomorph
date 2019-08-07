@@ -44,6 +44,8 @@ def which(app):
         if app_path.exists():
             return app_path.__str__()
 
+    raise ValueError('Command {0} not found'.format(app))
+
 
 def write_time(time_in_secs):
     """Return time in 00h:00m:00s format."""

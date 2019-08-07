@@ -22,7 +22,6 @@
 import sys
 from pathlib import Path
 
-from PyQt5.QtCore import QLibraryInfo
 from PyQt5.QtCore import QTranslator
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMessageBox
@@ -30,7 +29,6 @@ from PyQt5.QtWidgets import qApp
 
 from .converter import BASE_DIR
 from .converter import LOCALE
-from .converter import SYS_PATHS
 from .converter import VM_PATHS
 from .converter.console import run_on_console
 from .forms.videomorph import VideoMorphMW
@@ -44,32 +42,19 @@ def main():
     # Setup app translator
     app_translator = QTranslator()
 
-    translator_pwd = Path(BASE_DIR, VM_PATHS.i18n)
+    i18n_dir = Path(BASE_DIR, VM_PATHS.i18n)
+    i18n_file = i18n_dir.joinpath(''.join(('videomorph_', LOCALE[:2], '.qm')))
 
-    if translator_pwd.exists():
-        app_translator.load(
-            str(translator_pwd.joinpath('videomorph_{0}'.format(LOCALE))))
-    else:
-        translator_sys_path = Path(SYS_PATHS.i18n,
-                                   'videomorph_{0}'.format(LOCALE))
-        app_translator.load(str(translator_sys_path))
+    if i18n_file.exists():
+        trans = i18n_dir.joinpath('videomorph_{0}'.format(LOCALE)).__str__()
+        app_translator.load(trans)
+        app.installTranslator(app_translator)
 
-    app.installTranslator(app_translator)
-    qt_translator = QTranslator()
-    qt_translator.load("qt_" + LOCALE,
-                       QLibraryInfo.location(QLibraryInfo.TranslationsPath))
-    app.installTranslator(qt_translator)
-
-    # Run the app
-    run_app(app=app)
-
-
-def run_app(app):
-    """Run the app."""
     # Create the Main Window
     main_win = VideoMorphMW()
+
     # Check for conversion library and run
-    if main_win.conversion_lib.library_path:
+    if main_win.library.path:
         if len(sys.argv) > 1:  # If it is running from console
             run_on_console(app, main_win)
         else:  # Or is running on GUI

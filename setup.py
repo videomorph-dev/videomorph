@@ -58,7 +58,7 @@ COMMONS = dict(name=APP_NAME.lower(),
                packages=['videomorph',
                          'videomorph.converter',
                          'videomorph.forms'],
-               platforms=['linux', 'win32'],
+               platforms=['linux', 'darwin', 'win32'],
                keywords='multimedia, video conversion, common video formats')
 
 COMMONS_SETUPTOOLS = dict(
@@ -84,7 +84,7 @@ LINUX_DATA_FILES = dict(
           VM_PATHS.profiles + '/customized.xml']),
         # Documentation files
         (SYS_PATHS.doc,
-         ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
+         ['README.md', 'LICENSE', 'requirements.txt', 'howto-videomorph.gif',
           'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
         # User's manual
         (SYS_PATHS.help,
@@ -96,6 +96,9 @@ LINUX_DATA_FILES = dict(
 
 LINUX_DISTUTILS = dict(scripts=[VM_PATHS.bin + '/videomorph'])
 
+DARWIN_DATA_FILES = LINUX_DATA_FILES
+
+DARWIN_DISTUTILS = LINUX_DISTUTILS
 
 WIN32_DATA_FILES = dict(
     data_files=[  # App icon
@@ -113,7 +116,7 @@ WIN32_DATA_FILES = dict(
           VM_PATHS.profiles + '/customized.xml']),
         # Documentation files
         (SYS_PATHS.doc,
-         ['README.md', 'LICENSE', 'AUTHORS', 'INSTALL', 'VERSION',
+         ['README.md', 'LICENSE', 'requirements.txt', 'howto-videomorph.gif',
           'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
         # User's manual
         (SYS_PATHS.help,
@@ -127,6 +130,12 @@ if platform == 'linux':
     SETUP_PARAMS.update(LINUX_DATA_FILES)
     if USE_DISTUTILS:
         SETUP_PARAMS.update(LINUX_DISTUTILS)
+    else:
+        SETUP_PARAMS.update(COMMONS_SETUPTOOLS)
+elif platform == 'darwin':
+    SETUP_PARAMS.update(DARWIN_DATA_FILES)
+    if USE_DISTUTILS:
+        SETUP_PARAMS.update(DARWIN_DISTUTILS)
     else:
         SETUP_PARAMS.update(COMMONS_SETUPTOOLS)
 elif platform == 'win32':
