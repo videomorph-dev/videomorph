@@ -35,6 +35,7 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import QProcess
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QVBoxLayout
@@ -785,12 +786,16 @@ class VideoMorphMW(QMainWindow):
                     tagged=self.tag_chb.checkState())
                 # Save settings
                 self._write_app_settings()
+                self.tray_icon.hide()
+                QApplication.instance().quit()
                 event.accept()
             else:
                 event.ignore()
         else:
             # Save settings
             self._write_app_settings()
+            self.tray_icon.hide()
+            QApplication.instance().quit()
             event.accept()
 
     def _fill_media_list(self, files_paths):
