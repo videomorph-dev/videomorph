@@ -785,12 +785,18 @@ class VideoMorphMW(QMainWindow):
                     tagged=self.tag_chb.checkState())
                 # Save settings
                 self._write_app_settings()
+                self.tray_icon.hide()
+                qApp.closeAllWindows()
+                qApp.quit()
                 event.accept()
             else:
                 event.ignore()
         else:
             # Save settings
             self._write_app_settings()
+            self.tray_icon.hide()
+            qApp.closeAllWindows()
+            qApp.quit()
             event.accept()
 
     def _fill_media_list(self, files_paths):
