@@ -30,6 +30,10 @@ class InvalidMetadataError(MediaError):
     pass
 
 
+class InvalidVideoError(MediaError):
+    pass
+
+
 class ProfileError(Exception):
     """Base Exception."""
     pass
