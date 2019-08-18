@@ -41,3 +41,17 @@ class Video:
         if with_extension:
             return self.path.name
         return self.path.stem
+
+    def is_valid(self):
+        """Check if a video is valid."""
+        try:
+            # Video has a valid duration?
+            duration = float(self.format_info['duration'])
+        except (TypeError, ValueError, KeyError):
+            return False
+
+        # Duration is > 0
+        if duration <= 0:
+            return False
+
+        return True
