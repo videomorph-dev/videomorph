@@ -31,25 +31,10 @@ class Probe:
         self._probe_path = PROBE_PATH
         self._video_path = video_path
 
-    @property
-    def format_info(self):
-        """Return general info about file."""
-        return self._parse_probe_format()
-
-    @property
-    def video_info(self):
-        """Return general info about video stream."""
-        return self._parse_probe_video_stream()
-
-    @property
-    def audio_info(self):
-        """Return general info about audio stream."""
-        return self._parse_probe_audio_stream()
-
-    @property
-    def subtitle_info(self):
-        """Return general info about subtitle stream."""
-        return self._parse_probe_sub_stream()
+        self.format_info = self._parse_probe_format()
+        self.video_info = self._parse_probe_video_stream()
+        self.audio_info = self._parse_probe_audio_stream()
+        self.subtitle_info = self._parse_probe_sub_stream()
 
     def _probe(self, args):
         """Return the probe output as a file like object."""
