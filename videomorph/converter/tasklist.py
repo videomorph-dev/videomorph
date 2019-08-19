@@ -20,27 +20,38 @@
 """This module provides the definition of TaskList and Video classes."""
 
 from collections import deque
+from pathlib import Path
 
 from . import STATUS
 from .video import Video
 from .task import Task
 from .exceptions import InvalidMetadataError
+from .exceptions import InvalidVideoError
 
 
 class TaskList(list):
     """Class to store the list of video files to convert."""
 
-    def __init__(self, profile):
+    def __init__(self, profile, output_dir=Path.home()):
         """Class initializer."""
         super(TaskList, self).__init__()
         self._profile = profile
         self._position = None  # None, no item running, 0, the first item,...
         self.not_added_files = deque()
+        self.output_dir = output_dir
 
     def clear(self):
         """Clear the list of videos."""
         super(TaskList, self).clear()
         self.position = None
+
+    def add_task(self, video_path):
+        """Add a task to the task list."""
+        video = Video(video_path=video_path)
+        if video.is_valid():
+            self.append(Task(video, self._profile, self.output_dir))
+        else:
+            raise InvalidVideoError('Invalid video file')
 
     def populate(self, files_paths, output_dir):
         """Populate TaskList object with Video objects.

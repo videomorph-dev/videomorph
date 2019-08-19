@@ -840,6 +840,28 @@ class VideoMorphMW(QMainWindow):
 
         return files_paths
 
+    def add_video(self, video_path, row):
+        """Add a conversion task to the list."""
+        self.task_list.add_task(video_path)
+
+        self.tasks_table.setRowCount(row + 1)
+
+        self._insert_table_item(
+            item_text=self.task_list.get_file_name(position=row),
+            row=row, column=COLUMNS.NAME)
+
+        item_text = str(write_time(self.task_list.get_file_info(
+            position=row, info_param='duration')))
+
+        self._insert_table_item(item_text, row=row, column=COLUMNS.DURATION)
+
+        self._insert_table_item(
+            item_text=str(self.quality_combo.currentText()),
+            row=row, column=COLUMNS.QUALITY)
+
+        self._insert_table_item(item_text=self.tr('To Convert'),
+                                row=row, column=COLUMNS.PROGRESS)
+
     def _insert_table_item(self, item_text, row, column):
         item = QTableWidgetItem()
         item.setText(item_text)
@@ -875,7 +897,7 @@ class VideoMorphMW(QMainWindow):
                 self._insert_table_item(item_text=self.tr('To Convert'),
                                         row=row, column=COLUMNS.PROGRESS)
 
-    def add_media_files(self, *files):
+    def add_videos(self, *files):
         """Add video files to conversion list.
 
         Args:
@@ -891,9 +913,12 @@ class VideoMorphMW(QMainWindow):
             # Update ui
             self.update_ui_when_ready()
 
-        self._fill_media_list(files)
+        for row, file in enumerate(files):
+            self.add_video(file, row)
 
-        self._create_table()
+        # self._fill_media_list(files)
+        #
+        # self._create_table()
 
         # After adding files to the list, recalculate the list duration
         self.task_list_duration = self.task_list.duration
@@ -927,7 +952,7 @@ class VideoMorphMW(QMainWindow):
         if files_paths is None:
             return
 
-        self.add_media_files(*files_paths)
+        self.add_videos(*files_paths)
 
     def open_media_dir(self):
         """Add media files from a directory recursively."""
@@ -941,7 +966,7 @@ class VideoMorphMW(QMainWindow):
         try:
             media_files = search_directory_recursively(directory)
             self.source_dir = directory
-            self.add_media_files(*media_files)
+            self.add_videos(*media_files)
         except FileNotFoundError:
             self._show_message_box(
                 type_=QMessageBox.Critical,
