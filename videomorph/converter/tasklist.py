@@ -25,8 +25,6 @@ from pathlib import Path
 from . import STATUS
 from .video import Video
 from .task import Task
-from .exceptions import InvalidMetadataError
-from .exceptions import InvalidVideoError
 
 
 class TaskList(list):
@@ -50,36 +48,10 @@ class TaskList(list):
         video = Video(video_path=video_path)
         if video.is_valid():
             self.append(Task(video, self._profile, self.output_dir))
-        else:
-            raise InvalidVideoError('Invalid video file')
+            return True
 
-    def populate(self, files_paths, output_dir):
-        """Populate TaskList object with Video objects.
-
-        Args:
-            files_paths (iterable): list of files paths
-            output_dir (str): output directory
-        Yield:
-            Element 1: Total number of video files to process
-            Element 2,...: file path for the processed video file
-        """
-        files_paths_to_add = self._filter_by_path(files_paths)
-
-        if files_paths_to_add is None:
-            return
-
-        self.not_added_files.clear()
-
-        # First, it yields the total number of video files to process
-        yield len(files_paths_to_add)
-
-        for task in self._task_generator(files_paths_to_add, output_dir):
-            try:
-                self._add_task(task)
-                yield task.video.get_name()
-            except InvalidMetadataError:
-                self.not_added_files.append(task.video.get_name())
-                yield task.video.get_name()
+        self.not_added_files.append(video_path)
+        return False
 
     def delete_file(self, position):
         """Delete a video file from the list."""
@@ -187,42 +159,9 @@ class TaskList(list):
         """Return the task that is currently running."""
         return self[self.position]
 
-    def _add_task(self, task):
-        """Add a video file to the list."""
-        # Invalid metadata
-        try:
-            # Duration is not a valid float() argument
-            duration = float(task.video.format_info['duration'])
-        except (TypeError, ValueError):
-            raise InvalidMetadataError('Invalid video duration')
-
-        # Duration = 0
-        if duration > 0:
-            self.append(task)
-        else:
-            raise InvalidMetadataError('Video is zero size')
-
-    def _task_generator(self, files_paths, output_dir):
-        """Yield Video objects to be added to TaskList."""
-        for file_path in files_paths:
-            video = Video(file_path)
-            yield Task(video, self._profile, output_dir)
-
-    def _filter_by_path(self, files_paths):
-        """Return a list with files to add to media list."""
-        if self.length:
-            filtered_paths = [file_path for file_path in files_paths if
-                              self._file_not_added(file_path)]
-            if not filtered_paths:
-                return None
-
-            return filtered_paths
-
-        return files_paths
-
-    def _file_not_added(self, file_path):
+    def task_is_added(self, file_path):
         """Determine if a video file is already in the list."""
         for task in self:
             if task.video.path.__str__() == file_path:
-                return False
-        return True
+                return True
+        return False
