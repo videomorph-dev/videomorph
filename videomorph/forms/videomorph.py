@@ -668,6 +668,12 @@ class VideoMorphMW(QMainWindow):
         """Open VideoMorph Web page."""
         self._open_url(url='http://videomorph.webmisolutions.com')
 
+    @staticmethod
+    def _open_url(url):
+        """Open URL."""
+        launcher = launcher_factory()
+        launcher.open_with_user_browser(url=url)
+
     def show_video_info(self):
         """Show video info on the Info Panel."""
         position = self.tasks_table.currentRow()
@@ -688,12 +694,6 @@ class VideoMorphMW(QMainWindow):
             sound = join_path(SYS_PATHS.sounds, 'successful.wav')
         launcher = launcher_factory()
         launcher.sound_notify(sound)
-
-    @staticmethod
-    def _open_url(url):
-        """Open URL."""
-        launcher = launcher_factory()
-        launcher.open_with_user_browser(url=url)
 
     @staticmethod
     def help_content():
