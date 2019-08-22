@@ -40,9 +40,9 @@ class Probe:
         """Return the probe output as a file like object."""
         process_args = [self._probe_path, self._video_path.__str__()]
         process_args[1:-1] = args
-        probe_output = spawn_process(process_args).stdout
+        process = spawn_process(process_args)
 
-        return probe_output
+        return process.stdout
 
     def _parse_probe(self, selected_params, cmd):
         """Parse the probe output."""
