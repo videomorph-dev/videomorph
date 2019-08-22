@@ -58,10 +58,10 @@ class Profile:
         """Set the target Quality and other parameters needed to get it."""
         self._quality = new_quality
         # Update the params and extension when the target quality change
-        self.params = self._xml_profile.get_xml_profile_attr(
+        self.params = self.get_xml_profile_attr(
             target_quality=self._quality,
             attr_name='preset_params')
-        self.extension = self._xml_profile.get_xml_profile_attr(
+        self.extension = self.get_xml_profile_attr(
             target_quality=self._quality,
             attr_name='file_extension')
 
@@ -85,6 +85,7 @@ class _XMLProfile:
         # Create xml files.
         self._xml_files = xml_files
         self._create_xml_files()
+        self.profiles = self.get_profiles()
 
     def restore_default_profiles(self):
         """Restore default profiles."""
@@ -136,45 +137,39 @@ class _XMLProfile:
         except OSError:
             raise PermissionError
 
-    def get_xml_profile_attr(self, target_quality, attr_name='preset_params'):
+    def get_xml_profile_attr(self, target_quality, attr_name):
         """Return a param of Profile."""
-        param_map = {'preset_name': 0,
-                     'preset_params': 1,
-                     'file_extension': 2,
-                     'preset_name_es': 3}
 
-        for xml_file in self._xml_files:
-            for element in self._get_xml_root(xml_file_name=xml_file):
-                for item in element:
-                    if (item[0].text == target_quality or
-                            item[3].text == target_quality):
-                        return item[param_map[attr_name]].text
+        for k, v in self.profiles.items():
+            for value in v.values():
+                if target_quality in value.values():
+                    return value[attr_name]
 
         raise ValueError('Wrong quality or param.')
+
+    def get_profiles(self):
+        profiles = OrderedDict()
+        for xml_file in self._xml_files:
+            for elements in self._get_xml_root(xml_file):
+                profiles[elements.tag] = {}
+                for items in elements:
+                    profiles[elements.tag][items.tag] = {}
+                    for item in items:
+                        profiles[elements.tag][items.tag][item.tag] = item.text
+
+        return profiles
 
     def get_xml_profile_qualities(self, locale):
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
 
-        for xml_file in self._xml_files:
-            for element in self._get_xml_root(xml_file):
-                qualities = self._get_qualities(element, locale)
-                if element.tag not in qualities_per_profile:
-                    qualities_per_profile[element.tag] = qualities
-                else:
-                    qualities_per_profile[element.tag] += qualities
+        for k, v in self.profiles.items():
+            qualities_per_profile[k] = []
+            for value in v.values():
+                qualities_per_profile[k].append(
+                    value['preset_name_' + locale[0:2]])
 
         return qualities_per_profile
-
-    @staticmethod
-    def _get_qualities(element, locale):
-        qualities = []
-        for item in element:
-            if locale == 'es_ES':
-                qualities.append(item[3].text)
-            else:
-                qualities.append(item[0].text)
-        return qualities
 
     def _user_xml_file_path(self, file_name):
         """Return the path to the profiles file."""
