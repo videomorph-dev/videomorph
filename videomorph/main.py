@@ -64,7 +64,7 @@ def main():
         msg_box = QMessageBox(
             QMessageBox.Critical,
             main_win.tr('Error!'),
-            main_win.no_library_msg,
+            main_win.tr('Ffmpeg Library not Found in your System'),
             QMessageBox.NoButton, main_win)
         msg_box.addButton("&Ok", QMessageBox.AcceptRole)
         if msg_box.exec_() == QMessageBox.AcceptRole:

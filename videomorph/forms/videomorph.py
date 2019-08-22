@@ -94,8 +94,6 @@ class VideoMorphMW(QMainWindow):
         self.icon = self._get_app_icon()
         self.source_dir = QDir.homePath()
         self.task_list_duration = 0.0
-        self.no_library_msg = self.tr('Ffmpeg Library not Found'
-                                      ' in your System')
 
         self._setup_ui()
         self._setup_model()
