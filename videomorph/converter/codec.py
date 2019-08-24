@@ -33,8 +33,6 @@ class CodecsReader:
         self.vencoders, self.aencoders, self.sencoders = self._read('-encoders')
         self.vdecoders, self.adecoders, self.sdecoders = self._read('-decoders')
 
-        print(self.sdecoders)
-
     def _read(self, param):
         """Read the available encoders form ffmpeg."""
         video = {}

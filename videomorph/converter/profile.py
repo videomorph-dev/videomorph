@@ -21,6 +21,7 @@
 
 import re
 from collections import OrderedDict
+from collections import namedtuple
 from shutil import copy2
 from os import makedirs
 from os.path import exists, getsize
@@ -34,6 +35,7 @@ from . import SYS_PATHS
 from . import VM_PATHS
 from . import VALID_VIDEO_EXT
 from . import XML_FILES
+from .codec import CodecsReader
 from .exceptions import ProfileBlankNameError
 from .exceptions import ProfileBlankParamsError
 from .exceptions import ProfileBlankPresetError
@@ -85,6 +87,7 @@ class _XMLProfile:
         # Create xml files.
         self._xml_files = xml_files
         self._create_xml_files()
+        self.available_codecs = CodecsReader()
         self.profiles = self.get_profiles()
 
     def restore_default_profiles(self):
@@ -148,16 +151,60 @@ class _XMLProfile:
         raise ValueError('Wrong quality or param.')
 
     def get_profiles(self):
-        profiles = OrderedDict()
+        profiles_dict = OrderedDict()
         for xml_file in self._xml_files:
-            for elements in self._get_xml_root(xml_file):
-                profiles[elements.tag] = {}
-                for items in elements:
-                    profiles[elements.tag][items.tag] = {}
-                    for item in items:
-                        profiles[elements.tag][items.tag][item.tag] = item.text
+            for profiles in self._get_xml_root(xml_file):
+                profiles_dict[profiles.tag] = {}
+                for presets in profiles:
+                    profiles_dict[profiles.tag][presets.tag] = {}
+                    for item in presets:
+                        profiles_dict[profiles.tag][presets.tag][item.tag] = item.text
+                        if item.tag == 'preset_params':
+                            if not self._codecs_are_available(item.text):
+                                del profiles_dict[profiles.tag][presets.tag]
+                                break
 
-        return profiles
+        return profiles_dict
+
+    @staticmethod
+    def _get_preset_codecs(params):
+        acodec_regex = re.compile(r'-acodec\s+([^ ]+)')
+        vcodec_regex = re.compile(r'-vcodec\s+([^ ]+)')
+        scodec_regex = re.compile(r'-scodec\s+([^ ]+)')
+
+        def codec(regex):
+            result = regex.findall(params)
+            if result:
+                return result[0]
+
+            return None
+
+        Codecs = namedtuple('Codecs', ['acodec', 'vcodec', 'scodec'])
+
+        return Codecs(codec(acodec_regex),
+                      codec(vcodec_regex),
+                      codec(scodec_regex))
+
+    def _codecs_are_available(self, params):
+        preset_codecs = self._get_preset_codecs(params)
+        vcodec = acodec = scodec = True
+
+        if preset_codecs.vcodec is not None:
+            if not (preset_codecs.vcodec in self.available_codecs.vencoders or
+                    preset_codecs.vcodec in self.available_codecs.vcodecs):
+                vcodec = False
+
+        if preset_codecs.acodec is not None:
+            if not (preset_codecs.acodec in self.available_codecs.aencoders or
+                    preset_codecs.acodec in self.available_codecs.acodecs):
+                acodec = False
+
+        if preset_codecs.scodec is not None:
+            if not (preset_codecs.scodec in self.available_codecs.sencoders or
+                    preset_codecs.scodec in self.available_codecs.scodecs):
+                scodec = False
+
+        return vcodec and acodec and scodec
 
     def get_xml_profile_qualities(self, locale):
         """Return a list of available Qualities per conversion profile."""
