@@ -158,11 +158,15 @@ class _XMLProfile:
                 for presets in profiles:
                     profiles_dict[profiles.tag][presets.tag] = {}
                     for item in presets:
-                        profiles_dict[profiles.tag][presets.tag][item.tag] = item.text
                         if item.tag == 'preset_params':
                             if not self._codecs_are_available(item.text):
                                 del profiles_dict[profiles.tag][presets.tag]
                                 break
+                        profiles_dict[profiles.tag][presets.tag][item.tag] =\
+                            item.text
+
+                if not profiles_dict[profiles.tag]:
+                    del profiles_dict[profiles.tag]
 
         return profiles_dict
 
