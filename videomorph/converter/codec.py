@@ -29,9 +29,9 @@ class CodecsReader:
     """Class to get codecs out of ffmpeg -codecs output."""
 
     def __init__(self):
-        self.video_codecs = {}
-        self.audio_codecs = {}
-        self.subtitle_codecs = {}
+        self.vcodecs = {}
+        self.acodecs = {}
+        self.scodecs = {}
 
         self._read_codecs()
 
@@ -45,16 +45,15 @@ class CodecsReader:
             for line in islice(codecs_output, 10, None):
                 functionality, codec_name, *codec_desc = line.split()
                 if 'V' in functionality:
-                    self.video_codecs[codec_name] = (functionality,
-                                                     ' '.join(codec_desc))
+                    self.vcodecs[codec_name] = (functionality,
+                                                ' '.join(codec_desc))
                     continue
 
                 if 'A' in functionality:
-                    self.audio_codecs[codec_name] = (functionality,
-                                                     ' '.join(codec_desc))
+                    self.acodecs[codec_name] = (functionality,
+                                                ' '.join(codec_desc))
                     continue
 
                 if 'S' in functionality:
-                    self.subtitle_codecs[codec_name] = (functionality,
-                                                        ' '.join(codec_desc))
-                    continue
+                    self.scodecs[codec_name] = (functionality,
+                                                ' '.join(codec_desc))
