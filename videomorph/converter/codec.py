@@ -29,31 +29,32 @@ class CodecsReader:
     """Class to get codecs out of ffmpeg -codecs output."""
 
     def __init__(self):
-        self.vcodecs = {}
-        self.acodecs = {}
-        self.scodecs = {}
+        self.vcodecs, self.acodecs, self.scodecs = self._read('-codecs')
+        self.vencoders, self.aencoders, self.sencoders = self._read('-encoders')
+        self.vdecoders, self.adecoders, self.sdecoders = self._read('-decoders')
 
-        self._read_codecs()
+        print(self.sdecoders)
 
-    @property
-    def _codecs_output(self):
-        return spawn_process([LIBRARY_PATH, '-codecs']).stdout
-
-    def _read_codecs(self):
-        """Read the available codecs form ffmpeg."""
-        with self._codecs_output as codecs_output:
-            for line in islice(codecs_output, 10, None):
-                functionality, codec_name, *codec_desc = line.split()
+    def _read(self, param):
+        """Read the available encoders form ffmpeg."""
+        video = {}
+        audio = {}
+        subtitle = {}
+        with spawn_process([LIBRARY_PATH, param]).stdout as output:
+            for line in islice(output, 10, None):
+                functionality, name, *description = line.split()
                 if 'V' in functionality:
-                    self.vcodecs[codec_name] = (functionality,
-                                                ' '.join(codec_desc))
+                    video[name] = (functionality,
+                                   ' '.join(description))
                     continue
 
                 if 'A' in functionality:
-                    self.acodecs[codec_name] = (functionality,
-                                                ' '.join(codec_desc))
+                    audio[name] = (functionality,
+                                   ' '.join(description))
                     continue
 
                 if 'S' in functionality:
-                    self.scodecs[codec_name] = (functionality,
-                                                ' '.join(codec_desc))
+                    subtitle[name] = (functionality,
+                                      ' '.join(description))
+
+        return video, audio, subtitle
