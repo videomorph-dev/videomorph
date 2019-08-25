@@ -20,6 +20,7 @@
 """This module provides the Profile class."""
 
 import re
+import xml.etree.ElementTree as ET
 from collections import OrderedDict
 from collections import namedtuple
 from shutil import copy2
@@ -27,19 +28,20 @@ from os import makedirs
 from os.path import exists, getsize
 from os.path import getmtime
 from os.path import join as join_path
-from xml.etree import ElementTree
-from xml.etree.ElementTree import ParseError
 
 from . import BASE_DIR
+from . import LOCALE
 from . import SYS_PATHS
 from . import VM_PATHS
 from . import VALID_VIDEO_EXT
-from . import XML_FILES
 from .codec import CodecsReader
 from .exceptions import ProfileBlankNameError
 from .exceptions import ProfileBlankParamsError
 from .exceptions import ProfileBlankPresetError
 from .exceptions import ProfileExtensionError
+
+XMLFiles = namedtuple('XMLFiles', 'default customized')
+XML_FILES = XMLFiles('default.xml', 'customized.xml')
 
 
 class Profile:
@@ -47,7 +49,7 @@ class Profile:
 
     def __init__(self):
         """Class initializer."""
-        self._xml_profile = _XMLProfile(xml_files=XML_FILES)
+        self._xml_profile = _XMLProfile()
         self._quality = None
         self.extension = None
         self.params = None
@@ -82,78 +84,59 @@ class Profile:
 class _XMLProfile:
     """Class to manage the xml profiles file."""
 
-    def __init__(self, xml_files):
+    def __init__(self):
         """Class initializer."""
-        # Create xml files.
-        self._xml_files = xml_files
         self._create_xml_files()
         self.available_codecs = CodecsReader()
-        self.profiles = self.get_profiles()
 
-    def restore_default_profiles(self):
-        """Restore default profiles."""
-        self._copy_xml_file(file_name=self._xml_files.customized)
+    def get_xml_profile_qualities(self):
+        """Return a list of available Qualities per conversion profile."""
+        qualities_per_profile = OrderedDict()
 
-    def add_xml_profile(self, profile_name, preset, params, extension):
-        """Add a conversion profile."""
-        if not profile_name:
-            raise ProfileBlankNameError
+        for xml_file in XML_FILES:
+            for profile in self._xml_root(xml_file):
+                qualities = self._get_qualities(profile)
 
-        profile_name = profile_name.upper()
+                if not qualities:
+                    continue
 
-        if not preset:
-            raise ProfileBlankPresetError
+                if profile.tag not in qualities_per_profile:
+                    qualities_per_profile[profile.tag] = qualities
+                else:
+                    qualities_per_profile[profile.tag] += qualities
 
-        if not params:
-            raise ProfileBlankParamsError
+        return qualities_per_profile
 
-        if not extension.startswith('.') or extension not in VALID_VIDEO_EXT:
-            raise ProfileExtensionError('Invalid video file extension')
+    def _get_qualities(self, profile):
+        qualities = []
+        for preset in profile:
+            if self._codecs_are_available(preset[1].text):
+                if LOCALE == 'es_ES':
+                    qualities.append(preset[3].text)
+                else:
+                    qualities.append(preset[0].text)
+        return qualities
 
-        extension = extension.lower()
-
-        xml_profile = ElementTree.Element(profile_name)
-
-        xml_preset = self._create_xml_preset(preset, params, extension)
-
-        self._insert_xml_elements(xml_profile=xml_profile,
-                                  xml_preset=xml_preset,
-                                  xml_root=self._get_xml_root(
-                                      self._xml_files.customized))
-
-    def export_xml_profiles(self, dst_dir):
-        """Export a file with the conversion profiles."""
-        # Raise PermissionError if user doesn't have write permission
-        try:
-            copy2(src=self._user_xml_file_path(
-                file_name=self._xml_files.customized),
-                  dst=dst_dir)
-        except OSError:
-            raise PermissionError
-
-    def import_xml_profiles(self, src_file):
-        """Import a conversion profile file."""
-        try:
-            dst_directory = self._user_xml_file_path(
-                self._xml_files.customized)
-            copy2(src=src_file, dst=dst_directory)
-        except OSError:
-            raise PermissionError
-
-    def get_xml_profile_attr(self, target_quality, attr_name):
+    def get_xml_profile_attr(self, target_quality, attr_name='preset_params'):
         """Return a param of Profile."""
+        param_map = {'preset_name': 0,
+                     'preset_params': 1,
+                     'file_extension': 2,
+                     'preset_name_es': 3}
 
-        for k, v in self.profiles.items():
-            for value in v.values():
-                if target_quality in value.values():
-                    return value[attr_name]
+        for xml_file in XML_FILES:
+            for profile in self._xml_root(xml_file):
+                for preset in profile:
+                    if (preset[0].text == target_quality or
+                            preset[3].text == target_quality):
+                        return preset[param_map[attr_name]].text
 
         raise ValueError('Wrong quality or param.')
 
     def get_profiles(self):
         profiles_dict = OrderedDict()
-        for xml_file in self._xml_files:
-            for profiles in self._get_xml_root(xml_file):
+        for xml_file in XML_FILES:
+            for profiles in self._xml_root(xml_file):
                 profiles_dict[profiles.tag] = {}
                 for presets in profiles:
                     profiles_dict[profiles.tag][presets.tag] = {}
@@ -210,17 +193,55 @@ class _XMLProfile:
 
         return vcodec and acodec and scodec
 
-    def get_xml_profile_qualities(self, locale):
-        """Return a list of available Qualities per conversion profile."""
-        qualities_per_profile = OrderedDict()
+    def restore_default_profiles(self):
+        """Restore default profiles."""
+        self._copy_xml_file(file_name=XML_FILES.customized)
 
-        for k, v in self.profiles.items():
-            qualities_per_profile[k] = []
-            for value in v.values():
-                qualities_per_profile[k].append(
-                    value['preset_name_' + locale[0:2]])
+    def add_xml_profile(self, profile_name, preset, params, extension):
+        """Add a conversion profile."""
+        if not profile_name:
+            raise ProfileBlankNameError
 
-        return qualities_per_profile
+        profile_name = profile_name.upper()
+
+        if not preset:
+            raise ProfileBlankPresetError
+
+        if not params:
+            raise ProfileBlankParamsError
+
+        if not extension.startswith('.') or extension not in VALID_VIDEO_EXT:
+            raise ProfileExtensionError('Invalid video file extension')
+
+        extension = extension.lower()
+
+        xml_profile = ET.Element(profile_name)
+
+        xml_preset = self._create_xml_preset(preset, params, extension)
+
+        self._insert_xml_elements(xml_profile=xml_profile,
+                                  xml_preset=xml_preset,
+                                  xml_root=self._xml_root(
+                                      XML_FILES.customized))
+
+    def export_xml_profiles(self, dst_dir):
+        """Export a file with the conversion profiles."""
+        # Raise PermissionError if user doesn't have write permission
+        try:
+            copy2(src=self._user_xml_file_path(
+                file_name=XML_FILES.customized),
+                  dst=dst_dir)
+        except OSError:
+            raise PermissionError
+
+    def import_xml_profiles(self, src_file):
+        """Import a conversion profile file."""
+        try:
+            dst_directory = self._user_xml_file_path(
+                XML_FILES.customized)
+            copy2(src=src_file, dst=dst_directory)
+        except OSError:
+            raise PermissionError
 
     def _user_xml_file_path(self, file_name):
         """Return the path to the profiles file."""
@@ -241,18 +262,18 @@ class _XMLProfile:
     def _save_xml_tree(self, xml_tree):
         """Save the xml tree."""
         xml_profiles_path = self._user_xml_file_path(
-            self._xml_files.customized)
+            XML_FILES.customized)
 
         with open(xml_profiles_path, 'wb') as xml_file:
-            ElementTree.ElementTree(xml_tree).write(xml_file,
-                                                    xml_declaration=True,
-                                                    encoding='UTF-8')
+            ET.ElementTree(xml_tree).write(xml_file,
+                                           xml_declaration=True,
+                                           encoding='UTF-8')
 
     def _create_xml_files(self):
         """Create a xml file with the conversion profiles."""
         makedirs(self._user_xml_files_directory(), exist_ok=True)
 
-        for xml_file in self._xml_files:
+        for xml_file in XML_FILES:
             if not self._xml_file_is_correct(xml_file):
                 self._copy_xml_file(file_name=xml_file)
 
@@ -276,14 +297,14 @@ class _XMLProfile:
 
         return True
 
-    def _get_xml_root(self, xml_file_name):
+    def _xml_root(self, xml_file_name):
         """Return the xml root."""
         path = self._user_xml_file_path(file_name=xml_file_name)
         try:
-            tree = ElementTree.parse(path)
-        except ParseError:
+            tree = ET.parse(path)
+        except ET.ParseError:
             self.restore_default_profiles()
-            tree = ElementTree.parse(path)
+            tree = ET.parse(path)
         return tree.getroot()
 
     @staticmethod
@@ -307,14 +328,14 @@ class _XMLProfile:
         """Return a xml preset."""
         regexp = re.compile(r'[A-z][0-9]?')
         preset_tag = ''.join(regexp.findall(preset))
-        xml_preset = ElementTree.Element(preset_tag)
-        xml_preset_name = ElementTree.Element('preset_name')
+        xml_preset = ET.Element(preset_tag)
+        xml_preset_name = ET.Element('preset_name')
         xml_preset_name.text = preset
-        xml_params = ElementTree.Element('preset_params')
+        xml_params = ET.Element('preset_params')
         xml_params.text = params
-        xml_extension = ElementTree.Element('file_extension')
+        xml_extension = ET.Element('file_extension')
         xml_extension.text = extension
-        xml_preset_name_es = ElementTree.Element('preset_name_es')
+        xml_preset_name_es = ET.Element('preset_name_es')
         xml_preset_name_es.text = preset
 
         for i, elem in enumerate([xml_preset_name, xml_params,
