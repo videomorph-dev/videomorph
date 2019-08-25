@@ -55,7 +55,7 @@ class AddProfileDialog(QDialog):
         self.le_profile_name = QLineEdit(self.layout_widget)
         self.le_profile_name.setPlaceholderText(self.tr('(e.g. MP4)'))
         profile_name_model = QCompleter(
-            self.parent.profile.get_xml_profile_qualities(LOCALE).keys())
+            self.parent.profile.get_xml_profile_qualities().keys())
         profile_name_model.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.le_profile_name.setCompleter(profile_name_model)
         self.vertical_layout.addWidget(self.le_profile_name)

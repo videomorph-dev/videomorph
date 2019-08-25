@@ -725,7 +725,7 @@ class VideoMorphMW(QMainWindow):
         self.profiles_combo.clear()
         # Populate the combobox with new data
 
-        profile_names = self.profile.get_xml_profile_qualities(LOCALE).keys()
+        profile_names = self.profile.get_xml_profile_qualities().keys()
         for i, profile_name in enumerate(profile_names):
             self.profiles_combo.addItem(profile_name)
             icon = QIcon(':/formats/{0}.png'.format(profile_name))
@@ -741,8 +741,7 @@ class VideoMorphMW(QMainWindow):
         if current_profile != '':
             combo.clear()
             combo.addItems(
-                self.profile.get_xml_profile_qualities(
-                    LOCALE)[current_profile])
+                self.profile.get_xml_profile_qualities()[current_profile])
 
             if self.tasks_table.rowCount():
                 self._update_media_files_status()
