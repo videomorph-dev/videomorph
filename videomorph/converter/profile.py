@@ -133,26 +133,6 @@ class _XMLProfile:
 
         raise ValueError('Wrong quality or param.')
 
-    def get_profiles(self):
-        profiles_dict = OrderedDict()
-        for xml_file in XML_FILES:
-            for profiles in self._xml_root(xml_file):
-                profiles_dict[profiles.tag] = {}
-                for presets in profiles:
-                    profiles_dict[profiles.tag][presets.tag] = {}
-                    for item in presets:
-                        if item.tag == 'preset_params':
-                            if not self._codecs_are_available(item.text):
-                                del profiles_dict[profiles.tag][presets.tag]
-                                break
-                        profiles_dict[profiles.tag][presets.tag][item.tag] =\
-                            item.text
-
-                if not profiles_dict[profiles.tag]:
-                    del profiles_dict[profiles.tag]
-
-        return profiles_dict
-
     @staticmethod
     def _get_preset_codecs(params):
         acodec_regex = re.compile(r'-acodec\s+([^ ]+)')
