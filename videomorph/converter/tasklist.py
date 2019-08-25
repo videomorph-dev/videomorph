@@ -36,7 +36,17 @@ class TaskList(list):
         self._profile = profile
         self._position = None  # None, no item running, 0, the first item,...
         self.not_added_files = deque()
-        self.output_dir = output_dir
+        self._output_dir = output_dir
+
+    @property
+    def output_dir(self):
+        return self._output_dir
+
+    @output_dir.setter
+    def output_dir(self, value):
+        self._output_dir = value
+        for task in self:
+            task.output_dir = value
 
     def clear(self):
         """Clear the list of videos."""

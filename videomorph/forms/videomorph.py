@@ -97,9 +97,7 @@ class VideoMorphMW(QMainWindow):
 
         self._setup_ui()
         self._setup_model()
-
         self.populate_profiles_combo()
-
         self._load_app_settings()
 
     def _setup_model(self):
@@ -112,7 +110,8 @@ class VideoMorphMW(QMainWindow):
 
         self.profile = Profile()
 
-        self.task_list = TaskList(profile=self.profile)
+        self.task_list = TaskList(profile=self.profile,
+                                  output_dir=self.output_edit.text())
 
     def _setup_ui(self):
         """Setup UI."""
@@ -622,6 +621,7 @@ class VideoMorphMW(QMainWindow):
             directory = str(settings.value('output_dir'))
             output_dir = directory if isdir(directory) else QDir.homePath()
             self.output_edit.setText(output_dir)
+            self.task_list.output_dir = output_dir
         if 'source_dir' in settings.allKeys():
             self.source_dir = str(settings.value('source_dir'))
 
@@ -755,6 +755,7 @@ class VideoMorphMW(QMainWindow):
 
         if directory:
             self.output_edit.setText(directory)
+            self.task_list.output_dir = directory
             self._on_modify_conversion_option()
 
     def closeEvent(self, event):
