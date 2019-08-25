@@ -575,7 +575,7 @@ class VideoMorphMW(QMainWindow):
         progress_dlg.setCancelButtonText(self.tr('Cancel'))
         progress_dlg.setLabel(label)
         progress_dlg.setModal(True)
-        progress_dlg.setMinimumDuration(0)
+        progress_dlg.setMinimumDuration(800)
 
         return progress_dlg
 
@@ -794,7 +794,7 @@ class VideoMorphMW(QMainWindow):
             qApp.quit()
             event.accept()
 
-    def add_task(self, video_path, row):
+    def add_task(self, video_path):
         """Add a conversion task to the list."""
         if self.task_list.task_is_added(video_path):
             return
@@ -802,26 +802,30 @@ class VideoMorphMW(QMainWindow):
         if not self.task_list.add_task(video_path):
             return
 
-        self.tasks_table.setRowCount(row + 1)
-        self._insert_table_item(
-            item_text=self.task_list.get_file_name(position=row),
-            row=row, column=COLUMNS.NAME)
+        self._update_task_list()
 
-        item_text = str(write_time(self.task_list.get_file_info(
-            position=row, info_param='duration')))
+    def _update_task_list(self):
+        """Update the list of conversion tasks."""
+        for i, task in enumerate(self.task_list):
+            self.tasks_table.setRowCount(i + 1)
+            self._insert_table_item(
+                text=self.task_list.get_file_name(position=i),
+                row=i, column=COLUMNS.NAME)
 
-        self._insert_table_item(item_text, row=row, column=COLUMNS.DURATION)
+            item_text = str(write_time(self.task_list.get_file_info(
+                position=i, info_param='duration')))
 
-        self._insert_table_item(
-            item_text=str(self.quality_combo.currentText()),
-            row=row, column=COLUMNS.QUALITY)
+            self._insert_table_item(item_text, row=i, column=COLUMNS.DURATION)
 
-        self._insert_table_item(item_text=self.tr('To Convert'),
-                                row=row, column=COLUMNS.PROGRESS)
+            self._insert_table_item(text=str(self.quality_combo.currentText()),
+                                    row=i, column=COLUMNS.QUALITY)
 
-    def _insert_table_item(self, item_text, row, column):
+            self._insert_table_item(text=self.tr('To Convert'),
+                                    row=i, column=COLUMNS.PROGRESS)
+
+    def _insert_table_item(self, text, row, column):
         item = QTableWidgetItem()
-        item.setText(item_text)
+        item.setText(text)
         if column == COLUMNS.NAME:
             item.setIcon(QIcon(':/icons/video-in-list.png'))
         self.tasks_table.setItem(row, column, item)
@@ -836,14 +840,14 @@ class VideoMorphMW(QMainWindow):
         progress_dlg = self._create_progress_dialog()
         progress_dlg.setMaximum(max_value)
 
-        for row, file in enumerate(files):
+        for i, file in enumerate(files):
             progress_dlg.setLabelText(self.tr('Adding Video: ') + file)
-            progress_dlg.setValue(row)
+            progress_dlg.setValue(i)
 
             if progress_dlg.wasCanceled():
                 break
 
-            self.add_task(file, row)
+            self.add_task(file)
 
         progress_dlg.setValue(max_value)
 
@@ -855,6 +859,8 @@ class VideoMorphMW(QMainWindow):
                 type_=QMessageBox.Critical,
                 title=self.tr('Error!'),
                 msg=msg)
+
+            self.task_list.not_added_files.clear()
 
             if not self.task_list.length:
                 self._update_ui_when_no_file()
