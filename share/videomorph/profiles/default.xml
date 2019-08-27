@@ -1,229 +1,229 @@
 <?xml version="1.0"?>
-<video_profiles>
-    <AVI>
-        <AVIMSCompatible640x480>
+<videomorph>
+    <profile name="AVI">
+        <preset>
             <preset_name_en>MS Compatible 640x480</preset_name_en>
             <preset_params>-acodec libmp3lame -vcodec msmpeg4 -b:a 192k -b:v 1000k -s 640x480 -ar 44100</preset_params>
-            <file_extension>.avi</file_extension>
+            <preset_extension>.avi</preset_extension>
             <preset_name_es>Compatible MS 640x480</preset_name_es>
-        </AVIMSCompatible640x480>
-        <AVIMSCompatible720x480>
+        </preset>
+        <preset>
             <preset_name_en>MS Compatible 720x480</preset_name_en>
             <preset_params>-acodec libmp3lame -vcodec msmpeg4 -b:a 192k -b:v 1000k -s 720x480 -ar 44100</preset_params>
-            <file_extension>.avi</file_extension>
+            <preset_extension>.avi</preset_extension>
             <preset_name_es>Compatible MS 720x480</preset_name_es>
-        </AVIMSCompatible720x480>
-        <AVIXVIDFullscreen>
+        </preset>
+        <preset>
             <preset_name_en>XVID Fullscreen 640x480 (4:3)</preset_name_en>
             <preset_params>-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 640x480 -aspect 4:3 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2</preset_params>
-            <file_extension>.avi</file_extension>
+            <preset_extension>.avi</preset_extension>
             <preset_name_es>XVID Pantalla Completa 640x480 (4:3)</preset_name_es>
-        </AVIXVIDFullscreen>
-        <AVIXVIDWidescreen>
+        </preset>
+        <preset>
             <preset_name_en>XVID Widescreen 704x384 (16:9)</preset_name_en>
             <preset_params>-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 704x384 -aspect 16:9 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2</preset_params>
-            <file_extension>.avi</file_extension>
+            <preset_extension>.avi</preset_extension>
             <preset_name_es>XVID Pantalla Panorámica 704x384 (16:9)</preset_name_es>
-        </AVIXVIDWidescreen>
-    </AVI>
-    <DVD>
-        <DVDFullscreen>
+        </preset>
+    </profile>
+    <profile name="DVD">
+        <preset>
             <preset_name_en>DVD Fullscreen 352x480 (4:3)</preset_name_en>
             <preset_params>-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 4:3 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2</preset_params>
-            <file_extension>.mpg</file_extension>
+            <preset_extension>.mpg</preset_extension>
             <preset_name_es>DVD Pantalla Completa 352x480 (4:3)</preset_name_es>
-        </DVDFullscreen>
-        <DVDWidescreen>
+        </preset>
+        <preset>
             <preset_name_en>DVD Widescreen 352x480 (16:9)</preset_name_en>
             <preset_params>-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 16:9 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2</preset_params>
-            <file_extension>.mpg</file_extension>
+            <preset_extension>.mpg</preset_extension>
             <preset_name_es>DVD Pantalla Panorámica 352x480 (16:9)</preset_name_es>
-        </DVDWidescreen>
-        <DVDFullscreenHighQuality>
+        </preset>
+        <preset>
             <preset_name_en>DVD Fullscreen 720x480 (4:3) High Quality</preset_name_en>
             <preset_params>-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 4:3 -b:v 8000k -mbd rd -cmp 0 -subcmp 2</preset_params>
-            <file_extension>.mpg</file_extension>
+            <preset_extension>.mpg</preset_extension>
             <preset_name_es>DVD Pantalla Completa 720x480 (4:3) Alta Calidad</preset_name_es>
-        </DVDFullscreenHighQuality>
-        <DVDWidescreenHighQuality>
+        </preset>
+        <preset>
             <preset_name_en>DVD Widescreen 720x480 (16:9) High Quality</preset_name_en>
             <preset_params>-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 16:9 -b:v 8000k -g 12 -mbd rd -cmp 0 -subcmp 2</preset_params>
-            <file_extension>.mpg</file_extension>
+            <preset_extension>.mpg</preset_extension>
             <preset_name_es>DVD Pantalla Panorámica 720x480 (16:9) Alta Calidad</preset_name_es>
-        </DVDWidescreenHighQuality>
-        <DVDLowQuality>
+        </preset>
+        <preset>
             <preset_name_en>DVD Low Quality 720x480</preset_name_en>
             <preset_params>-f dvd -target ntsc-dvd -b:v 5000k -r 29.97 -s 720x480 -ar 48000 -b:a 384k</preset_params>
-            <file_extension>.mpg</file_extension>
+            <preset_extension>.mpg</preset_extension>
             <preset_name_es>DVD Baja Calidad 720x480</preset_name_es>
-        </DVDLowQuality>
-    </DVD>
-    <FLV>
-        <FLVFullscreen>
+        </preset>
+    </profile>
+    <profile name="FLV">
+        <preset>
             <preset_name_en>FLV Fullscreen 320x240 (4:3)</preset_name_en>
             <preset_params>-vcodec flv -f flv -r 29.97 -s 320x240 -aspect 4:3 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k</preset_params>
-            <file_extension>.flv</file_extension>
+            <preset_extension>.flv</preset_extension>
             <preset_name_es>FLV Pantalla Completa 320x240 (4:3)</preset_name_es>
-        </FLVFullscreen>
-        <FLVWidescreen>
+        </preset>
+        <preset>
             <preset_name_en>FLV Widescreen 320x180 (16:9)</preset_name_en>
             <preset_params>-vcodec flv -f flv -r 29.97 -s 320x180 -aspect 16:9 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k</preset_params>
-            <file_extension>.flv</file_extension>
+            <preset_extension>.flv</preset_extension>
             <preset_name_es>FLV Pantalla Panorámica 320x180 (16:9)</preset_name_es>
-        </FLVWidescreen>
-    </FLV>
-    <MOV>
-        <MOVGeneric>
+        </preset>
+    </profile>
+    <profile name="MOV">
+        <preset>
             <preset_name_en>MOV Generic</preset_name_en>
             <preset_params>-acodec aac -vcodec libx264 -f mov</preset_params>
-            <file_extension>.mov</file_extension>
+            <preset_extension>.mov</preset_extension>
             <preset_name_es>MOV Genérico</preset_name_es>
-        </MOVGeneric>
-        <QuickTimeHHighquality>
+        </preset>
+        <preset>
             <preset_name_en>QuickTime H.264 High quality</preset_name_en>
             <preset_params>-crf 35.0 -vcodec libx264 -acodec aac -ar 48000 -ab 128k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1</preset_params>
-            <file_extension>.mov</file_extension>
+            <preset_extension>.mov</preset_extension>
             <preset_name_es>QuickTime H.264 Alta Calidad</preset_name_es>
-        </QuickTimeHHighquality>
-        <QuickTimeHVeryHighQuality>
+        </preset>
+        <preset>
             <preset_name_en>QuickTime H.264 Very High Quality</preset_name_en>
             <preset_params>-crf 25.0 -vcodec libx264 -acodec aac -ar 48000 -ab 160k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1</preset_params>
-            <file_extension>.mov</file_extension>
+            <preset_extension>.mov</preset_extension>
             <preset_name_es>QuickTime H.264 Muy Alta Calidad</preset_name_es>
-        </QuickTimeHVeryHighQuality>
-    </MOV>
-    <MP4>
-        <MP4HighQuality>
+        </preset>
+    </profile>
+    <profile name="MP4">
+        <preset>
             <preset_name_en>MP4 High Quality</preset_name_en>
             <preset_params>-crf 35.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 128k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2</preset_params>
-            <file_extension>.mp4</file_extension>
+            <preset_extension>.mp4</preset_extension>
             <preset_name_es>MP4 Alta Calidad</preset_name_es>
-        </MP4HighQuality>
-        <MP4VeryHighQuality>
+        </preset>
+        <preset>
             <preset_name_en>MP4 Very High Quality</preset_name_en>
             <preset_params>-crf 25.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 160k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2</preset_params>
-            <file_extension>.mp4</file_extension>
+            <preset_extension>.mp4</preset_extension>
             <preset_name_es>MP4 Muy Alta Calidad</preset_name_es>
-        </MP4VeryHighQuality>
-        <MP4SuperHighQuality>
+        </preset>
+        <preset>
             <preset_name_en>MP4 Super High Quality</preset_name_en>
             <preset_params>-crf 15.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2</preset_params>
-            <file_extension>.mp4</file_extension>
+            <preset_extension>.mp4</preset_extension>
             <preset_name_es>MP4 Súper Alta Calidad</preset_name_es>
-        </MP4SuperHighQuality>
-        <MP4Fullscreen>
+        </preset>
+        <preset>
             <preset_name_en>MP4 Fullscreen (4:3)</preset_name_en>
             <preset_params>-f mp4 -r 29.97 -vcodec libx264 -s 640x480 -b:v 1000k -aspect 4:3 -flags +loop -cmp +chroma -deblockalpha 0 -deblockbeta 0 -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2</preset_params>
-            <file_extension>.mp4</file_extension>
+            <preset_extension>.mp4</preset_extension>
             <preset_name_es>MP4 Pantalla Completa (4:3)</preset_name_es>
-        </MP4Fullscreen>
-        <MP4Widescreen>
+        </preset>
+        <preset>
             <preset_name_en>MP4 Widescreen (16:9)</preset_name_en>
             <preset_params>-f mp4 -r 29.97 -vcodec libx264 -s 704x384 -b:v 1000k -aspect 16:9 -flags +loop -cmp +chroma -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -trellis 2 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2</preset_params>
-            <file_extension>.mp4</file_extension>
+            <preset_extension>.mp4</preset_extension>
             <preset_name_es>MP4 Pantalla Panorámica (16:9)</preset_name_es>
-        </MP4Widescreen>
-        <MP4_H265FullScreen>
+        </preset>
+        <preset>
             <preset_name_en>MP4 H.265 Fullscreen (4:3) High Compression</preset_name_en>
             <preset_params>-c:v libx265 -preset medium -crf 28 -s 640x480 -c:a aac -b:a 128k -strict -2</preset_params>
-            <file_extension>.mp4</file_extension>
+            <preset_extension>.mp4</preset_extension>
             <preset_name_es>MP4 H.265 Pantalla Completa (4:3) Alta Compresión</preset_name_es>
-        </MP4_H265FullScreen>
-        <MP4_H265Pantallapanoramica>
+        </preset>
+        <preset>
             <preset_name_en>MP4 H.265 Widescreen (16:9) High Compression</preset_name_en>
             <preset_params>-c:v libx265 -preset medium -crf 28 -s 704x384 -c:a aac -b:a 128k -strict -2</preset_params>
-            <file_extension>.mp4</file_extension>
+            <preset_extension>.mp4</preset_extension>
             <preset_name_es>MP4 H.265 Pantalla Panorámica (16:9) Alta Compresión</preset_name_es>
-        </MP4_H265Pantallapanoramica>
-        <MP4_H265NoResizing>
+        </preset>
+        <preset>
             <preset_name_en>MP4 H.265 Not Resizing High Compression</preset_name_en>
             <preset_params>-c:v libx265 -preset medium -crf 28  -c:a aac -b:a 128k -strict -2</preset_params>
-            <file_extension>.mp4</file_extension>
+            <preset_extension>.mp4</preset_extension>
             <preset_name_es>MP4 H.265 Sin Redimensionar Alta Compresión</preset_name_es>
-        </MP4_H265NoResizing>
-    </MP4>
-    <VCD>
-        <VCDHighQuality>
+        </preset>
+    </profile>
+    <profile name="VCD">
+        <preset>
             <preset_name_en>NTSC VCD High Quality</preset_name_en>
             <preset_params>-f vcd -target ntsc-vcd -mbd rd -cmp 0 -subcmp 2</preset_params>
-            <file_extension>.mpg</file_extension>
+            <preset_extension>.mpg</preset_extension>
             <preset_name_es>VCD Alta Calidad</preset_name_es>
-        </VCDHighQuality>
-        <PALVCDHighQuality>
+        </preset>
+        <preset>
             <preset_name_en>PAL VCD High Quality</preset_name_en>
             <preset_params>-f vcd -target pal-vcd -mbd rd -trellis -mv0 -cmp 0 -subcmp 2</preset_params>
-            <file_extension>.mpg</file_extension>
+            <preset_extension>.mpg</preset_extension>
             <preset_name_es>PAL VCD Alta Calidad</preset_name_es>
-        </PALVCDHighQuality>
-    </VCD>
-    <WEBM>
-        <WEBMFullscreen>
+        </preset>
+    </profile>
+    <profile name="WEBM">
+        <preset>
             <preset_name_en>WEBM Fullscreen (4:3)</preset_name_en>
             <preset_params>-f webm -aspect 4:3 -vcodec libvpx -g 120 -level 216 -profile:v 0 -qmax 42 -qmin 10 -rc_buf_aggressivity 0.95 -vb 2M -acodec libvorbis -aq 90 -ac 2</preset_params>
-            <file_extension>.webm</file_extension>
+            <preset_extension>.webm</preset_extension>
             <preset_name_es>WEBM Pantalla Completa (4:3)</preset_name_es>
-        </WEBMFullscreen>
-        <WEBMWidescreen>
+        </preset>
+        <preset>
             <preset_name_en>WEBM Widescreen (16:9)</preset_name_en>
             <preset_params>-f webm -aspect 16:9 -vcodec libvpx -g 120 -level 216 -profile:v 0 -qmax 42 -qmin 10 -rc_buf_aggressivity 0.95 -vb 2M -acodec libvorbis -aq 90 -ac 2</preset_params>
-            <file_extension>.webm</file_extension>
+            <preset_extension>.webm</preset_extension>
             <preset_name_es>WEBM Pantalla Panorámica (16:9)</preset_name_es>
-        </WEBMWidescreen>
-    </WEBM>
-    <WMV>
-        <WMVGeneric>
+        </preset>
+    </profile>
+    <profile name="WMV">
+        <preset>
             <preset_name_en>WMV Generic</preset_name_en>
             <preset_params>-vcodec wmv2 -acodec wmav2 -b:v 1000k -b:a 160k -r 25</preset_params>
-            <file_extension>.wmv</file_extension>
+            <preset_extension>.wmv</preset_extension>
             <preset_name_es>WMV Genérico</preset_name_es>
-        </WMVGeneric>
-    </WMV>
-    <OGV>
-        <OGVGeneric>
+        </preset>
+    </profile>
+    <profile name="OGV">
+        <preset>
             <preset_name_en>OGV Generic</preset_name_en>
             <preset_params>-c:v libtheora -q:v 7 -c:a libvorbis -q:a 4</preset_params>
-            <file_extension>.ogv</file_extension>
+            <preset_extension>.ogv</preset_extension>
             <preset_name_es>OGV Genérico</preset_name_es>
-        </OGVGeneric>
-    </OGV>
-    <MKV>
-        <MKVVP8>
+        </preset>
+    </profile>
+    <profile name="MKV">
+        <preset>
             <preset_name_en>MKV VP8</preset_name_en>
             <preset_params>-crf 15.0 -f matroska -b:v 8000k -r 25 -vcodec vp8 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2</preset_params>
-            <file_extension>.mkv</file_extension>
+            <preset_extension>.mkv</preset_extension>
             <preset_name_es>MKV VP8</preset_name_es>
-        </MKVVP8>
-        <MKVVP9>
+        </preset>
+        <preset>
             <preset_name_en>MKV VP9</preset_name_en>
             <preset_params>-crf 15.0 -f matroska -b:v 8000k -r 25 -vcodec vp9 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2</preset_params>
-            <file_extension>.mkv</file_extension>
+            <preset_extension>.mkv</preset_extension>
             <preset_name_es>MKV VP9</preset_name_es>
-        </MKVVP9>
-        <MKVMPEG4>
+        </preset>
+        <preset>
             <preset_name_en>MKV MPEG4</preset_name_en>
             <preset_params>-crf 15.0 -f matroska -b:v 8000k -r 25 -vcodec vp9 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2</preset_params>
-            <file_extension>.mkv</file_extension>
+            <preset_extension>.mkv</preset_extension>
             <preset_name_es>MKV MPEG4</preset_name_es>
-        </MKVMPEG4>
-    </MKV>
-    <MP3>
-        <ExtractAudiomp3>
+        </preset>
+    </profile>
+    <profile name="MP3">
+        <preset>
             <preset_name_en>Extract Audio mp3</preset_name_en>
             <preset_params>-q:a 0 -map a</preset_params>
-            <file_extension>.mp3</file_extension>
+            <preset_extension>.mp3</preset_extension>
             <preset_name_es>Extraer Audio mp3</preset_name_es>
-        </ExtractAudiomp3>
-        <MP3GoodQualitykb>
+        </preset>
+        <preset>
             <preset_name_en>MP3 Good Quality (160 Kbps)</preset_name_en>
             <preset_params>-acodec libmp3lame -ab 160k -ac 2 -ar 44100 -vn</preset_params>
-            <file_extension>.mp3</file_extension>
+            <preset_extension>.mp3</preset_extension>
             <preset_name_es>MP3 Buena Calidad (160 Kbps)</preset_name_es>
-        </MP3GoodQualitykb>
-        <MP3HighQualitykb>
+        </preset>
+        <preset>
             <preset_name_en>MP3 High Quality (192 Kbps)</preset_name_en>
             <preset_params>-acodec libmp3lame -ab 192k -ac 2 -ar 44100 -vn</preset_params>
-            <file_extension>.mp3</file_extension>
+            <preset_extension>.mp3</preset_extension>
             <preset_name_es>MP3 Alta Calidad (192 Kbps)</preset_name_es>
-        </MP3HighQualitykb>
-    </MP3>
-</video_profiles>
+        </preset>
+    </profile>
+</videomorph>
