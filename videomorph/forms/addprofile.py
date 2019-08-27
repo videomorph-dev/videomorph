@@ -162,5 +162,5 @@ class AddProfileDialog(QDialog):
         else:
             self.parent.populate_profiles_combo()
             self.parent.profile.update(
-                new_quality=self.parent.cb_quality.currentText())
+                new_quality=self.parent.quality_combo.currentText())
             QDialog.accept(self)
