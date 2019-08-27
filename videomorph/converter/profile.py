@@ -67,7 +67,7 @@ class Profile:
             attr_name='preset_params')
         self.extension = self.get_xml_profile_attr(
             target_quality=self._quality,
-            attr_name='file_extension')
+            attr_name='preset_extension')
 
     @property
     def quality_tag(self):
@@ -100,10 +100,10 @@ class _XMLProfile:
                 if not qualities:
                     continue
 
-                if profile.tag not in qualities_per_profile:
-                    qualities_per_profile[profile.tag] = qualities
+                if profile.get('name') not in qualities_per_profile:
+                    qualities_per_profile[profile.get('name')] = qualities
                 else:
-                    qualities_per_profile[profile.tag] += qualities
+                    qualities_per_profile[profile.get('name')] += qualities
 
         return qualities_per_profile
 
@@ -119,9 +119,9 @@ class _XMLProfile:
 
     def get_xml_profile_attr(self, target_quality, attr_name='preset_params'):
         """Return a param of Profile."""
-        param_map = {'preset_name': 0,
+        param_map = {'preset_name_en': 0,
                      'preset_params': 1,
-                     'file_extension': 2,
+                     'preset_extension': 2,
                      'preset_name_es': 3}
 
         for xml_file in XML_FILES:
@@ -175,6 +175,7 @@ class _XMLProfile:
 
     def restore_default_profiles(self):
         """Restore default profiles."""
+        self._copy_xml_file(file_name=XML_FILES.default)
         self._copy_xml_file(file_name=XML_FILES.customized)
 
     def add_xml_profile(self, profile_name, preset, params, extension):
@@ -195,7 +196,7 @@ class _XMLProfile:
 
         extension = extension.lower()
 
-        xml_profile = ET.Element(profile_name)
+        xml_profile = ET.Element('profile', {'name': profile_name})
 
         xml_preset = self._create_xml_preset(preset, params, extension)
 
@@ -230,7 +231,7 @@ class _XMLProfile:
     def _insert_xml_elements(self, xml_profile, xml_preset, xml_root):
         """Insert an xml element into an xml root."""
         for i, elem in enumerate(xml_root[:]):
-            if elem.tag == xml_profile.tag:
+            if elem.get('name') == xml_profile.get('name'):
                 xml_root[i].insert(0, xml_preset)
                 self._save_xml_tree(xml_tree=xml_root)
                 break
@@ -282,10 +283,28 @@ class _XMLProfile:
         path = self._user_xml_file_path(file_name=xml_file_name)
         try:
             tree = ET.parse(path)
-        except ET.ParseError:
+            self._validate_xml(tree.getroot())
+        except (ET.ParseError, AssertionError):
             self.restore_default_profiles()
             tree = ET.parse(path)
+
         return tree.getroot()
+
+    @staticmethod
+    def _validate_xml(xml_root):
+        """Validate xml profiles."""
+        assert xml_root.tag == 'videomorph', 'videomorph'
+
+        for profile in xml_root:
+            assert profile.tag == 'profile', 'profile'
+            assert 'name' in profile.attrib, 'name'
+            for preset in profile:
+                assert preset.tag == 'preset', 'preset'
+                assert preset[0].tag == 'preset_name_en', 'preset_name_en'
+                assert preset[1].tag == 'preset_params', 'preset_params'
+                assert preset[2].tag == 'preset_extension', 'preset_extension'
+                assert preset[3].tag == 'preset_name_es', 'preset_name_es'
+                assert len(preset) == 4, 'fields'
 
     @staticmethod
     def _user_xml_files_directory():
@@ -306,20 +325,18 @@ class _XMLProfile:
     @staticmethod
     def _create_xml_preset(preset, params, extension):
         """Return a xml preset."""
-        regexp = re.compile(r'[A-z][0-9]?')
-        preset_tag = ''.join(regexp.findall(preset))
-        xml_preset = ET.Element(preset_tag)
-        xml_preset_name = ET.Element('preset_name')
-        xml_preset_name.text = preset
-        xml_params = ET.Element('preset_params')
-        xml_params.text = params
-        xml_extension = ET.Element('file_extension')
-        xml_extension.text = extension
+        xml_preset = ET.Element('preset')
+        xml_preset_name_en = ET.Element('preset_name_en')
+        xml_preset_name_en.text = preset
+        xml_preset_params = ET.Element('preset_params')
+        xml_preset_params.text = params
+        xml_preset_extension = ET.Element('preset_extension')
+        xml_preset_extension.text = extension
         xml_preset_name_es = ET.Element('preset_name_es')
         xml_preset_name_es.text = preset
 
-        for i, elem in enumerate([xml_preset_name, xml_params,
-                                  xml_extension, xml_preset_name_es]):
+        for i, elem in enumerate([xml_preset_name_en, xml_preset_params,
+                                  xml_preset_extension, xml_preset_name_es]):
             xml_preset.insert(i, elem)
 
         return xml_preset
