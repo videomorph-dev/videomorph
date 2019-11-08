@@ -28,6 +28,7 @@ from os.path import isdir
 from os.path import isfile
 
 from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QSettings
 from PyQt5.QtCore import QDir
@@ -576,6 +577,7 @@ class VideoMorphMW(QMainWindow):
         progress_dlg.setLabel(label)
         progress_dlg.setModal(True)
         progress_dlg.setMinimumDuration(800)
+        QCoreApplication.processEvents()
 
         return progress_dlg
 
