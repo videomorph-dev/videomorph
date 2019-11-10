@@ -31,6 +31,7 @@ from .converter import BASE_DIR
 from .converter import LOCALE
 from .converter import VM_PATHS
 from .converter.console import run_on_console
+from .converter.vmpath import LIBRARY_PATH
 from .forms.videomorph import VideoMorphMW
 
 
@@ -54,7 +55,7 @@ def main():
     main_win = VideoMorphMW()
 
     # Check for conversion library and run
-    if main_win.library.path:
+    if LIBRARY_PATH:
         if len(sys.argv) > 1:  # If it is running from console
             run_on_console(app, main_win)
         else:  # Or is running on GUI
