@@ -27,8 +27,7 @@ from locale import getdefaultlocale
 
 def get_locale():
     """Return the default locale string."""
-    return ('es_ES' if getdefaultlocale()[0].startswith('es_') else
-            getdefaultlocale()[0])
+    return 'es_ES' if getdefaultlocale()[0].startswith('es_') else 'en_US'
     # return 'es_ES'
 
 

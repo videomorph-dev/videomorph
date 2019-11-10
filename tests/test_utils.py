@@ -25,6 +25,11 @@ import nose
 from videomorph.converter import utils
 
 
+def test_get_locale_all_es():
+    """Test get_locale."""
+    assert utils.get_locale() in {'en_US', 'es_ES'}
+
+
 @nose.tools.raises(ValueError)
 def test_convert_none():
     """Convert None."""
@@ -94,12 +99,6 @@ def test_which_non_existing_app():
 def test_which_null_arg():
     """Test for a null string param (raises a ValueError)."""
     utils.which('')
-
-
-def test_get_locale():
-    """Test get_locale."""
-    from locale import getdefaultlocale
-    assert utils.get_locale() == getdefaultlocale()[0] or 'es_ES'
 
 
 def test_write_size0():
