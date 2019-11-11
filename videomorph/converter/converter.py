@@ -27,9 +27,9 @@ from .vmpath import LIBRARY_PATH
 class Converter:
     """_Converter class to provide conversion functionality."""
 
-    def __init__(self):
+    def __init__(self, library_path=LIBRARY_PATH):
         """Class initializer."""
-        self._library_path = LIBRARY_PATH
+        self._library_path = library_path
         self._process = QProcess()
 
     def setup_converter(self, reader, finisher, process_channel):
