@@ -36,7 +36,7 @@ class Video:
         """Delegate to get info about the video."""
         return getattr(self._info, attr)
 
-    def get_name(self, with_extension=True):
+    def get_name(self, with_extension=False):
         """Return the file name."""
         if with_extension:
             return self.path.name
@@ -46,12 +46,7 @@ class Video:
         """Check if a video is valid."""
         try:
             # Video has a valid duration?
-            duration = float(self.format_info['duration'])
+            # Duration is > 0
+            return float(self.format_info['duration']) > 0
         except (TypeError, ValueError, KeyError):
             return False
-
-        # Duration is > 0
-        if duration <= 0:
-            return False
-
-        return True

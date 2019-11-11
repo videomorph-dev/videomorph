@@ -810,7 +810,8 @@ class VideoMorphMW(QMainWindow):
         for i, task in enumerate(self.task_list):
             self.tasks_table.setRowCount(i + 1)
             self._insert_table_item(
-                text=self.task_list.get_file_name(position=i),
+                text=self.task_list.get_file_name(position=i,
+                                                  with_extension=True),
                 row=i, column=COLUMNS.NAME)
 
             item_text = str(write_time(self.task_list.get_file_info(
