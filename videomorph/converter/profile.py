@@ -84,18 +84,29 @@ class Profile:
 class _XMLProfile:
     """Class to manage the xml profiles file."""
 
-    def __init__(self):
+    def __init__(self,
+                 xml_files=XML_FILES,
+                 base_dir=BASE_DIR,
+                 sys_path=SYS_PATHS,
+                 vmpath=VM_PATHS,
+                 valid_extensions=VALID_VIDEO_EXT):
         """Class initializer."""
-        self._create_xml_files()
-        self.available_codecs = CodecsReader()
+        self._xml_files = xml_files
+        self._base_dir = base_dir
+        self._sys_path = sys_path
+        self._vmpath = vmpath
+        self._valid_ext = valid_extensions
+        self._available_codecs = CodecsReader()
 
-    def get_xml_profile_qualities(self):
+        self._create_xml_files()
+
+    def get_xml_profile_qualities(self, locale=LOCALE):
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
 
-        for xml_file in XML_FILES:
+        for xml_file in self._xml_files:
             for profile in self._xml_root(xml_file):
-                qualities = self._get_qualities(profile)
+                qualities = self._get_qualities(profile, locale)
 
                 if not qualities:
                     continue
@@ -107,11 +118,11 @@ class _XMLProfile:
 
         return qualities_per_profile
 
-    def _get_qualities(self, profile):
+    def _get_qualities(self, profile, locale=LOCALE):
         qualities = []
         for preset in profile:
             if self._codecs_are_available(preset[1].text):
-                if LOCALE == 'es_ES':
+                if locale == 'es_ES':
                     qualities.append(preset[3].text)
                 else:
                     qualities.append(preset[0].text)
@@ -124,7 +135,7 @@ class _XMLProfile:
                      'preset_extension': 2,
                      'preset_name_es': 3}
 
-        for xml_file in XML_FILES:
+        for xml_file in self._xml_files:
             for profile in self._xml_root(xml_file):
                 for preset in profile:
                     if (preset[0].text == target_quality or
@@ -157,26 +168,26 @@ class _XMLProfile:
         vcodec = acodec = scodec = True
 
         if preset_codecs.vcodec is not None:
-            if not (preset_codecs.vcodec in self.available_codecs.vencoders or
-                    preset_codecs.vcodec in self.available_codecs.vcodecs):
+            if not (preset_codecs.vcodec in self._available_codecs.vencoders or
+                    preset_codecs.vcodec in self._available_codecs.vcodecs):
                 vcodec = False
 
         if preset_codecs.acodec is not None:
-            if not (preset_codecs.acodec in self.available_codecs.aencoders or
-                    preset_codecs.acodec in self.available_codecs.acodecs):
+            if not (preset_codecs.acodec in self._available_codecs.aencoders or
+                    preset_codecs.acodec in self._available_codecs.acodecs):
                 acodec = False
 
         if preset_codecs.scodec is not None:
-            if not (preset_codecs.scodec in self.available_codecs.sencoders or
-                    preset_codecs.scodec in self.available_codecs.scodecs):
+            if not (preset_codecs.scodec in self._available_codecs.sencoders or
+                    preset_codecs.scodec in self._available_codecs.scodecs):
                 scodec = False
 
         return vcodec and acodec and scodec
 
     def restore_default_profiles(self):
         """Restore default profiles."""
-        self._copy_xml_file(file_name=XML_FILES.default)
-        self._copy_xml_file(file_name=XML_FILES.customized)
+        for xml_file in self._xml_files:
+            self._copy_xml_file(file_name=xml_file)
 
     def add_xml_profile(self, profile_name, preset, params, extension):
         """Add a conversion profile."""
@@ -191,7 +202,7 @@ class _XMLProfile:
         if not params:
             raise ProfileBlankParamsError
 
-        if not extension.startswith('.') or extension not in VALID_VIDEO_EXT:
+        if not extension.startswith('.') or extension not in self._valid_ext:
             raise ProfileExtensionError('Invalid video file extension')
 
         extension = extension.lower()
@@ -203,15 +214,15 @@ class _XMLProfile:
         self._insert_xml_elements(xml_profile=xml_profile,
                                   xml_preset=xml_preset,
                                   xml_root=self._xml_root(
-                                      XML_FILES.customized))
+                                      self._xml_files.customized))
 
     def export_xml_profiles(self, dst_dir):
         """Export a file with the conversion profiles."""
         # Raise PermissionError if user doesn't have write permission
         try:
             copy2(src=self._user_xml_file_path(
-                file_name=XML_FILES.customized),
-                  dst=dst_dir)
+                file_name=self._xml_files.customized),
+                dst=dst_dir)
         except OSError:
             raise PermissionError
 
@@ -219,7 +230,7 @@ class _XMLProfile:
         """Import a conversion profile file."""
         try:
             dst_directory = self._user_xml_file_path(
-                XML_FILES.customized)
+                self._xml_files.customized)
             copy2(src=src_file, dst=dst_directory)
         except OSError:
             raise PermissionError
@@ -243,7 +254,7 @@ class _XMLProfile:
     def _save_xml_tree(self, xml_tree):
         """Save the xml tree."""
         xml_profiles_path = self._user_xml_file_path(
-            XML_FILES.customized)
+            self._xml_files.customized)
 
         with open(xml_profiles_path, 'wb') as xml_file:
             ET.ElementTree(xml_tree).write(xml_file,
@@ -254,7 +265,7 @@ class _XMLProfile:
         """Create a xml file with the conversion profiles."""
         makedirs(self._user_xml_files_directory(), exist_ok=True)
 
-        for xml_file in XML_FILES:
+        for xml_file in self._xml_files:
             if not self._xml_file_is_correct(xml_file):
                 self._copy_xml_file(file_name=xml_file)
 
@@ -306,21 +317,19 @@ class _XMLProfile:
                 assert preset[3].tag == 'preset_name_es', 'preset_name_es'
                 assert len(preset) == 4, 'fields'
 
-    @staticmethod
-    def _user_xml_files_directory():
+    def _user_xml_files_directory(self):
         """Return the user xml directory path."""
-        return join_path(SYS_PATHS.config, 'profiles')
+        return join_path(self._sys_path.config, 'profiles')
 
-    @staticmethod
-    def _sys_xml_file_path(file_name):
+    def _sys_xml_file_path(self, file_name):
         """Return the path to xml profiles file in the system."""
-        file_path = join_path(SYS_PATHS.profiles, file_name)
+        file_path = join_path(self._sys_path.profiles, file_name)
         if exists(file_path):
             # if VideoMorph is installed
             return file_path
 
         # if not installed
-        return join_path(BASE_DIR, VM_PATHS.profiles, file_name)
+        return join_path(self._base_dir, self._vmpath.profiles, file_name)
 
     @staticmethod
     def _create_xml_preset(preset, params, extension):
