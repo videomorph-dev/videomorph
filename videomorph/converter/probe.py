@@ -26,10 +26,14 @@ from .launchers import spawn_process
 class Probe:
     """Probe Class to get info about a video."""
 
-    def __init__(self, video_path):
+    def __init__(self,
+                 video_path,
+                 probe_path=PROBE_PATH,
+                 probe_runner=spawn_process):
         """Class initializer."""
-        self._probe_path = PROBE_PATH
+        self._probe_path = probe_path
         self._video_path = video_path
+        self._probe_runner = probe_runner
 
         self.format_info = self._parse_probe_format()
         self.video_info = self._parse_probe_video_stream()
@@ -40,7 +44,7 @@ class Probe:
         """Return the probe output as a file like object."""
         process_args = [self._probe_path, self._video_path.__str__()]
         process_args[1:-1] = args
-        process = spawn_process(process_args)
+        process = self._probe_runner(process_args)
 
         return process.stdout
 
