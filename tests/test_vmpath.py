@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# File name: test_video.py
+# File name: test_vmpath.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
@@ -18,7 +18,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module provides tests for video.py module."""
+"""This module provides tests for vmpath.py module."""
 
 from pathlib import Path
 from sys import prefix
