@@ -20,9 +20,8 @@
 """This module provides Path."""
 
 from os.path import dirname
-from os.path import expanduser
 from os.path import expandvars
-from os.path import join as join_path
+from sys import platform
 from sys import prefix
 from pathlib import Path
 
@@ -114,68 +113,50 @@ LIBRARY_PATH = _PATHS.library_path
 PROBE_PATH = _PATHS.prober_path
 
 
-class VMPaths:
-    """Class to define the base class for paths handling."""
-
-    def __init__(self):
-        """Class initializer."""
-        self.apps = 'share/applications'
-        self.config = join_path(expanduser('~'), '.videomorph')
-        self.icons = 'share/icons'
-        self.i18n = 'share/videomorph/translations'
-        self.profiles = 'share/videomorph/profiles'
-        self.sounds = 'share/videomorph/sounds'
-        self.doc = 'share/doc/videomorph'
-        self.help = join_path(self.doc, 'manual')
-        self.man = 'share/man/man1'
-        self.bin = 'bin'
+VM_PATHS = dict(apps=Path('share', 'applications'),
+                config=Path(Path.home(), '.videomorph'),
+                icons=Path('share', 'icons'),
+                i18n=Path('share', 'videomorph', 'translations'),
+                profiles=Path('share', 'videomorph', 'profiles'),
+                sounds=Path('share', 'videomorph', 'sounds'),
+                doc=Path('share', 'doc', 'videomorph'),
+                help=Path('share', 'doc', 'videomorph', 'manual'),
+                man=Path('share', 'man', 'man1'),
+                bin=Path('bin'))
 
 
-class _LinuxPaths(VMPaths):
-    """Class to define the paths to use in Linux systems."""
-
-    def __init__(self):
-        """Class initializer."""
-        super(_LinuxPaths, self).__init__()
-        for attr in self.__dict__:
-            if attr != 'config':
-                self.__dict__[attr] = join_path(prefix, self.__dict__[attr])
-
-
-class _DarwinPaths(VMPaths):
-    """Class to define the paths to use in MacOS systems."""
-
-    def __init__(self):
-        """Class initializer."""
-        super(_DarwinPaths, self).__init__()
-        for attr in self.__dict__:
-            if attr != 'config':
-                self.__dict__[attr] = join_path(prefix, self.__dict__[attr])
+def _unix_paths(base_paths=VM_PATHS):
+    """Return the system paths used by VideoMorph."""
+    paths = {}
+    for key, path in base_paths.items():
+        if key != 'config':
+            paths[key] = Path(prefix, path)
+        else:
+            paths[key] = path
+    return paths
 
 
-class _Win32Paths(VMPaths):
-    """Class to define the paths to use on Windows32 systems."""
-
-    def __init__(self):
-        """Class initializer."""
-        super(_Win32Paths, self).__init__()
-        program_files = expandvars('%ProgramFiles%')
-        self.apps = join_path(program_files, r'VideoMorph')
-        self.config = join_path(expanduser('~'), '.videomorph')
-        self.icons = join_path(program_files, r'VideoMorph\icons')
-        self.i18n = join_path(program_files, r'VideoMorph\translations')
-        self.profiles = join_path(program_files, r'VideoMorph\profiles')
-        self.sounds = join_path(program_files, r'VideoMorph\sounds')
-        self.doc = join_path(program_files, r'VideoMorph\doc')
-        self.help = join_path(self.doc, 'manual')
-        self.man = join_path(program_files, r'VideoMorph\man')
-        self.bin = join_path(program_files, r'VideoMorph\bin')
+def linux_paths(base_paths=VM_PATHS):
+    return _unix_paths(base_paths)
 
 
-def sys_path_factory():
-    """Factory method to create the appropriate path."""
-    return generic_factory(parent_class=VMPaths)
+def darwin_paths(base_paths=VM_PATHS):
+    return _unix_paths(base_paths)
 
 
-SYS_PATHS = sys_path_factory()
-VM_PATHS = VMPaths()
+def win32_paths(base_paths=VM_PATHS):
+    program_files = expandvars('%ProgramFiles%')
+    paths = {}
+    for key, path in base_paths.items():
+        if key == 'config':
+            paths[key] = path
+        elif key == 'apps':
+            paths[key] = Path(program_files, 'VideoMorph')
+        elif key == 'doc':
+            paths[key] = Path(program_files, 'VideoMorph', path.parts[-2])
+        else:
+            paths[key] = Path(program_files, 'VideoMorph', path.parts[-1])
+    return paths
+
+
+SYS_PATHS = globals()[platform + '_paths']()
