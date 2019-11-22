@@ -594,12 +594,12 @@ class VideoMorphMW(QMainWindow):
 
     @staticmethod
     def _get_settings_file():
-        return QSettings(join_path(SYS_PATHS.config, 'config.ini'),
+        return QSettings(join_path(SYS_PATHS['config'], 'config.ini'),
                          QSettings.IniFormat)
 
     def _create_initial_settings(self):
         """Create initial settings file."""
-        if not exists(join_path(SYS_PATHS.config, 'config.ini')):
+        if not exists(join_path(SYS_PATHS['config'], 'config.ini')):
             self._write_app_settings(pos=QPoint(100, 50),
                                      size=QSize(1096, 510),
                                      profile_index=0,
@@ -689,10 +689,10 @@ class VideoMorphMW(QMainWindow):
         msg = file_name + ': ' + self.tr('Successfully converted')
         self.tray_icon.showMessage(APP_NAME, msg,
                                    QSystemTrayIcon.Information, 2000)
-        if exists(join_path(BASE_DIR, VM_PATHS.sounds)):
-            sound = join_path(BASE_DIR, VM_PATHS.sounds, 'successful.wav')
+        if exists(join_path(BASE_DIR, VM_PATHS['sounds'])):
+            sound = join_path(BASE_DIR, VM_PATHS['sounds'], 'successful.wav')
         else:
-            sound = join_path(SYS_PATHS.sounds, 'successful.wav')
+            sound = join_path(SYS_PATHS['sounds'], 'successful.wav')
         launcher = launcher_factory()
         launcher.sound_notify(sound)
 
@@ -704,11 +704,11 @@ class VideoMorphMW(QMainWindow):
         else:
             file_name = 'manual_en.pdf'
 
-        file_path = join_path(SYS_PATHS.help, file_name)
+        file_path = join_path(SYS_PATHS['help'], file_name)
         if isfile(file_path):
             url = join_path('file:', file_path)
         else:
-            url = join_path('file:', BASE_DIR, VM_PATHS.help, file_name)
+            url = join_path('file:', BASE_DIR, VM_PATHS['help'], file_name)
 
         launcher = launcher_factory()
         launcher.open_with_user_browser(url=url)

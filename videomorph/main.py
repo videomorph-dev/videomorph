@@ -43,7 +43,7 @@ def main():
     # Setup app translator
     app_translator = QTranslator()
 
-    i18n_dir = Path(BASE_DIR, VM_PATHS.i18n)
+    i18n_dir = Path(BASE_DIR, VM_PATHS['i18n'])
     i18n_file = i18n_dir.joinpath(''.join(('videomorph_', LOCALE[:2], '.qm')))
 
     if i18n_file.exists():

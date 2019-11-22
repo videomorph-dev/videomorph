@@ -319,17 +319,17 @@ class _XMLProfile:
 
     def _user_xml_files_directory(self):
         """Return the user xml directory path."""
-        return join_path(self._sys_path.config, 'profiles')
+        return join_path(self._sys_path['config'], 'profiles')
 
     def _sys_xml_file_path(self, file_name):
         """Return the path to xml profiles file in the system."""
-        file_path = join_path(self._sys_path.profiles, file_name)
+        file_path = join_path(self._sys_path['profiles'], file_name)
         if exists(file_path):
             # if VideoMorph is installed
             return file_path
 
         # if not installed
-        return join_path(self._base_dir, self._vmpath.profiles, file_name)
+        return join_path(self._base_dir, self._vmpath['profiles'], file_name)
 
     @staticmethod
     def _create_xml_preset(preset, params, extension):
