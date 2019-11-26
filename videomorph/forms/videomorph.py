@@ -781,19 +781,17 @@ class VideoMorphMW(QMainWindow):
                     tagged=self.tag_chb.checkState())
                 # Save settings
                 self._write_app_settings()
-                self.tray_icon.hide()
-                qApp.closeAllWindows()
-                qApp.quit()
-                event.accept()
+                self._close_app()
             else:
                 event.ignore()
         else:
             # Save settings
             self._write_app_settings()
-            self.tray_icon.hide()
-            qApp.closeAllWindows()
-            qApp.quit()
-            event.accept()
+            self._close_app()
+
+    def _close_app(self):
+        self.tray_icon.hide()
+        QCoreApplication.exit(0)
 
     def add_task(self, video_path):
         """Add a conversion task to the list."""
