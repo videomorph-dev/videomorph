@@ -20,6 +20,7 @@
 
 """This module defines the installation script for VideoMorph."""
 
+from pathlib import Path
 from sys import platform
 
 try:
@@ -67,34 +68,34 @@ COMMONS_SETUPTOOLS = dict(
 
 LINUX_DATA_FILES = dict(
     data_files=[  # Desktop entry
-        (SYS_PATHS['apps'],
-         [VM_PATHS['apps'] + '/videomorph.desktop']),
+        (SYS_PATHS['apps'].__str__(),
+         [Path(VM_PATHS['apps'], 'videomorph.desktop').__str__()]),
         # App icon
-        (SYS_PATHS['icons'],
-         [VM_PATHS['icons'] + '/videomorph.png']),
+        (SYS_PATHS['icons'].__str__(),
+         [Path(VM_PATHS['icons'], 'videomorph.png').__str__()]),
         # App sounds
-        (SYS_PATHS['sounds'],
-         [VM_PATHS['sounds'] + '/successful.wav']),
+        (SYS_PATHS['sounds'].__str__(),
+         [Path(VM_PATHS['sounds'], 'successful.wav').__str__()]),
         # App translation file
-        (SYS_PATHS['i18n'],
-         [VM_PATHS['i18n'] + '/videomorph_es.qm']),
+        (SYS_PATHS['i18n'].__str__(),
+         [Path(VM_PATHS['i18n'], 'videomorph_es.qm').__str__()]),
         # Default conversion profiles
-        (SYS_PATHS['profiles'],
-         [VM_PATHS['profiles'] + '/default.xml',
-          VM_PATHS['profiles'] + '/customized.xml']),
+        (SYS_PATHS['profiles'].__str__(),
+         [Path(VM_PATHS['profiles'], 'default.xml').__str__(),
+          Path(VM_PATHS['profiles'], 'customized.xml').__str__()]),
         # Documentation files
-        (SYS_PATHS['doc'],
+        (SYS_PATHS['doc'].__str__(),
          ['README.md', 'LICENSE', 'requirements.txt', 'howto-videomorph.gif',
           'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
         # User's manual
-        (SYS_PATHS['help'],
-         [VM_PATHS['help'] + '/manual_es.pdf',
-          VM_PATHS['help'] + '/manual_en.pdf']),
+        (SYS_PATHS['help'].__str__(),
+         [Path(VM_PATHS['help'], 'manual_es.pdf').__str__(),
+          Path(VM_PATHS['help'], 'manual_en.pdf').__str__()]),
         # Man page
-        (SYS_PATHS['man'],
-         [VM_PATHS['man'] + '/videomorph.1.gz'])])
+        (SYS_PATHS['man'].__str__(),
+         [Path(VM_PATHS['man'], 'videomorph.1.gz').__str__()])])
 
-LINUX_DISTUTILS = dict(scripts=[VM_PATHS['bin'] + '/videomorph'])
+LINUX_DISTUTILS = dict(scripts=[Path(VM_PATHS['bin'], 'videomorph').__str__()])
 
 DARWIN_DATA_FILES = LINUX_DATA_FILES
 
@@ -102,26 +103,26 @@ DARWIN_DISTUTILS = LINUX_DISTUTILS
 
 WIN32_DATA_FILES = dict(
     data_files=[  # App icon
-        (SYS_PATHS['icons'],
-         [VM_PATHS['icons'] + '/videomorph.ico']),
+        (SYS_PATHS['icons'].__str__(),
+         [Path(VM_PATHS['icons'], 'videomorph.ico').__str__()]),
         # App sounds
-        (SYS_PATHS['sounds'],
-         [VM_PATHS['sounds'] + '/successful.wav']),
+        (SYS_PATHS['sounds'].__str__(),
+         [Path(VM_PATHS['sounds'], 'successful.wav').__str__()]),
         # App translation file
-        (SYS_PATHS['i18n'],
-         [VM_PATHS['i18n'] + '/videomorph_es.qm']),
+        (SYS_PATHS['i18n'].__str__(),
+         [Path(VM_PATHS['i18n'], 'videomorph_es.qm').__str__()]),
         # Default conversion profiles
-        (SYS_PATHS['profiles'],
-         [VM_PATHS['profiles'] + '/default.xml',
-          VM_PATHS['profiles'] + '/customized.xml']),
+        (SYS_PATHS['profiles'].__str__(),
+         [Path(VM_PATHS['profiles'], 'default.xml').__str__(),
+          Path(VM_PATHS['profiles'], 'customized.xml').__str__()]),
         # Documentation files
-        (SYS_PATHS['doc'],
+        (SYS_PATHS['doc'].__str__(),
          ['README.md', 'LICENSE', 'requirements.txt', 'howto-videomorph.gif',
           'copyright', 'changelog.gz', 'TODO', 'screenshot.png']),
         # User's manual
-        (SYS_PATHS['help'],
-         [VM_PATHS['help'] + '/manual_es.pdf',
-          VM_PATHS['help'] + '/manual_en.pdf'])])
+        (SYS_PATHS['help'].__str__(),
+         [Path(VM_PATHS['help'], 'manual_es.pdf').__str__(),
+          Path(VM_PATHS['help'], 'manual_en.pdf').__str__()])])
 
 
 SETUP_PARAMS = COMMONS
