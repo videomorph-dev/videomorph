@@ -14,6 +14,8 @@ matrix:
   fast_finish: true
 
 before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install ffmpeg
   - export DISPLAY=:99.0
   - sleep 3
 
