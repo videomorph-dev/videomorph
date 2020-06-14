@@ -81,4 +81,7 @@ Temp/
 *.py~
 
 # FFmpeg library
-ffmpeg*
+ffmpeg*/
+
+# Virtualenv
+venv/

@@ -31,6 +31,7 @@ from .converter import BASE_DIR
 from .converter import LOCALE
 from .converter import VM_PATHS
 from .converter.console import run_on_console
+from .converter.vmpath import LIBRARY_PATH
 from .forms.videomorph import VideoMorphMW
 
 
@@ -42,7 +43,7 @@ def main():
     # Setup app translator
     app_translator = QTranslator()
 
-    i18n_dir = Path(BASE_DIR, VM_PATHS.i18n)
+    i18n_dir = Path(BASE_DIR, VM_PATHS['i18n'])
     i18n_file = i18n_dir.joinpath(''.join(('videomorph_', LOCALE[:2], '.qm')))
 
     if i18n_file.exists():
@@ -54,7 +55,7 @@ def main():
     main_win = VideoMorphMW()
 
     # Check for conversion library and run
-    if main_win.library.path:
+    if LIBRARY_PATH:
         if len(sys.argv) > 1:  # If it is running from console
             run_on_console(app, main_win)
         else:  # Or is running on GUI
@@ -64,7 +65,7 @@ def main():
         msg_box = QMessageBox(
             QMessageBox.Critical,
             main_win.tr('Error!'),
-            main_win.no_library_msg,
+            main_win.tr('Ffmpeg Library not Found in your System'),
             QMessageBox.NoButton, main_win)
         msg_box.addButton("&Ok", QMessageBox.AcceptRole)
         if msg_box.exec_() == QMessageBox.AcceptRole:

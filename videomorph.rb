@@ -10,9 +10,9 @@ class VideoMorph < Formula
   # TODO: If you're submitting an existing package, make sure you include your
   #       bottle block here.
 
-  depends_on :python3
-  depends_on :ffmpeg
-  depends_on :pyqt
+  depends_on "python"
+  depends_on "ffmpeg"
+  depends_on "pyqt"
 
   def install
     virtualenv_install_with_resources

@@ -20,8 +20,6 @@
 
 """This module provides tests for profile.py module."""
 
-from collections import OrderedDict
-
 import nose
 
 from videomorph.converter.profile import Profile
@@ -35,7 +33,7 @@ conv = Library()
 def setup():
     """Function to setup the test."""
     global profile
-    profile = Profile(prober=conv.prober_path)
+    profile = Profile()
     profile.update(new_quality='MP4 Fullscreen (4:3)')
 
 
@@ -72,17 +70,16 @@ def test_get_xml_profile_qualities_es():
                                 'XVID Pantalla Panorámica 704x384 (16:9)']
 
 
-# Tests for _Profile class
 def test_quality_tag():
-    """Test _Profile.quality_tag."""
+    """Test Profile.quality_tag."""
     assert profile.quality_tag == '[MP4F]-'
 
 
+@nose.tools.raises(ValueError)
 def test_quality_tag_no_regex_tag():
-    """Test _Profile.quality_tag if not regex tag."""
+    """Test Profile.quality_tag if not regex tag."""
     global profile
     profile.update(new_quality='wmv generic')
-    print(profile.quality_tag)
     assert profile.quality_tag == '[WG]-'
 
 

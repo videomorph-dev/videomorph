@@ -28,6 +28,7 @@ from os.path import isdir
 from os.path import isfile
 
 from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QSettings
 from PyQt5.QtCore import QDir
@@ -73,7 +74,6 @@ from videomorph.converter.tasklist import TaskList
 from videomorph.converter.launchers import launcher_factory
 from videomorph.converter.profile import Profile
 from videomorph.converter.utils import write_time
-from videomorph.converter.vmpath import LIBRARY_PATH
 
 from . import COLUMNS
 from . import videomorph_qrc
@@ -94,19 +94,15 @@ class VideoMorphMW(QMainWindow):
         self.icon = self._get_app_icon()
         self.source_dir = QDir.homePath()
         self.task_list_duration = 0.0
-        self.no_library_msg = self.tr('Ffmpeg Library not Found'
-                                      ' in your System')
 
         self._setup_ui()
         self._setup_model()
-
         self.populate_profiles_combo()
-
         self._load_app_settings()
 
     def _setup_model(self):
         """Setup the app model."""
-        self.library = Library(path=LIBRARY_PATH)
+        self.library = Library()
         self.library.setup_converter(
             reader=self._ready_read,
             finisher=self._finish_file_encoding,
@@ -114,7 +110,8 @@ class VideoMorphMW(QMainWindow):
 
         self.profile = Profile()
 
-        self.task_list = TaskList(profile=self.profile)
+        self.task_list = TaskList(profile=self.profile,
+                                  output_dir=self.output_edit.text())
 
     def _setup_ui(self):
         """Setup UI."""
@@ -578,10 +575,8 @@ class VideoMorphMW(QMainWindow):
         progress_dlg.setCancelButtonText(self.tr('Cancel'))
         progress_dlg.setLabel(label)
         progress_dlg.setModal(True)
-        progress_dlg.setMinimum(0)
-        progress_dlg.setMinimumDuration(0)
-        progress_dlg.setMaximum(0)
-        progress_dlg.setValue(0)
+        progress_dlg.setMinimumDuration(800)
+        QCoreApplication.processEvents()
 
         return progress_dlg
 
@@ -599,12 +594,12 @@ class VideoMorphMW(QMainWindow):
 
     @staticmethod
     def _get_settings_file():
-        return QSettings(join_path(SYS_PATHS.config, 'config.ini'),
+        return QSettings(join_path(SYS_PATHS['config'], 'config.ini'),
                          QSettings.IniFormat)
 
     def _create_initial_settings(self):
         """Create initial settings file."""
-        if not exists(join_path(SYS_PATHS.config, 'config.ini')):
+        if not exists(join_path(SYS_PATHS['config'], 'config.ini')):
             self._write_app_settings(pos=QPoint(100, 50),
                                      size=QSize(1096, 510),
                                      profile_index=0,
@@ -627,6 +622,7 @@ class VideoMorphMW(QMainWindow):
             directory = str(settings.value('output_dir'))
             output_dir = directory if isdir(directory) else QDir.homePath()
             self.output_edit.setText(output_dir)
+            self.task_list.output_dir = output_dir
         if 'source_dir' in settings.allKeys():
             self.source_dir = str(settings.value('source_dir'))
 
@@ -673,6 +669,12 @@ class VideoMorphMW(QMainWindow):
         """Open VideoMorph Web page."""
         self._open_url(url='http://videomorph.webmisolutions.com')
 
+    @staticmethod
+    def _open_url(url):
+        """Open URL."""
+        launcher = launcher_factory()
+        launcher.open_with_user_browser(url=url)
+
     def show_video_info(self):
         """Show video info on the Info Panel."""
         position = self.tasks_table.currentRow()
@@ -687,18 +689,12 @@ class VideoMorphMW(QMainWindow):
         msg = file_name + ': ' + self.tr('Successfully converted')
         self.tray_icon.showMessage(APP_NAME, msg,
                                    QSystemTrayIcon.Information, 2000)
-        if exists(join_path(BASE_DIR, VM_PATHS.sounds)):
-            sound = join_path(BASE_DIR, VM_PATHS.sounds, 'successful.wav')
+        if exists(join_path(BASE_DIR, VM_PATHS['sounds'])):
+            sound = join_path(BASE_DIR, VM_PATHS['sounds'], 'successful.wav')
         else:
-            sound = join_path(SYS_PATHS.sounds, 'successful.wav')
+            sound = join_path(SYS_PATHS['sounds'], 'successful.wav')
         launcher = launcher_factory()
         launcher.sound_notify(sound)
-
-    @staticmethod
-    def _open_url(url):
-        """Open URL."""
-        launcher = launcher_factory()
-        launcher.open_with_user_browser(url=url)
 
     @staticmethod
     def help_content():
@@ -708,11 +704,11 @@ class VideoMorphMW(QMainWindow):
         else:
             file_name = 'manual_en.pdf'
 
-        file_path = join_path(SYS_PATHS.help, file_name)
+        file_path = join_path(SYS_PATHS['help'], file_name)
         if isfile(file_path):
             url = join_path('file:', file_path)
         else:
-            url = join_path('file:', BASE_DIR, VM_PATHS.help, file_name)
+            url = join_path('file:', BASE_DIR, VM_PATHS['help'], file_name)
 
         launcher = launcher_factory()
         launcher.open_with_user_browser(url=url)
@@ -730,7 +726,7 @@ class VideoMorphMW(QMainWindow):
         self.profiles_combo.clear()
         # Populate the combobox with new data
 
-        profile_names = self.profile.get_xml_profile_qualities(LOCALE).keys()
+        profile_names = self.profile.get_xml_profile_qualities().keys()
         for i, profile_name in enumerate(profile_names):
             self.profiles_combo.addItem(profile_name)
             icon = QIcon(':/formats/{0}.png'.format(profile_name))
@@ -746,8 +742,7 @@ class VideoMorphMW(QMainWindow):
         if current_profile != '':
             combo.clear()
             combo.addItems(
-                self.profile.get_xml_profile_qualities(
-                    LOCALE)[current_profile])
+                self.profile.get_xml_profile_qualities()[current_profile])
 
             if self.tasks_table.rowCount():
                 self._update_media_files_status()
@@ -761,6 +756,7 @@ class VideoMorphMW(QMainWindow):
 
         if directory:
             self.output_edit.setText(directory)
+            self.task_list.output_dir = directory
             self._on_modify_conversion_option()
 
     def closeEvent(self, event):
@@ -785,30 +781,75 @@ class VideoMorphMW(QMainWindow):
                     tagged=self.tag_chb.checkState())
                 # Save settings
                 self._write_app_settings()
-                event.accept()
+                self._close_app()
             else:
                 event.ignore()
         else:
             # Save settings
             self._write_app_settings()
-            event.accept()
+            self._close_app()
 
-    def _fill_media_list(self, files_paths):
-        """Fill TaskList object with Video objects."""
+    def _close_app(self):
+        self.tray_icon.hide()
+        QCoreApplication.exit(0)
+
+    def add_task(self, video_path):
+        """Add a conversion task to the list."""
+        if self.task_list.task_is_added(video_path):
+            return
+
+        if not self.task_list.add_task(video_path):
+            return
+
+        self._update_task_list()
+
+    def _update_task_list(self):
+        """Update the list of conversion tasks."""
+        for i, task in enumerate(self.task_list):
+            self.tasks_table.setRowCount(i + 1)
+            self._insert_table_item(
+                text=self.task_list.get_file_name(position=i,
+                                                  with_extension=True),
+                row=i, column=COLUMNS.NAME)
+
+            item_text = str(write_time(self.task_list.get_file_info(
+                position=i, info_param='duration')))
+
+            self._insert_table_item(item_text, row=i, column=COLUMNS.DURATION)
+
+            self._insert_table_item(text=str(self.quality_combo.currentText()),
+                                    row=i, column=COLUMNS.QUALITY)
+
+            self._insert_table_item(text=self.tr('To Convert'),
+                                    row=i, column=COLUMNS.PROGRESS)
+
+    def _insert_table_item(self, text, row, column):
+        item = QTableWidgetItem()
+        item.setText(text)
+        if column == COLUMNS.NAME:
+            item.setIcon(QIcon(':/icons/video-in-list.png'))
+        self.tasks_table.setItem(row, column, item)
+
+    def add_tasks(self, *files):
+        """Add video files to conversion list.
+
+        Args:
+            files (list): List of video file paths
+        """
+        max_value = files.__len__()
         progress_dlg = self._create_progress_dialog()
-        populator = self.task_list.populate(files_paths,
-                                            self.output_edit.text())
-        for i, element in enumerate(populator):
-            if not i:  # First element yielded
-                progress_dlg.setMaximum(element)
-            else:  # Second and on...
-                progress_dlg.setLabelText(self.tr('Adding Video: ') + element)
-                progress_dlg.setValue(i)
+        progress_dlg.setMaximum(max_value)
+
+        for i, file in enumerate(files):
+            progress_dlg.setLabelText(self.tr('Adding Video: ') + file)
+            progress_dlg.setValue(i)
 
             if progress_dlg.wasCanceled():
                 break
 
-        progress_dlg.close()
+            self.add_task(file)
+
+        progress_dlg.setValue(max_value)
 
         if self.task_list.not_added_files:
             msg = self.tr('Invalid Video Information for:') + ' \n - ' + \
@@ -819,62 +860,13 @@ class VideoMorphMW(QMainWindow):
                 title=self.tr('Error!'),
                 msg=msg)
 
+            self.task_list.not_added_files.clear()
+
             if not self.task_list.length:
                 self._update_ui_when_no_file()
             else:
                 self.update_ui_when_ready()
 
-    def _load_files(self, source_dir=QDir.homePath()):
-        """Load video files."""
-        files_paths = self._select_files(
-            dialog_title=self.tr('Select Videos'),
-            files_filter=self.tr('Videos') + ' ' +
-            '(' + VIDEO_FILTERS + ')',
-            source_dir=source_dir)
-
-        return files_paths
-
-    def _insert_table_item(self, item_text, row, column):
-        item = QTableWidgetItem()
-        item.setText(item_text)
-        if column == COLUMNS.NAME:
-            item.setIcon(QIcon(':/icons/video-in-list.png'))
-        self.tasks_table.setItem(row, column, item)
-
-    def _create_table(self):
-        self.tasks_table.setRowCount(self.task_list.length)
-        # Call converter_is_running only once
-        converter_is_running = self.library.converter_is_running
-        for row in range(self.tasks_table.rowCount()):
-            self._insert_table_item(
-                item_text=self.task_list.get_file_name(position=row),
-                row=row, column=COLUMNS.NAME)
-
-            self._insert_table_item(
-                item_text=str(write_time(
-                    self.task_list.get_file_info(
-                        position=row,
-                        info_param='duration'))),
-                row=row, column=COLUMNS.DURATION)
-
-            self._insert_table_item(
-                item_text=str(self.quality_combo.currentText()),
-                row=row, column=COLUMNS.QUALITY)
-
-            if converter_is_running:
-                if row > self.task_list.position:
-                    self._insert_table_item(item_text=self.tr('To Convert'),
-                                            row=row, column=COLUMNS.PROGRESS)
-            else:
-                self._insert_table_item(item_text=self.tr('To Convert'),
-                                        row=row, column=COLUMNS.PROGRESS)
-
-    def add_media_files(self, *files):
-        """Add video files to conversion list.
-
-        Args:
-            files (list): List of video file paths
-        """
         # Update tool buttons so you can convert, or add_file, or clear...
         # only if there is not a conversion process running
         if self.library.converter_is_running:
@@ -884,10 +876,6 @@ class VideoMorphMW(QMainWindow):
             self._set_media_status()
             # Update ui
             self.update_ui_when_ready()
-
-        self._fill_media_list(files)
-
-        self._create_table()
 
         # After adding files to the list, recalculate the list duration
         self.task_list_duration = self.task_list.duration
@@ -921,7 +909,17 @@ class VideoMorphMW(QMainWindow):
         if files_paths is None:
             return
 
-        self.add_media_files(*files_paths)
+        self.add_tasks(*files_paths)
+
+    def _load_files(self, source_dir=QDir.homePath()):
+        """Load video files."""
+        files_paths = self._select_files(
+            dialog_title=self.tr('Select Videos'),
+            files_filter=self.tr('Videos') + ' ' +
+            '(' + VIDEO_FILTERS + ')',
+            source_dir=source_dir)
+
+        return files_paths
 
     def open_media_dir(self):
         """Add media files from a directory recursively."""
@@ -935,7 +933,7 @@ class VideoMorphMW(QMainWindow):
         try:
             media_files = search_directory_recursively(directory)
             self.source_dir = directory
-            self.add_media_files(*media_files)
+            self.add_tasks(*media_files)
         except FileNotFoundError:
             self._show_message_box(
                 type_=QMessageBox.Critical,

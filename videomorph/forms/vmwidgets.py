@@ -87,7 +87,7 @@ class TasksListTable(QTableWidget):
                 files.append(file_path)
 
         if files:
-            self._window.add_media_files(*files)
+            self._window.add_tasks(*files)
             event.accept()
         else:
             event.ignore()
