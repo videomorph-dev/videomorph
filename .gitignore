@@ -85,3 +85,9 @@ ffmpeg*/
 
 # Virtualenv
 venv/
+
+# VSCode
+.vscode/
+
+# MyPy
+.mypy_cache/
