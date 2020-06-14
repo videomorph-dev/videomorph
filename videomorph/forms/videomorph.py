@@ -48,8 +48,6 @@ from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QCheckBox
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QProgressBar
-from PyQt5.QtWidgets import QSystemTrayIcon
-from PyQt5.QtWidgets import QMenu
 from PyQt5.QtWidgets import QToolBar
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QAction
@@ -79,7 +77,6 @@ from . import COLUMNS
 from . import videomorph_qrc
 from .vmwidgets import TasksListTable
 from .about import AboutVMDialog
-from .addprofile import AddProfileDialog
 from .changelog import ChangelogDialog
 from .info import InfoDialog
 
@@ -125,7 +122,6 @@ class VideoMorphMW(QMainWindow):
         self._create_main_menu()
         self._create_toolbar()
         self._create_status_bar()
-        self._create_sys_tray_icon(self.icon)
         self._create_context_menu()
         self._update_ui_when_no_file()
 
@@ -147,24 +143,6 @@ class VideoMorphMW(QMainWindow):
         conversion_layout.addWidget(self._group_progress())
         general_layout.addLayout(settings_layout)
         general_layout.addLayout(conversion_layout)
-
-    def _create_sys_tray_icon(self, icon):
-        self.tray_icon_menu = QMenu(self)
-        self.tray_icon_menu.addAction(self.open_media_file_action)
-        self.tray_icon_menu.addAction(self.open_media_dir_action)
-        self.tray_icon_menu.addSeparator()
-        self.tray_icon_menu.addAction(self.clear_media_list_action)
-        self.tray_icon_menu.addSeparator()
-        self.tray_icon_menu.addAction(self.convert_action)
-        self.tray_icon_menu.addAction(self.stop_all_action)
-        self.tray_icon_menu.addSeparator()
-        self.tray_icon_menu.addAction(self.exit_action)
-
-        self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(icon)
-        self.tray_icon.setContextMenu(self.tray_icon_menu)
-
-        self.tray_icon.show()
 
     def _group_settings(self):
         """Settings group."""
@@ -370,34 +348,6 @@ class VideoMorphMW(QMainWindow):
                                     'to the List of Conversion Tasks'),
                         callback=self.open_media_dir),
 
-                   'add_profile_action':
-                   dict(icon=QIcon(':/icons/add-profile.png'),
-                        text=self.tr('&Add Customized Profile...'),
-                        shortcut="Ctrl+F",
-                        tip=self.tr('Add Customized Profile'),
-                        callback=self.add_customized_profile),
-
-                   'export_profile_action':
-                   dict(icon=QIcon(':/icons/export.png'),
-                        text=self.tr('&Export Conversion Profiles...'),
-                        shortcut="Ctrl+E",
-                        tip=self.tr('Export Conversion Profiles'),
-                        callback=self.export_profiles),
-
-                   'import_profile_action':
-                   dict(icon=QIcon(':/icons/import.png'),
-                        text=self.tr('&Import Conversion Profiles...'),
-                        shortcut="Ctrl+I",
-                        tip=self.tr('Import Conversion Profiles'),
-                        callback=self.import_profiles),
-
-                   'restore_profile_action':
-                   dict(icon=QIcon(':/icons/default-profile.png'),
-                        text=self.tr('&Restore the Default '
-                                     'Conversion Profiles'),
-                        tip=self.tr('Restore the Default Conversion Profiles'),
-                        callback=self.restore_profiles),
-
                    'play_input_media_file_action':
                    dict(icon=QIcon(':/icons/video-player-input.png'),
                         text=self.tr('Play Input Video'),
@@ -519,11 +469,6 @@ class VideoMorphMW(QMainWindow):
         self.file_menu.addAction(self.exit_action)
         # Edit menu
         self.edit_menu = self.menuBar().addMenu(self.tr('&Edit'))
-        self.edit_menu.addAction(self.add_profile_action)
-        self.edit_menu.addAction(self.export_profile_action)
-        self.edit_menu.addAction(self.import_profile_action)
-        self.edit_menu.addAction(self.restore_profile_action)
-        self.edit_menu.addSeparator()
         self.edit_menu.addAction(self.clear_media_list_action)
         self.edit_menu.addAction(self.remove_media_file_action)
         # Conversion menu
@@ -685,10 +630,6 @@ class VideoMorphMW(QMainWindow):
 
     def notify(self, file_name):
         """Notify when conversion finished."""
-        file_name = ''.join(('"', file_name, '"'))
-        msg = file_name + ': ' + self.tr('Successfully converted')
-        self.tray_icon.showMessage(APP_NAME, msg,
-                                   QSystemTrayIcon.Information, 2000)
         if exists(join_path(BASE_DIR, VM_PATHS['sounds'])):
             sound = join_path(BASE_DIR, VM_PATHS['sounds'], 'successful.wav')
         else:
@@ -781,17 +722,13 @@ class VideoMorphMW(QMainWindow):
                     tagged=self.tag_chb.checkState())
                 # Save settings
                 self._write_app_settings()
-                self._close_app()
+                QCoreApplication.exit(0)
             else:
                 event.ignore()
         else:
             # Save settings
             self._write_app_settings()
-            self._close_app()
-
-    def _close_app(self):
-        self.tray_icon.hide()
-        QCoreApplication.exit(0)
+            QCoreApplication.exit(0)
 
     def add_task(self, video_path):
         """Add a conversion task to the list."""
@@ -966,24 +903,6 @@ class VideoMorphMW(QMainWindow):
             self._reset_options_check_boxes()
             self._update_ui_when_no_file()
 
-    def add_customized_profile(self):
-        """Show dialog for adding conversion profiles."""
-        add_profile_dlg = AddProfileDialog(parent=self)
-        add_profile_dlg.exec_()
-
-    def _export_import_profiles(self, func, path, msg_info):
-        try:
-            func(path)
-        except PermissionError:
-            self._show_message_box(
-                type_=QMessageBox.Critical,
-                title=self.tr('Error!'),
-                msg=self.tr('Can not Write to Selected Folder'))
-        else:
-            self._show_message_box(type_=QMessageBox.Information,
-                                   title=self.tr('Information!'),
-                                   msg=msg_info)
-
     def _select_directory(self, dialog_title, source_dir=QDir.homePath()):
         options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
 
@@ -992,50 +911,6 @@ class VideoMorphMW(QMainWindow):
                                                      source_dir,
                                                      options=options)
         return directory
-
-    def export_profiles(self):
-        """Export conversion profiles."""
-        directory = self._select_directory(
-            dialog_title=self.tr('Export to Folder'))
-
-        if directory:
-            msg_info = self.tr('Conversion Profiles Successfully Exported!')
-            self._export_import_profiles(
-                func=self.profile.export_xml_profiles,
-                path=directory, msg_info=msg_info)
-
-    def import_profiles(self):
-        """Import conversion profiles."""
-        file_path = self._select_files(
-            dialog_title=self.tr('Select a Profiles File'),
-            files_filter=self.tr('Profiles Files ') + '(*.xml)',
-            single_file=True)
-
-        if file_path:
-            msg_info = self.tr('Conversion Profiles Successfully Imported!')
-
-            self._export_import_profiles(
-                func=self.profile.import_xml_profiles,
-                path=file_path, msg_info=msg_info)
-            self.populate_profiles_combo()
-            self.profile.update(new_quality=self.quality_combo.currentText())
-
-    def restore_profiles(self):
-        """Restore default profiles."""
-        msg_box = QMessageBox(
-            QMessageBox.Warning,
-            self.tr('Warning!'),
-            self.tr('Do you Really Want to Restore the '
-                    'Default Conversion Profiles?'),
-            QMessageBox.NoButton, self)
-
-        msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
-        msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
-
-        if msg_box.exec_() == QMessageBox.AcceptRole:
-            self.profile.restore_default_profiles()
-            self.populate_profiles_combo()
-            self.profile.update(new_quality=self.quality_combo.currentText())
 
     def _select_files(self, dialog_title, files_filter,
                       source_dir=QDir.homePath(), single_file=False):
@@ -1411,9 +1286,9 @@ class VideoMorphMW(QMainWindow):
         self.stop_all_action.setEnabled(variables['stop_all'])
         self.quality_combo.setEnabled(variables['presets'])
         self.profiles_combo.setEnabled(variables['profiles'])
-        self.add_profile_action.setEnabled(variables['add_costume_profile'])
-        self.import_profile_action.setEnabled(variables['import_profile'])
-        self.restore_profile_action.setEnabled(variables['restore_profile'])
+        # self.add_profile_action.setEnabled(variables['add_costume_profile'])
+        # self.import_profile_action.setEnabled(variables['import_profile'])
+        # self.restore_profile_action.setEnabled(variables['restore_profile'])
         self.output_btn.setEnabled(variables['output_dir'])
         self.subtitle_chb.setEnabled(variables['subtitles_chb'])
         self.delete_chb.setEnabled(variables['delete_chb'])

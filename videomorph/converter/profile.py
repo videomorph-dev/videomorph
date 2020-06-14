@@ -35,10 +35,11 @@ from . import SYS_PATHS
 from . import VM_PATHS
 from . import VALID_VIDEO_EXT
 from .codec import CodecsReader
-from .exceptions import ProfileBlankNameError
-from .exceptions import ProfileBlankParamsError
-from .exceptions import ProfileBlankPresetError
-from .exceptions import ProfileExtensionError
+# from .exceptions import ProfileBlankNameError
+# from .exceptions import ProfileBlankParamsError
+# from .exceptions import ProfileBlankPresetError
+# from .exceptions import ProfileExtensionError
+# from .exceptions import ProfileParamsError
 
 XMLFiles = namedtuple('XMLFiles', 'default customized')
 XML_FILES = XMLFiles('default.xml', 'customized.xml')
@@ -189,77 +190,9 @@ class _XMLProfile:
         for xml_file in self._xml_files:
             self._copy_xml_file(file_name=xml_file)
 
-    def add_xml_profile(self, profile_name, preset, params, extension):
-        """Add a conversion profile."""
-        if not profile_name:
-            raise ProfileBlankNameError
-
-        profile_name = profile_name.upper()
-
-        if not preset:
-            raise ProfileBlankPresetError
-
-        if not params:
-            raise ProfileBlankParamsError
-
-        if not extension.startswith('.') or extension not in self._valid_ext:
-            raise ProfileExtensionError('Invalid video file extension')
-
-        extension = extension.lower()
-
-        xml_profile = ET.Element('profile', {'name': profile_name})
-
-        xml_preset = self._create_xml_preset(preset, params, extension)
-
-        self._insert_xml_elements(xml_profile=xml_profile,
-                                  xml_preset=xml_preset,
-                                  xml_root=self._xml_root(
-                                      self._xml_files.customized))
-
-    def export_xml_profiles(self, dst_dir):
-        """Export a file with the conversion profiles."""
-        # Raise PermissionError if user doesn't have write permission
-        try:
-            copy2(src=self._user_xml_file_path(
-                file_name=self._xml_files.customized),
-                dst=dst_dir)
-        except OSError:
-            raise PermissionError
-
-    def import_xml_profiles(self, src_file):
-        """Import a conversion profile file."""
-        try:
-            dst_directory = self._user_xml_file_path(
-                self._xml_files.customized)
-            copy2(src=src_file, dst=dst_directory)
-        except OSError:
-            raise PermissionError
-
     def _user_xml_file_path(self, file_name):
         """Return the path to the profiles file."""
         return join_path(self._user_xml_files_directory(), file_name)
-
-    def _insert_xml_elements(self, xml_profile, xml_preset, xml_root):
-        """Insert an xml element into an xml root."""
-        for i, elem in enumerate(xml_root[:]):
-            if elem.get('name') == xml_profile.get('name'):
-                xml_root[i].insert(0, xml_preset)
-                self._save_xml_tree(xml_tree=xml_root)
-                break
-        else:
-            xml_profile.insert(0, xml_preset)
-            xml_root.insert(0, xml_profile)
-            self._save_xml_tree(xml_tree=xml_root)
-
-    def _save_xml_tree(self, xml_tree):
-        """Save the xml tree."""
-        xml_profiles_path = self._user_xml_file_path(
-            self._xml_files.customized)
-
-        with open(xml_profiles_path, 'wb') as xml_file:
-            ET.ElementTree(xml_tree).write(xml_file,
-                                           xml_declaration=True,
-                                           encoding='UTF-8')
 
     def _create_xml_files(self):
         """Create a xml file with the conversion profiles."""
@@ -330,22 +263,3 @@ class _XMLProfile:
 
         # if not installed
         return join_path(self._base_dir, self._vmpath['profiles'], file_name)
-
-    @staticmethod
-    def _create_xml_preset(preset, params, extension):
-        """Return a xml preset."""
-        xml_preset = ET.Element('preset')
-        xml_preset_name_en = ET.Element('preset_name_en')
-        xml_preset_name_en.text = preset
-        xml_preset_params = ET.Element('preset_params')
-        xml_preset_params.text = params
-        xml_preset_extension = ET.Element('preset_extension')
-        xml_preset_extension.text = extension
-        xml_preset_name_es = ET.Element('preset_name_es')
-        xml_preset_name_es.text = preset
-
-        for i, elem in enumerate([xml_preset_name_en, xml_preset_params,
-                                  xml_preset_extension, xml_preset_name_es]):
-            xml_preset.insert(i, elem)
-
-        return xml_preset
