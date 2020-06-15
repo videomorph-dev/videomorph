@@ -1229,6 +1229,8 @@ class VideoMorphMW(QMainWindow):
             self.task_list.position = None
             # Update tool buttons
             self._update_ui_when_problem()
+
+            self._on_modify_conversion_option()
         else:
             self.start_encoding()
 
@@ -1344,13 +1346,15 @@ class VideoMorphMW(QMainWindow):
         rows = self.tasks_table.rowCount()
         if rows:
             for row in range(rows):
+                if self.task_list.get_task_status(row) == STATUS.done:
+                    continue
                 self.tasks_table.item(row, column).setText(
                     str(value))
                 self.update_table_progress_column(row)
 
     def update_table_progress_column(self, row):
         """Update the progress column of conversion task list."""
-        if self.task_list.get_task_status(row) != STATUS.todo:
+        if self.task_list.get_task_status(row) == STATUS.stopped:
             self.tasks_table.item(
                 row,
                 COLUMNS.PROGRESS).setText(self.tr('To Convert'))
@@ -1364,7 +1368,8 @@ class VideoMorphMW(QMainWindow):
     def _set_media_status(self):
         """Update media files state of conversion."""
         for media_file in self.task_list:
-            media_file.status = STATUS.todo
+            if media_file.status != STATUS.done:
+                media_file.status = STATUS.todo
         self.task_list.position = None
 
     def _on_modify_conversion_option(self):
