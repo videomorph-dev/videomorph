@@ -30,6 +30,10 @@ class InvalidMetadataError(MediaError):
     pass
 
 
+class InvalidVideoError(MediaError):
+    pass
+
+
 class ProfileError(Exception):
     """Base Exception."""
     pass
@@ -54,6 +58,12 @@ class ProfileExtensionError(ProfileError):
     """Exception form Profile Extension Error."""
     pass
 
+
 class PlayerNotFoundError(Exception):
     """Exception to handle Player not found error."""
+    pass
+
+
+class ProfileParamsError(ProfileError):
+    """Exception form Profile wrong params."""
     pass

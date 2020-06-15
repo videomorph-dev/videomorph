@@ -150,7 +150,7 @@ class AboutVMDialog(QDialog):
 
     def get_license_text(self):
         """Get the license text from the license file."""
-        doc_license = join_path(SYS_PATHS.doc, 'LICENSE')
+        doc_license = join_path(SYS_PATHS['doc'], 'LICENSE')
         basedir_license = join_path(BASE_DIR, 'LICENSE')
         deb_license = '/usr/share/common-licenses/Apache-2.0'
         if isfile(doc_license):

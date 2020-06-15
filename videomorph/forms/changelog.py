@@ -64,7 +64,7 @@ class ChangelogDialog(QtWidgets.QDialog):
 
     def _generate_changelog(self):
         """Return a human readable changelog."""
-        changelog_path = join_path(SYS_PATHS.doc, 'changelog.gz')
+        changelog_path = join_path(SYS_PATHS['doc'], 'changelog.gz')
         if exists(changelog_path):
             changelog_file = changelog_path
         else:

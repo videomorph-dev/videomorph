@@ -26,38 +26,27 @@ from .launchers import spawn_process
 class Probe:
     """Probe Class to get info about a video."""
 
-    def __init__(self, video_path):
+    def __init__(self,
+                 video_path,
+                 probe_path=PROBE_PATH,
+                 probe_runner=spawn_process):
         """Class initializer."""
-        self._probe_path = PROBE_PATH
+        self._probe_path = probe_path
         self._video_path = video_path
+        self._probe_runner = probe_runner
 
-    @property
-    def format_info(self):
-        """Return general info about file."""
-        return self._parse_probe_format()
-
-    @property
-    def video_info(self):
-        """Return general info about video stream."""
-        return self._parse_probe_video_stream()
-
-    @property
-    def audio_info(self):
-        """Return general info about audio stream."""
-        return self._parse_probe_audio_stream()
-
-    @property
-    def subtitle_info(self):
-        """Return general info about subtitle stream."""
-        return self._parse_probe_sub_stream()
+        self.format_info = self._parse_probe_format()
+        self.video_info = self._parse_probe_video_stream()
+        self.audio_info = self._parse_probe_audio_stream()
+        self.subtitle_info = self._parse_probe_sub_stream()
 
     def _probe(self, args):
         """Return the probe output as a file like object."""
         process_args = [self._probe_path, self._video_path.__str__()]
         process_args[1:-1] = args
-        probe_output = spawn_process(process_args).stdout
+        process = self._probe_runner(process_args)
 
-        return probe_output
+        return process.stdout
 
     def _parse_probe(self, selected_params, cmd):
         """Parse the probe output."""

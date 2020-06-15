@@ -36,15 +36,12 @@ VERSION = '1.4'
 LOCALE = get_locale()
 
 VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
-                 ' *.flv *.vob *.ts *.mts *.3gp *.ogv *.mpg *.mp4 *.avi')
+                 ' *.flv *.vob *.ts *.mts *.3gp *.ogv *.ogg *.mpg *.mp4 *.avi')
 
 VALID_VIDEO_EXT = {ext.lstrip('*') for ext in VIDEO_FILTERS.split()}
 
 MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
 STATUS = MediaFileStatus('Todo', 'Done', 'Stopped')
-
-XMLFiles = namedtuple('XMLFiles', 'default customized')
-XML_FILES = XMLFiles('default.xml', 'customized.xml')
 
 CPU_CORES = (cpu_count() - 1 if
              cpu_count() is not None
