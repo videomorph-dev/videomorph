@@ -80,7 +80,10 @@ videomorph_deb/
 Temp/
 *.py~
 
+build_deb.sh
+
 # FFmpeg library
+ffmpeg*
 ffmpeg*/
 
 # Virtualenv
