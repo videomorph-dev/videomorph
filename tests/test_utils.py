@@ -25,69 +25,20 @@ import nose
 from videomorph.converter import utils
 
 
-@nose.tools.raises(ValueError)
-def test_convert_none():
-    """Convert None."""
-    assert utils.write_time(None)
-
-
-@nose.tools.raises(ValueError)
-def test_convert_sting():
-    """Convert string data type."""
-    assert utils.write_time('string')
-
-
-@nose.tools.raises(ValueError)
-def test_convert_tuple():
-    """Convert wrong data type."""
-    assert utils.write_time((1, 2))
-
-
-@nose.tools.raises(ValueError)
-def test_convert_wrong_data_types():
-    """Convert list data type."""
-    assert utils.write_time([1, 2])
-
-
-def test_convert_0():
-    """Convert 0."""
-    assert utils.write_time(0) == '00s'
-
-
-def test_convert_2100():
-    """Convert 2100."""
-    assert utils.write_time(2100) == '35m:00s'
-
-
-def test_convert_3600():
-    """Convert 3600."""
-    assert utils.write_time(3600) == '01h:00m:00s'
-
-
-def test_convert_3659():
-    """Convert 3659."""
-    assert utils.write_time(3659) == '01h:00m:59s'
-
-
-def test_convert_3661():
-    """Convert 3661."""
-    assert utils.write_time(3661) == '01h:01m:01s'
-
-
-@nose.tools.raises(ValueError)
-def test_convert_negative_time():
-    """Test for negative time value (raises a ValueError)."""
-    utils.write_time(-1)
+def test_get_locale_all_es():
+    """Test get_locale."""
+    assert utils.get_locale() in {'en_US', 'es_ES'}
 
 
 def test_which_existing_app():
     """Test for an existing app."""
-    assert utils.which('ls') == '/bin/ls'  # Depends on your system
+    assert utils.which('dir').endswith('dir')  # Depends on your system
 
 
+@nose.tools.raises(ValueError)
 def test_which_non_existing_app():
-    """Test for a non existing app."""
-    assert utils.which('hypothetical_app') is None
+    """Test for a non existing app (raises a ValueError)."""
+    utils.which('hypothetical_app')
 
 
 @nose.tools.raises(ValueError)
@@ -96,10 +47,59 @@ def test_which_null_arg():
     utils.which('')
 
 
-def test_get_locale():
-    """Test get_locale."""
-    from locale import getdefaultlocale
-    assert utils.get_locale() == getdefaultlocale()[0] or 'es_ES'
+@nose.tools.raises(ValueError)
+def test_write_time_none():
+    """Convert None."""
+    assert utils.write_time(None)
+
+
+@nose.tools.raises(ValueError)
+def test_write_time_sting():
+    """Convert string data type."""
+    assert utils.write_time('string')
+
+
+@nose.tools.raises(ValueError)
+def test_write_time_tuple():
+    """Convert wrong data type."""
+    assert utils.write_time((1, 2))
+
+
+@nose.tools.raises(ValueError)
+def test_write_time_wrong_data_types():
+    """Convert list data type."""
+    assert utils.write_time([1, 2])
+
+
+def test_write_time_0():
+    """Convert 0."""
+    assert utils.write_time(0) == '00s'
+
+
+def test_write_time_2100():
+    """Convert 2100."""
+    assert utils.write_time(2100) == '35m:00s'
+
+
+def test_write_time_3600():
+    """Convert 3600."""
+    assert utils.write_time(3600) == '01h:00m:00s'
+
+
+def test_write_time_3659():
+    """Convert 3659."""
+    assert utils.write_time(3659) == '01h:00m:59s'
+
+
+def test_write_time_3661():
+    """Convert 3661."""
+    assert utils.write_time(3661) == '01h:01m:01s'
+
+
+@nose.tools.raises(ValueError)
+def test_write_time_negative():
+    """Test for negative time value (raises a ValueError)."""
+    utils.write_time(-1)
 
 
 def test_write_size0():

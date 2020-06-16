@@ -34,6 +34,8 @@
     <file>./MP3.png</file>
     <file>./MP4.png</file>
     <file>./VCD.png</file>
+    <file>./MKV.png</file>
+    <file>./OGA.png</file>
     <file>./WEBM.png</file>
     <file>./WMV.png</file>
   </qresource>

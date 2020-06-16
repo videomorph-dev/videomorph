@@ -111,6 +111,7 @@ class _LinuxLauncher(_Launcher):
                 spawn_process([player, sound])
                 break
 
+
 class _DarwinLauncher(_Launcher):
     """Concrete class to implement external apps launcher in MacOS."""
 
@@ -158,6 +159,7 @@ class _DarwinLauncher(_Launcher):
                 spawn_process([player, sound])
                 break
 
+
 class _Win32Launcher(_Launcher):
     """Concrete class to implement external apps launcher in Linux."""
 
@@ -190,6 +192,7 @@ def spawn_process_linux(cmd):
                  stdout=PIPE,
                  stderr=PIPE,
                  universal_newlines=True)
+
 
 def spawn_process_darwin(cmd):
     """Return a Popen object on MacOS systems."""

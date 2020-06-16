@@ -80,6 +80,17 @@ videomorph_deb/
 Temp/
 *.py~
 
+build_deb.sh
+
 # FFmpeg library
 ffmpeg*
-build_deb.sh
+ffmpeg*/
+
+# Virtualenv
+venv/
+
+# VSCode
+.vscode/
+
+# MyPy
+.mypy_cache/
