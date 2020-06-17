@@ -66,7 +66,6 @@ from videomorph.converter import VERSION
 from videomorph.converter import VIDEO_FILTERS
 from videomorph.converter import VM_PATHS
 from videomorph.converter.console import search_directory_recursively
-from videomorph.converter.exceptions import PlayerNotFoundError
 from videomorph.converter.library import Library
 from videomorph.converter.tasklist import TaskList
 from videomorph.converter.launchers import launcher_factory
@@ -833,7 +832,7 @@ class VideoMorphMW(QMainWindow):
         """Play a video using an available video player."""
         try:
             self.library.run_player(file_path=file_path)
-        except PlayerNotFoundError:
+        except FileNotFoundError:
             self._show_message_box(
                 type_=QMessageBox.Critical,
                 title=self.tr('Error!'),
