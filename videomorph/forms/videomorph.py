@@ -741,23 +741,23 @@ class VideoMorphMW(QMainWindow):
 
     def _update_task_list(self):
         """Update the list of conversion tasks."""
-        for i, task in enumerate(self.task_list):
-            self.tasks_table.setRowCount(i + 1)
-            self._insert_table_item(
-                text=self.task_list.get_file_name(position=i,
-                                                  with_extension=True),
-                row=i, column=COLUMNS.NAME)
+        row = self.tasks_table.rowCount()
+        self.tasks_table.setRowCount(row + 1)
+        self._insert_table_item(
+            text=self.task_list.get_file_name(position=row,
+                                              with_extension=True),
+            row=row, column=COLUMNS.NAME)
 
-            item_text = str(write_time(self.task_list.get_file_info(
-                position=i, info_param='duration')))
+        item_text = write_time(self.task_list.get_file_info(
+            position=row, info_param='duration'))
 
-            self._insert_table_item(item_text, row=i, column=COLUMNS.DURATION)
+        self._insert_table_item(item_text, row=row, column=COLUMNS.DURATION)
 
-            self._insert_table_item(text=str(self.quality_combo.currentText()),
-                                    row=i, column=COLUMNS.QUALITY)
+        self._insert_table_item(text=str(self.quality_combo.currentText()),
+                                row=row, column=COLUMNS.QUALITY)
 
-            self._insert_table_item(text=self.tr('To Convert'),
-                                    row=i, column=COLUMNS.PROGRESS)
+        self._insert_table_item(text=self.tr('To Convert'),
+                                row=row, column=COLUMNS.PROGRESS)
 
     def _insert_table_item(self, text, row, column):
         item = QTableWidgetItem()
@@ -774,6 +774,7 @@ class VideoMorphMW(QMainWindow):
         """
         max_value = files.__len__()
         progress_dlg = self._create_progress_dialog()
+        progress_dlg.setMinimum(1)
         progress_dlg.setMaximum(max_value)
 
         for i, file in enumerate(files):
@@ -786,6 +787,7 @@ class VideoMorphMW(QMainWindow):
             self.add_task(file)
 
         progress_dlg.setValue(max_value)
+        progress_dlg.close()
 
         if self.task_list.not_added_files:
             msg = self.tr('Invalid Video Information for:') + ' \n - ' + \
@@ -911,31 +913,28 @@ class VideoMorphMW(QMainWindow):
                                                      options=options)
         return directory
 
-    def _select_files(self, dialog_title, files_filter,
-                      source_dir=QDir.homePath(), single_file=False):
+    def _select_files(
+            self,
+            dialog_title,
+            files_filter,
+            source_dir=QDir.homePath()
+    ):
         # Validate source_dir
         source_directory = source_dir if isdir(source_dir) else QDir.homePath()
 
         # Select media files and store their path
-        if single_file:
-            files_paths, _ = QFileDialog.getOpenFileName(self,
-                                                         dialog_title,
-                                                         source_directory,
-                                                         files_filter)
-        else:
-            files_paths, _ = QFileDialog.getOpenFileNames(self,
-                                                          dialog_title,
-                                                          source_directory,
-                                                          files_filter)
+        files_paths, _ = QFileDialog.getOpenFileNames(self,
+                                                      dialog_title,
+                                                      source_directory,
+                                                      files_filter)
 
         if files_paths:
-            # Update the source directory
-            if not single_file:
-                self.source_dir = dirname(files_paths[0])
-        else:
-            return None
+            self.source_dir = dirname(files_paths[0])
+            return files_paths
 
-        return files_paths
+        return None
+
+
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
