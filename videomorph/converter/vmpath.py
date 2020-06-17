@@ -21,13 +21,12 @@
 
 from os.path import dirname
 from os.path import expandvars
+from pathlib import Path
 from sys import platform
 from sys import prefix
-from pathlib import Path
 
 from .launchers import generic_factory
 from .utils import which
-
 
 BASE_DIR = dirname(dirname(dirname(__file__)))
 

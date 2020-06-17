@@ -627,7 +627,7 @@ class VideoMorphMW(QMainWindow):
                               task_list=self.task_list)
         info_dlg.show()
 
-    def notify(self, file_name):
+    def notify(self):
         """Notify when conversion finished."""
         if exists(join_path(BASE_DIR, VM_PATHS['sounds'])):
             sound = join_path(BASE_DIR, VM_PATHS['sounds'], 'successful.wav')
@@ -1040,8 +1040,7 @@ class VideoMorphMW(QMainWindow):
     def _finish_file_encoding(self):
         """Finish the file encoding process."""
         if self.task_list.running_task_status != STATUS.stopped:
-            file_name = self.task_list.running_file_name()
-            self.notify(file_name)
+            self.notify()
             # Close and kill the converterprocess
             self.library.close_converter()
             # Check if the process finished OK

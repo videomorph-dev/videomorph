@@ -26,8 +26,8 @@ from os.path import isdir
 from pathlib import Path
 
 from . import APP_NAME
-from . import VERSION
 from . import VALID_VIDEO_EXT
+from . import VERSION
 
 
 def run_on_console(app, main_win):

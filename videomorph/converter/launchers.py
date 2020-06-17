@@ -21,6 +21,7 @@
 
 import os
 import subprocess
+import webbrowser
 from subprocess import PIPE
 from subprocess import Popen
 from sys import platform

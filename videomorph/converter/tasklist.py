@@ -23,8 +23,8 @@ from collections import deque
 from pathlib import Path
 
 from . import STATUS
-from .video import Video
 from .task import Task
+from .video import Video
 
 
 class TaskList(list):
