@@ -518,10 +518,9 @@ class VideoMorphMW(QMainWindow):
         progress_dlg.setWindowTitle(self.tr('Adding Videos...'))
         progress_dlg.setCancelButtonText(self.tr('Cancel'))
         progress_dlg.setLabel(label)
-        progress_dlg.setModal(True)
-        progress_dlg.setMinimumDuration(800)
+        progress_dlg.setWindowModality(Qt.WindowModal)
+        progress_dlg.setMinimumDuration(100)
         QCoreApplication.processEvents()
-
         return progress_dlg
 
     def _update_edit_triggers(self):
@@ -774,7 +773,6 @@ class VideoMorphMW(QMainWindow):
         """
         max_value = files.__len__()
         progress_dlg = self._create_progress_dialog()
-        progress_dlg.setMinimum(1)
         progress_dlg.setMaximum(max_value)
 
         for i, file in enumerate(files):
