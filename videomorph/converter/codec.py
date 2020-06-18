@@ -21,8 +21,8 @@
 
 from itertools import islice
 
-from .vmpath import LIBRARY_PATH
 from .launchers import spawn_process
+from .vmpath import LIBRARY_PATH
 
 
 class CodecsReader:

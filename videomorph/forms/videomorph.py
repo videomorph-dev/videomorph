@@ -66,7 +66,6 @@ from videomorph.converter import VERSION
 from videomorph.converter import VIDEO_FILTERS
 from videomorph.converter import VM_PATHS
 from videomorph.converter.console import search_directory_recursively
-from videomorph.converter.exceptions import PlayerNotFoundError
 from videomorph.converter.library import Library
 from videomorph.converter.tasklist import TaskList
 from videomorph.converter.launchers import launcher_factory
@@ -519,10 +518,9 @@ class VideoMorphMW(QMainWindow):
         progress_dlg.setWindowTitle(self.tr('Adding Videos...'))
         progress_dlg.setCancelButtonText(self.tr('Cancel'))
         progress_dlg.setLabel(label)
-        progress_dlg.setModal(True)
-        progress_dlg.setMinimumDuration(800)
+        progress_dlg.setWindowModality(Qt.WindowModal)
+        progress_dlg.setMinimumDuration(100)
         QCoreApplication.processEvents()
-
         return progress_dlg
 
     def _update_edit_triggers(self):
@@ -628,7 +626,7 @@ class VideoMorphMW(QMainWindow):
                               task_list=self.task_list)
         info_dlg.show()
 
-    def notify(self, file_name):
+    def notify(self):
         """Notify when conversion finished."""
         if exists(join_path(BASE_DIR, VM_PATHS['sounds'])):
             sound = join_path(BASE_DIR, VM_PATHS['sounds'], 'successful.wav')
@@ -742,23 +740,23 @@ class VideoMorphMW(QMainWindow):
 
     def _update_task_list(self):
         """Update the list of conversion tasks."""
-        for i, task in enumerate(self.task_list):
-            self.tasks_table.setRowCount(i + 1)
-            self._insert_table_item(
-                text=self.task_list.get_file_name(position=i,
-                                                  with_extension=True),
-                row=i, column=COLUMNS.NAME)
+        row = self.tasks_table.rowCount()
+        self.tasks_table.setRowCount(row + 1)
+        self._insert_table_item(
+            text=self.task_list.get_file_name(position=row,
+                                              with_extension=True),
+            row=row, column=COLUMNS.NAME)
 
-            item_text = str(write_time(self.task_list.get_file_info(
-                position=i, info_param='duration')))
+        item_text = write_time(self.task_list.get_file_info(
+            position=row, info_param='duration'))
 
-            self._insert_table_item(item_text, row=i, column=COLUMNS.DURATION)
+        self._insert_table_item(item_text, row=row, column=COLUMNS.DURATION)
 
-            self._insert_table_item(text=str(self.quality_combo.currentText()),
-                                    row=i, column=COLUMNS.QUALITY)
+        self._insert_table_item(text=str(self.quality_combo.currentText()),
+                                row=row, column=COLUMNS.QUALITY)
 
-            self._insert_table_item(text=self.tr('To Convert'),
-                                    row=i, column=COLUMNS.PROGRESS)
+        self._insert_table_item(text=self.tr('To Convert'),
+                                row=row, column=COLUMNS.PROGRESS)
 
     def _insert_table_item(self, text, row, column):
         item = QTableWidgetItem()
@@ -787,6 +785,7 @@ class VideoMorphMW(QMainWindow):
             self.add_task(file)
 
         progress_dlg.setValue(max_value)
+        progress_dlg.close()
 
         if self.task_list.not_added_files:
             msg = self.tr('Invalid Video Information for:') + ' \n - ' + \
@@ -833,7 +832,7 @@ class VideoMorphMW(QMainWindow):
         """Play a video using an available video player."""
         try:
             self.library.run_player(file_path=file_path)
-        except PlayerNotFoundError:
+        except FileNotFoundError:
             self._show_message_box(
                 type_=QMessageBox.Critical,
                 title=self.tr('Error!'),
@@ -912,31 +911,28 @@ class VideoMorphMW(QMainWindow):
                                                      options=options)
         return directory
 
-    def _select_files(self, dialog_title, files_filter,
-                      source_dir=QDir.homePath(), single_file=False):
+    def _select_files(
+            self,
+            dialog_title,
+            files_filter,
+            source_dir=QDir.homePath()
+    ):
         # Validate source_dir
         source_directory = source_dir if isdir(source_dir) else QDir.homePath()
 
         # Select media files and store their path
-        if single_file:
-            files_paths, _ = QFileDialog.getOpenFileName(self,
-                                                         dialog_title,
-                                                         source_directory,
-                                                         files_filter)
-        else:
-            files_paths, _ = QFileDialog.getOpenFileNames(self,
-                                                          dialog_title,
-                                                          source_directory,
-                                                          files_filter)
+        files_paths, _ = QFileDialog.getOpenFileNames(self,
+                                                      dialog_title,
+                                                      source_directory,
+                                                      files_filter)
 
         if files_paths:
-            # Update the source directory
-            if not single_file:
-                self.source_dir = dirname(files_paths[0])
-        else:
-            return None
+            self.source_dir = dirname(files_paths[0])
+            return files_paths
 
-        return files_paths
+        return None
+
+
 
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
@@ -1041,8 +1037,7 @@ class VideoMorphMW(QMainWindow):
     def _finish_file_encoding(self):
         """Finish the file encoding process."""
         if self.task_list.running_task_status != STATUS.stopped:
-            file_name = self.task_list.running_file_name()
-            self.notify(file_name)
+            self.notify()
             # Close and kill the converterprocess
             self.library.close_converter()
             # Check if the process finished OK

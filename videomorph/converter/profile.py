@@ -23,23 +23,18 @@ import re
 import xml.etree.ElementTree as ET
 from collections import OrderedDict
 from collections import namedtuple
-from shutil import copy2
 from os import makedirs
 from os.path import exists, getsize
 from os.path import getmtime
 from os.path import join as join_path
+from shutil import copy2
 
 from . import BASE_DIR
 from . import LOCALE
 from . import SYS_PATHS
-from . import VM_PATHS
 from . import VALID_VIDEO_EXT
+from . import VM_PATHS
 from .codec import CodecsReader
-# from .exceptions import ProfileBlankNameError
-# from .exceptions import ProfileBlankParamsError
-# from .exceptions import ProfileBlankPresetError
-# from .exceptions import ProfileExtensionError
-# from .exceptions import ProfileParamsError
 
 XMLFiles = namedtuple('XMLFiles', 'default customized')
 XML_FILES = XMLFiles('default.xml', 'customized.xml')

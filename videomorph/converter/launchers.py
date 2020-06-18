@@ -21,13 +21,12 @@
 
 import os
 import subprocess
+import webbrowser
 from subprocess import PIPE
 from subprocess import Popen
 from sys import platform
-import webbrowser
 
 from .utils import which
-from .exceptions import PlayerNotFoundError
 
 
 def generic_factory(parent_class):
@@ -97,7 +96,7 @@ class _LinuxLauncher(_Launcher):
             if which(player):
                 return player
 
-        raise PlayerNotFoundError('Player not found')
+        raise FileNotFoundError('Player not found')
 
     def shutdown_machine(self):
         """Shutdown computer."""
@@ -145,7 +144,7 @@ class _DarwinLauncher(_Launcher):
             if which(player):
                 return player
 
-        raise PlayerNotFoundError('Player not found')
+        raise FileNotFoundError('Player not found')
 
     def shutdown_machine(self):
         """Shutdown computer."""

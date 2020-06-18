@@ -20,9 +20,9 @@
 """This module contains some utilities and functions."""
 
 import os
+from locale import getdefaultlocale
 from os.path import pathsep
 from pathlib import Path
-from locale import getdefaultlocale
 
 
 def get_locale():
