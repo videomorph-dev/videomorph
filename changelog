@@ -1,3 +1,111 @@
+videomorph (1.5); urgency=medium
+
+    * VideoMorph v1.5. Release Date: Wed, 17 Jun 2020
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 16 Jun 2020 18:15:38 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Update es_ES translation
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 16 Jun 2020 18:15:38 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Added User's Manual in Markdown format
+
+ -- Leonel Salazar Videaux <leonel.lordford@gmail.com>  Tue, 16 Jun 2020 00:20:05 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Disable the features related to presets (Import profiles, Export profiles, Add profiles, Restore profiles)
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 14 Jun 2019 19:00:38 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Update User's Manual
+
+ -- Leonel Salazar Videaux <leonel.lordford@gmail.com>  Mon, 15 Jun 2020 00:30:31 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Enable Convert action when the user stops the conversion for any reason
+
+ -- Leonel Salazar Videaux <leonel.lordford@gmail.com>  Sun, 14 Jun 2020 20:49:05 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Add and update several presets (AVI for YouTube, DVD PAL, MOV for YouTube, MP4 for YouTube, WMV for the web, Xbox 360, Zune, Power Point, MKV H265 for YouTube, MP3 optimized, OGA and OGA mono)
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 14 Jun 2020 12:18:13 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Improve XML format and content
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 26 Aug 2019 22:33:36 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Output directory problem. Fixed
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 25 Aug 2019 15:34:50 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Check for available codecs and validate default presets
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 25 Aug 2019 12:27:22 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Add MKV presets
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 30 Aug 2019 17:48:57 -0400
+
+videomorph (1.4); urgency=medium
+
+    * MacOS Support enabled
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Wed, 30 Jul 2019 11:08:14 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Correct the layout to the video info dialog
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 8 Jul 2019 10:32:21 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Start conversion process automatically when called from console
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 7 Jul 2019 20:27:44 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Add "Add Directory" option to the main toolbar
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 5 Jul 2019 20:32:36 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Overwrite existing output files when converting
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 30 Jun 2019 08:59:34 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Overwrite existing output files when converting
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 30 Jun 2019 08:59:34 -0400
+
+videomorph (1.4); urgency=high
+
+    * Polish the GUI creation code
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 28 Jun 2019 20:27:43 -0400
+
 videomorph (1.4); urgency=high
 
     * VideoMorph v1.4. Release Date: Fri, 7 Sep 2018
@@ -150,13 +258,13 @@ videomorph (1.3.1); urgency=high
 
 videomorph (1.3); urgency=high
 
-    * Problem with Ubuntu 18.04 and distutils.errors import. Fixed.
+    * Problem with Ubuntu 18.04 and distutils.errors import. Fixed
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 7 Jun 2018 23:45:57 -0500
 
 videomorph (1.3); urgency=high
 
-    * Fixing drag & drop issue about rejecting valid filename extensions in UPPERCASE or mixing LOWERCASE and UPPERCASE not matching pre-defined list.
+    * Fixing drag & drop issue about rejecting valid filename extensions in UPPERCASE or mixing LOWERCASE and UPPERCASE not matching pre-defined list
 
  -- Leonel Salazar Videaux <leonel.lordford@gmail.com>  Tue, 8 May 2018 18:47:20 -0400
 
