@@ -21,12 +21,10 @@
 """This module provides tests for media.py module."""
 
 import nose
-
-from videomorph.converter.library import Library
-from videomorph.converter.tasklist import TaskList
-from videomorph.converter.tasklist import Video
-from videomorph.converter.profile import Profile
 from videomorph.converter import STATUS
+from videomorph.converter.library import Library
+from videomorph.converter.profile import Profile
+from videomorph.converter.tasklist import TaskList, Video
 
 
 class TestMedia:
@@ -34,19 +32,19 @@ class TestMedia:
 
     conv_lib = Library()
     profile = Profile(prober=conv_lib.prober_path)
-    profile.update(new_quality='DVD Fullscreen 352x480 (4:3)')
+    profile.update(new_quality="DVD Fullscreen 352x480 (4:3)")
 
     def setup(self):
         """Setup method."""
         self.media_list = TaskList(profile=self.profile)
-        self.gen = self.media_list.populate(('Dad.mpg',))
+        self.gen = self.media_list.populate(("Dad.mpg",))
         next(self.gen)
         next(self.gen)
 
     def test_populate(self):
         """Test TaskList.populate()."""
         assert len(self.media_list) == 1 == self.media_list.length
-        assert self.media_list[0].input_path.__str__() == 'Dad.mpg'
+        assert self.media_list[0].input_path.__str__() == "Dad.mpg"
 
     def test_delete_file(self):
         """Test TaskList.delete_file()."""
@@ -61,16 +59,18 @@ class TestMedia:
 
     def test_get_file_name(self):
         """Test TaskList.get_file_name()."""
-        assert self.media_list.get_file_name(position=0) == 'Dad'
+        assert self.media_list.get_file_name(position=0) == "Dad"
 
     def test_get_file_name_with_extension(self):
         """Test TaskList.get_file_name() with extension."""
-        assert self.media_list.get_file_name(position=0,
-                                             with_extension=True) == 'Dad.mpg'
+        assert (
+            self.media_list.get_file_name(position=0, with_extension=True)
+            == "Dad.mpg"
+        )
 
     def test_get_file_path(self):
         """Test TaskList.get_file_path()."""
-        assert self.media_list.get_file_path(position=0).__str__() == 'Dad.mpg'
+        assert self.media_list.get_file_path(position=0).__str__() == "Dad.mpg"
 
     def test_get_file_status(self):
         """Test TaskList.get_file_status()."""
@@ -83,17 +83,17 @@ class TestMedia:
 
     def test_get_file_info(self):
         """Test TaskList.get_file_info()."""
-        assert self.media_list.get_file_info(0, 'filename') == 'Dad.mpg'
+        assert self.media_list.get_file_info(0, "filename") == "Dad.mpg"
 
     def test_running_file_name(self):
         """Test TaskList.running_file_name()."""
         self.media_list.position = 0
-        assert self.media_list.running_file_name() == 'Dad'
+        assert self.media_list.running_file_name() == "Dad"
 
     def test_running_file_info(self):
         """Test TaskList.running_file_info()."""
         self.media_list.position = 0
-        assert self.media_list.running_file_info('filename') == 'Dad.mpg'
+        assert self.media_list.running_file_info("filename") == "Dad.mpg"
 
     def test_running_file_status(self):
         """Test TaskList.running_file_status()."""
@@ -106,7 +106,9 @@ class TestMedia:
 
     def test_running_file_output_name(self):
         """Test TaskList.running_file_output_name()."""
-        assert self.media_list.running_file_output_name('.', False) == 'Dad.mpg'
+        assert (
+            self.media_list.running_file_output_name(".", False) == "Dad.mpg"
+        )
 
     def test_is_exhausted_true(self):
         """Test TaskList.is_exhausted == True."""
@@ -120,12 +122,12 @@ class TestMedia:
 
     def test_all_stopped_true(self):
         """Test TaskList.all_stopped == True."""
-        self.media_list.set_task_status(0, 'Stopped')
+        self.media_list.set_task_status(0, "Stopped")
         assert self.media_list.all_stopped
 
     def test_all_stopped_false(self):
         """Test TaskList.all_stopped == False."""
-        self.media_list.set_task_status(0, 'Todo')
+        self.media_list.set_task_status(0, "Todo")
         assert not self.media_list.all_stopped
 
     def test_length(self):
@@ -139,75 +141,106 @@ class TestMedia:
     def test_add_file_twice(self):
         """Testing adding the same file twice."""
         assert self.media_list.length == 1
-        self.media_list.populate(('Dad.mpg',))
+        self.media_list.populate(("Dad.mpg",))
         assert self.media_list.length == 1
 
     def test_build_conversion_cmd(self):
         """Test Video.build_conversion_cmd."""
         assert self.media_list.get_task(0).build_conversion_cmd(
-            output_dir='.',
+            output_dir=".",
             tagged=True,
             subtitle=True,
-            target_quality='DVD Fullscreen 352x480 (4:3)') == ['-i', 'Dad.mpg',
-                                                               '-f', 'dvd',
-                                                               '-target',
-                                                               'ntsc-dvd',
-                                                               '-vcodec',
-                                                               'mpeg2video', '-r',
-                                                               '29.97', '-s',
-                                                               '352x480',
-                                                               '-aspect', '4:3',
-                                                               '-b:v',
-                                                               '4000k', '-mbd',
-                                                               'rd',
-                                                               '-cmp', '2',
-                                                               '-subcmp',
-                                                               '2', '-acodec',
-                                                               'mp2',
-                                                               '-b:a', '192k',
-                                                               '-ar',
-                                                               '48000', '-ac', '2',
-                                                               '-threads', '3',
-                                                               '-y',
-                                                               '[DVDF]-Dad.mpg']
+            target_quality="DVD Fullscreen 352x480 (4:3)",
+        ) == [
+            "-i",
+            "Dad.mpg",
+            "-f",
+            "dvd",
+            "-target",
+            "ntsc-dvd",
+            "-vcodec",
+            "mpeg2video",
+            "-r",
+            "29.97",
+            "-s",
+            "352x480",
+            "-aspect",
+            "4:3",
+            "-b:v",
+            "4000k",
+            "-mbd",
+            "rd",
+            "-cmp",
+            "2",
+            "-subcmp",
+            "2",
+            "-acodec",
+            "mp2",
+            "-b:a",
+            "192k",
+            "-ar",
+            "48000",
+            "-ac",
+            "2",
+            "-threads",
+            "3",
+            "-y",
+            "[DVDF]-Dad.mpg",
+        ]
 
     def test_running_file_conversion_cmd(self):
         """Test TaskList.running_file_conversion_cmd()."""
         assert self.media_list.running_task_conversion_cmd(
-            output_dir='.',
+            output_dir=".",
             tagged=True,
             subtitle=True,
-            target_quality='DVD Fullscreen 352x480 (4:3)') == ['-i', 'Dad.mpg',
-                                                               '-f', 'dvd',
-                                                               '-target',
-                                                               'ntsc-dvd',
-                                                               '-vcodec',
-                                                               'mpeg2video', '-r',
-                                                               '29.97', '-s',
-                                                               '352x480',
-                                                               '-aspect', '4:3',
-                                                               '-b:v',
-                                                               '4000k', '-mbd',
-                                                               'rd',
-                                                               '-cmp', '2',
-                                                               '-subcmp',
-                                                               '2', '-acodec',
-                                                               'mp2',
-                                                               '-b:a', '192k',
-                                                               '-ar',
-                                                               '48000', '-ac', '2',
-                                                               '-threads', '3',
-                                                               '-y',
-                                                               '[DVDF]-Dad.mpg']
+            target_quality="DVD Fullscreen 352x480 (4:3)",
+        ) == [
+            "-i",
+            "Dad.mpg",
+            "-f",
+            "dvd",
+            "-target",
+            "ntsc-dvd",
+            "-vcodec",
+            "mpeg2video",
+            "-r",
+            "29.97",
+            "-s",
+            "352x480",
+            "-aspect",
+            "4:3",
+            "-b:v",
+            "4000k",
+            "-mbd",
+            "rd",
+            "-cmp",
+            "2",
+            "-subcmp",
+            "2",
+            "-acodec",
+            "mp2",
+            "-b:a",
+            "192k",
+            "-ar",
+            "48000",
+            "-ac",
+            "2",
+            "-threads",
+            "3",
+            "-y",
+            "[DVDF]-Dad.mpg",
+        ]
 
     @nose.tools.raises(PermissionError)
     def test_running_file_conversion_cmd_permission_error(self):
         """Test TaskList.running_file_conversion_cmd() -> PermissionError."""
         self.media_list.running_task_conversion_cmd(
-            output_dir='/',
+            output_dir="/",
             tagged=True,
             subtitle=True,
-            target_quality='DVD Fullscreen 352x480 (4:3)')
+            target_quality="DVD Fullscreen 352x480 (4:3)",
+        )
 
     def test_clear(self):
         """Test TaskList.clear()."""
@@ -217,16 +250,16 @@ class TestMedia:
     def test_populate_files_count(self):
         """Test TaskList.populate() yield amount of video files."""
         media_list = TaskList(profile=self.profile)
-        gen = media_list.populate(('Dad.mpg',))
+        gen = media_list.populate(("Dad.mpg",))
         assert next(gen) == 1
 
     def test_populate_first_file_name(self):
         """Test TaskList.populate() yield first video file name."""
         media_list = TaskList(profile=self.profile)
-        gen = media_list.populate(('Dad.mpg',))
+        gen = media_list.populate(("Dad.mpg",))
         next(gen)
-        assert next(gen) == 'Dad.mpg'
+        assert next(gen) == "Dad.mpg"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     nose.main()

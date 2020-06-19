@@ -23,14 +23,16 @@ from functools import partial
 from urllib.request import url2pathname
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QTableWidget
-from PyQt5.QtWidgets import QAbstractItemView
-from PyQt5.QtWidgets import QHeaderView
-from PyQt5.QtWidgets import QItemDelegate
-from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QComboBox,
+    QHeaderView,
+    QItemDelegate,
+    QTableWidget,
+)
 
-from videomorph.converter import STATUS
-from videomorph.converter import VALID_VIDEO_EXT
+from videomorph.converter import STATUS, VALID_VIDEO_EXT
+
 from . import COLUMNS
 
 
@@ -48,11 +50,14 @@ class TasksListTable(QTableWidget):
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.setHorizontalHeaderLabels(
-            [self.tr('Video Name'),
-             self.tr('Duration'),
-             self.tr('Target Quality'),
-             self.tr('Progress')])
-        tasks_text = self.tr('List of Conversion Tasks')
+            [
+                self.tr("Video Name"),
+                self.tr("Duration"),
+                self.tr("Target Quality"),
+                self.tr("Progress"),
+            ]
+        )
+        tasks_text = self.tr("List of Conversion Tasks")
         self.setStatusTip(tasks_text)
         self.setToolTip(tasks_text)
 
@@ -81,7 +86,7 @@ class TasksListTable(QTableWidget):
         files = []
 
         for url in event.mimeData().urls():
-            extension = '.{0}'.format(url.path().split('.')[-1]).lower()
+            extension = ".{0}".format(url.path().split(".")[-1]).lower()
             if extension in VALID_VIDEO_EXT:
                 file_path = url2pathname(url.path())
                 files.append(file_path)
@@ -106,9 +111,7 @@ class TargetQualityDelegate(QItemDelegate):
         if index.column() == COLUMNS.QUALITY:
             editor = QComboBox(parent)
             self.parent.populate_quality_combo(combo=editor)
-            editor.activated.connect(partial(self.update,
-                                             editor,
-                                             index))
+            editor.activated.connect(partial(self.update, editor, index))
             return editor
 
         return QItemDelegate.createEditor(self, parent, option, index)
@@ -125,13 +128,17 @@ class TargetQualityDelegate(QItemDelegate):
             QItemDelegate.setEditorData(self, editor, index)
 
         self.parent.tasks_table.setEditTriggers(
-            QAbstractItemView.NoEditTriggers)
+            QAbstractItemView.NoEditTriggers
+        )
 
     def update(self, editor, index):
         """Update several things in the interface."""
         self.parent.update_table_progress_column(row=index.row())
-        self.parent.task_list.set_task_status(position=index.row(),
-                                              status=STATUS.todo)
+        self.parent.task_list.set_task_status(
+            position=index.row(), status=STATUS.todo
+        )
         self.parent.total_duration = self.parent.task_list.duration
         self.parent.update_ui_when_ready()
-        self.parent.tasks_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.parent.tasks_table.setEditTriggers(
+            QAbstractItemView.NoEditTriggers
+        )

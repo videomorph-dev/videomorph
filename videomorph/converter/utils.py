@@ -27,23 +27,23 @@ from pathlib import Path
 
 def get_locale():
     """Return the default locale string."""
-    return 'es_ES' if getdefaultlocale()[0].startswith('es_') else 'en_US'
+    return "es_ES" if getdefaultlocale()[0].startswith("es_") else "en_US"
     # return 'es_ES'
 
 
 def which(app):
     """Detect if an app is installed in your system."""
-    if app == '':
-        raise ValueError('Invalid app name')
+    if app == "":
+        raise ValueError("Invalid app name")
 
-    sys_paths = os.environ.get('PATH', os.defpath).split(pathsep)
+    sys_paths = os.environ.get("PATH", os.defpath).split(pathsep)
 
     for path in sys_paths:
         app_path = Path(path, app)
         if app_path.exists():
             return app_path.__str__()
 
-    raise ValueError('Command {0} not found'.format(app))
+    raise ValueError("Command {0} not found".format(app))
 
 
 def write_time(time_in_secs):
@@ -51,25 +51,25 @@ def write_time(time_in_secs):
     try:
         time = round(float(time_in_secs))
     except (TypeError, ValueError):
-        raise ValueError('Invalid time measure.')
+        raise ValueError("Invalid time measure.")
 
     if time < 0:
-        raise ValueError('Time must be positive.')
+        raise ValueError("Time must be positive.")
 
     hours = time // 3600
     minutes = time // 60 - hours * 60
     secs = time - minutes * 60 - hours * 3600
 
     if hours:  # return the time in 00h:00m:00s format
-        return '{hours:02d}h:{minutes:02d}m:{secs:02d}s'.format(
-            hours=hours, minutes=minutes, secs=secs)
+        return "{hours:02d}h:{minutes:02d}m:{secs:02d}s".format(
+            hours=hours, minutes=minutes, secs=secs
+        )
 
     if minutes:  # return the time in 00m:00s format
-        return '{minutes:02d}m:{secs:02d}s'.format(minutes=minutes,
-                                                   secs=secs)
+        return "{minutes:02d}m:{secs:02d}s".format(minutes=minutes, secs=secs)
 
     # return the time in 00s format
-    return '{secs:02d}s'.format(secs=secs)
+    return "{secs:02d}s".format(secs=secs)
 
 
 def write_size(size_in_bytes):
@@ -77,16 +77,16 @@ def write_size(size_in_bytes):
     try:
         size = round(float(size_in_bytes))
     except (TypeError, ValueError):
-        raise ValueError('Invalid size measure.')
+        raise ValueError("Invalid size measure.")
 
     if size < 0:
-        raise ValueError('Size must be positive.')
+        raise ValueError("Size must be positive.")
 
     kib = size / 1024
     if kib <= 1024:
-        return str(round(kib, 1)) + 'KiB'
+        return str(round(kib, 1)) + "KiB"
     mib = kib / 1024
     if mib <= 1024:
-        return str(round(mib, 1)) + 'MiB'
+        return str(round(mib, 1)) + "MiB"
     gib = mib / 1024
-    return str(round(gib, 1)) + 'GiB'
+    return str(round(gib, 1)) + "GiB"

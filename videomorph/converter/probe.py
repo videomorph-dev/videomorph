@@ -26,10 +26,9 @@ from .vmpath import PROBE_PATH
 class Probe:
     """Probe Class to get info about a video."""
 
-    def __init__(self,
-                 video_path,
-                 probe_path=PROBE_PATH,
-                 probe_runner=spawn_process):
+    def __init__(
+        self, video_path, probe_path=PROBE_PATH, probe_runner=spawn_process
+    ):
         """Class initializer."""
         self._probe_path = probe_path
         self._video_path = video_path
@@ -57,56 +56,64 @@ class Probe:
 
             for format_line in probe_file:
                 format_line = format_line.strip()
-                param = format_line.split('=')
+                param = format_line.split("=")
 
-                if '[STREAM]' in format_line:
+                if "[STREAM]" in format_line:
                     stream_count += 1
 
-                if '=' in format_line and param[0] in selected_params:
+                if "=" in format_line and param[0] in selected_params:
                     if not param[0] in info:
                         info[param[0]] = param[1]
                     else:
-                        info[param[0] + '_{0}'.format(stream_count)] = param[1]
+                        info[param[0] + "_{0}".format(stream_count)] = param[1]
 
         return info
 
     def _parse_probe_format(self):
         """Parse the probe output."""
-        selected_params = {'filename',
-                           'nb_streams',
-                           'format_name',
-                           'format_long_name',
-                           'duration',
-                           'size',
-                           'bit_rate'}
+        selected_params = {
+            "filename",
+            "nb_streams",
+            "format_name",
+            "format_long_name",
+            "duration",
+            "size",
+            "bit_rate",
+        }
 
-        return self._parse_probe(selected_params=selected_params,
-                                 cmd=['-show_format'])
+        return self._parse_probe(
+            selected_params=selected_params, cmd=["-show_format"]
+        )
 
     def _parse_probe_video_stream(self):
         """Parse the probe output."""
-        selected_params = {'codec_name',
-                           'codec_long_name',
-                           'bit_rate',
-                           'width',
-                           'height'}
+        selected_params = {
+            "codec_name",
+            "codec_long_name",
+            "bit_rate",
+            "width",
+            "height",
+        }
 
-        return self._parse_probe(selected_params=selected_params,
-                                 cmd=['-show_streams', '-select_streams', 'v'])
+        return self._parse_probe(
+            selected_params=selected_params,
+            cmd=["-show_streams", "-select_streams", "v"],
+        )
 
     def _parse_probe_audio_stream(self):
         """Parse the probe output."""
-        selected_params = {'codec_name',
-                           'codec_long_name'}
+        selected_params = {"codec_name", "codec_long_name"}
 
-        return self._parse_probe(selected_params=selected_params,
-                                 cmd=['-show_streams', '-select_streams', 'a'])
+        return self._parse_probe(
+            selected_params=selected_params,
+            cmd=["-show_streams", "-select_streams", "a"],
+        )
 
     def _parse_probe_sub_stream(self):
         """Parse the probe output."""
-        selected_params = {'codec_name',
-                           'codec_long_name',
-                           'TAG:language'}
+        selected_params = {"codec_name", "codec_long_name", "TAG:language"}
 
-        return self._parse_probe(selected_params=selected_params,
-                                 cmd=['-show_streams', '-select_streams', 's'])
+        return self._parse_probe(
+            selected_params=selected_params,
+            cmd=["-show_streams", "-select_streams", "s"],
+        )

@@ -20,29 +20,28 @@
 """This module defines the converter package."""
 
 from collections import namedtuple
+
+from .utils import get_locale
+from .vmpath import BASE_DIR, SYS_PATHS, VM_PATHS
+
 try:
     from os import cpu_count
 except ImportError:
     cpu_count = None
 
-from .vmpath import BASE_DIR
-from .vmpath import SYS_PATHS
-from .vmpath import VM_PATHS
-from .utils import get_locale
 
-
-APP_NAME = 'VideoMorph'
-VERSION = '1.4'
+APP_NAME = "VideoMorph"
+VERSION = "1.4"
 LOCALE = get_locale()
 
-VIDEO_FILTERS = ('*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv'
-                 ' *.flv *.vob *.ts *.mts *.3gp *.ogv *.ogg *.mpg *.mp4 *.avi')
+VIDEO_FILTERS = (
+    "*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv"
+    " *.flv *.vob *.ts *.mts *.3gp *.ogv *.ogg *.mpg *.mp4 *.avi"
+)
 
-VALID_VIDEO_EXT = {ext.lstrip('*') for ext in VIDEO_FILTERS.split()}
+VALID_VIDEO_EXT = {ext.lstrip("*") for ext in VIDEO_FILTERS.split()}
 
-MediaFileStatus = namedtuple('MediaFileStatus', 'todo done stopped')
-STATUS = MediaFileStatus('Todo', 'Done', 'Stopped')
+MediaFileStatus = namedtuple("MediaFileStatus", "todo done stopped")
+STATUS = MediaFileStatus("Todo", "Done", "Stopped")
 
-CPU_CORES = (cpu_count() - 1 if
-             cpu_count() is not None
-             else 0)
+CPU_CORES = cpu_count() - 1 if cpu_count() is not None else 0

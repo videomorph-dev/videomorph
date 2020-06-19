@@ -20,16 +20,13 @@
 """This module provides a dialog to show changelog."""
 
 import gzip
+import re
 from os.path import exists
 from os.path import join as join_path
-import re
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from videomorph.converter import APP_NAME
-from videomorph.converter import BASE_DIR
-from videomorph.converter import SYS_PATHS
-from videomorph.converter import VERSION
+from videomorph.converter import APP_NAME, BASE_DIR, SYS_PATHS, VERSION
 
 
 class ChangelogDialog(QtWidgets.QDialog):
@@ -39,10 +36,12 @@ class ChangelogDialog(QtWidgets.QDialog):
         super(ChangelogDialog, self).__init__(parent)
 
         self.resize(800, 600)
-        self.setWindowTitle(APP_NAME + ' ' + VERSION + ' ' +
-                            self.tr('Changelog'))
-        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum,
-                                            QtWidgets.QSizePolicy.Minimum)
+        self.setWindowTitle(
+            APP_NAME + " " + VERSION + " " + self.tr("Changelog")
+        )
+        size_policy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
+        )
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
@@ -54,8 +53,8 @@ class ChangelogDialog(QtWidgets.QDialog):
         font.setPointSize(12)
         self.text_edit.setFont(font)
         self.text_edit.viewport().setProperty(
-            "cursor",
-            QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+            "cursor", QtGui.QCursor(QtCore.Qt.PointingHandCursor)
+        )
         self.text_edit.setReadOnly(True)
         self.horizontal_layout.addWidget(self.text_edit)
         self.text_edit.setAlignment(QtCore.Qt.AlignJustify)
@@ -64,26 +63,26 @@ class ChangelogDialog(QtWidgets.QDialog):
 
     def _generate_changelog(self):
         """Return a human readable changelog."""
-        changelog_path = join_path(SYS_PATHS['doc'], 'changelog.gz')
+        changelog_path = join_path(SYS_PATHS["doc"], "changelog.gz")
         if exists(changelog_path):
             changelog_file = changelog_path
         else:
-            changelog_file = join_path(BASE_DIR, 'changelog.gz')
+            changelog_file = join_path(BASE_DIR, "changelog.gz")
 
-        line_start_pattern = re.compile(r'\s+\*\s+')
+        line_start_pattern = re.compile(r"\s+\*\s+")
 
-        with gzip.open(changelog_file, 'rt', encoding='utf-8') as changelog:
+        with gzip.open(changelog_file, "rt", encoding="utf-8") as changelog:
             changes = []
             for line in changelog:
                 start = line_start_pattern.match(line)
                 if start:
-                    line = line.strip('\n' + start.group())
-                    if 'Release' in line:
-                        version = '<b>{0}</b>'.format(line)
+                    line = line.strip("\n" + start.group())
+                    if "Release" in line:
+                        version = "<b>{0}</b>".format(line)
                         changes.append(version)
-                        changes.extend(['<ul>', '</ul>'])
+                        changes.extend(["<ul>", "</ul>"])
                     else:
-                        line = '<li>{0}</li>'.format(line)
+                        line = "<li>{0}</li>".format(line)
                         changes.insert(-1, line)
 
-        self.text_edit.setHtml(''.join(changes))
+        self.text_edit.setHtml("".join(changes))

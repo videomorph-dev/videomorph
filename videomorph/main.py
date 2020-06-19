@@ -23,13 +23,9 @@ import sys
 from pathlib import Path
 
 from PyQt5.QtCore import QTranslator
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtWidgets import qApp
+from PyQt5.QtWidgets import QApplication, QMessageBox, qApp
 
-from .converter import BASE_DIR
-from .converter import LOCALE
-from .converter import VM_PATHS
+from .converter import BASE_DIR, LOCALE, VM_PATHS
 from .converter.console import run_on_console
 from .converter.vmpath import LIBRARY_PATH
 from .forms.videomorph import VideoMorphMW
@@ -43,11 +39,11 @@ def main():
     # Setup app translator
     app_translator = QTranslator()
 
-    i18n_dir = Path(BASE_DIR, VM_PATHS['i18n'])
-    i18n_file = i18n_dir.joinpath(''.join(('videomorph_', LOCALE[:2], '.qm')))
+    i18n_dir = Path(BASE_DIR, VM_PATHS["i18n"])
+    i18n_file = i18n_dir.joinpath("".join(("videomorph_", LOCALE[:2], ".qm")))
 
     if i18n_file.exists():
-        trans = i18n_dir.joinpath('videomorph_{0}'.format(LOCALE)).__str__()
+        trans = i18n_dir.joinpath("videomorph_{0}".format(LOCALE)).__str__()
         app_translator.load(trans)
         app.installTranslator(app_translator)
 
@@ -64,9 +60,11 @@ def main():
     else:
         msg_box = QMessageBox(
             QMessageBox.Critical,
-            main_win.tr('Error!'),
-            main_win.tr('Ffmpeg Library not Found in your System'),
-            QMessageBox.NoButton, main_win)
+            main_win.tr("Error!"),
+            main_win.tr("Ffmpeg Library not Found in your System"),
+            QMessageBox.NoButton,
+            main_win,
+        )
         msg_box.addButton("&Ok", QMessageBox.AcceptRole)
         if msg_box.exec_() == QMessageBox.AcceptRole:
             qApp.closeAllWindows()

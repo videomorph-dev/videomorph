@@ -20,12 +20,10 @@
 """This module provides Conversion Task Class."""
 
 import shlex
-from os import W_OK
-from os import access
+from os import W_OK, access
 from pathlib import Path
 
-from . import CPU_CORES
-from . import STATUS
+from . import CPU_CORES, STATUS
 
 
 class Task:
@@ -40,10 +38,10 @@ class Task:
     def build_conversion_cmd(self, target_quality, tagged, subtitle):
         """Return the conversion command."""
         if not access(self.output_dir, W_OK):
-            raise PermissionError('Access denied')
+            raise PermissionError("Access denied")
 
         if not self.video.path.exists():
-            raise FileNotFoundError('Input video not found')
+            raise FileNotFoundError("Input video not found")
 
         # Ensure the conversion_profile is up to date
         self.profile.update(new_quality=target_quality)
@@ -58,10 +56,13 @@ class Task:
         #     raise FileExistsError('Video file already exits')
 
         # Build the conversion command
-        cmd = ['-i', self.video.path.__str__()] + subtitle_opt + \
-            shlex.split(self.profile.params) + \
-            ['-threads', str(CPU_CORES)] + \
-            ['-y', output_path.__str__()]
+        cmd = (
+            ["-i", self.video.path.__str__()]
+            + subtitle_opt
+            + shlex.split(self.profile.params)
+            + ["-threads", str(CPU_CORES)]
+            + ["-y", output_path.__str__()]
+        )
 
         return cmd
 
@@ -100,16 +101,16 @@ class Task:
 
     def _get_output_path(self, tagged):
         """Return the the output file path as pathlib.Path."""
-        tag = self.profile.quality_tag if tagged else ''
-        output_file_name = ''.join((tag,
-                                    self.video.get_name(False),
-                                    self.profile.extension))
+        tag = self.profile.quality_tag if tagged else ""
+        output_file_name = "".join(
+            (tag, self.video.get_name(False), self.profile.extension)
+        )
         return Path(self.output_dir, output_file_name)
 
     @property
     def subtitle_path(self):
         """Return the subtitle path as pathlib.Path if it exits."""
-        extensions = ['.srt', '.ssa', '.stl']
+        extensions = [".srt", ".ssa", ".stl"]
 
         # Add uppercase extensions to check if subtitle file exists
         for ext in extensions[:]:
@@ -120,16 +121,17 @@ class Task:
             if subtitle_path.exists():
                 return subtitle_path
 
-        raise FileNotFoundError('Subtitle file not found')
+        raise FileNotFoundError("Subtitle file not found")
 
     def _process_subtitles(self, subtitle):
         """Process subtitles if available."""
         if subtitle:
             try:
-                subtitle_opt = ['-vf',
-                                "subtitles='{0}':force_style='Fontsize=24'"
-                                ":charenc=cp1252".format(
-                                    self.subtitle_path.__str__())]
+                subtitle_opt = [
+                    "-vf",
+                    "subtitles='{0}':force_style='Fontsize=24'"
+                    ":charenc=cp1252".format(self.subtitle_path.__str__()),
+                ]
                 return subtitle_opt
             except FileNotFoundError:
                 pass

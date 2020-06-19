@@ -21,7 +21,6 @@
 """This module provides tests for probe.py module."""
 
 import nose
-
 from videomorph.converter.video import Probe
 
 
@@ -29,36 +28,37 @@ class TestProbe:
     """Class for testing probe.py module."""
 
     def setup(self):
-        self.probe = Probe('./Dad.mpg')
+        self.probe = Probe("./Dad.mpg")
 
     def test_format_info(self):
         assert self.probe.format_info == {
-            'filename': './Dad.mpg',
-            'nb_streams': '2',
-            'format_name': 'mpeg',
-            'format_long_name': 'MPEG-PS (MPEG-2 Program Stream)',
-            'duration': '120.720000',
-            'size': '21227416',
-            'bit_rate': '1406720'
+            "filename": "./Dad.mpg",
+            "nb_streams": "2",
+            "format_name": "mpeg",
+            "format_long_name": "MPEG-PS (MPEG-2 Program Stream)",
+            "duration": "120.720000",
+            "size": "21227416",
+            "bit_rate": "1406720",
         }
 
     def test_video_info(self):
-        assert self.probe.video_info == {'codec_name': 'mpeg1video',
-                                         'codec_long_name': 'MPEG-1 video',
-                                         'width': '352',
-                                         'height': '288',
-                                         'bit_rate': '1150000'
-                                         }
+        assert self.probe.video_info == {
+            "codec_name": "mpeg1video",
+            "codec_long_name": "MPEG-1 video",
+            "width": "352",
+            "height": "288",
+            "bit_rate": "1150000",
+        }
 
     def test_audio_info(self):
         assert self.probe.audio_info == {
-            'codec_name': 'mp2',
-            'codec_long_name': 'MP2 (MPEG audio layer 2)'
+            "codec_name": "mp2",
+            "codec_long_name": "MP2 (MPEG audio layer 2)",
         }
 
     def test_subtitle_info(self):
         assert self.probe.subtitle_info == {}
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     nose.main()

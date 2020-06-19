@@ -20,15 +20,12 @@
 
 """This module provides tests for vmpath.py module."""
 
+from os.path import expandvars
 from pathlib import Path
 from sys import prefix
-from os.path import expandvars
 
 import nose
-
-from videomorph.converter.vmpath import linux_paths
-from videomorph.converter.vmpath import darwin_paths
-from videomorph.converter.vmpath import win32_paths
+from videomorph.converter.vmpath import darwin_paths, linux_paths, win32_paths
 
 
 class TestPaths:
@@ -36,29 +33,31 @@ class TestPaths:
 
     def setup(self):
         self.posix_path = dict(
-            apps=Path(prefix, 'share', 'applications'),
-            config=Path(Path.home(), '.videomorph'),
-            icons=Path(prefix, 'share', 'icons'),
-            i18n=Path(prefix, 'share', 'videomorph', 'translations'),
-            profiles=Path(prefix, 'share', 'videomorph', 'profiles'),
-            sounds=Path(prefix, 'share', 'videomorph', 'sounds'),
-            doc=Path(prefix, 'share', 'doc', 'videomorph'),
-            help=Path(prefix, 'share', 'doc', 'videomorph', 'manual'),
-            man=Path(prefix, 'share', 'man', 'man1'),
-            bin=Path(prefix, 'bin'),)
+            apps=Path(prefix, "share", "applications"),
+            config=Path(Path.home(), ".videomorph"),
+            icons=Path(prefix, "share", "icons"),
+            i18n=Path(prefix, "share", "videomorph", "translations"),
+            profiles=Path(prefix, "share", "videomorph", "profiles"),
+            sounds=Path(prefix, "share", "videomorph", "sounds"),
+            doc=Path(prefix, "share", "doc", "videomorph"),
+            help=Path(prefix, "share", "doc", "videomorph", "manual"),
+            man=Path(prefix, "share", "man", "man1"),
+            bin=Path(prefix, "bin"),
+        )
 
-        program_files = expandvars('%ProgramFiles%')
+        program_files = expandvars("%ProgramFiles%")
         self.win32_paths = dict(
-            apps=Path(program_files, 'VideoMorph'),
-            config=Path(Path.home(), '.videomorph'),
-            icons=Path(program_files, 'VideoMorph', 'icons'),
-            i18n=Path(program_files, 'VideoMorph', 'translations'),
-            profiles=Path(program_files, 'VideoMorph', 'profiles'),
-            sounds=Path(program_files, 'VideoMorph', 'sounds'),
-            doc=Path(program_files, 'VideoMorph', 'doc'),
-            help=Path(program_files, 'VideoMorph', 'manual'),
-            man=Path(program_files, 'VideoMorph', 'man1'),
-            bin=Path(program_files, 'VideoMorph', 'bin'),)
+            apps=Path(program_files, "VideoMorph"),
+            config=Path(Path.home(), ".videomorph"),
+            icons=Path(program_files, "VideoMorph", "icons"),
+            i18n=Path(program_files, "VideoMorph", "translations"),
+            profiles=Path(program_files, "VideoMorph", "profiles"),
+            sounds=Path(program_files, "VideoMorph", "sounds"),
+            doc=Path(program_files, "VideoMorph", "doc"),
+            help=Path(program_files, "VideoMorph", "manual"),
+            man=Path(program_files, "VideoMorph", "man1"),
+            bin=Path(program_files, "VideoMorph", "bin"),
+        )
 
     def test_linux_paths(self):
         """Test linux_path()."""
@@ -75,5 +74,5 @@ class TestPaths:
         assert self.win32_paths == win32_paths()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     nose.main()

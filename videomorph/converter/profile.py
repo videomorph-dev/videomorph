@@ -21,23 +21,17 @@
 
 import re
 import xml.etree.ElementTree as ET
-from collections import OrderedDict
-from collections import namedtuple
+from collections import OrderedDict, namedtuple
 from os import makedirs
-from os.path import exists, getsize
-from os.path import getmtime
+from os.path import exists, getmtime, getsize
 from os.path import join as join_path
 from shutil import copy2
 
-from . import BASE_DIR
-from . import LOCALE
-from . import SYS_PATHS
-from . import VALID_VIDEO_EXT
-from . import VM_PATHS
+from . import BASE_DIR, LOCALE, SYS_PATHS, VALID_VIDEO_EXT, VM_PATHS
 from .codec import CodecsReader
 
-XMLFiles = namedtuple('XMLFiles', 'default customized')
-XML_FILES = XMLFiles('default.xml', 'customized.xml')
+XMLFiles = namedtuple("XMLFiles", "default customized")
+XML_FILES = XMLFiles("default.xml", "customized.xml")
 
 
 class Profile:
@@ -59,33 +53,35 @@ class Profile:
         self._quality = new_quality
         # Update the params and extension when the target quality change
         self.params = self.get_xml_profile_attr(
-            target_quality=self._quality,
-            attr_name='preset_params')
+            target_quality=self._quality, attr_name="preset_params"
+        )
         self.extension = self.get_xml_profile_attr(
-            target_quality=self._quality,
-            attr_name='preset_extension')
+            target_quality=self._quality, attr_name="preset_extension"
+        )
 
     @property
     def quality_tag(self):
         """Generate a tag from profile quality string."""
-        tag_regex = re.compile(r'[A-Z][0-9]?')
-        tag = ''.join(tag_regex.findall(self._quality))
+        tag_regex = re.compile(r"[A-Z][0-9]?")
+        tag = "".join(tag_regex.findall(self._quality))
 
         if not tag:
-            tag = ''.join(word[0] for word in self._quality.split()).upper()
+            tag = "".join(word[0] for word in self._quality.split()).upper()
 
-        return '[' + tag + ']-'
+        return "[" + tag + "]-"
 
 
 class _XMLProfile:
     """Class to manage the xml profiles file."""
 
-    def __init__(self,
-                 xml_files=XML_FILES,
-                 base_dir=BASE_DIR,
-                 sys_path=SYS_PATHS,
-                 vmpath=VM_PATHS,
-                 valid_extensions=VALID_VIDEO_EXT):
+    def __init__(
+        self,
+        xml_files=XML_FILES,
+        base_dir=BASE_DIR,
+        sys_path=SYS_PATHS,
+        vmpath=VM_PATHS,
+        valid_extensions=VALID_VIDEO_EXT,
+    ):
         """Class initializer."""
         self._xml_files = xml_files
         self._base_dir = base_dir
@@ -107,10 +103,10 @@ class _XMLProfile:
                 if not qualities:
                     continue
 
-                if profile.get('name') not in qualities_per_profile:
-                    qualities_per_profile[profile.get('name')] = qualities
+                if profile.get("name") not in qualities_per_profile:
+                    qualities_per_profile[profile.get("name")] = qualities
                 else:
-                    qualities_per_profile[profile.get('name')] += qualities
+                    qualities_per_profile[profile.get("name")] += qualities
 
         return qualities_per_profile
 
@@ -118,33 +114,37 @@ class _XMLProfile:
         qualities = []
         for preset in profile:
             if self._codecs_are_available(preset[1].text):
-                if locale == 'es_ES':
+                if locale == "es_ES":
                     qualities.append(preset[3].text)
                 else:
                     qualities.append(preset[0].text)
         return qualities
 
-    def get_xml_profile_attr(self, target_quality, attr_name='preset_params'):
+    def get_xml_profile_attr(self, target_quality, attr_name="preset_params"):
         """Return a param of Profile."""
-        param_map = {'preset_name_en': 0,
-                     'preset_params': 1,
-                     'preset_extension': 2,
-                     'preset_name_es': 3}
+        param_map = {
+            "preset_name_en": 0,
+            "preset_params": 1,
+            "preset_extension": 2,
+            "preset_name_es": 3,
+        }
 
         for xml_file in self._xml_files:
             for profile in self._xml_root(xml_file):
                 for preset in profile:
-                    if (preset[0].text == target_quality or
-                            preset[3].text == target_quality):
+                    if (
+                        preset[0].text == target_quality
+                        or preset[3].text == target_quality
+                    ):
                         return preset[param_map[attr_name]].text
 
-        raise ValueError('Wrong quality or param.')
+        raise ValueError("Wrong quality or param.")
 
     @staticmethod
     def _get_preset_codecs(params):
-        acodec_regex = re.compile(r'-acodec\s+([^ ]+)')
-        vcodec_regex = re.compile(r'-vcodec\s+([^ ]+)')
-        scodec_regex = re.compile(r'-scodec\s+([^ ]+)')
+        acodec_regex = re.compile(r"-acodec\s+([^ ]+)")
+        vcodec_regex = re.compile(r"-vcodec\s+([^ ]+)")
+        scodec_regex = re.compile(r"-scodec\s+([^ ]+)")
 
         def codec(regex):
             result = regex.findall(params)
@@ -153,29 +153,35 @@ class _XMLProfile:
 
             return None
 
-        Codecs = namedtuple('Codecs', ['acodec', 'vcodec', 'scodec'])
+        Codecs = namedtuple("Codecs", ["acodec", "vcodec", "scodec"])
 
-        return Codecs(codec(acodec_regex),
-                      codec(vcodec_regex),
-                      codec(scodec_regex))
+        return Codecs(
+            codec(acodec_regex), codec(vcodec_regex), codec(scodec_regex)
+        )
 
     def _codecs_are_available(self, params):
         preset_codecs = self._get_preset_codecs(params)
         vcodec = acodec = scodec = True
 
         if preset_codecs.vcodec is not None:
-            if not (preset_codecs.vcodec in self._available_codecs.vencoders or
-                    preset_codecs.vcodec in self._available_codecs.vcodecs):
+            if not (
+                preset_codecs.vcodec in self._available_codecs.vencoders
+                or preset_codecs.vcodec in self._available_codecs.vcodecs
+            ):
                 vcodec = False
 
         if preset_codecs.acodec is not None:
-            if not (preset_codecs.acodec in self._available_codecs.aencoders or
-                    preset_codecs.acodec in self._available_codecs.acodecs):
+            if not (
+                preset_codecs.acodec in self._available_codecs.aencoders
+                or preset_codecs.acodec in self._available_codecs.acodecs
+            ):
                 acodec = False
 
         if preset_codecs.scodec is not None:
-            if not (preset_codecs.scodec in self._available_codecs.sencoders or
-                    preset_codecs.scodec in self._available_codecs.scodecs):
+            if not (
+                preset_codecs.scodec in self._available_codecs.sencoders
+                or preset_codecs.scodec in self._available_codecs.scodecs
+            ):
                 scodec = False
 
         return vcodec and acodec and scodec
@@ -232,29 +238,29 @@ class _XMLProfile:
     @staticmethod
     def _validate_xml(xml_root):
         """Validate xml profiles."""
-        assert xml_root.tag == 'videomorph', 'videomorph'
+        assert xml_root.tag == "videomorph", "videomorph"
 
         for profile in xml_root:
-            assert profile.tag == 'profile', 'profile'
-            assert 'name' in profile.attrib, 'name'
+            assert profile.tag == "profile", "profile"
+            assert "name" in profile.attrib, "name"
             for preset in profile:
-                assert preset.tag == 'preset', 'preset'
-                assert preset[0].tag == 'preset_name_en', 'preset_name_en'
-                assert preset[1].tag == 'preset_params', 'preset_params'
-                assert preset[2].tag == 'preset_extension', 'preset_extension'
-                assert preset[3].tag == 'preset_name_es', 'preset_name_es'
-                assert len(preset) == 4, 'fields'
+                assert preset.tag == "preset", "preset"
+                assert preset[0].tag == "preset_name_en", "preset_name_en"
+                assert preset[1].tag == "preset_params", "preset_params"
+                assert preset[2].tag == "preset_extension", "preset_extension"
+                assert preset[3].tag == "preset_name_es", "preset_name_es"
+                assert len(preset) == 4, "fields"
 
     def _user_xml_files_directory(self):
         """Return the user xml directory path."""
-        return join_path(self._sys_path['config'], 'profiles')
+        return join_path(self._sys_path["config"], "profiles")
 
     def _sys_xml_file_path(self, file_name):
         """Return the path to xml profiles file in the system."""
-        file_path = join_path(self._sys_path['profiles'], file_name)
+        file_path = join_path(self._sys_path["profiles"], file_name)
         if exists(file_path):
             # if VideoMorph is installed
             return file_path
 
         # if not installed
-        return join_path(self._base_dir, self._vmpath['profiles'], file_name)
+        return join_path(self._base_dir, self._vmpath["profiles"], file_name)

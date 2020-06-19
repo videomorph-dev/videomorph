@@ -25,29 +25,32 @@ from os import walk
 from os.path import isdir
 from pathlib import Path
 
-from . import APP_NAME
-from . import VALID_VIDEO_EXT
-from . import VERSION
+from . import APP_NAME, VALID_VIDEO_EXT, VERSION
 
 
 def run_on_console(app, main_win):
     """Provide options to run VideoMorph from the command line."""
 
     # Add a parser for command line
-    parser = argparse.ArgumentParser(description=APP_NAME + ' ' + VERSION)
+    parser = argparse.ArgumentParser(description=APP_NAME + " " + VERSION)
 
     # Add options for command line
-    parser.add_argument('-i', '--input-file',
-                        help='take the input_path to a video file(s) as input',
-                        action='store',
-                        nargs='*',
-                        dest='input_file')
+    parser.add_argument(
+        "-i",
+        "--input-file",
+        help="take the input_path to a video file(s) as input",
+        action="store",
+        nargs="*",
+        dest="input_file",
+    )
 
-    parser.add_argument('-d', '--input-dir',
-                        help='take a directory as input and find video '
-                             'files recursively',
-                        action='store',
-                        dest='input_dir')
+    parser.add_argument(
+        "-d",
+        "--input-dir",
+        help="take a directory as input and find video " "files recursively",
+        action="store",
+        dest="input_dir",
+    )
 
     # Process the command line input
     args = parser.parse_args()
@@ -60,13 +63,16 @@ def run_on_console(app, main_win):
             if path.exists():
                 files.append(path.__str__())
             else:
-                print("Video file: {0}, doesn't exit".format(file),
-                      file=sys.stderr)
+                print(
+                    "Video file: {0}, doesn't exit".format(file),
+                    file=sys.stderr,
+                )
 
     if args.input_dir:
         try:
-            files = search_directory_recursively(directory=args.input_dir,
-                                                 files=files)
+            files = search_directory_recursively(
+                directory=args.input_dir, files=files
+            )
         except IsADirectoryError as error:
             print(error, file=sys.stderr)
         except FileNotFoundError as error:
@@ -94,11 +100,13 @@ def search_directory_recursively(directory, files=None):
                 if path.suffix in VALID_VIDEO_EXT:
                     files.append(path.__str__())
     else:
-        raise IsADirectoryError("Directory: {0}, doesn't exist".format(
-            directory))
+        raise IsADirectoryError(
+            "Directory: {0}, doesn't exist".format(directory)
+        )
 
     if not files:
-        raise FileNotFoundError("No Video Files Found in: {0}".format(
-            directory))
+        raise FileNotFoundError(
+            "No Video Files Found in: {0}".format(directory)
+        )
 
     return files
