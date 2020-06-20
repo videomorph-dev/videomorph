@@ -31,7 +31,8 @@ except ImportError:
 
 
 APP_NAME = "VideoMorph"
-VERSION = "1.4"
+CODENAME = "Canelo"
+VERSION = "1.5"
 LOCALE = get_locale()
 
 VIDEO_FILTERS = (
