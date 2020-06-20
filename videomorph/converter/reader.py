@@ -28,11 +28,14 @@ class OutputReader:
     def __init__(self):
         """Class initializer."""
         self._params_regex = {
-            'bitrate': r'bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*',
-            'time': r'time=([0-9.:]+) '}
-        self._library_errors = ('Unknown encoder',
-                                'Unrecognized option',
-                                'Invalid argument')
+            "bitrate": r"bitrate=[ ]*[0-9]*\.[0-9]*[a-z]*./[a-z]*",
+            "time": r"time=([0-9.:]+) ",
+        }
+        self._library_errors = (
+            "Unknown encoder",
+            "Unrecognized option",
+            "Invalid argument",
+        )
         self._process_output = None
 
     def update_read(self, process_output):
@@ -50,20 +53,20 @@ class OutputReader:
     @property
     def has_time_read(self):
         """Return the time read."""
-        return self._read_output_param(param='time')
+        return self._read_output_param(param="time")
 
     @property
     def bitrate(self):
         """Return the bitrate read."""
-        bitrate_read = self._read_output_param(param='bitrate')
+        bitrate_read = self._read_output_param(param="bitrate")
 
-        return bitrate_read[0].split('=')[-1].strip()
+        return bitrate_read[0].split("=")[-1].strip()
 
     @property
     def time(self):
         """Convert time read to seconds."""
         seconds = 0.0
-        for time_part in self.has_time_read[0].split(':'):
+        for time_part in self.has_time_read[0].split(":"):
             seconds = 60 * seconds + float(time_part)
 
         return seconds

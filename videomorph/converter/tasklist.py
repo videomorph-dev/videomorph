@@ -111,9 +111,9 @@ class TaskList(list):
 
     def running_task_conversion_cmd(self, target_quality, tagged, subtitle):
         """Return the conversion command."""
-        return self._running_task.build_conversion_cmd(target_quality,
-                                                       tagged,
-                                                       subtitle)
+        return self._running_task.build_conversion_cmd(
+            target_quality, tagged, subtitle
+        )
 
     def running_file_output_name(self, tagged):
         """Return the output name."""
@@ -161,8 +161,11 @@ class TaskList(list):
     @property
     def duration(self):
         """Return the duration time of TaskList counting files to do only."""
-        return sum(float(task.video.format_info['duration']) for
-                   task in self if task.status == STATUS.todo)
+        return sum(
+            float(task.video.format_info["duration"])
+            for task in self
+            if task.status == STATUS.todo
+        )
 
     @property
     def _running_task(self):

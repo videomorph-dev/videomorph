@@ -21,7 +21,6 @@
 """This module provides tests for video.py module."""
 
 import nose
-
 from videomorph.converter.video import Video
 
 
@@ -29,35 +28,35 @@ class TestVideo:
     """Class for testing video.py module."""
 
     def setup(self):
-        self.video = Video('./Dad.mpg')
+        self.video = Video("./Dad.mpg")
 
     def test_get_name(self):
         """Test TaskList.get_file_name()."""
-        assert self.video.get_name() == 'Dad'
+        assert self.video.get_name() == "Dad"
 
     def test_get_name_with_extension(self):
         """Test TaskList.get_file_name() with extension."""
-        assert self.video.get_name(with_extension=True) == 'Dad.mpg'
+        assert self.video.get_name(with_extension=True) == "Dad.mpg"
 
     def test_video_is_valid_right_duration(self):
         assert self.video.is_valid()
 
     def test_video_is_valid_zero_duration(self):
-        self.video._info.format_info['duration'] = 0
+        self.video._info.format_info["duration"] = 0
         assert not self.video.is_valid()
 
     def test_video_is_valid_no_duration(self):
-        del self.video._info.format_info['duration']
+        del self.video._info.format_info["duration"]
         assert not self.video.is_valid()
 
     def test_video_is_valid_wrong_type(self):
-        self.video._info.format_info['duration'] = []
+        self.video._info.format_info["duration"] = []
         assert not self.video.is_valid()
 
     def test_video_is_valid_wrong_value(self):
-        self.video._info.format_info['duration'] = 'N/A'
+        self.video._info.format_info["duration"] = "N/A"
         assert not self.video.is_valid()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     nose.main()

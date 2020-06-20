@@ -19,11 +19,9 @@
 
 """This module provides Path."""
 
-from os.path import dirname
-from os.path import expandvars
+from os.path import dirname, expandvars
 from pathlib import Path
-from sys import platform
-from sys import prefix
+from sys import platform, prefix
 
 from .launchers import generic_factory
 from .utils import which
@@ -50,16 +48,16 @@ class _LibraryPath:
     @property
     def library_path(self):
         """Get conversion library path."""
-        return self._get_system_path('ffmpeg')
+        return self._get_system_path("ffmpeg")
 
     @property
     def prober_path(self):
         """Get prober path."""
-        return self._get_system_path('ffprobe')
+        return self._get_system_path("ffprobe")
 
     def _get_local_dir(self):
         """Return the local directory for ffmpeg library."""
-        raise NotImplementedError('Must be implemented in subclasses')
+        raise NotImplementedError("Must be implemented in subclasses")
 
 
 class _LinuxLibraryPath(_LibraryPath):
@@ -67,7 +65,7 @@ class _LinuxLibraryPath(_LibraryPath):
 
     def _get_local_dir(self):
         """Return the local directory for ffmpeg library."""
-        return Path(BASE_DIR, 'ffmpeg')
+        return Path(BASE_DIR, "ffmpeg")
 
 
 class _DarwinLibraryPath(_LibraryPath):
@@ -75,7 +73,7 @@ class _DarwinLibraryPath(_LibraryPath):
 
     def _get_local_dir(self):
         """Return the local directory for ffmpeg library."""
-        return Path(BASE_DIR, 'ffmpeg')
+        return Path(BASE_DIR, "ffmpeg")
 
 
 class _Win32LibraryPath(_LibraryPath):
@@ -83,11 +81,11 @@ class _Win32LibraryPath(_LibraryPath):
 
     def _get_local_dir(self):
         """Return the local directory for ffmpeg library."""
-        return Path(BASE_DIR, 'ffmpeg', 'bin')
+        return Path(BASE_DIR, "ffmpeg", "bin")
 
     def _get_path(self, attr):
         try:
-            path = getattr(super(_Win32LibraryPath, self), attr) + '.exe'
+            path = getattr(super(_Win32LibraryPath, self), attr) + ".exe"
         except TypeError:
             path = None
 
@@ -95,11 +93,11 @@ class _Win32LibraryPath(_LibraryPath):
 
     @property
     def library_path(self):
-        return self._get_path('library_path')
+        return self._get_path("library_path")
 
     @property
     def prober_path(self):
-        return self._get_path('prober_path')
+        return self._get_path("prober_path")
 
 
 def library_path_factory():
@@ -112,23 +110,25 @@ LIBRARY_PATH = _PATHS.library_path
 PROBE_PATH = _PATHS.prober_path
 
 
-VM_PATHS = dict(apps=Path('share', 'applications'),
-                config=Path(Path.home(), '.videomorph'),
-                icons=Path('share', 'icons'),
-                i18n=Path('share', 'videomorph', 'translations'),
-                profiles=Path('share', 'videomorph', 'profiles'),
-                sounds=Path('share', 'videomorph', 'sounds'),
-                doc=Path('share', 'doc', 'videomorph'),
-                help=Path('share', 'doc', 'videomorph', 'manual'),
-                man=Path('share', 'man', 'man1'),
-                bin=Path('bin'))
+VM_PATHS = dict(
+    apps=Path("share", "applications"),
+    config=Path(Path.home(), ".videomorph"),
+    icons=Path("share", "icons"),
+    i18n=Path("share", "videomorph", "translations"),
+    profiles=Path("share", "videomorph", "profiles"),
+    sounds=Path("share", "videomorph", "sounds"),
+    doc=Path("share", "doc", "videomorph"),
+    help=Path("share", "doc", "videomorph", "manual"),
+    man=Path("share", "man", "man1"),
+    bin=Path("bin"),
+)
 
 
 def _unix_paths(base_paths=VM_PATHS):
     """Return the system paths used by VideoMorph."""
     paths = {}
     for key, path in base_paths.items():
-        if key != 'config':
+        if key != "config":
             paths[key] = Path(prefix, path)
         else:
             paths[key] = path
@@ -144,18 +144,18 @@ def darwin_paths(base_paths=VM_PATHS):
 
 
 def win32_paths(base_paths=VM_PATHS):
-    program_files = expandvars('%ProgramFiles%')
+    program_files = expandvars("%ProgramFiles%")
     paths = {}
     for key, path in base_paths.items():
-        if key == 'config':
+        if key == "config":
             paths[key] = path
-        elif key == 'apps':
-            paths[key] = Path(program_files, 'VideoMorph')
-        elif key == 'doc':
-            paths[key] = Path(program_files, 'VideoMorph', path.parts[-2])
+        elif key == "apps":
+            paths[key] = Path(program_files, "VideoMorph")
+        elif key == "doc":
+            paths[key] = Path(program_files, "VideoMorph", path.parts[-2])
         else:
-            paths[key] = Path(program_files, 'VideoMorph', path.parts[-1])
+            paths[key] = Path(program_files, "VideoMorph", path.parts[-1])
     return paths
 
 
-SYS_PATHS = globals()[platform + '_paths']()
+SYS_PATHS = globals()[platform + "_paths"]()

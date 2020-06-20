@@ -21,6 +21,7 @@
 """This file defines the main VideoMorph executable script."""
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from videomorph.main import main
+
     main()

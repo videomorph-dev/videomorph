@@ -29,9 +29,13 @@ class CodecsReader:
     """Class to get codecs out of ffmpeg -codecs output."""
 
     def __init__(self):
-        self.vcodecs, self.acodecs, self.scodecs = self._read('-codecs')
-        self.vencoders, self.aencoders, self.sencoders = self._read('-encoders')
-        self.vdecoders, self.adecoders, self.sdecoders = self._read('-decoders')
+        self.vcodecs, self.acodecs, self.scodecs = self._read("-codecs")
+        self.vencoders, self.aencoders, self.sencoders = self._read(
+            "-encoders"
+        )
+        self.vdecoders, self.adecoders, self.sdecoders = self._read(
+            "-decoders"
+        )
 
     def _read(self, param):
         """Read the available encoders form ffmpeg."""
@@ -41,18 +45,15 @@ class CodecsReader:
         with spawn_process([LIBRARY_PATH, param]).stdout as output:
             for line in islice(output, 10, None):
                 functionality, name, *description = line.split()
-                if 'V' in functionality:
-                    video[name] = (functionality,
-                                   ' '.join(description))
+                if "V" in functionality:
+                    video[name] = (functionality, " ".join(description))
                     continue
 
-                if 'A' in functionality:
-                    audio[name] = (functionality,
-                                   ' '.join(description))
+                if "A" in functionality:
+                    audio[name] = (functionality, " ".join(description))
                     continue
 
-                if 'S' in functionality:
-                    subtitle[name] = (functionality,
-                                      ' '.join(description))
+                if "S" in functionality:
+                    subtitle[name] = (functionality, " ".join(description))
 
         return video, audio, subtitle

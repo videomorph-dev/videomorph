@@ -47,6 +47,6 @@ class Video:
         try:
             # Video has a valid duration?
             # Duration is > 0
-            return float(self.format_info['duration']) > 0
+            return float(self.format_info["duration"]) > 0
         except (TypeError, ValueError, KeyError):
             return False

@@ -22,11 +22,16 @@
 from os.path import basename
 
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (QLabel, QPushButton, QVBoxLayout, QGroupBox,
-                             QGridLayout, QSpacerItem)
+from PyQt5.QtWidgets import (
+    QGridLayout,
+    QGroupBox,
+    QLabel,
+    QPushButton,
+    QSpacerItem,
+    QVBoxLayout,
+)
 
-from videomorph.converter.utils import write_size
-from videomorph.converter.utils import write_time
+from videomorph.converter.utils import write_size, write_time
 
 
 class InfoDialog(QtWidgets.QDialog):
@@ -39,12 +44,12 @@ class InfoDialog(QtWidgets.QDialog):
 
         self.central_widget = QtWidgets.QWidget(self)
         self.resize(300, 400)
-        self.setWindowTitle(self.tr('Properties'))
+        self.setWindowTitle(self.tr("Properties"))
 
         whole_layout = QVBoxLayout(self.central_widget)
 
         gb_general = QGroupBox(self.central_widget)
-        gb_general.setTitle(self.tr('General'))
+        gb_general.setTitle(self.tr("General"))
 
         general_layout = QVBoxLayout(gb_general)
 
@@ -52,31 +57,31 @@ class InfoDialog(QtWidgets.QDialog):
         general_grid.setColumnStretch(1, 1)
 
         label_file_name = QLabel(gb_general)
-        label_file_name.setText(self.tr('File Name:'))
+        label_file_name.setText(self.tr("File Name:"))
 
         self.label_file_name_value = QLabel(gb_general)
         self.label_file_name_value.setText("")
 
         label_size = QLabel(gb_general)
-        label_size.setText(self.tr('Size:'))
+        label_size.setText(self.tr("Size:"))
 
         self.label_size_value = QLabel(gb_general)
         self.label_size_value.setText("")
 
         label_duration = QLabel(gb_general)
-        label_duration.setText(self.tr('Duration:'))
+        label_duration.setText(self.tr("Duration:"))
 
         self.label_duration_value = QLabel(gb_general)
         self.label_duration_value.setText("")
 
         label_format_name = QLabel(gb_general)
-        label_format_name.setText(self.tr('Format Name:'))
+        label_format_name.setText(self.tr("Format Name:"))
 
         self.label_format_name_value = QLabel(gb_general)
         self.label_format_name_value.setText("")
 
         label_format_long_name = QLabel(gb_general)
-        label_format_long_name.setText(self.tr('Format Long Name:'))
+        label_format_long_name.setText(self.tr("Format Long Name:"))
 
         self.label_format_long_name_value = QLabel(gb_general)
         self.label_format_long_name_value.setText("")
@@ -95,37 +100,37 @@ class InfoDialog(QtWidgets.QDialog):
         general_layout.addLayout(general_grid)
 
         gb_video = QGroupBox(self.central_widget)
-        gb_video.setTitle(self.tr('Video'))
+        gb_video.setTitle(self.tr("Video"))
         video_layout = QVBoxLayout(gb_video)
         video_grid = QGridLayout()
         video_grid.setColumnStretch(1, 1)
 
         label_bit_rate = QLabel(gb_video)
-        label_bit_rate.setText(self.tr('Bit Rate:'))
+        label_bit_rate.setText(self.tr("Bit Rate:"))
 
         self.label_bit_rate_value = QLabel(gb_video)
         self.label_bit_rate_value.setText("")
 
         label_width = QLabel(gb_video)
-        label_width.setText(self.tr('Width:'))
+        label_width.setText(self.tr("Width:"))
 
         self.label_width_value = QLabel(gb_video)
         self.label_width_value.setText("")
 
         label_height = QLabel(gb_video)
-        label_height.setText(self.tr('Height:'))
+        label_height.setText(self.tr("Height:"))
 
         self.label_height_value = QLabel(gb_video)
         self.label_height_value.setText("")
 
         label_codec_long_name = QLabel(gb_video)
-        label_codec_long_name.setText(self.tr('Codec Long Name:'))
+        label_codec_long_name.setText(self.tr("Codec Long Name:"))
 
         self.label_codec_long_name_value = QLabel(gb_video)
         self.label_codec_long_name_value.setText("")
 
         label_codec_name = QLabel(gb_video)
-        label_codec_name.setText(self.tr('Codec Name:'))
+        label_codec_name.setText(self.tr("Codec Name:"))
 
         self.label_codec_name_value = QLabel(gb_video)
         self.label_codec_name_value.setText("")
@@ -144,7 +149,7 @@ class InfoDialog(QtWidgets.QDialog):
         video_layout.addLayout(video_grid)
 
         gb_audio = QGroupBox(self.central_widget)
-        gb_audio.setTitle(self.tr('Audio'))
+        gb_audio.setTitle(self.tr("Audio"))
 
         audio_layout = QVBoxLayout(gb_audio)
 
@@ -152,13 +157,13 @@ class InfoDialog(QtWidgets.QDialog):
         audio_grid.setColumnStretch(1, 1)
 
         label_acodec_name = QLabel(gb_audio)
-        label_acodec_name.setText(self.tr('Codec Name:'))
+        label_acodec_name.setText(self.tr("Codec Name:"))
 
         self.label_acodec_name_value = QLabel(gb_audio)
         self.label_acodec_name_value.setText("")
 
         label_acodec_long_name = QLabel(gb_audio)
-        label_acodec_long_name.setText(self.tr('Codec Long Name:'))
+        label_acodec_long_name.setText(self.tr("Codec Long Name:"))
 
         self.label_acodec_long_name_value = QLabel(gb_audio)
         self.label_acodec_long_name_value.setText("")
@@ -175,12 +180,17 @@ class InfoDialog(QtWidgets.QDialog):
         whole_layout.addWidget(gb_audio)
 
         self.ok_button = QPushButton()
-        self.ok_button.setText('OK')
+        self.ok_button.setText("OK")
         self.ok_button.clicked.connect(self.close)
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addSpacerItem(
-            QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                        QtWidgets.QSizePolicy.Minimum))
+            QSpacerItem(
+                40,
+                20,
+                QtWidgets.QSizePolicy.Expanding,
+                QtWidgets.QSizePolicy.Minimum,
+            )
+        )
         button_layout.addWidget(self.ok_button)
         whole_layout.addLayout(button_layout)
         self._show_video_info(self.position)
@@ -190,27 +200,34 @@ class InfoDialog(QtWidgets.QDialog):
     def _show_video_info(self, position):
         """Show video info on the Info Panel."""
         task = self.task_list.get_task(position)
-        file_path = task.video.format_info['filename']
+        file_path = task.video.format_info["filename"]
         filename = basename(file_path)
         self.label_file_name_value.setText(filename)
         self.label_size_value.setText(
-            write_size(task.video.format_info['size']))
+            write_size(task.video.format_info["size"])
+        )
         self.label_duration_value.setText(
-            write_time(task.video.format_info['duration']))
+            write_time(task.video.format_info["duration"])
+        )
         self.label_format_name_value.setText(
-            task.video.format_info['format_name'])
+            task.video.format_info["format_name"]
+        )
         self.label_format_long_name_value.setText(
-            task.video.format_info['format_long_name'])
+            task.video.format_info["format_long_name"]
+        )
 
         self.label_codec_name_value.setText(
-            task.video.video_info['codec_name'])
+            task.video.video_info["codec_name"]
+        )
         self.label_codec_long_name_value.setText(
-            task.video.video_info['codec_long_name'])
-        self.label_bit_rate_value.setText(
-            task.video.video_info['bit_rate'])
-        self.label_width_value.setText(task.video.video_info['width'])
-        self.label_height_value.setText(task.video.video_info['height'])
+            task.video.video_info["codec_long_name"]
+        )
+        self.label_bit_rate_value.setText(task.video.video_info["bit_rate"])
+        self.label_width_value.setText(task.video.video_info["width"])
+        self.label_height_value.setText(task.video.video_info["height"])
         self.label_acodec_name_value.setText(
-            task.video.audio_info['codec_name'])
+            task.video.audio_info["codec_name"]
+        )
         self.label_acodec_long_name_value.setText(
-            task.video.audio_info['codec_long_name'])
+            task.video.audio_info["codec_long_name"]
+        )
