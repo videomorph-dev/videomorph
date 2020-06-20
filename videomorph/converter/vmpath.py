@@ -27,6 +27,8 @@ from .launchers import generic_factory
 from .utils import which
 
 BASE_DIR = dirname(dirname(dirname(__file__)))
+LIBRARY = "ffmpeg"
+PROBE = "ffprobe"
 
 
 class _LibraryPath:
@@ -48,32 +50,26 @@ class _LibraryPath:
     @property
     def library_path(self):
         """Get conversion library path."""
-        return self._get_system_path("ffmpeg")
+        return self._get_system_path(LIBRARY)
 
     @property
     def prober_path(self):
         """Get prober path."""
-        return self._get_system_path("ffprobe")
+        return self._get_system_path(PROBE)
 
     def _get_local_dir(self):
         """Return the local directory for ffmpeg library."""
-        raise NotImplementedError("Must be implemented in subclasses")
+        return Path(BASE_DIR, LIBRARY)
 
 
 class _LinuxLibraryPath(_LibraryPath):
     """Class to define platform dependent conversion lib for Linux."""
-
-    def _get_local_dir(self):
-        """Return the local directory for ffmpeg library."""
-        return Path(BASE_DIR, "ffmpeg")
+    pass
 
 
 class _DarwinLibraryPath(_LibraryPath):
     """Class to define platform dependent conversion lib for MacOS."""
-
-    def _get_local_dir(self):
-        """Return the local directory for ffmpeg library."""
-        return Path(BASE_DIR, "ffmpeg")
+    pass
 
 
 class _Win32LibraryPath(_LibraryPath):
@@ -81,23 +77,15 @@ class _Win32LibraryPath(_LibraryPath):
 
     def _get_local_dir(self):
         """Return the local directory for ffmpeg library."""
-        return Path(BASE_DIR, "ffmpeg", "bin")
-
-    def _get_path(self, attr):
-        try:
-            path = getattr(super(_Win32LibraryPath, self), attr) + ".exe"
-        except TypeError:
-            path = None
-
-        return path
+        return Path(super(_Win32LibraryPath, self)._get_local_dir(), "bin")
 
     @property
     def library_path(self):
-        return self._get_path("library_path")
+        return Path(self._get_local_dir(), LIBRARY + ".exe").__str__()
 
     @property
     def prober_path(self):
-        return self._get_path("prober_path")
+        return Path(self._get_local_dir(), PROBE + ".exe").__str__()
 
 
 def library_path_factory():
