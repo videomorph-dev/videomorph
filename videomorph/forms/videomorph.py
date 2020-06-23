@@ -414,8 +414,8 @@ class VideoMorphMW(QMainWindow):
                 callback=self.stop_all_files_encoding,
             ),
             "about_action": dict(
-                text=self.tr("&About") + " " + APP_NAME,
-                tip=self.tr("About") + " " + APP_NAME + " " + VERSION,
+                text=self.tr("&About") + " " + self.title,
+                tip=self.tr("About") + " " + self.title,
                 callback=self.about,
             ),
             "help_content_action": dict(
@@ -453,7 +453,7 @@ class VideoMorphMW(QMainWindow):
                 icon=QIcon(":/icons/exit.png"),
                 text=self.tr("E&xit"),
                 shortcut="Ctrl+Q",
-                tip=self.tr("Exit") + " " + APP_NAME + " " + VERSION,
+                tip=self.tr("Exit") + " " + self.title,
                 callback=self.close,
             ),
             "info_action": dict(
