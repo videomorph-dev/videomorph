@@ -3,7 +3,7 @@
 # File name: __init__.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2018 VideoMorph Development Team
+#   Copyright 2016-2020 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ LOCALE = get_locale()
 
 VIDEO_FILTERS = (
     "*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv"
-    " *.flv *.vob *.ts *.mts *.3gp *.ogv *.ogg *.mpg *.mp4 *.avi"
+    " *.flv *.vob *.ts *.mts *.3gp *.ogv *.mpg *.mp4 *.avi"
 )
 
 VALID_VIDEO_EXT = {ext.lstrip("*") for ext in VIDEO_FILTERS.split()}
