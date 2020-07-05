@@ -3,7 +3,7 @@
 # File name: videomorph.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2018 VideoMorph Development Team
+#   Copyright 2016-2020 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -59,6 +59,7 @@ from PyQt5.QtWidgets import (
 
 from videomorph.converter import (
     APP_NAME,
+    CODENAME,
     BASE_DIR,
     LOCALE,
     STATUS,
@@ -87,7 +88,7 @@ class VideoMorphMW(QMainWindow):
     def __init__(self):
         """Class initializer."""
         super(VideoMorphMW, self).__init__()
-        self.title = APP_NAME + " " + VERSION
+        self.title = APP_NAME + " " + VERSION + " " + CODENAME
         self.icon = self._get_app_icon()
         self.source_dir = QDir.homePath()
         self.task_list_duration = 0.0
@@ -413,8 +414,8 @@ class VideoMorphMW(QMainWindow):
                 callback=self.stop_all_files_encoding,
             ),
             "about_action": dict(
-                text=self.tr("&About") + " " + APP_NAME,
-                tip=self.tr("About") + " " + APP_NAME + " " + VERSION,
+                text=self.tr("&About") + " " + self.title,
+                tip=self.tr("About") + " " + self.title,
                 callback=self.about,
             ),
             "help_content_action": dict(
@@ -452,7 +453,7 @@ class VideoMorphMW(QMainWindow):
                 icon=QIcon(":/icons/exit.png"),
                 text=self.tr("E&xit"),
                 shortcut="Ctrl+Q",
-                tip=self.tr("Exit") + " " + APP_NAME + " " + VERSION,
+                tip=self.tr("Exit") + " " + self.title,
                 callback=self.close,
             ),
             "info_action": dict(
@@ -1241,9 +1242,7 @@ class VideoMorphMW(QMainWindow):
             + running_file_name
             + "]"
             + " - "
-            + APP_NAME
-            + " "
-            + VERSION
+            + self.title
         )
 
     def _update_status_bar(self):

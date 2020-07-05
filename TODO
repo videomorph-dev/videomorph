@@ -9,6 +9,11 @@
 - Buy the domain name videomorph.info
 - Create a landing page for the app
 
+## Version honoring hour dear friend Maikel Llamaret a.k.a. "Canelo" (1.5)
+
+- Add some features from Mystiq (Canelo's personal project related with VideoMorph)
+- Some bug fixes and improvements
+
 ## BugFix Version (1.4.1)
 
 - App freezes with certain movies when reading `ffprobe` output on Windows platform

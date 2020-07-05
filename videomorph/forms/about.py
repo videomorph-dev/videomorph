@@ -3,7 +3,7 @@
 # File name: about.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2018 VideoMorph Development Team
+#   Copyright 2016-2020 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -38,7 +38,13 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from videomorph.converter import APP_NAME, BASE_DIR, SYS_PATHS, VERSION
+from videomorph.converter import (
+    APP_NAME,
+    BASE_DIR,
+    SYS_PATHS,
+    VERSION,
+    CODENAME,
+)
 
 
 class AboutVMDialog(QDialog):
@@ -63,8 +69,8 @@ class AboutVMDialog(QDialog):
             '<p align="center"><span style=" '
             'font-size:20pt; font-weight:600;">{n}</span>'
             '</p><p align="center"><span style=" '
-            'font-size:9pt; font-weight:600;">version {v}'
-            "</span></p>".format(n=APP_NAME, v=VERSION)
+            'font-size:9pt; font-weight:600;">Version {v} {c}'
+            "</span></p>".format(n=APP_NAME, v=VERSION, c=CODENAME)
         )
         self.label_2.setMinimumSize(QSize(0, 64))
         self.label_2.setMaximumSize(QSize(16777215, 64))
