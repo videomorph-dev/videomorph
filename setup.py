@@ -23,7 +23,7 @@
 from pathlib import Path
 from sys import platform
 
-from videomorph.converter import APP_NAME, SYS_PATHS, VERSION, VM_PATHS
+from videomorph.converter import APP_NAME, CODENAME, SYS_PATHS, VERSION, VM_PATHS
 
 try:
     from setuptools import setup
@@ -47,7 +47,7 @@ VideoMorph isn't for you."""
 
 COMMONS = dict(
     name=APP_NAME.lower(),
-    version=VERSION,
+    version=VERSION + "-" + CODENAME.lower(),
     description="Video Converter based on ffmpeg, "
     "Python 3 and Qt5, focused on usability.",
     long_description=LONG_DESCRIPTION,
@@ -103,7 +103,6 @@ LINUX_DATA_FILES = dict(
                 "README.md",
                 "LICENSE",
                 "requirements.txt",
-                "howto-videomorph.gif",
                 "copyright",
                 "changelog.gz",
                 "TODO",
@@ -163,7 +162,6 @@ WIN32_DATA_FILES = dict(
                 "README.md",
                 "LICENSE",
                 "requirements.txt",
-                "howto-videomorph.gif",
                 "copyright",
                 "changelog.gz",
                 "TODO",
