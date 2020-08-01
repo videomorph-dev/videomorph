@@ -154,6 +154,14 @@ class TaskList(list):
         return True
 
     @property
+    def all_done(self):
+        """Check if all files in the lists have been done."""
+        for task in self:
+            if task.status != STATUS.done:
+                return False
+        return True
+
+    @property
     def length(self):
         """Return the number of elements in the list."""
         return self.__len__()
@@ -164,7 +172,7 @@ class TaskList(list):
         return sum(
             float(task.video.format_info["duration"])
             for task in self
-            if task.status == STATUS.todo
+            if task.status != STATUS.done
         )
 
     @property
