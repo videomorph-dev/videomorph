@@ -26,7 +26,13 @@ from os.path import join as join_path
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from videomorph.converter import APP_NAME, BASE_DIR, SYS_PATHS, VERSION
+from videomorph.converter import (
+    APP_NAME,
+    BASE_DIR,
+    CODENAME,
+    SYS_PATHS,
+    VERSION,
+)
 
 
 class ChangelogDialog(QtWidgets.QDialog):
@@ -37,7 +43,13 @@ class ChangelogDialog(QtWidgets.QDialog):
 
         self.resize(800, 600)
         self.setWindowTitle(
-            APP_NAME + " " + VERSION + " " + self.tr("Changelog")
+            APP_NAME
+            + " "
+            + VERSION
+            + " "
+            + CODENAME
+            + " "
+            + self.tr("Changelog")
         )
         size_policy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum

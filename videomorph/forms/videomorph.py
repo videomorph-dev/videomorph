@@ -1289,8 +1289,8 @@ class VideoMorphMW(QMainWindow):
     def update_table_progress_column(self, row):
         """Update the progress column of conversion task list."""
         self.tasks_table.item(row, COLUMNS.PROGRESS).setText(
-                self.tr("To Convert")
-            )
+            self.tr("To Convert")
+        )
 
     def _reset_options_check_boxes(self):
         self.delete_chb.setChecked(False)
