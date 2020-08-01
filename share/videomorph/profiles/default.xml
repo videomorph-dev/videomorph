@@ -91,13 +91,13 @@
     <profile name="FLV">
         <preset>
             <preset_name_en>FLV Fullscreen 320x240 (4:3)</preset_name_en>
-            <preset_params>-vcodec flv -f flv -r 29.97 -s 320x240 -aspect 4:3 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k</preset_params>
+            <preset_params>-vcodec flv -f flv -r 29.97 -s 320x240 -aspect 4:3 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -ac 1 -ar 22050 -b:a 56k</preset_params>
             <preset_extension>.flv</preset_extension>
             <preset_name_es>FLV Pantalla Completa 320x240 (4:3)</preset_name_es>
         </preset>
         <preset>
             <preset_name_en>FLV Widescreen 320x180 (16:9)</preset_name_en>
-            <preset_params>-vcodec flv -f flv -r 29.97 -s 320x180 -aspect 16:9 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -flags +aic+mv0+mv4 -ac 1 -ar 22050 -b:a 56k</preset_params>
+            <preset_params>-vcodec flv -f flv -r 29.97 -s 320x180 -aspect 16:9 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -ac 1 -ar 22050 -b:a 56k</preset_params>
             <preset_extension>.flv</preset_extension>
             <preset_name_es>FLV Pantalla Panorámica 320x180 (16:9)</preset_name_es>
         </preset>
@@ -294,6 +294,12 @@
             <preset_params>-crf 15.0 -f matroska -b:v 8000k -r 25 -vcodec libx265 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2</preset_params>
             <preset_extension>.mkv</preset_extension>
             <preset_name_es>MKV Optimizado para YouTube</preset_name_es>
+        </preset>
+        <preset>
+            <preset_name_en>MKV High Compression</preset_name_en>
+            <preset_params>-strict strict -map 0 -q:v 2 -vcodec libx265 -preset slow -s 1280:720</preset_params>
+            <preset_extension>.mkv</preset_extension>
+            <preset_name_es>High Compression</preset_name_es>
         </preset>
     </profile>
     <profile name="MP3">
