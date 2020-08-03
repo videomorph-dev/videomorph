@@ -1,8 +1,26 @@
-videomorph (1.5); urgency=medium
+videomorph (1.5); urgency=high
 
-    * VideoMorph v1.5. Release Date: Wed, 17 Jun 2020
+    * VideoMorph v1.5 Canelo. Release Date: Mon, 6 Jul 2020
 
- -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Tue, 16 Jun 2020 18:15:38 -0400
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Mon, 6 Jul 2020 12:15:38 -0400
+
+videomorph (1.4); urgency=high
+
+    * Update the project's documentation and copyright
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 2 Jul 2020 23:16:15 -0400
+
+videomorph (1.4); urgency=high
+
+    * Fix the problem with the library path on Windows and improve GNU/Linux and macOS code
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sat, 20 Jun 2020 17:38:58 -0400
+
+videomorph (1.4); urgency=medium
+
+    * Format the code using Black
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 19 Jun 2020 19:25:33 -0400
 
 videomorph (1.4); urgency=medium
 
@@ -62,7 +80,7 @@ videomorph (1.4); urgency=medium
 
     * Add MKV presets
 
- -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 30 Aug 2019 17:48:57 -0400
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Fri, 23 Aug 2019 17:48:57 -0400
 
 videomorph (1.4); urgency=medium
 

@@ -64,11 +64,13 @@ class _LibraryPath:
 
 class _LinuxLibraryPath(_LibraryPath):
     """Class to define platform dependent conversion lib for Linux."""
+
     pass
 
 
 class _DarwinLibraryPath(_LibraryPath):
     """Class to define platform dependent conversion lib for MacOS."""
+
     pass
 
 
