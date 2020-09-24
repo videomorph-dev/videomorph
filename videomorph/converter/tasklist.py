@@ -169,6 +169,14 @@ class TaskList(list):
     @property
     def duration(self):
         """Return the duration time of TaskList counting files to do only."""
+        if self.position >= 0:
+            tasks = self[self.position + 1:]
+            return sum(
+                float(task.video.format_info["duration"])
+                for task in tasks
+                if task.status != STATUS.done
+            )
+
         return sum(
             float(task.video.format_info["duration"])
             for task in self
