@@ -1128,6 +1128,8 @@ class VideoMorphMW(QMainWindow):
                 )
                 if self.task_list.all_done:
                     self._update_ui_when_done()
+                else:
+                    self.update_ui_when_ready()
             else:
                 self._show_message_box(
                     type_=QMessageBox.Information,
@@ -1139,13 +1141,13 @@ class VideoMorphMW(QMainWindow):
             self.setWindowTitle(self.title)
             self.statusBar().showMessage(self.tr("Ready"))
             self._reset_options_check_boxes()
+            # Reset the position
+            self.task_list.position = None
             # Reset all progress related variables
             self._reset_progress_bars()
             self.library.timer.reset_progress_times()
             self.task_list_duration = self.task_list.duration
             self.library.timer.process_start_time = 0.0
-            # Reset the position
-            self.task_list.position = None
         else:
             self.start_encoding()
 
