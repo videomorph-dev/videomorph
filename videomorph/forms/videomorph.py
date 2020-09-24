@@ -1128,6 +1128,8 @@ class VideoMorphMW(QMainWindow):
                 )
                 if self.task_list.all_done:
                     self._update_ui_when_done()
+                else:
+                    self.update_ui_when_ready()
             else:
                 self._show_message_box(
                     type_=QMessageBox.Information,
@@ -1410,6 +1412,7 @@ class VideoMorphMW(QMainWindow):
         )
 
     def _update_ui_when_done(self):
+        print("Here")
         self._update_ui(
             convert=False,
             stop=False,
