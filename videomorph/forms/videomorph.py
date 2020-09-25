@@ -640,7 +640,7 @@ class VideoMorphMW(QMainWindow):
 
     def videomorph_web(self):
         """Open VideoMorph Web page."""
-        self._open_url(url="http://videomorph.webmisolutions.com")
+        self._open_url(url="https://videomorph-dev.github.io/videomorph/")
 
     @staticmethod
     def _open_url(url):
