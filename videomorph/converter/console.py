@@ -97,7 +97,7 @@ def search_directory_recursively(directory, files=None):
         for dir_path, _, files_names in walk(directory):
             for file_name in files_names:
                 path = Path(dir_path, file_name)
-                if path.suffix in VALID_VIDEO_EXT:
+                if path.suffix.lower() in VALID_VIDEO_EXT:
                     files.append(path.__str__())
     else:
         raise IsADirectoryError(
