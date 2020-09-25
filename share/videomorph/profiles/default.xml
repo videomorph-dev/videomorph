@@ -65,25 +65,25 @@
         </preset>
         <preset>
             <preset_name_en>DVD PAL Fullscreen</preset_name_en>
-            <preset_params>-f dvd -vcodec mpeg2video -r 25.00 -aspect 4:3 -b:v 4000k -mbd rd -trellis 1 -flags +mv0 -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2</preset_params>
+            <preset_params>-f dvd -vcodec mpeg2video -r 25.00 -aspect 4:3 -b:v 4000k -mbd rd -trellis 1 -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2</preset_params>
             <preset_extension>.mpg</preset_extension>
             <preset_name_es>DVD PAL Pantalla Completa</preset_name_es>
         </preset>
         <preset>
             <preset_name_en>DVD PAL Widescreen</preset_name_en>
-            <preset_params>-f dvd -vcodec mpeg2video -r 25.00 -aspect 16:9 -b:v 4000k -mbd rd -trellis 1 -flags +mv0 -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2</preset_params>
+            <preset_params>-f dvd -vcodec mpeg2video -r 25.00 -aspect 16:9 -b:v 4000k -mbd rd -trellis 1 -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2</preset_params>
             <preset_extension>.mpg</preset_extension>
             <preset_name_es>DVD PAL Pantalla Panorámica</preset_name_es>
         </preset>
         <preset>
             <preset_name_en>PAL DVD HQ Fullscreen</preset_name_en>
-            <preset_params>-f dvd -target pal-dvd -aspect 4:3 -vb 8000k -mbd rd -trellis 1 -flags +mv0 -cmp 0 -subcmp 2</preset_params>
+            <preset_params>-f dvd -target pal-dvd -aspect 4:3 -vb 8000k -mbd rd -trellis 1 -cmp 0 -subcmp 2</preset_params>
             <preset_extension>.mpg</preset_extension>
             <preset_name_es>PAL DVD HQ Pantalla Completa</preset_name_es>
         </preset>
         <preset>
             <preset_name_en>PAL DVD HQ Widescreen</preset_name_en>
-            <preset_params>-f dvd -target pal-dvd -aspect 16:9 -vb 8000k -mbd rd -trellis 1 -flags +mv0 -cmp 0 -subcmp 2</preset_params>
+            <preset_params>-f dvd -target pal-dvd -aspect 16:9 -vb 8000k -mbd rd -trellis 1 -cmp 0 -subcmp 2</preset_params>
             <preset_extension>.mpg</preset_extension>
             <preset_name_es>PAL DVD HQ Pantalla Panorámica</preset_name_es>
         </preset>
@@ -193,7 +193,7 @@
         </preset>
         <preset>
             <preset_name_en>PAL VCD High Quality</preset_name_en>
-            <preset_params>-f vcd mv0 -target pal-vcd -mbd rd -trellis 1 -cmp 0 -subcmp 2</preset_params>
+            <preset_params>-f vcd -target pal-vcd -mbd rd -trellis 1 -cmp 0 -subcmp 2</preset_params>
             <preset_extension>.mpg</preset_extension>
             <preset_name_es>PAL VCD Alta Calidad</preset_name_es>
         </preset>
