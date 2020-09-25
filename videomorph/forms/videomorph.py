@@ -33,7 +33,7 @@ from PyQt5.QtCore import (
     QSize,
     Qt,
 )
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QKeySequence
 from PyQt5.QtWidgets import (
     QAbstractItemView,
     QAction,
@@ -349,7 +349,7 @@ class VideoMorphMW(QMainWindow):
             "open_media_file_action": dict(
                 icon=QIcon(":/icons/video-file.png"),
                 text=self.tr("&Add Videos..."),
-                shortcut="Ctrl+O",
+                shortcut=QKeySequence.Open,
                 tip=self.tr("Add Videos to the " "List of Conversion Tasks"),
                 callback=self.open_media_files,
             ),
@@ -385,7 +385,7 @@ class VideoMorphMW(QMainWindow):
             "remove_media_file_action": dict(
                 icon=QIcon(":/icons/remove-file.png"),
                 text=self.tr("&Remove Video"),
-                shortcut="Del",
+                shortcut=QKeySequence.Delete,
                 tip=self.tr(
                     "Remove Selected Video from the "
                     "List of Conversion Tasks"
@@ -402,14 +402,13 @@ class VideoMorphMW(QMainWindow):
             "stop_action": dict(
                 icon=QIcon(":/icons/stop.png"),
                 text=self.tr("&Stop"),
-                shortcut="Ctrl+P",
+                shortcut="Esc",
                 tip=self.tr("Stop Current Video Conversion"),
                 callback=self.stop_file_encoding,
             ),
             "stop_all_action": dict(
                 icon=QIcon(":/icons/stop-all.png"),
                 text=self.tr("S&top All"),
-                shortcut="Ctrl+A",
                 tip=self.tr("Stop all Video Conversions"),
                 callback=self.stop_all_files_encoding,
             ),
@@ -421,7 +420,7 @@ class VideoMorphMW(QMainWindow):
             "help_content_action": dict(
                 icon=QIcon(":/icons/about.png"),
                 text=self.tr("&Contents"),
-                shortcut="Ctrl+H",
+                shortcut=QKeySequence.HelpContents,
                 tip=self.tr("Help Contents"),
                 callback=self.help_content,
             ),
@@ -434,14 +433,12 @@ class VideoMorphMW(QMainWindow):
             "ffmpeg_doc_action": dict(
                 icon=QIcon(":/icons/ffmpeg.png"),
                 text=self.tr("&Ffmpeg Documentation"),
-                shortcut="Ctrl+L",
                 tip=self.tr("Open Ffmpeg On-Line Documentation"),
                 callback=self.ffmpeg_doc,
             ),
             "videomorph_web_action": dict(
                 icon=QIcon(":/logo/videomorph.png"),
                 text=APP_NAME + " " + self.tr("&Web Page"),
-                shortcut="Ctrl+V",
                 tip=self.tr("Open")
                 + " "
                 + APP_NAME
@@ -452,7 +449,7 @@ class VideoMorphMW(QMainWindow):
             "exit_action": dict(
                 icon=QIcon(":/icons/exit.png"),
                 text=self.tr("E&xit"),
-                shortcut="Ctrl+Q",
+                shortcut=QKeySequence.Quit,
                 tip=self.tr("Exit") + " " + self.title,
                 callback=self.close,
             ),
@@ -497,8 +494,8 @@ class VideoMorphMW(QMainWindow):
         # Conversion menu
         self.conversion_menu = self.menuBar().addMenu(self.tr("&Conversion"))
         self.conversion_menu.addAction(self.convert_action)
-        self.conversion_menu.addAction(self.stop_action)
         self.conversion_menu.addSeparator()
+        self.conversion_menu.addAction(self.stop_action)
         self.conversion_menu.addAction(self.stop_all_action)
         # Help menu
         self.help_menu = self.menuBar().addMenu(self.tr("&Help"))
