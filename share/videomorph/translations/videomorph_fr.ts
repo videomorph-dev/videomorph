@@ -16,7 +16,7 @@
     <message>
         <location filename="../../../videomorph/forms/about.py" line="110"/>
         <source>License</source>
-        <translation>Licencse</translation>
+        <translation>License</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/about.py" line="113"/>
@@ -83,9 +83,9 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Un convertidor de videos ligero y fácil de usar&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Un converseur de vidéos legere et facile de utiliser&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;VideoMorph&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; est une GUI pour &lt;/span&gt;&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;ffmpeg&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;, basada en el código de &lt;/span&gt;&lt;a href=&quot;https://github.com/senko/python-video-converter&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;python-video-converter&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; y tomando ideas y preconfiguraciones de &lt;/span&gt;&lt;a href=&quot;http://qwinff.github.io/&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;QWinFF&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;VideoMorph&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; est une GUI pour &lt;/span&gt;&lt;a href=&quot;http://ffmpeg.org/&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;ffmpeg&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;, basé sur le code de &lt;/span&gt;&lt;a href=&quot;https://github.com/senko/python-video-converter&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;python-video-converter&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; et en prenant les idées et les configurations prédéfinies dans &lt;/span&gt;&lt;a href=&quot;http://qwinff.github.io/&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#2980b9;&quot;&gt;QWinFF&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/videomorph-dev/videomorph&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;https://github.com/videomorph-dev/videomorph&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -125,7 +125,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/addprofile.py" line="155"/>
         <source>Output File Extension can&apos;t be Left Blank, it must start with a dot (.) and should be a Valid Video Extension</source>
-        <translation>L''extension du fichier de destination ne peut pas rester vide, il doit commencer par un point (.) et doit être une extension de vidéo valide</translation>
+        <translation>L&apos;extension du fichier de destination ne peut pas rester vide, il doit commencer par un point (.) et doit être une extension de vidéo valide</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/addprofile.py" line="52"/>
@@ -442,7 +442,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="1193"/>
         <source>Done!</source>
-        <translation>C'est terminé!</translation>
+        <translation>C&apos;est terminé!</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="1224"/>
@@ -472,7 +472,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="212"/>
         <source>Insert Subtitles if Available in Source Directory</source>
-        <translation>Insérer les sous-titres s''ils sont disponibles dans le dossier des origines</translation>
+        <translation>Insérer les sous-titres s&apos;ils sont disponibles dans le dossier des origines</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="1019"/>
@@ -482,7 +482,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="1229"/>
         <source>Conversion Process Stopped by the User!</source>
-        <translation>Le procès de conversion est arrêté par l'utilisateur!</translation>
+        <translation>Le procès de conversion est arrêté par l&apos;utilisateur!</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="814"/>
@@ -517,7 +517,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="1117"/>
         <source>Can not Write to Selected Folder</source>
-        <translation>Impossible d'écrire dans le dossier sélectionné</translation>
+        <translation>Impossible d&apos;écrire dans le dossier sélectionné</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="1012"/>
@@ -577,7 +577,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="920"/>
         <source>No Video Player Found in your System</source>
-        <translation>Aucun logiciel de lecture vidéo n'a été trouvé dans votre système</translation>
+        <translation>Aucun logiciel de lecture vidéo n&apos;a été trouvé dans votre système</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="405"/>
@@ -607,7 +607,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="227"/>
         <source>Useful when Converting a Video File to Multiples Formats</source>
-        <translation>Utile en cas de conversion d'un fichier vidéo en plusieurs formats</translation>
+        <translation>Utile en cas de conversion d&apos;un fichier vidéo en plusieurs formats</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="1123"/>
@@ -637,7 +637,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="236"/>
         <source>Shutdown Computer when Conversion Finished</source>
-        <translation>Éteindre l'ordinateur après la conversion</translation>
+        <translation>Éteindre l&apos;ordinateur après la conversion</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="98"/>
@@ -657,7 +657,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="457"/>
         <source>Help Contents</source>
-        <translation>Sommaires d'Aide</translation>
+        <translation>Sommaires d&apos;Aide</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="477"/>
@@ -707,7 +707,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="369"/>
         <source>Add all the Video Files in a Folder to the List of Conversion Tasks</source>
-        <translation>Ajout de toutes les vidéos d'un dossier à la liste des travaux de conversion</translation>
+        <translation>Ajout de toutes les vidéos d&apos;un dossier à la liste des travaux de conversion</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="410"/>
@@ -747,7 +747,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="1123"/>
         <source>Input Video:</source>
-        <translation>Vidéo d'entrée:</translation>
+        <translation>Vidéo d&apos;entrée:</translation>
     </message>
     <message>
         <location filename="../../../videomorph/forms/videomorph.py" line="758"/>
