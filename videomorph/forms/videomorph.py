@@ -859,7 +859,7 @@ class VideoMorphMW(QMainWindow):
             self.update_ui_when_ready()
 
         # After adding files to the list, recalculate the list duration
-        self.task_list_duration = self.task_list.duration
+        self.task_list_duration = self.task_list.duration(step=0)
 
     def play_video(self):
         """Play a video using an available video player."""
@@ -945,7 +945,7 @@ class VideoMorphMW(QMainWindow):
             # Remove file from self.media_list
             self.task_list.delete_file(position=file_row)
             self.task_list.position = None
-            self.task_list_duration = self.task_list.duration
+            self.task_list_duration = self.task_list.duration()
 
         # If all files are deleted... update the interface
         if not self.tasks_table.rowCount():
@@ -1058,7 +1058,7 @@ class VideoMorphMW(QMainWindow):
         )
         # Update the list duration and partial time for total progress bar
         self.library.timer.reset_progress_times()
-        self.task_list_duration = self.task_list.duration
+        self.task_list_duration = self.task_list.duration()
 
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
@@ -1078,7 +1078,7 @@ class VideoMorphMW(QMainWindow):
 
         # Update the list duration and partial time for total progress bar
         self.library.timer.reset_progress_times()
-        self.task_list_duration = self.task_list.duration
+        self.task_list_duration = self.task_list.duration()
 
     def _finish_file_encoding(self):
         """Finish the file encoding process."""
@@ -1143,7 +1143,7 @@ class VideoMorphMW(QMainWindow):
             # Reset all progress related variables
             self._reset_progress_bars()
             self.library.timer.reset_progress_times()
-            self.task_list_duration = self.task_list.duration
+            self.task_list_duration = self.task_list.duration()
             self.library.timer.process_start_time = 0.0
         else:
             self.start_encoding()
@@ -1274,7 +1274,7 @@ class VideoMorphMW(QMainWindow):
             self._set_media_status()
 
         # Update total duration of the new tasks list
-        self.task_list_duration = self.task_list.duration
+        self.task_list_duration = self.task_list.duration()
         # Update the interface
         self.update_ui_when_ready()
 
@@ -1310,7 +1310,7 @@ class VideoMorphMW(QMainWindow):
             self._update_all_table_rows(
                 column=COLUMNS.PROGRESS, value=self.tr("To Convert")
             )
-            self.task_list_duration = self.task_list.duration
+            self.task_list_duration = self.task_list.duration()
 
     def _update_ui(self, **i_vars):
         """Update the interface status.
@@ -1440,7 +1440,7 @@ class VideoMorphMW(QMainWindow):
 
     def _update_ui_when_error_on_conversion(self):
         self.library.timer.reset_progress_times()
-        self.task_list_duration = self.task_list.duration
+        self.task_list_duration = self.task_list.duration()
         self.task_list.position = None
         self._reset_progress_bars()
         self.setWindowTitle(self.title)
