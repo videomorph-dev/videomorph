@@ -42,14 +42,7 @@ def test_get_xml_profile_attr():
     )
 
     assert (
-        attr == "-f mp4 -r 29.97 -vcodec libx264 -s 640x480 -b:v 1000k "
-        "-aspect 4:3 -flags +loop -cmp +chroma -deblockalpha 0 "
-        "-deblockbeta 0 -maxrate 1500k -bufsize 4M -bt 256k "
-        "-refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 "
-        "-subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 "
-        "-g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 "
-        "-qcomp 0.6 -sc_threshold 40 -i_qfactor 0.71 -acodec aac "
-        "-b:a 112k -ar 48000 -ac 2 -strict -2"
+        attr == "-f mp4 -r 29.97 -vcodec libx264 -s 640x480 -b:v 1000k -aspect 4:3 -flags +loop -cmp +chroma -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2"
     )
 
 
@@ -61,6 +54,7 @@ def test_get_xml_profile_qualities_en():
         "MS Compatible 720x480",
         "XVID Fullscreen 640x480 (4:3)",
         "XVID Widescreen 704x384 (16:9)",
+        "AVI Optimized for YouTube",
     ]
 
 
@@ -72,6 +66,7 @@ def test_get_xml_profile_qualities_es():
         "Compatible MS 720x480",
         "XVID Pantalla Completa 640x480 (4:3)",
         "XVID Pantalla Panorámica 704x384 (16:9)",
+        "AVI Optimizado para YouTube",
     ]
 
 
