@@ -20,8 +20,8 @@ jobs:
         python-version: 3.8
     - name: Install FFMPEG
       run: |
-        sudo apt update
-        sudo apt -y intall ffmpeg
+        sudo apt-get update
+        sudo apt-get -y install ffmpeg
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
