@@ -20,7 +20,6 @@
 
 """This module provides tests for profile.py module."""
 
-import nose
 from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
 
@@ -92,7 +91,3 @@ def test_update():
         "-b:a 160k -r 25"
     )
     assert profile.extension == ".wmv"
-
-
-if __name__ == "__main__":
-    nose.main()

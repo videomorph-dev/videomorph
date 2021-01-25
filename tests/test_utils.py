@@ -20,7 +20,6 @@
 
 """This module provides tests for utils.py module."""
 
-import nose
 from videomorph.converter import utils
 
 
@@ -125,7 +124,3 @@ def test_write_size_mib():
 def test_write_size_gib():
     """Test write_size() with GiB."""
     assert utils.write_size(1585558454) == "1.5GiB"
-
-
-if __name__ == "__main__":
-    nose.runmodule()
