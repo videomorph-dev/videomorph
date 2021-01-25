@@ -36,4 +36,4 @@ jobs:
         black --check ./
     - name: Test with pytest
       run: |
-        pytest --cov=videomorph/ --cov-report=xml
+        pytest --cov=./ --cov-report=xml
