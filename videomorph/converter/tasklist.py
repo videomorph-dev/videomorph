@@ -169,7 +169,7 @@ class TaskList(list):
     def duration(self, step=1):
         """Return the duration time of TaskList counting files to do only."""
         if self.position >= 0:
-            tasks = self[self.position + step:]
+            tasks = self[self.position + step :]
             return sum(
                 float(task.video.format_info["duration"])
                 for task in tasks

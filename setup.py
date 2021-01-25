@@ -23,7 +23,13 @@
 from pathlib import Path
 from sys import platform
 
-from videomorph.converter import APP_NAME, CODENAME, SYS_PATHS, VERSION, VM_PATHS
+from videomorph.converter import (
+    APP_NAME,
+    CODENAME,
+    SYS_PATHS,
+    VERSION,
+    VM_PATHS,
+)
 
 try:
     from setuptools import setup
