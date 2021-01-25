@@ -20,6 +20,7 @@
 
 """This module provides tests for video.py module."""
 
+import nose
 from videomorph.converter.video import Video
 
 
@@ -55,3 +56,7 @@ class TestVideo:
     def test_video_is_valid_wrong_value(self):
         self.video._info.format_info["duration"] = "N/A"
         assert not self.video.is_valid()
+
+
+if __name__ == "__main__":
+    nose.main()

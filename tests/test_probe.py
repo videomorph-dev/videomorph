@@ -20,6 +20,7 @@
 
 """This module provides tests for probe.py module."""
 
+import nose
 from videomorph.converter.video import Probe
 
 
@@ -57,3 +58,7 @@ class TestProbe:
 
     def test_subtitle_info(self):
         assert self.probe.subtitle_info == {}
+
+
+if __name__ == "__main__":
+    nose.main()

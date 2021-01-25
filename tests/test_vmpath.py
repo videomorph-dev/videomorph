@@ -24,6 +24,7 @@ from os.path import expandvars
 from pathlib import Path
 from sys import prefix
 
+import nose
 from videomorph.converter.vmpath import darwin_paths, linux_paths, win32_paths
 
 
@@ -71,3 +72,7 @@ class TestPaths:
         print(self.win32_paths)
         print(win32_paths())
         assert self.win32_paths == win32_paths()
+
+
+if __name__ == "__main__":
+    nose.main()
