@@ -27,6 +27,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install nose pytest pytest-cov black flake8 pep8-naming flake8-debugger flake8-docstrings codecov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Download Sample Video
+      run: |
+        wget -c https://isorepublic.com/wp-content/uploads/2019/01/iso-republic-free-video-085.mp4 -O sample-video.mp4
     - name: Lint with flake8
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
