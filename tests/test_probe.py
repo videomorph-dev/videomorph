@@ -20,19 +20,15 @@
 
 """This module provides tests for probe.py module."""
 
-import nose
 from videomorph.converter.video import Probe
 
 
 class TestProbe:
     """Class for testing probe.py module."""
 
-    def setup(self):
-        self.probe = Probe("./Dad.mpg")
-
     def test_format_info(self):
-        assert self.probe.format_info == {
-            "filename": "./Dad.mpg",
+        assert Probe("tests/Dad.mpg").format_info == {
+            "filename": "tests/Dad.mpg",
             "nb_streams": "2",
             "format_name": "mpeg",
             "format_long_name": "MPEG-PS (MPEG-2 Program Stream)",
@@ -42,7 +38,7 @@ class TestProbe:
         }
 
     def test_video_info(self):
-        assert self.probe.video_info == {
+        assert Probe("tests/Dad.mpg").video_info == {
             "codec_name": "mpeg1video",
             "codec_long_name": "MPEG-1 video",
             "width": "352",
@@ -51,14 +47,10 @@ class TestProbe:
         }
 
     def test_audio_info(self):
-        assert self.probe.audio_info == {
+        assert Probe("tests/Dad.mpg").audio_info == {
             "codec_name": "mp2",
             "codec_long_name": "MP2 (MPEG audio layer 2)",
         }
 
     def test_subtitle_info(self):
-        assert self.probe.subtitle_info == {}
-
-
-if __name__ == "__main__":
-    nose.main()
+        assert Probe("tests/Dad.mpg").subtitle_info == {}

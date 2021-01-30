@@ -20,7 +20,8 @@
 
 """This module provides tests for utils.py module."""
 
-import nose
+import pytest
+
 from videomorph.converter import utils
 
 
@@ -34,40 +35,40 @@ def test_which_existing_app():
     assert utils.which("dir").endswith("dir")  # Depends on your system
 
 
-@nose.tools.raises(ValueError)
 def test_which_non_existing_app():
     """Test for a non existing app (raises a ValueError)."""
-    utils.which("hypothetical_app")
+    with pytest.raises(ValueError):
+        utils.which("hypothetical_app")
 
 
-@nose.tools.raises(ValueError)
 def test_which_null_arg():
     """Test for a null string param (raises a ValueError)."""
-    utils.which("")
+    with pytest.raises(ValueError):
+        utils.which("")
 
 
-@nose.tools.raises(ValueError)
 def test_write_time_none():
     """Convert None."""
-    assert utils.write_time(None)
+    with pytest.raises(ValueError):
+        utils.write_time(None)
 
 
-@nose.tools.raises(ValueError)
 def test_write_time_sting():
     """Convert string data type."""
-    assert utils.write_time("string")
+    with pytest.raises(ValueError):
+        utils.write_time("string")
 
 
-@nose.tools.raises(ValueError)
 def test_write_time_tuple():
     """Convert wrong data type."""
-    assert utils.write_time((1, 2))
+    with pytest.raises(ValueError):
+        utils.write_time((1, 2))
 
 
-@nose.tools.raises(ValueError)
 def test_write_time_wrong_data_types():
     """Convert list data type."""
-    assert utils.write_time([1, 2])
+    with pytest.raises(ValueError):
+        utils.write_time([1, 2])
 
 
 def test_write_time_0():
@@ -95,10 +96,10 @@ def test_write_time_3661():
     assert utils.write_time(3661) == "01h:01m:01s"
 
 
-@nose.tools.raises(ValueError)
 def test_write_time_negative():
     """Test for negative time value (raises a ValueError)."""
-    utils.write_time(-1)
+    with pytest.raises(ValueError):
+        utils.write_time(-1)
 
 
 def test_write_size0():
@@ -106,10 +107,10 @@ def test_write_size0():
     assert utils.write_size(0) == "0.0KiB"
 
 
-@nose.tools.raises(ValueError)
 def test_write_size_negative():
     """Test write_size() with negative size."""
-    assert utils.write_size(-1)
+    with pytest.raises(ValueError):
+        utils.write_size(-1)
 
 
 def test_write_size_kib():
@@ -125,7 +126,3 @@ def test_write_size_mib():
 def test_write_size_gib():
     """Test write_size() with GiB."""
     assert utils.write_size(1585558454) == "1.5GiB"
-
-
-if __name__ == "__main__":
-    nose.runmodule()

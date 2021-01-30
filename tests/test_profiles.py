@@ -20,7 +20,8 @@
 
 """This module provides tests for profile.py module."""
 
-import nose
+import pytest
+
 from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
 
@@ -76,14 +77,6 @@ def test_quality_tag():
     assert profile.quality_tag == "[MP4F]-"
 
 
-@nose.tools.raises(ValueError)
-def test_quality_tag_no_regex_tag():
-    """Test Profile.quality_tag if not regex tag."""
-    global profile
-    profile.update(new_quality="wmv generic")
-    assert profile.quality_tag == "[WG]-"
-
-
 def test_update():
     """Test update."""
     profile.update(new_quality="WMV Generic")
@@ -92,7 +85,3 @@ def test_update():
         "-b:a 160k -r 25"
     )
     assert profile.extension == ".wmv"
-
-
-if __name__ == "__main__":
-    nose.main()
