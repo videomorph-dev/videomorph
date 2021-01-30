@@ -27,30 +27,30 @@ class TestProbe:
     """Class for testing probe.py module."""
 
     def test_format_info(self):
-        assert Probe("tests/Dad.mpg").format_info == {
-            "filename": "tests/Dad.mpg",
+        assert Probe("sample-video.mp4").format_info == {
+            "filename": "sample-video.mp4",
             "nb_streams": "2",
-            "format_name": "mpeg",
-            "format_long_name": "MPEG-PS (MPEG-2 Program Stream)",
-            "duration": "120.720000",
-            "size": "21227416",
-            "bit_rate": "1406720",
+            "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+            "format_long_name": "QuickTime / MOV",
+            "duration": "57.563000",
+            "size": "5329356",
+            "bit_rate": "740664",
         }
 
     def test_video_info(self):
-        assert Probe("tests/Dad.mpg").video_info == {
-            "codec_name": "mpeg1video",
-            "codec_long_name": "MPEG-1 video",
-            "width": "352",
-            "height": "288",
-            "bit_rate": "1150000",
+        assert Probe("sample-video.mp4").video_info == {
+            "codec_name": "h264",
+            "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+            "width": "854",
+            "height": "480",
+            "bit_rate": "669499",
         }
 
     def test_audio_info(self):
-        assert Probe("tests/Dad.mpg").audio_info == {
-            "codec_name": "mp2",
-            "codec_long_name": "MP2 (MPEG audio layer 2)",
+        assert Probe("sample-video.mp4").audio_info == {
+            "codec_name": "aac",
+            "codec_long_name": "AAC (Advanced Audio Coding)",
         }
 
     def test_subtitle_info(self):
-        assert Probe("tests/Dad.mpg").subtitle_info == {}
+        assert Probe("sample-video.mp4").subtitle_info == {}

@@ -28,26 +28,29 @@ class TestVideo:
 
     def test_get_name(self):
         """Test TaskList.get_file_name()."""
-        assert Video("tests/Dad.mpg").get_name() == "Dad"
+        assert Video("sample-video.mp4").get_name() == "sample-video"
 
     def test_get_name_with_extension(self):
         """Test TaskList.get_file_name() with extension."""
-        assert Video("tests/Dad.mpg").get_name(with_extension=True) == "Dad.mpg"
+        assert (
+            Video("sample-video.mp4").get_name(with_extension=True)
+            == "sample-video.mp4"
+        )
 
     def test_video_is_valid_right_duration(self):
-        assert Video("tests/Dad.mpg").is_valid()
+        assert Video("sample-video.mp4").is_valid()
 
     def test_video_is_valid_zero_duration(self):
-        video = Video("tests/Dad.mpg")
+        video = Video("sample-video.mp4")
         video._info.format_info["duration"] = 0
         assert not video.is_valid()
 
     def test_video_is_valid_wrong_type(self):
-        video = Video("tests/Dad.mpg")
+        video = Video("sample-video.mp4")
         video._info.format_info["duration"] = []
         assert not video.is_valid()
 
     def test_video_is_valid_wrong_value(self):
-        video = Video("tests/Dad.mpg")
+        video = Video("sample-video.mp4")
         video._info.format_info["duration"] = "N/A"
         assert not video.is_valid()
