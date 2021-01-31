@@ -34,7 +34,7 @@ from PyQt5.QtCore import (
     Qt,
     QThread,
 )
-from PyQt5.QtGui import QIcon, QPixmap, QKeySequence
+from PyQt5.QtGui import QIcon, QKeySequence, QPixmap
 from PyQt5.QtWidgets import (
     QAbstractItemView,
     QAction,
@@ -60,8 +60,8 @@ from PyQt5.QtWidgets import (
 
 from videomorph.converter import (
     APP_NAME,
-    CODENAME,
     BASE_DIR,
+    CODENAME,
     LOCALE,
     STATUS,
     SYS_PATHS,
@@ -800,7 +800,9 @@ class VideoMorphMW(QMainWindow):
 
     def add_tasks(self, files):
         """Add video files to the conversion list."""
-        files = [file for file in files if not self.task_list.task_is_added(file)]
+        files = [
+            file for file in files if not self.task_list.task_is_added(file)
+        ]
         self.createVideos(files)
         # Update tool buttons so you can convert, or add_file, or clear...
         # only if there is not a conversion process running
@@ -834,7 +836,7 @@ class VideoMorphMW(QMainWindow):
         # After adding files to the list, recalculate the list duration
         self.task_list_duration = self.task_list.duration(step=0)
 
-    def add_task(self, video):
+    def addTask(self, video):
         """Add a conversion task to the list."""
         self.task_list.add_task(video)
         self._update_task_list()
@@ -844,10 +846,12 @@ class VideoMorphMW(QMainWindow):
         self._videoCreator = VideoCreator(files)
         self._videoCreator.moveToThread(self._thread)
         self._thread.started.connect(self._videoCreator.createVideo)
-        self._videoCreator.createdVideo.connect(self.add_task)
+        self._videoCreator.createdVideo.connect(self.addTask)
         self._videoCreator.finished.connect(self._thread.quit)
         self._videoCreator.finished.connect(self._videoCreator.deleteLater)
-        self._videoCreator.notAddedVideos.connect(self.task_list.not_added_files.extend)
+        self._videoCreator.notAddedVideos.connect(
+            self.task_list.not_added_files.extend
+        )
         self._videoCreator.finished.connect(self.handleNotAddedFiles)
         self._videoCreator.finished.connect(self.updateTaskListDuration)
         self._thread.finished.connect(self._thread.deleteLater)
