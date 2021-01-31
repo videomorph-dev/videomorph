@@ -32,6 +32,7 @@ from PyQt5.QtCore import (
     QSettings,
     QSize,
     Qt,
+    QThread,
 )
 from PyQt5.QtGui import QIcon, QPixmap, QKeySequence
 from PyQt5.QtWidgets import (
@@ -74,6 +75,7 @@ from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
 from videomorph.converter.tasklist import TaskList
 from videomorph.converter.utils import write_time
+from videomorph.converter.video import VideoCreator
 
 from . import COLUMNS, videomorph_qrc
 from .about import AboutVMDialog
@@ -104,7 +106,6 @@ class VideoMorphMW(QMainWindow):
         self.library.setup_converter(
             reader=self._ready_read,
             finisher=self._finish_file_encoding,
-            process_channel=QProcess.MergedChannels,
         )
 
         self.profile = Profile()
@@ -762,16 +763,6 @@ class VideoMorphMW(QMainWindow):
             self._write_app_settings()
             QCoreApplication.exit(0)
 
-    def add_task(self, video_path):
-        """Add a conversion task to the list."""
-        if self.task_list.task_is_added(video_path):
-            return
-
-        if not self.task_list.add_task(video_path):
-            return
-
-        self._update_task_list()
-
     def _update_task_list(self):
         """Update the list of conversion tasks."""
         row = self.tasks_table.rowCount()
@@ -807,27 +798,11 @@ class VideoMorphMW(QMainWindow):
             item.setIcon(QIcon(":/icons/video-in-list.png"))
         self.tasks_table.setItem(row, column, item)
 
-    def add_tasks(self, *files):
-        """Add video files to conversion list.
+    def add_tasks(self, files):
+        """Add video files to the conversion list."""
+        files = [file for file in files if not self.task_list.task_is_added(file)]
 
-        Args:
-            files (list): List of video file paths
-        """
-        max_value = files.__len__()
-        progress_dlg = self._create_progress_dialog()
-        progress_dlg.setMaximum(max_value)
-
-        for i, file in enumerate(files):
-            progress_dlg.setLabelText(self.tr("Adding Video: ") + file)
-            progress_dlg.setValue(i)
-
-            if progress_dlg.wasCanceled():
-                break
-
-            self.add_task(file)
-
-        progress_dlg.setValue(max_value)
-        progress_dlg.close()
+        self.createVideos(files)
 
         if self.task_list.not_added_files:
             msg = (
@@ -840,9 +815,7 @@ class VideoMorphMW(QMainWindow):
             self._show_message_box(
                 type_=QMessageBox.Critical, title=self.tr("Error!"), msg=msg
             )
-
             self.task_list.not_added_files.clear()
-
             if not self.task_list.length:
                 self._update_ui_when_no_file()
             else:
@@ -857,9 +830,24 @@ class VideoMorphMW(QMainWindow):
             self._set_media_status()
             # Update ui
             self.update_ui_when_ready()
-
         # After adding files to the list, recalculate the list duration
         self.task_list_duration = self.task_list.duration(step=0)
+
+    def add_task(self, video):
+        """Add a conversion task to the list."""
+        self.task_list.add_task(video)
+        self._update_task_list()
+
+    def createVideos(self, files):
+        self._thread = QThread()
+        self._videoCreator = VideoCreator(files)
+        self._videoCreator.moveToThread(self._thread)
+        self._thread.started.connect(self._videoCreator.createVideo)
+        self._videoCreator.createdVideo.connect(self.add_task)
+        self._videoCreator.finished.connect(self._thread.quit)
+        self._videoCreator.finished.connect(self._videoCreator.deleteLater)
+        self._thread.finished.connect(self._thread.deleteLater)
+        self._thread.start()
 
     def play_video(self):
         """Play a video using an available video player."""
@@ -892,7 +880,7 @@ class VideoMorphMW(QMainWindow):
         if files_paths is None:
             return
 
-        self.add_tasks(*files_paths)
+        self.add_tasks(files_paths)
 
     def _load_files(self, source_dir=QDir.homePath()):
         """Load video files."""
@@ -916,7 +904,7 @@ class VideoMorphMW(QMainWindow):
         try:
             media_files = search_directory_recursively(directory)
             self.source_dir = directory
-            self.add_tasks(*media_files)
+            self.add_tasks(media_files)
         except FileNotFoundError:
             self._show_message_box(
                 type_=QMessageBox.Critical,

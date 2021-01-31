@@ -53,15 +53,9 @@ class TaskList(list):
         super(TaskList, self).clear()
         self.position = None
 
-    def add_task(self, video_path):
+    def add_task(self, video):
         """Add a task to the task list."""
-        video = Video(video_path=video_path)
-        if video.is_valid():
-            self.append(Task(video, self._profile, self.output_dir))
-            return True
-
-        self.not_added_files.append(video_path)
-        return False
+        self.append(Task(video, self._profile, self.output_dir))
 
     def delete_file(self, position):
         """Delete a video file from the list."""

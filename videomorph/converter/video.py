@@ -21,6 +21,8 @@
 
 from pathlib import Path
 
+from PyQt5.QtCore import QObject, pyqtSignal
+
 from .probe import Probe
 
 
@@ -50,3 +52,24 @@ class Video:
             return float(self.format_info["duration"]) > 0
         except (TypeError, ValueError, KeyError):
             return False
+
+
+class VideoCreator(QObject):
+    createdVideo = pyqtSignal(Video)
+    invalidVideos = pyqtSignal(list)
+    finished = pyqtSignal()
+
+    def __init__(self, files):
+        super().__init__()
+        self._files = files
+
+    def createVideo(self):
+        nonValidVideos = []
+        for file in self._files:
+            video = Video(video_path=file)
+            if video.is_valid():
+                self.createdVideo.emit(video)
+            else:
+                nonValidVideos.append(file)
+        self.invalidVideos.emit(nonValidVideos)
+        self.finished.emit()
