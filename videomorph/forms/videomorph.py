@@ -801,9 +801,18 @@ class VideoMorphMW(QMainWindow):
     def add_tasks(self, files):
         """Add video files to the conversion list."""
         files = [file for file in files if not self.task_list.task_is_added(file)]
-
         self.createVideos(files)
+        # Update tool buttons so you can convert, or add_file, or clear...
+        # only if there is not a conversion process running
+        if self.library.converter_is_running:
+            self._update_ui_when_converter_running()
+        else:
+            # Update the files status
+            self._set_media_status()
+            # Update ui
+            self.update_ui_when_ready()
 
+    def handleNotAddedFiles(self):
         if self.task_list.not_added_files:
             msg = (
                 self.tr("Invalid Video Information for:")
@@ -821,15 +830,7 @@ class VideoMorphMW(QMainWindow):
             else:
                 self.update_ui_when_ready()
 
-        # Update tool buttons so you can convert, or add_file, or clear...
-        # only if there is not a conversion process running
-        if self.library.converter_is_running:
-            self._update_ui_when_converter_running()
-        else:
-            # Update the files status
-            self._set_media_status()
-            # Update ui
-            self.update_ui_when_ready()
+    def updateTaskListDuration(self):
         # After adding files to the list, recalculate the list duration
         self.task_list_duration = self.task_list.duration(step=0)
 
@@ -846,6 +847,9 @@ class VideoMorphMW(QMainWindow):
         self._videoCreator.createdVideo.connect(self.add_task)
         self._videoCreator.finished.connect(self._thread.quit)
         self._videoCreator.finished.connect(self._videoCreator.deleteLater)
+        self._videoCreator.notAddedVideos.connect(self.task_list.not_added_files.extend)
+        self._videoCreator.finished.connect(self.handleNotAddedFiles)
+        self._videoCreator.finished.connect(self.updateTaskListDuration)
         self._thread.finished.connect(self._thread.deleteLater)
         self._thread.start()
 

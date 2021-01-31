@@ -56,7 +56,7 @@ class Video:
 
 class VideoCreator(QObject):
     createdVideo = pyqtSignal(Video)
-    invalidVideos = pyqtSignal(list)
+    notAddedVideos = pyqtSignal(list)
     finished = pyqtSignal()
 
     def __init__(self, files):
@@ -71,5 +71,5 @@ class VideoCreator(QObject):
                 self.createdVideo.emit(video)
             else:
                 nonValidVideos.append(file)
-        self.invalidVideos.emit(nonValidVideos)
+        self.notAddedVideos.emit(nonValidVideos)
         self.finished.emit()
