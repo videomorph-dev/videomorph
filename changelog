@@ -6,6 +6,12 @@ videomorph (1.5) focal; urgency=high
 
 videomorph (1.4); urgency=high
 
+  * Fix freezing progress bar when adding videos to the list
+
+ -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Sun, 31 Jan 2021 12:33:44 -0500
+
+videomorph (1.4); urgency=high
+
   * Update the project's documentation and copyright
 
  -- Leodanis Pozo Ramos <lpozor78@gmail.com>  Thu, 2 Jul 2020 23:16:15 -0400
