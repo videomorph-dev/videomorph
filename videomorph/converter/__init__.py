@@ -32,7 +32,7 @@ except ImportError:
 
 APP_NAME = "VideoMorph"
 CODENAME = "Canelo"
-VERSION = "1.5"
+VERSION = "1.5rc"
 LOCALE = get_locale()
 
 VIDEO_FILTERS = (

@@ -30,7 +30,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install nose pytest pytest-cov black flake8 pep8-naming flake8-debugger flake8-docstrings codecov
+        pip install nose pytest pytest-cov black flake8 pep8-naming flake8-debugger flake8-docstrings codecov isort
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Download Sample Video
       run: |
@@ -39,9 +39,10 @@ jobs:
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Check code style with Black
+    - name: Check code style with Black and isort
       run: |
         black --check ./
+        isort --check-only ./
     - name: Test with pytest
       run: |
         python -m pytest tests/ --cov=videomorph/ --cov-report=xml
