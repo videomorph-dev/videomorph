@@ -23,5 +23,4 @@
 
 if __name__ == "__main__":
     from videomorph.main import main
-
     main()
