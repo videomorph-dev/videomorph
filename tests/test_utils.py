@@ -94,10 +94,17 @@ def test_write_time_negative():
         utils.write_time(-1)
 
 
-def test_write_size_negative():
-    """Test write_size() with negative size."""
+@pytest.mark.parametrize(
+    "size",
+    [
+        param(-1),
+        param("nan"),
+    ],
+)
+def test_write_size_negative(size):
+    """Test write_size() with negative or invalid size."""
     with pytest.raises(ValueError):
-        utils.write_size(-1)
+        utils.write_size(size)
 
 
 @pytest.mark.parametrize(
