@@ -21,6 +21,7 @@
 """This module provides tests for utils.py module."""
 
 import pytest
+from pytest import param
 
 from videomorph.converter import utils
 
@@ -32,7 +33,7 @@ def test_get_locale_all_es():
 
 def test_which_existing_app():
     """Test for an existing app."""
-    assert utils.which("dir").endswith("dir")  # Depends on your system
+    assert utils.which("dir").name == "dir"  # Depends on your system
 
 
 def test_which_non_existing_app():
@@ -71,29 +72,20 @@ def test_write_time_wrong_data_types():
         utils.write_time([1, 2])
 
 
-def test_write_time_0():
-    """Convert 0."""
-    assert utils.write_time(0) == "00s"
-
-
-def test_write_time_2100():
-    """Convert 2100."""
-    assert utils.write_time(2100) == "35m:00s"
-
-
-def test_write_time_3600():
-    """Convert 3600."""
-    assert utils.write_time(3600) == "01h:00m:00s"
-
-
-def test_write_time_3659():
-    """Convert 3659."""
-    assert utils.write_time(3659) == "01h:00m:59s"
-
-
-def test_write_time_3661():
-    """Convert 3661."""
-    assert utils.write_time(3661) == "01h:01m:01s"
+@pytest.mark.parametrize(
+    """time, expected""",
+    [
+        param(0, "00s"),
+        param(2100, "35m:00s"),
+        param(3600, "01h:00m:00s"),
+        param(3659, "01h:00m:59s"),
+        param(3661, "01h:01m:01s"),
+        param(3661, "01h:01m:01s"),
+    ],
+)
+def test_write_time(time, expected):
+    """Test time writer."""
+    assert utils.write_time(time) == expected
 
 
 def test_write_time_negative():
@@ -102,27 +94,21 @@ def test_write_time_negative():
         utils.write_time(-1)
 
 
-def test_write_size0():
-    """Test write_size() with zero."""
-    assert utils.write_size(0) == "0.0KiB"
-
-
 def test_write_size_negative():
     """Test write_size() with negative size."""
     with pytest.raises(ValueError):
         utils.write_size(-1)
 
 
-def test_write_size_kib():
+@pytest.mark.parametrize(
+    """size, expected""",
+    [
+        param(0, "0.0KiB"),
+        param(1024, "1.0KiB"),
+        param(1024 * 2048, "2.0MiB"),
+        param(1585558454, "1.5GiB"),
+    ],
+)
+def test_write_size(size, expected):
     """Test write_size() with KiB."""
-    assert utils.write_size(1024) == "1.0KiB"
-
-
-def test_write_size_mib():
-    """Test write_size() with MiB."""
-    assert utils.write_size(1024 * 2048) == "2.0MiB"
-
-
-def test_write_size_gib():
-    """Test write_size() with GiB."""
-    assert utils.write_size(1585558454) == "1.5GiB"
+    assert utils.write_size(size) == expected
