@@ -20,6 +20,8 @@
 
 """This module provides tests for utils.py module."""
 
+from sys import platform
+
 import pytest
 from pytest import param
 
@@ -33,7 +35,10 @@ def test_get_locale_all_es():
 
 def test_which_existing_app():
     """Test for an existing app."""
-    assert utils.which("dir").name == "dir"  # Depends on your system
+    if platform == "win32":
+        assert utils.which("tree.com").name == "tree.com"
+    else:
+        assert utils.which("ls").name == "ls"
 
 
 def test_which_non_existing_app():
