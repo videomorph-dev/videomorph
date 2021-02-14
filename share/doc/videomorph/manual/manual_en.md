@@ -4,7 +4,7 @@
 
 # **<div style="text-align:center;">User’s Manual</div>**
 
-<div style="text-align:center;">Version 1.5 “Canelo”</div>
+<div style="text-align:center;">Version 1.5rc “Canelo”</div>
 ---
 
 [TOC]
