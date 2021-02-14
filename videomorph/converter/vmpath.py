@@ -19,46 +19,45 @@
 
 """This module provides Path."""
 
-from os.path import dirname, expandvars
+from os.path import expandvars
 from pathlib import Path
 from sys import platform, prefix
 
 from .launchers import generic_factory
 from .utils import which
 
-BASE_DIR = dirname(dirname(dirname(__file__)))
+BASE_DIR = Path(__file__).parent.parent.parent
 LIBRARY = "ffmpeg"
 PROBE = "ffprobe"
 
 
 class _LibraryPath:
-    """Class to define platform dependent conversion tools."""
+    """Class to define platform dependent paths."""
 
-    def _get_system_path(self, app):
+    def _get_system_path(self, app) -> Path:
         """Return the name of the conversion library installed on system."""
         local_dir = self._get_local_dir()
         if local_dir.is_dir():
             app_path = local_dir.joinpath(app)
             if app_path.exists():
-                return app_path.__str__()
-
+                return app_path
         app_path = which(app)
         if app_path:
-            return app_path
-        return None  # Not available library
+            return Path(app_path)
+        raise ValueError(f"{app} not available")
 
     @property
-    def library_path(self):
-        """Get conversion library path."""
+    def ffmpeg_path(self) -> Path:
+        """Get the FFmpeg path."""
         return self._get_system_path(LIBRARY)
 
     @property
-    def prober_path(self):
-        """Get prober path."""
+    def ffprobe_path(self) -> Path:
+        """Get the FFprobe path."""
         return self._get_system_path(PROBE)
 
-    def _get_local_dir(self):
-        """Return the local directory for ffmpeg library."""
+    def _get_local_dir(self) -> Path:
+        """Return the FFmpeg local directory."""
         return Path(BASE_DIR, LIBRARY)
 
 
@@ -77,17 +76,17 @@ class _DarwinLibraryPath(_LibraryPath):
 class _Win32LibraryPath(_LibraryPath):
     """Class to define platform dependent conversion lib for Win32."""
 
-    def _get_local_dir(self):
+    def _get_local_dir(self) -> Path:
         """Return the local directory for ffmpeg library."""
         return Path(super(_Win32LibraryPath, self)._get_local_dir(), "bin")
 
     @property
-    def library_path(self):
-        return Path(self._get_local_dir(), LIBRARY + ".exe").__str__()
+    def ffmpeg_path(self) -> Path:
+        return Path(self._get_local_dir(), LIBRARY + ".exe")
 
     @property
-    def prober_path(self):
-        return Path(self._get_local_dir(), PROBE + ".exe").__str__()
+    def ffprobe_path(self) -> Path:
+        return Path(self._get_local_dir(), PROBE + ".exe")
 
 
 def library_path_factory():
@@ -95,9 +94,13 @@ def library_path_factory():
     return generic_factory(parent_class=_LibraryPath)
 
 
-_PATHS = library_path_factory()
-LIBRARY_PATH = _PATHS.library_path
-PROBE_PATH = _PATHS.prober_path
+try:
+    _PATHS = library_path_factory()
+    LIBRARY_PATH = _PATHS.ffmpeg_path
+    PROBE_PATH = _PATHS.ffprobe_path
+except ValueError:
+    LIBRARY_PATH = None
+    PROBE_PATH = None
 
 
 VM_PATHS = dict(

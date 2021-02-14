@@ -50,14 +50,8 @@ def main():
     # Create the Main Window
     main_win = VideoMorphMW()
 
-    # Check for conversion library and run
-    if LIBRARY_PATH:
-        if len(sys.argv) > 1:  # If it is running from console
-            run_on_console(app, main_win)
-        else:  # Or is running on GUI
-            main_win.show()
-            sys.exit(app.exec_())
-    else:
+    # Check for FFmpeg
+    if LIBRARY_PATH is None:
         msg_box = QMessageBox(
             QMessageBox.Critical,
             main_win.tr("Error!"),
@@ -68,3 +62,9 @@ def main():
         msg_box.addButton("&Ok", QMessageBox.AcceptRole)
         if msg_box.exec_() == QMessageBox.AcceptRole:
             qApp.closeAllWindows()
+
+    if len(sys.argv) > 1:  # If it is running from console
+        run_on_console(app, main_win)
+    else:  # Or is running on GUI
+        main_win.show()
+        sys.exit(app.exec_())

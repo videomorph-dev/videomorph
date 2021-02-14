@@ -29,7 +29,8 @@ class Converter:
 
     def __init__(self, library_path=LIBRARY_PATH):
         """Class initializer."""
-        self._library_path = library_path
+        # QProcess.start() takes arguments as strings
+        self._library_path = str(library_path)
         self._process = QProcess()
 
     def setup_converter(self, reader, finisher):

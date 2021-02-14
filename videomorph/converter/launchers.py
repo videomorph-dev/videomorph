@@ -215,7 +215,6 @@ def spawn_process_win32(cmd):
         stdin=PIPE,
         stdout=PIPE,
         stderr=PIPE,
-        shell=True,
         startupinfo=startupinfo,
         universal_newlines=True,
     )

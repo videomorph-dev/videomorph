@@ -23,7 +23,7 @@ from pathlib import Path
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from .probe import Probe
+from .probe import FFprobe
 
 
 class Video:
@@ -32,7 +32,7 @@ class Video:
     def __init__(self, video_path):
         """Class initializer."""
         self.path = Path(video_path)
-        self._info = Probe(self.path)
+        self._info = FFprobe(self.path)
 
     def __getattr__(self, attr):
         """Delegate to get info about the video."""
