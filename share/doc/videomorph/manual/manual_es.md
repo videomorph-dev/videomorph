@@ -4,7 +4,8 @@
 
 # **<div style="text-align:center;">Manual de Usuario</div>**
 
-<div style="text-align:center;">Version 1.5rc “Canelo”</div>
+<div style="text-align:center;">Versión 1.5rc “Canelo”</div>
+
 ---
 
 [TOC]
@@ -12,7 +13,7 @@
 <div style="page-break-after: always; break-after: page;"></div>
 ## Introducción
 
-![ventana principal](images/ventana_principal.png)
+![ventana principal](images/es/ventana_principal.png)
 
 **VideoMorph** es una aplicación multiplataforma, dedicada a la conversión de formatos de video. Existen muchas aplicaciones para estos fines, pero todas de un modo u otro disponen de muchas opciones que pueden resultar complicadas para los usuarios noveles, por eso decidimos concentrar la atención en la tarea principal, facilitar la conversión de sus materiales audiovisuales de una manera intuitiva y fácil. **VideoMorph** se desarrolla con el lenguaje de programación Python 3, la librería de procesamiento multimedia Ffmpeg y PyQt5 para la Interfaz Gráfica de Usuario. Con **VideoMorph** es posible convertir a los formatos de video más empleados en la actualidad, dígase **MP4**, **AVI**, **DVD**, **VCD**, **MOV**, **MPG**, **FLV**, **WEBM**, **OGV**, **WMV**, **MKV**, algunos de ellos listos para usar en redes sociales como **Youtube**, también es posible usar **VideoMorph** para extraer el audio en formatos **MP3** y **OGA**.
 
@@ -21,11 +22,11 @@
 
 Contiene los elementos:
 
-![barra herramientas](images/barra_herramientas.png)
+![barra herramientas](images/es/barra_herramientas.png)
 
 - **Añadir Archivos**: Abre un diálogo para seleccionar los archivos de video que desea convertir, una vez seleccionados, se ubican en la **Lista de Tareas de Conversión**.
 
-![tareas de conversion](images/tareas_conversion.png)
+![tareas de conversion](images/es/tareas_conversion.png)
 
 - **Eliminar Lista**: Elimina toda la Lista de Tareas Conversión.
 - **Eliminar Archivo**: Elimina el archivo seleccionado en la Lista de Tareas de Conversión.
@@ -39,19 +40,19 @@ Contiene los elementos:
 
 - **Convertir a**: Selecciona el formato de video de salida, es decir, el formato que quiere darle a los archivos dispuestos en la lista de conversión, desde la lista desplegable de formatos de video disponibles
 
-![convertir a](images/convertir_a.png)
+![convertir a](images/es/convertir_a.png)
 
 - **Calidad Objetivo**: Selecciona la calidad que desea emplear en el proceso de conversión, desde la lista desplegable de calidades objetivo
 
-![calidad](images/calidad.png)
+![calidad](images/es/calidad.png)
 
 - **Directorio Destino**: Directorio seleccionado donde los archivos de video convertidos se guardarán
 
-![directorio salida](images/directorio_salida.png)
+![directorio salida](images/es/directorio_salida.png)
 
 - **Otras Opciones**: Opciones que pudieran resultar útiles:
 
-![otras optiones](images/opciones.png)
+![otras optiones](images/es/opciones.png)
 
 - **Incrustar Subtítulos si están Disponibles**: Esta opción es muy interesante, pues nos permite incrustar el subtítulo dentro del video a convertir, siempre y cuando disponga del archivo de subtítulos en formato ***.srt***.
 - **Eliminar Archivos de Video de Entrada al Finalizar**: Esto permite eliminar el video original al concluir la conversión, de esta forma no tendrá dos archivos de video iguales, ahorrando espacio en disco.
@@ -63,11 +64,11 @@ Contiene los elementos:
 
 El Menú Principal de la aplicación está compuesto por 4 elementos: Archivo, Edición, Conversión y Ayuda
 
-![menu](images/barra_menu.png)
+![menu](images/es/barra_menu.png)
 
 - **Menú Archivo**: Permite realizar las acciones siguientes
 
-![menu archivo](images/menu_archivo.png)
+![menu archivo](images/es/menu_archivo.png)
 
 1. Añadir archivos a la Lista de Tareas de Conversión.
 2. Agrega una carpeta para convertir todos los archivos de video contenidos en ella.
@@ -76,7 +77,7 @@ El Menú Principal de la aplicación está compuesto por 4 elementos: Archivo, E
 
 - **Menú Edición**: Incluye las acciones siguientes
 
-![menu edicion](images/menu_edicion.png)
+![menu edicion](images/es/menu_edicion.png)
 
 1. Eliminar todos los archivos de video de la Lista de Tareas de Conversión.
 2. Eliminar el archivo de video seleccionado de la Lista de Tareas de Conversión.
@@ -84,7 +85,7 @@ El Menú Principal de la aplicación está compuesto por 4 elementos: Archivo, E
 
 - **Menú Conversión**: Permite realizar las acciones siguientes
 
-![menu conversion](images/menu_conversion.png)
+![menu conversion](images/es/menu_conversion.png)
 
 1. Inicia el proceso de conversión.
 2. Detiene la conversión del archivo de video en proceso.
@@ -93,7 +94,7 @@ El Menú Principal de la aplicación está compuesto por 4 elementos: Archivo, E
 
 - **Menú Ayuda**: Incluye las opciones siguientes
 
-![menu ayuda](images/menu_ayuda.png)
+![menu ayuda](images/es/menu_ayuda.png)
 
 1. Muestra el contenido de este manual.
 2. Visualiza el registro de cambios de la aplicación.
