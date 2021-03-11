@@ -3,28 +3,13 @@
 ## Next Version (2.0)
 
 - Add options to rotate videos clockwise and counter clockwise to correct some videos orientation
-- Define a `README.rst` file to be included in source package
 - Automate the process of creating the Portable Edition on Linux and Windows
-- Launch some kind of survey to gather information about most used presets
-- Buy the domain name videomorph.info
-- Create a landing page for the app
 
 ## Version honoring hour dear friend Maikel Llamaret a.k.a. "Canelo" (1.5)
 
 - Add some features from Mystiq (Canelo's personal project related with VideoMorph)
-- Some bug fixes and improvements
-
-## BugFix Version (1.4.1)
-
-- App freezes with certain movies when reading `ffprobe` output on Windows platform
-- Problem with the tray icon on Manjaro/Plasma
 
 ## Someday
 
 - Implement a Dialog to generate the conversion commands using the Ffmpeg options
-- Write a Disclaimer about Ffmpeg options in customized profiles, available codecs and input video quality
-- Implement an alternative class for `conversionlib._Converter` (`subprocess` maybe) to decouple from `PyQt5`
-- Move the business logic present in `videomorph.py`, `about.py` and other views to `converter` package package
-- Move the `HTML` text hardcoded in `about.py` to a file distributed as doc. Read the about info from that file as done with the License
-- Pack in AppImage, Flatpack or Snap
-- Implement model/view/controller pattern
+- Improve the application's design by refactoring the code
