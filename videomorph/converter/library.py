@@ -108,4 +108,4 @@ class _Converter:
     @property
     def converter_is_running(self):
         """Return QProcess state."""
-        return self._process.state() == QProcess.Running
+        return self._process.state() == QProcess.ProcessState.Running
