@@ -3,7 +3,7 @@
 
 # File name: test_utils.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");

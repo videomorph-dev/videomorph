@@ -3,7 +3,7 @@
 #
 # File _name: setup.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,7 @@ from videomorph.converter import APP_NAME
 from videomorph.converter import VM_PATHS
 from videomorph.converter import SYS_PATHS
 
-LONG_DESCRIPTION = """Video Converter based on ffmpeg, Python 3 and PyQt5.
+LONG_DESCRIPTION = """Video Converter based on ffmpeg, Python 3 and PyQt6.
 Unlike other video converters, VideoMorph focuses on a single goal:
 make video conversion simple, with an easy to use GUI and allowing
 the user to convert to the currently most popular video formats.
@@ -47,7 +47,7 @@ VideoMorph isn't for you."""
 COMMONS = dict(name=APP_NAME.lower(),
                version=VERSION,
                description='Video Converter based on ffmpeg, '
-                           'Python 3 and Qt5, focused on usability.',
+                           'Python 3 and Qt6, focused on usability.',
                long_description=LONG_DESCRIPTION,
                author='Ozkar L. Garcell',
                author_email='ozkar.garcell@gmail.com',

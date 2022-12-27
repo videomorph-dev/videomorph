@@ -2,7 +2,7 @@
 #
 # File name: videomorph.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module defines the VideoMorph main window that holds the UI."""
+"""This module defines the VideoMorph maifrom PyQt6.QtWidgets import QActionn window that holds the UI."""
 
 from collections import OrderedDict
 from functools import partial
@@ -27,36 +27,35 @@ from os.path import exists
 from os.path import isdir
 from os.path import isfile
 
-from PyQt5.QtCore import QSize
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import QSettings
-from PyQt5.QtCore import QDir
-from PyQt5.QtCore import QPoint
-from PyQt5.QtCore import QProcess
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtWidgets import QVBoxLayout
-from PyQt5.QtWidgets import QHBoxLayout
-from PyQt5.QtWidgets import QAbstractItemView
-from PyQt5.QtWidgets import QTableWidgetItem
-from PyQt5.QtWidgets import QSizePolicy
-from PyQt5.QtWidgets import QGroupBox
-from PyQt5.QtWidgets import QLabel
-from PyQt5.QtWidgets import QCheckBox
-from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtWidgets import QProgressBar
-from PyQt5.QtWidgets import QSystemTrayIcon
-from PyQt5.QtWidgets import QMenu
-from PyQt5.QtWidgets import QToolBar
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtWidgets import QAction
-from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtWidgets import QProgressDialog
-from PyQt5.QtWidgets import QToolButton
-from PyQt5.QtWidgets import qApp
+from PyQt6.QtCore import QSize
+from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QSettings
+from PyQt6.QtCore import QDir
+from PyQt6.QtCore import QPoint
+from PyQt6.QtCore import QProcess
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QVBoxLayout
+from PyQt6.QtWidgets import QHBoxLayout
+from PyQt6.QtWidgets import QAbstractItemView
+from PyQt6.QtWidgets import QTableWidgetItem
+from PyQt6.QtWidgets import QSizePolicy
+from PyQt6.QtWidgets import QGroupBox
+from PyQt6.QtWidgets import QLabel
+from PyQt6.QtWidgets import QCheckBox
+from PyQt6.QtWidgets import QComboBox
+from PyQt6.QtWidgets import QProgressBar
+from PyQt6.QtWidgets import QSystemTrayIcon
+from PyQt6.QtWidgets import QMenu
+from PyQt6.QtWidgets import QToolBar
+from PyQt6.QtWidgets import QLineEdit
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QFileDialog
+from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QProgressDialog
+from PyQt6.QtWidgets import QToolButton
 
 from videomorph.converter import APP_NAME
 from videomorph.converter import BASE_DIR
@@ -110,7 +109,7 @@ class VideoMorphMW(QMainWindow):
         self.library.setup_converter(
             reader=self._ready_read,
             finisher=self._finish_file_encoding,
-            process_channel=QProcess.MergedChannels)
+            process_channel=QProcess.ProcessChannelMode.MergedChannels)
 
         self.profile = Profile()
 
@@ -173,7 +172,7 @@ class VideoMorphMW(QMainWindow):
         """Settings group."""
         settings_gb = QGroupBox(self.central_widget)
         settings_gb.setTitle(self.tr('Conversion Options'))
-        size_policy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        size_policy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(
@@ -249,7 +248,7 @@ class VideoMorphMW(QMainWindow):
         tasks_gb = QGroupBox(self.central_widget)
         tasks_text = self.tr('List of Conversion Tasks')
         tasks_gb.setTitle(tasks_text)
-        size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        size_policy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(
@@ -501,7 +500,7 @@ class VideoMorphMW(QMainWindow):
         first_separator.setSeparator(True)
         second_separator = QAction(self)
         second_separator.setSeparator(True)
-        self.tasks_table.setContextMenuPolicy(Qt.ActionsContextMenu)
+        self.tasks_table.setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu)
         self.tasks_table.addAction(self.open_media_file_action)
         self.tasks_table.addAction(self.open_media_dir_action)
         self.tasks_table.addAction(first_separator)
@@ -561,9 +560,9 @@ class VideoMorphMW(QMainWindow):
         self.tool_bar.addSeparator()
         self.tool_bar.addAction(self.exit_action)
         self.tool_bar.setIconSize(QSize(28, 28))
-        self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         # Add the toolbar to main window
-        self.addToolBar(Qt.TopToolBarArea, self.tool_bar)
+        self.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.tool_bar)
 
     def _create_status_bar(self):
         """Create app status bar."""
@@ -600,7 +599,7 @@ class VideoMorphMW(QMainWindow):
     @staticmethod
     def _get_settings_file():
         return QSettings(join_path(SYS_PATHS.config, 'config.ini'),
-                         QSettings.IniFormat)
+                         QSettings.Format.IniFormat)
 
     def _create_initial_settings(self):
         """Create initial settings file."""
@@ -721,7 +720,7 @@ class VideoMorphMW(QMainWindow):
     def shutdown_machine():
         """Shutdown machine when conversion is finished."""
         launcher = launcher_factory()
-        qApp.closeAllWindows()
+        QApplication.instance().closeAllWindows()
         launcher.shutdown_machine()
 
     def populate_profiles_combo(self):

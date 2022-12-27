@@ -2,7 +2,7 @@
 #
 # File name: main.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,9 @@
 import sys
 from pathlib import Path
 
-from PyQt5.QtCore import QTranslator
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtWidgets import qApp
+from PyQt6.QtCore import QTranslator
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QMessageBox
 
 from .converter import BASE_DIR
 from .converter import LOCALE
@@ -38,6 +37,7 @@ def main():
     """Main app function."""
     # Create the app
     app = QApplication(sys.argv)
+    qApp= QApplication.instance()
 
     # Setup app translator
     app_translator = QTranslator()
@@ -59,7 +59,7 @@ def main():
             run_on_console(app, main_win)
         else:  # Or is running on GUI
             main_win.show()
-            sys.exit(app.exec_())
+            sys.exit(app.exec())
     else:
         msg_box = QMessageBox(
             QMessageBox.Critical,

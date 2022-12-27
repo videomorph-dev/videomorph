@@ -3,7 +3,7 @@
 
 # File name: test_converter.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@
 """This module provides tests for conversionlib.py module."""
 
 import nose
-from PyQt5.QtCore import QProcess
+from PyQt6.QtCore import QProcess
 
 from videomorph.converter import tasklist
 from videomorph.converter.library import Library

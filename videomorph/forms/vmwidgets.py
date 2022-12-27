@@ -2,7 +2,7 @@
 #
 # File name: vmwidgets.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,12 +22,12 @@
 from functools import partial
 from urllib.request import url2pathname
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QTableWidget
-from PyQt5.QtWidgets import QAbstractItemView
-from PyQt5.QtWidgets import QHeaderView
-from PyQt5.QtWidgets import QItemDelegate
-from PyQt5.QtWidgets import QComboBox
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QTableWidget
+from PyQt6.QtWidgets import QAbstractItemView
+from PyQt6.QtWidgets import QHeaderView
+from PyQt6.QtWidgets import QItemDelegate
+from PyQt6.QtWidgets import QComboBox
 
 from videomorph.converter import STATUS
 from videomorph.converter import VALID_VIDEO_EXT
@@ -44,9 +44,9 @@ class TasksListTable(QTableWidget):
 
         self.setColumnCount(4)
         self.setRowCount(0)
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.setHorizontalHeaderLabels(
             [self.tr('Video Name'),
              self.tr('Duration'),

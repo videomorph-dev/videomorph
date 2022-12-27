@@ -2,7 +2,7 @@
 #
 # File name: changelog.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ from os.path import exists
 from os.path import join as join_path
 import re
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 from videomorph.converter import APP_NAME
 from videomorph.converter import BASE_DIR
@@ -41,8 +41,8 @@ class ChangelogDialog(QtWidgets.QDialog):
         self.resize(800, 600)
         self.setWindowTitle(APP_NAME + ' ' + VERSION + ' ' +
                             self.tr('Changelog'))
-        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum,
-                                            QtWidgets.QSizePolicy.Minimum)
+        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum,
+                                            QtWidgets.QSizePolicy.Policy.Minimum)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())

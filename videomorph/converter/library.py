@@ -2,7 +2,7 @@
 #
 # File name: conversionlib.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 
 """This module provides the definition of the Library class."""
 
-from PyQt5.QtCore import QProcess
+from PyQt6.QtCore import QProcess
 
 from .launchers import launcher_factory
 from .reader import OutputReader

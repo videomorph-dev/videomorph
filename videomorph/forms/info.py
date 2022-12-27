@@ -2,7 +2,7 @@
 #
 # File name: info.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@
 
 from os.path import basename
 
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (QLabel, QPushButton, QVBoxLayout, QGroupBox,
+from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import (QLabel, QPushButton, QVBoxLayout, QGroupBox,
                              QGridLayout, QSpacerItem)
 
 from videomorph.converter.utils import write_size
@@ -179,8 +179,8 @@ class InfoDialog(QtWidgets.QDialog):
         self.ok_button.clicked.connect(self.close)
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addSpacerItem(
-            QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                        QtWidgets.QSizePolicy.Minimum))
+            QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding,
+                        QtWidgets.QSizePolicy.Policy.Minimum))
         button_layout.addWidget(self.ok_button)
         whole_layout.addLayout(button_layout)
         self._show_video_info(self.position)

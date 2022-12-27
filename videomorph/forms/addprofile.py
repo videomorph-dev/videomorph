@@ -2,7 +2,7 @@
 #
 # File name: addprofile.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
 #   Copyright 2016-2018 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +19,8 @@
 
 """This module provides the dialog for VideoMorph customized profiles."""
 
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import (QDialog, QWidget, QVBoxLayout, QLabel,
+from PyQt6 import QtCore, QtWidgets
+from PyQt6.QtWidgets import (QDialog, QWidget, QVBoxLayout, QLabel,
                              QLineEdit, QSpacerItem, QDialogButtonBox,
                              QMessageBox, QCompleter)
 
