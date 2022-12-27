@@ -67,5 +67,5 @@ def main():
             main_win,
         )
         msg_box.addButton("&Ok", QMessageBox.AcceptRole)
-        if msg_box.exec_() == QMessageBox.AcceptRole:
+        if msg_box.exec() == QMessageBox.AcceptRole:
             qApp.closeAllWindows()

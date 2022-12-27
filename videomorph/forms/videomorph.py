@@ -625,12 +625,12 @@ class VideoMorphMW(QMainWindow):
     def about(self):
         """Show About dialog."""
         about_dlg = AboutVMDialog(parent=self)
-        about_dlg.exec_()
+        about_dlg.exec()
 
     def changelog(self):
         """Show the changelog dialog."""
         changelog_dlg = ChangelogDialog(parent=self)
-        changelog_dlg.exec_()
+        changelog_dlg.exec()
 
     def ffmpeg_doc(self):
         """Open ffmpeg documentation page."""
@@ -940,7 +940,7 @@ class VideoMorphMW(QMainWindow):
         msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
         msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
 
-        if msg_box.exec_() == QMessageBox.AcceptRole:
+        if msg_box.exec() == QMessageBox.AcceptRole:
             # Delete file from table
             self.tasks_table.removeRow(file_row)
             # Remove file from self.media_list
@@ -953,17 +953,78 @@ class VideoMorphMW(QMainWindow):
             self._reset_options_check_boxes()
             self._update_ui_when_no_file()
 
+    def add_customized_profile(self):
+        """Show dialog for adding conversion profiles."""
+        add_profile_dlg = AddProfileDialog(parent=self)
+        add_profile_dlg.exec()
+
+    def _export_import_profiles(self, func, path, msg_info):
+        try:
+            func(path)
+        except PermissionError:
+            self._show_message_box(
+                type_=QMessageBox.Critical,
+                title=self.tr('Error!'),
+                msg=self.tr('Can not Write to Selected Folder'))
+        else:
+            self._show_message_box(type_=QMessageBox.Information,
+                                   title=self.tr('Information!'),
+                                   msg=msg_info)
+
     def _select_directory(self, dialog_title, source_dir=QDir.homePath()):
-        options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
+        options = QFileDialog.Option.DontResolveSymlinks | QFileDialog.Option.ShowDirsOnly
 
         directory = QFileDialog.getExistingDirectory(
             self, dialog_title, source_dir, options=options
         )
         return directory
 
-    def _select_files(
-        self, dialog_title, files_filter, source_dir=QDir.homePath()
-    ):
+    def export_profiles(self):
+        """Export conversion profiles."""
+        directory = self._select_directory(
+            dialog_title=self.tr('Export to Folder'))
+
+        if directory:
+            msg_info = self.tr('Conversion Profiles Successfully Exported!')
+            self._export_import_profiles(
+                func=self.profile.export_xml_profiles,
+                path=directory, msg_info=msg_info)
+
+    def import_profiles(self):
+        """Import conversion profiles."""
+        file_path = self._select_files(
+            dialog_title=self.tr('Select a Profiles File'),
+            files_filter=self.tr('Profiles Files ') + '(*.xml)',
+            single_file=True)
+
+        if file_path:
+            msg_info = self.tr('Conversion Profiles Successfully Imported!')
+
+            self._export_import_profiles(
+                func=self.profile.import_xml_profiles,
+                path=file_path, msg_info=msg_info)
+            self.populate_profiles_combo()
+            self.profile.update(new_quality=self.quality_combo.currentText())
+
+    def restore_profiles(self):
+        """Restore default profiles."""
+        msg_box = QMessageBox(
+            QMessageBox.Icon.Warning,
+            self.tr('Warning!'),
+            self.tr('Do you Really Want to Restore the '
+                    'Default Conversion Profiles?'),
+            QMessageBox.StandardButton.NoButton, self)
+
+        msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
+        msg_box.addButton(self.tr("&No"), QMessageBox.ButtonRole.RejectRole)
+
+        if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
+            self.profile.restore_default_profiles()
+            self.populate_profiles_combo()
+            self.profile.update(new_quality=self.quality_combo.currentText())
+
+    def _select_files(self, dialog_title, files_filter,
+                      source_dir=QDir.homePath(), single_file=False):
         # Validate source_dir
         source_directory = source_dir if isdir(source_dir) else QDir.homePath()
 
@@ -981,17 +1042,15 @@ class VideoMorphMW(QMainWindow):
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
         msg_box = QMessageBox(
-            QMessageBox.Warning,
-            self.tr("Warning!"),
-            self.tr("Remove all the Videos from the List?"),
-            QMessageBox.NoButton,
-            self,
-        )
+            QMessageBox.Icon.Warning,
+            self.tr('Warning!'),
+            self.tr('Remove all the Videos from the List?'),
+            QMessageBox.StandardButton.NoButton, self)
 
-        msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
-        msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
+        msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
+        msg_box.addButton(self.tr("&No"), QMessageBox.ButtonRole.RejectRole)
 
-        if msg_box.exec_() == QMessageBox.AcceptRole:
+        if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
             # If user says YES clear table of conversion tasks
             self.tasks_table.clearContents()
             self.tasks_table.setRowCount(0)
