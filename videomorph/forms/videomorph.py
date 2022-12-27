@@ -620,7 +620,7 @@ class VideoMorphMW(QMainWindow):
             settings_file.setValue(key, setting)
 
     def _show_message_box(self, type_, title, msg):
-        QMessageBox(type_, title, msg, QMessageBox.Ok, self).show()
+        QMessageBox(type_, title, msg, QMessageBox.Icon.Ok, self).show()
 
     def about(self):
         """Show About dialog."""
@@ -638,7 +638,28 @@ class VideoMorphMW(QMainWindow):
 
     def videomorph_web(self):
         """Open VideoMorph Web page."""
-        self._open_url(url="http://videomorph.webmisolutions.com")
+        self._open_url(url='http://videomorph.webmisolutions.com')
+
+    def show_video_info(self):
+        """Show video info on the Info Panel."""
+        position = self.tasks_table.currentRow()
+        info_dlg = InfoDialog(parent=self,
+                              position=position,
+                              task_list=self.task_list)
+        info_dlg.show()
+
+    def notify(self, file_name):
+        """Notify when conversion finished."""
+        file_name = ''.join(('"', file_name, '"'))
+        msg = file_name + ': ' + self.tr('Successfully converted')
+        self.tray_icon.showMessage(APP_NAME, msg,
+                                   QSystemTrayIcon.MessageIcon.Information, 2000)
+        if exists(join_path(BASE_DIR, VM_PATHS.sounds)):
+            sound = join_path(BASE_DIR, VM_PATHS.sounds, 'successful.wav')
+        else:
+            sound = join_path(SYS_PATHS.sounds, 'successful.wav')
+        launcher = launcher_factory()
+        launcher.sound_notify(sound)
 
     @staticmethod
     def _open_url(url):
@@ -736,14 +757,11 @@ class VideoMorphMW(QMainWindow):
             user_answer = QMessageBox.question(
                 self,
                 APP_NAME,
-                self.tr(
-                    "There are on Going Conversion Tasks."
-                    " Are you Sure you Want to Exit?"
-                ),
-                QMessageBox.Yes | QMessageBox.No,
-            )
+                self.tr('There are on Going Conversion Tasks.'
+                        ' Are you Sure you Want to Exit?'),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
 
-            if user_answer == QMessageBox.Yes:
+            if user_answer == QMessageBox.StandardButton.Yes:
                 # Disconnect the finished signal
                 self.library.converter_finished_disconnect(
                     connected=self._finish_file_encoding
@@ -839,10 +857,9 @@ class VideoMorphMW(QMainWindow):
                 + self.tr("Video not Added to the List of Conversion Tasks")
             )
             self._show_message_box(
-                type_=QMessageBox.Critical, title=self.tr("Error!"), msg=msg
-            )
-
-            self.task_list.not_added_files.clear()
+                type_=QMessageBox.Icon.Critical,
+                title=self.tr('Error!'),
+                msg=msg)
 
             if not self.task_list.length:
                 self._update_ui_when_no_file()
@@ -881,10 +898,9 @@ class VideoMorphMW(QMainWindow):
             self.library.run_player(file_path=file_path)
         except FileNotFoundError:
             self._show_message_box(
-                type_=QMessageBox.Critical,
-                title=self.tr("Error!"),
-                msg=self.tr("No Video Player Found in your System"),
-            )
+                type_=QMessageBox.Icon.Critical,
+                title=self.tr('Error!'),
+                msg=self.tr('No Video Player Found in your System'))
 
     def open_media_files(self):
         """Add media files to the list of conversion tasks."""
@@ -920,27 +936,24 @@ class VideoMorphMW(QMainWindow):
             self.add_tasks(*media_files)
         except FileNotFoundError:
             self._show_message_box(
-                type_=QMessageBox.Critical,
-                title=self.tr("Error!"),
-                msg=self.tr("No Videos Found in:" + " " + directory),
-            )
+                type_=QMessageBox.Icon.Critical,
+                title=self.tr('Error!'),
+                msg=self.tr('No Videos Found in:' + ' ' + directory))
 
     def remove_media_file(self):
         """Remove selected media file from the list."""
         file_row = self.tasks_table.currentItem().row()
 
         msg_box = QMessageBox(
-            QMessageBox.Warning,
-            self.tr("Warning!"),
-            self.tr("Remove Video from the List of Conversion Tasks?"),
-            QMessageBox.NoButton,
-            self,
-        )
+            QMessageBox.Icon.Warning,
+            self.tr('Warning!'),
+            self.tr('Remove Video from the List of Conversion Tasks?'),
+            QMessageBox.StandardButton.NoButton, self)
 
-        msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
-        msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
+        msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
+        msg_box.addButton(self.tr("&No"), QMessageBox.ButtonRole.RejectRole)
 
-        if msg_box.exec() == QMessageBox.AcceptRole:
+        if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
             # Delete file from table
             self.tasks_table.removeRow(file_row)
             # Remove file from self.media_list
@@ -963,11 +976,11 @@ class VideoMorphMW(QMainWindow):
             func(path)
         except PermissionError:
             self._show_message_box(
-                type_=QMessageBox.Critical,
+                type_=QMessageBox.Icon.Critical,
                 title=self.tr('Error!'),
                 msg=self.tr('Can not Write to Selected Folder'))
         else:
-            self._show_message_box(type_=QMessageBox.Information,
+            self._show_message_box(type_=QMessageBox.Icon.Information,
                                    title=self.tr('Information!'),
                                    msg=msg_info)
 
@@ -1081,27 +1094,21 @@ class VideoMorphMW(QMainWindow):
                 self.library.start_converter(cmd=conversion_cmd)
             except PermissionError:
                 self._show_message_box(
-                    type_=QMessageBox.Critical,
-                    title=self.tr("Error!"),
-                    msg=self.tr("Can not Write to Selected Folder"),
-                )
+                    type_=QMessageBox.Icon.Critical,
+                    title=self.tr('Error!'),
+                    msg=self.tr('Can not Write to Selected Folder'))
                 self._update_ui_when_error_on_conversion()
             except FileNotFoundError:
                 self._show_message_box(
-                    type_=QMessageBox.Critical,
-                    title=self.tr("Error!"),
-                    msg=(
-                        self.tr("Input Video:")
-                        + " "
-                        + self.task_list.running_file_name()
-                        + " "
-                        + self.tr("not Found")
-                    ),
-                )
+                    type_=QMessageBox.Icon.Critical,
+                    title=self.tr('Error!'),
+                    msg=(self.tr('Input Video:') + ' ' +
+                         self.task_list.running_file_name() + ' ' +
+                         self.tr('not Found')))
                 self._update_ui_when_error_on_conversion()
             # except FileExistsError:
             #     self._show_message_box(
-            #         type_=QMessageBox.Critical,
+            #         type_=QMessageBox.Icon.Critical,
             #         title=self.tr('Error!'),
             #         msg=(self.tr('Video File:') + ' ' +
             #              self.media_list.running_file_output_name(
@@ -1155,7 +1162,8 @@ class VideoMorphMW(QMainWindow):
             # Close and kill the converterprocess
             self.library.close_converter()
             # Check if the process finished OK
-            if self.library.converter_exit_status() == QProcess.NormalExit:
+            if (self.library.converter_exit_status() ==
+                    QProcess.ExitStatus.NormalExit):
                 # When finished a file conversion...
                 self.tasks_table.item(
                     self.task_list.position, COLUMNS.PROGRESS
@@ -1180,30 +1188,25 @@ class VideoMorphMW(QMainWindow):
 
             if self.library.error is not None:
                 self._show_message_box(
-                    type_=QMessageBox.Critical,
-                    title="Error!",
-                    msg=self.tr(
-                        "The Conversion Library has " "Failed with Error:"
-                    )
-                    + " "
-                    + self.library.error,
-                )
+                    type_=QMessageBox.Icon.Critical,
+                    title='Error!',
+                    msg=self.tr('The Conversion Library has '
+                                'Failed with Error:') + ' ' +
+                    self.library.error)
                 self.library.error = None
             elif not self.task_list.all_stopped:
                 if self.shutdown_chb.checkState():
                     self.shutdown_machine()
                     return
                 self._show_message_box(
-                    type_=QMessageBox.Information,
-                    title=self.tr("Information!"),
-                    msg=self.tr("Conversion Process Successfully Finished!"),
-                )
+                    type_=QMessageBox.Icon.Information,
+                    title=self.tr('Information!'),
+                    msg=self.tr('Conversion Process Successfully Finished!'))
             else:
                 self._show_message_box(
-                    type_=QMessageBox.Information,
-                    title=self.tr("Information!"),
-                    msg=self.tr("Conversion Process Stopped by the User!"),
-                )
+                    type_=QMessageBox.Icon.Information,
+                    title=self.tr('Information!'),
+                    msg=self.tr('Conversion Process Stopped by the User!'))
 
             self.setWindowTitle(self.title)
             self.statusBar().showMessage(self.tr("Ready"))
@@ -1396,27 +1399,25 @@ class VideoMorphMW(QMainWindow):
         Args:
             i_vars (dict): Dict to collect all the interface variables
         """
-        variables = dict(
-            add=True,
-            convert=True,
-            clear=True,
-            remove=True,
-            stop=True,
-            stop_all=True,
-            presets=True,
-            profiles=True,
-            add_costume_profile=True,
-            import_profile=True,
-            restore_profile=True,
-            output_dir=True,
-            subtitles_chb=True,
-            delete_chb=True,
-            tag_chb=True,
-            shutdown_chb=True,
-            play_input=True,
-            play_output=True,
-            info=True,
-        )
+        variables = dict(add=True,
+                         convert=True,
+                         clear=True,
+                         remove=True,
+                         stop=True,
+                         stop_all=True,
+                         presets=True,
+                         profiles=True,
+                         add_costume_profile=True,
+                         import_profile=True,
+                         restore_profile=True,
+                         output_dir=True,
+                         subtitles_chb=True,
+                         delete_chb=True,
+                         tag_chb=True,
+                         shutdown_chb=False,
+                         play_input=True,
+                         play_output=True,
+                         info=True)
 
         variables.update(i_vars)
 

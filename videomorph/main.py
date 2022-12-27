@@ -60,12 +60,10 @@ def main():
             sys.exit(app.exec())
     else:
         msg_box = QMessageBox(
-            QMessageBox.Critical,
-            main_win.tr("Error!"),
-            main_win.tr("Ffmpeg Library not Found in your System"),
-            QMessageBox.NoButton,
-            main_win,
-        )
-        msg_box.addButton("&Ok", QMessageBox.AcceptRole)
-        if msg_box.exec() == QMessageBox.AcceptRole:
+            QMessageBox.Icon.Critical,
+            main_win.tr('Error!'),
+            main_win.no_library_msg,
+            QMessageBox.StandardButton.NoButton, main_win)
+        msg_box.addButton("&Ok", QMessageBox.ButtonRole.AcceptRole)
+        if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
             qApp.closeAllWindows()
