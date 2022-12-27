@@ -20,7 +20,7 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
-        apt install ffmpeg
+        sudo apt install ffmpeg
         python -m pip install --upgrade pip
         pip install nose flake8 pep8-naming flake8-debugger flake8-docstrings codecov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
