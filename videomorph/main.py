@@ -62,10 +62,10 @@ def main():
             sys.exit(app.exec())
     else:
         msg_box = QMessageBox(
-            QMessageBox.Critical,
+            QMessageBox.Icon.Critical,
             main_win.tr('Error!'),
             main_win.no_library_msg,
-            QMessageBox.NoButton, main_win)
-        msg_box.addButton("&Ok", QMessageBox.AcceptRole)
-        if msg_box.exec() == QMessageBox.AcceptRole:
+            QMessageBox.StandardButton.NoButton, main_win)
+        msg_box.addButton("&Ok", QMessageBox.ButtonRole.AcceptRole)
+        if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
             qApp.closeAllWindows()
