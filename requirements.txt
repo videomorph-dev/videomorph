@@ -1,2 +1,2 @@
-PyQt6==6.4.1
+PyQt6==6.4.0
 setuptools==39.0.1
