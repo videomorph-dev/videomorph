@@ -79,7 +79,7 @@ def run_on_console(app, main_win):
         main_win.add_media_files(*files_to_add)
         main_win.show()
         main_win.start_encoding()
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
 
 
 def search_directory_recursively(directory, files=None):

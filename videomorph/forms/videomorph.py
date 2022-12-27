@@ -658,12 +658,12 @@ class VideoMorphMW(QMainWindow):
     def about(self):
         """Show About dialog."""
         about_dlg = AboutVMDialog(parent=self)
-        about_dlg.exec_()
+        about_dlg.exec()
 
     def changelog(self):
         """Show the changelog dialog."""
         changelog_dlg = ChangelogDialog(parent=self)
-        changelog_dlg.exec_()
+        changelog_dlg.exec()
 
     def ffmpeg_doc(self):
         """Open ffmpeg documentation page."""
@@ -955,7 +955,7 @@ class VideoMorphMW(QMainWindow):
         msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
         msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
 
-        if msg_box.exec_() == QMessageBox.AcceptRole:
+        if msg_box.exec() == QMessageBox.AcceptRole:
             # Delete file from table
             self.tasks_table.removeRow(file_row)
             # Remove file from self.media_list
@@ -971,7 +971,7 @@ class VideoMorphMW(QMainWindow):
     def add_customized_profile(self):
         """Show dialog for adding conversion profiles."""
         add_profile_dlg = AddProfileDialog(parent=self)
-        add_profile_dlg.exec_()
+        add_profile_dlg.exec()
 
     def _export_import_profiles(self, func, path, msg_info):
         try:
@@ -987,7 +987,7 @@ class VideoMorphMW(QMainWindow):
                                    msg=msg_info)
 
     def _select_directory(self, dialog_title, source_dir=QDir.homePath()):
-        options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
+        options = QFileDialog.Option.DontResolveSymlinks | QFileDialog.Option.ShowDirsOnly
 
         directory = QFileDialog.getExistingDirectory(self,
                                                      dialog_title,
@@ -1025,16 +1025,16 @@ class VideoMorphMW(QMainWindow):
     def restore_profiles(self):
         """Restore default profiles."""
         msg_box = QMessageBox(
-            QMessageBox.Warning,
+            QMessageBox.Icon.Warning,
             self.tr('Warning!'),
             self.tr('Do you Really Want to Restore the '
                     'Default Conversion Profiles?'),
-            QMessageBox.NoButton, self)
+            QMessageBox.StandardButton.NoButton, self)
 
-        msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
-        msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
+        msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
+        msg_box.addButton(self.tr("&No"), QMessageBox.ButtonRole.RejectRole)
 
-        if msg_box.exec_() == QMessageBox.AcceptRole:
+        if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
             self.profile.restore_default_profiles()
             self.populate_profiles_combo()
             self.profile.update(new_quality=self.quality_combo.currentText())
@@ -1068,15 +1068,15 @@ class VideoMorphMW(QMainWindow):
     def clear_media_list(self):
         """Clear media conversion list with user confirmation."""
         msg_box = QMessageBox(
-            QMessageBox.Warning,
+            QMessageBox.Icon.Warning,
             self.tr('Warning!'),
             self.tr('Remove all the Videos from the List?'),
-            QMessageBox.NoButton, self)
+            QMessageBox.StandardButton.NoButton, self)
 
-        msg_box.addButton(self.tr("&Yes"), QMessageBox.AcceptRole)
-        msg_box.addButton(self.tr("&No"), QMessageBox.RejectRole)
+        msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
+        msg_box.addButton(self.tr("&No"), QMessageBox.ButtonRole.RejectRole)
 
-        if msg_box.exec_() == QMessageBox.AcceptRole:
+        if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
             # If user says YES clear table of conversion tasks
             self.tasks_table.clearContents()
             self.tasks_table.setRowCount(0)

@@ -56,7 +56,7 @@ class AddProfileDialog(QDialog):
         self.le_profile_name.setPlaceholderText(self.tr('(e.g. MP4)'))
         profile_name_model = QCompleter(
             self.parent.profile.get_xml_profile_qualities(LOCALE).keys())
-        profile_name_model.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        profile_name_model.setCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.le_profile_name.setCompleter(profile_name_model)
         self.vertical_layout.addWidget(self.le_profile_name)
 
@@ -98,21 +98,21 @@ class AddProfileDialog(QDialog):
         self.le_extension = QLineEdit(self.layout_widget)
         self.le_extension.setPlaceholderText(self.tr('(e.g. .mp4)'))
         extensions_model = QCompleter(VALID_VIDEO_EXT)
-        extensions_model.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        extensions_model.setCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.le_extension.setCompleter(extensions_model)
         self.vertical_layout_5.addWidget(self.le_extension)
 
         self.vertical_layout_4.addLayout(self.vertical_layout_5)
 
         spacer_item = QSpacerItem(20, 48,
-                                  QtWidgets.QSizePolicy.Minimum,
-                                  QtWidgets.QSizePolicy.Expanding)
+                                  QtWidgets.QSizePolicy.Policy.Minimum,
+                                  QtWidgets.QSizePolicy.Policy.Expanding)
         self.vertical_layout_4.addItem(spacer_item)
 
         self.button_box = QDialogButtonBox(self.layout_widget)
-        self.button_box.setOrientation(QtCore.Qt.Horizontal)
+        self.button_box.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.button_box.setStandardButtons(
-            QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.vertical_layout_4.addWidget(self.button_box)
 
         self.label.setBuddy(self.le_profile_name)
