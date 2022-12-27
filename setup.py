@@ -3,8 +3,8 @@
 #
 # File _name: setup.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2020 VideoMorph Development Team
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
+#   Copyright 2016-2022 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ except ImportError:
     USE_DISTUTILS = True
 
 
-LONG_DESCRIPTION = """Video Converter based on ffmpeg, Python 3 and PyQt5.
+LONG_DESCRIPTION = """Video Converter based on ffmpeg, Python 3 and PyQt6.
 Unlike other video converters, VideoMorph focuses on a single goal:
 make video conversion simple, with an easy to use GUI and allowing
 the user to convert to the currently most popular video formats.
@@ -45,22 +45,22 @@ annoying options rarely used.
 VideoMorph is a video converter, just that. If you want a video editor,
 VideoMorph isn't for you."""
 
-COMMONS = dict(
-    name=APP_NAME.lower(),
-    version=VERSION,
-    description="Video Converter based on ffmpeg, "
-    "Python 3 and Qt5, focused on usability.",
-    long_description=LONG_DESCRIPTION,
-    author="Ozkar L. Garcell",
-    author_email="ozkar.garcell@gmail.com",
-    maintainer="Leodanis Pozo Ramos",
-    maintainer_email="lpozor78@gmail.com",
-    url="https://github.com/videomorph-dev/videomorph",
-    license="Apache License, Version 2.0",
-    packages=["videomorph", "videomorph.converter", "videomorph.forms"],
-    platforms=["linux", "darwin", "win32"],
-    keywords="multimedia, video conversion, common video formats",
-)
+COMMONS = dict(name=APP_NAME.lower(),
+               version=VERSION,
+               description='Video Converter based on ffmpeg, '
+                           'Python 3 and Qt6, focused on usability.',
+               long_description=LONG_DESCRIPTION,
+               author='Ozkar L. Garcell',
+               author_email='ozkar.garcell@gmail.com',
+               maintainer='Leodanis Pozo Ramos',
+               maintainer_email='lpozor78@gmail.com',
+               url='https://github.com/videomorph-dev/videomorph',
+               license='Apache License, Version 2.0',
+               packages=['videomorph',
+                         'videomorph.converter',
+                         'videomorph.forms'],
+               platforms=['linux', 'darwin', 'win32'],
+               keywords='multimedia, video conversion, common video formats')
 
 COMMONS_SETUPTOOLS = dict(
     entry_points={"gui_scripts": ["videomorph = videomorph.main:main"]}

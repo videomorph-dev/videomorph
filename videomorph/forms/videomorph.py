@@ -2,8 +2,8 @@
 #
 # File name: videomorph.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2020 VideoMorph Development Team
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
+#   Copyright 2016-2022 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module defines the VideoMorph main window that holds the UI."""
+"""This module defines the VideoMorph maifrom PyQt6.QtWidgets import QActionn window that holds the UI."""
 
 from collections import OrderedDict
 from functools import partial
 from os.path import dirname, exists, isdir, isfile
 from os.path import join as join_path
 
-from PyQt5.QtCore import (
+from PyQt6.QtCore import (
     QCoreApplication,
     QDir,
     QPoint,
@@ -33,8 +33,8 @@ from PyQt5.QtCore import (
     QSize,
     Qt,
 )
-from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import (
+from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtWidgets import (
     QAbstractItemView,
     QAction,
     QCheckBox,
@@ -54,7 +54,6 @@ from PyQt5.QtWidgets import (
     QToolButton,
     QVBoxLayout,
     QWidget,
-    qApp,
 )
 
 from videomorph.converter import (
@@ -104,8 +103,7 @@ class VideoMorphMW(QMainWindow):
         self.library.setup_converter(
             reader=self._ready_read,
             finisher=self._finish_file_encoding,
-            process_channel=QProcess.MergedChannels,
-        )
+            process_channel=QProcess.ProcessChannelMode.MergedChannels)
 
         self.profile = Profile()
 
@@ -150,8 +148,8 @@ class VideoMorphMW(QMainWindow):
     def _group_settings(self):
         """Settings group."""
         settings_gb = QGroupBox(self.central_widget)
-        settings_gb.setTitle(self.tr("Conversion Options"))
-        size_policy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        settings_gb.setTitle(self.tr('Conversion Options'))
+        size_policy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(
@@ -235,7 +233,7 @@ class VideoMorphMW(QMainWindow):
         tasks_gb = QGroupBox(self.central_widget)
         tasks_text = self.tr("List of Conversion Tasks")
         tasks_gb.setTitle(tasks_text)
-        size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        size_policy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(
@@ -471,7 +469,7 @@ class VideoMorphMW(QMainWindow):
         first_separator.setSeparator(True)
         second_separator = QAction(self)
         second_separator.setSeparator(True)
-        self.tasks_table.setContextMenuPolicy(Qt.ActionsContextMenu)
+        self.tasks_table.setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu)
         self.tasks_table.addAction(self.open_media_file_action)
         self.tasks_table.addAction(self.open_media_dir_action)
         self.tasks_table.addAction(first_separator)
@@ -526,9 +524,9 @@ class VideoMorphMW(QMainWindow):
         self.tool_bar.addSeparator()
         self.tool_bar.addAction(self.exit_action)
         self.tool_bar.setIconSize(QSize(28, 28))
-        self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         # Add the toolbar to main window
-        self.addToolBar(Qt.TopToolBarArea, self.tool_bar)
+        self.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.tool_bar)
 
     def _create_status_bar(self):
         """Create app status bar."""
@@ -564,7 +562,7 @@ class VideoMorphMW(QMainWindow):
     @staticmethod
     def _get_settings_file():
         return QSettings(
-            join_path(SYS_PATHS["config"], "config.ini"), QSettings.IniFormat
+            join_path(SYS_PATHS["config"], "config.ini"), QSettings.Format.IniFormat
         )
 
     def _create_initial_settings(self):
@@ -686,7 +684,7 @@ class VideoMorphMW(QMainWindow):
     def shutdown_machine():
         """Shutdown machine when conversion is finished."""
         launcher = launcher_factory()
-        qApp.closeAllWindows()
+        QApplication.instance().closeAllWindows()
         launcher.shutdown_machine()
 
     def populate_profiles_combo(self):

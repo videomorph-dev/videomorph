@@ -2,8 +2,8 @@
 #
 # File name: vmwidgets.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2020 VideoMorph Development Team
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
+#   Copyright 2016-2022 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@
 from functools import partial
 from urllib.request import url2pathname
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
     QHeaderView,
@@ -46,9 +46,9 @@ class TasksListTable(QTableWidget):
 
         self.setColumnCount(4)
         self.setRowCount(0)
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.setHorizontalHeaderLabels(
             [
                 self.tr("Video Name"),

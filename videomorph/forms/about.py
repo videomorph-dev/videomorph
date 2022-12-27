@@ -2,8 +2,8 @@
 #
 # File name: about.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2020 VideoMorph Development Team
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
+#   Copyright 2016-2022 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@
 from os.path import isfile
 from os.path import join as join_path
 
-from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import (
+from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QHBoxLayout,
@@ -97,9 +97,10 @@ class AboutVMDialog(QDialog):
         self.tab_widget.addTab(self.tab_3, "")
         self.vertical_layout_4.addWidget(self.tab_widget)
         self.horizontal_layout = QHBoxLayout()
-        spacer_item = QSpacerItem(
-            40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum
-        )
+        spacer_item = QSpacerItem(40,
+                                  20,
+                                  QSizePolicy.Policy.Expanding,
+                                  QSizePolicy.Policy.Minimum)
         self.horizontal_layout.addItem(spacer_item)
         self.button_box = QDialogButtonBox(self)
         self.button_box.setOrientation(Qt.Horizontal)
