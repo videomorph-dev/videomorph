@@ -534,7 +534,7 @@ class VideoMorphMW(QMainWindow):
 
     def _create_progress_dialog(self):
         label = QLabel()
-        label.setAlignment(Qt.AlignLeft)
+        label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         progress_dlg = QProgressDialog(parent=self)
         progress_dlg.setFixedSize(500, 100)
         progress_dlg.setWindowTitle(self.tr("Adding Videos..."))
