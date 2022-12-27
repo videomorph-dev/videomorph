@@ -56,6 +56,7 @@ from PyQt6.QtWidgets import QFileDialog
 from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtWidgets import QProgressDialog
 from PyQt6.QtWidgets import QToolButton
+from PyQt6.QtWidgets import QApplication
 
 from videomorph.converter import APP_NAME
 from videomorph.converter import BASE_DIR
