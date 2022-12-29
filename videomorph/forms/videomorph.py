@@ -33,10 +33,9 @@ from PyQt6.QtCore import (
     QSize,
     Qt,
 )
-from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtGui import QIcon, QAction, QPixmap
 from PyQt6.QtWidgets import (
     QAbstractItemView,
-    QAction,
     QCheckBox,
     QComboBox,
     QFileDialog,
