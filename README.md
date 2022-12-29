@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/5f6cd3f7c20bccee2065/maintainability)](https://codeclimate.com/github/videomorph-dev/videomorph/maintainability)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/videomorph-dev/videomorph/pulls)
 
-VideoMorph is a **video converter** based on [ffmpeg](http://ffmpeg.org), and written with [Python](https://python.org) 3, and [PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/introduction.html). With VideoMorph you can convert your favorite videos to the currently more popular video formats, like **MPG**, **MP4**, **AVI**, **WEBM**, **DVD**, **VCD**, **FLV**, **MOV**, **OGV, **WMV**, **MKV** **and also extract the audio to a file with ****MP3** **or ****OGA** **formats.
+VideoMorph is a **video converter** based on [ffmpeg](http://ffmpeg.org), and written with [Python](https://python.org) 3, and [PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/introduction.html). With VideoMorph you can convert your favorite videos to the currently more popular video formats, like **MPG**, **MP4**, **AVI**, **WEBM**, **DVD**, **VCD**, **FLV**, **MOV**, **OGV**, **WMV**, **MKV** and also extract the audio to a file with **MP3** or **OGA** formats.
 
 VideoMorph is a video converter, just that. Consists on a GUI wrapper for [Ffmpeg](http://ffmpeg.org), based on general ideas from [python-video-converter](https://github.com/senko/python-video-converter), and presets idea from [QWinFF](http://qwinff.github.io). If you're looking for a video editor, we really sorry but VideoMorph isn't for you.
 
@@ -29,7 +29,7 @@ On Windows systems, you also need:
 
 ## Installation
 
-You can install and use VideoMorph on GNU/Linux and on Windows systems. There are several ways you can use to install the application. Let's take a look at them. We haven't tried properly **yet** on MacO :-|
+You can install and use VideoMorph on GNU/Linux and on Windows systems. There are several ways you can use to install the application. Let's take a look at them. We haven't tried properly **yet** on MacOS :-|
 
 ### Installing From the Binary Packages
 
