@@ -640,27 +640,6 @@ class VideoMorphMW(QMainWindow):
         """Open VideoMorph Web page."""
         self._open_url(url='http://videomorph.webmisolutions.com')
 
-    def show_video_info(self):
-        """Show video info on the Info Panel."""
-        position = self.tasks_table.currentRow()
-        info_dlg = InfoDialog(parent=self,
-                              position=position,
-                              task_list=self.task_list)
-        info_dlg.show()
-
-    def notify(self, file_name):
-        """Notify when conversion finished."""
-        file_name = ''.join(('"', file_name, '"'))
-        msg = file_name + ': ' + self.tr('Successfully converted')
-        self.tray_icon.showMessage(APP_NAME, msg,
-                                   QSystemTrayIcon.MessageIcon.Information, 2000)
-        if exists(join_path(BASE_DIR, VM_PATHS.sounds)):
-            sound = join_path(BASE_DIR, VM_PATHS.sounds, 'successful.wav')
-        else:
-            sound = join_path(SYS_PATHS.sounds, 'successful.wav')
-        launcher = launcher_factory()
-        launcher.sound_notify(sound)
-
     @staticmethod
     def _open_url(url):
         """Open URL."""
@@ -966,24 +945,6 @@ class VideoMorphMW(QMainWindow):
             self._reset_options_check_boxes()
             self._update_ui_when_no_file()
 
-    def add_customized_profile(self):
-        """Show dialog for adding conversion profiles."""
-        add_profile_dlg = AddProfileDialog(parent=self)
-        add_profile_dlg.exec()
-
-    def _export_import_profiles(self, func, path, msg_info):
-        try:
-            func(path)
-        except PermissionError:
-            self._show_message_box(
-                type_=QMessageBox.Icon.Critical,
-                title=self.tr('Error!'),
-                msg=self.tr('Can not Write to Selected Folder'))
-        else:
-            self._show_message_box(type_=QMessageBox.Icon.Information,
-                                   title=self.tr('Information!'),
-                                   msg=msg_info)
-
     def _select_directory(self, dialog_title, source_dir=QDir.homePath()):
         options = QFileDialog.Option.DontResolveSymlinks | QFileDialog.Option.ShowDirsOnly
 
@@ -991,50 +952,6 @@ class VideoMorphMW(QMainWindow):
             self, dialog_title, source_dir, options=options
         )
         return directory
-
-    def export_profiles(self):
-        """Export conversion profiles."""
-        directory = self._select_directory(
-            dialog_title=self.tr('Export to Folder'))
-
-        if directory:
-            msg_info = self.tr('Conversion Profiles Successfully Exported!')
-            self._export_import_profiles(
-                func=self.profile.export_xml_profiles,
-                path=directory, msg_info=msg_info)
-
-    def import_profiles(self):
-        """Import conversion profiles."""
-        file_path = self._select_files(
-            dialog_title=self.tr('Select a Profiles File'),
-            files_filter=self.tr('Profiles Files ') + '(*.xml)',
-            single_file=True)
-
-        if file_path:
-            msg_info = self.tr('Conversion Profiles Successfully Imported!')
-
-            self._export_import_profiles(
-                func=self.profile.import_xml_profiles,
-                path=file_path, msg_info=msg_info)
-            self.populate_profiles_combo()
-            self.profile.update(new_quality=self.quality_combo.currentText())
-
-    def restore_profiles(self):
-        """Restore default profiles."""
-        msg_box = QMessageBox(
-            QMessageBox.Icon.Warning,
-            self.tr('Warning!'),
-            self.tr('Do you Really Want to Restore the '
-                    'Default Conversion Profiles?'),
-            QMessageBox.StandardButton.NoButton, self)
-
-        msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
-        msg_box.addButton(self.tr("&No"), QMessageBox.ButtonRole.RejectRole)
-
-        if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
-            self.profile.restore_default_profiles()
-            self.populate_profiles_combo()
-            self.profile.update(new_quality=self.quality_combo.currentText())
 
     def _select_files(self, dialog_title, files_filter,
                       source_dir=QDir.homePath(), single_file=False):
