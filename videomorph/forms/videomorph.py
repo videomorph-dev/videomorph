@@ -103,7 +103,8 @@ class VideoMorphMW(QMainWindow):
         self.library.setup_converter(
             reader=self._ready_read,
             finisher=self._finish_file_encoding,
-            process_channel=QProcess.ProcessChannelMode.MergedChannels)
+            #process_channel=QProcess.ProcessChannelMode.MergedChannels # does not work
+        )
 
         self.profile = Profile()
 
