@@ -17,7 +17,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-"""This module defines the VideoMorph maifrom PyQt6.QtWidgets import QActionn window that holds the UI."""
+"""This module defines the VideoMorph main window that holds the UI."""
 
 from collections import OrderedDict
 from functools import partial
@@ -148,7 +148,7 @@ class VideoMorphMW(QMainWindow):
     def _group_settings(self):
         """Settings group."""
         settings_gb = QGroupBox(self.central_widget)
-        settings_gb.setTitle(self.tr('Conversion Options'))
+        settings_gb.setTitle(self.tr("Conversion Options"))
         size_policy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
