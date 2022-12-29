@@ -54,6 +54,7 @@ from PyQt6.QtWidgets import (
     QToolButton,
     QVBoxLayout,
     QWidget,
+    QApplication
 )
 
 from videomorph.converter import (
