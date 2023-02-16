@@ -541,7 +541,7 @@ class VideoMorphMW(QMainWindow):
         progress_dlg.setWindowTitle(self.tr("Adding Videos..."))
         progress_dlg.setCancelButtonText(self.tr("Cancel"))
         progress_dlg.setLabel(label)
-        progress_dlg.setWindowModality(Qt.WindowModal)
+        progress_dlg.setWindowModality(Qt.WindowModality.ApplicationModal)
         progress_dlg.setMinimumDuration(100)
         QCoreApplication.processEvents()
         return progress_dlg
