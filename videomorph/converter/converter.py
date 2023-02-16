@@ -19,7 +19,7 @@
 
 """This module provides Converter Class."""
 
-from PyQt5.QtCore import QProcess
+from PyQt6.QtCore import QProcess
 
 from .vmpath import LIBRARY_PATH
 
@@ -76,4 +76,4 @@ class Converter:
     @property
     def converter_is_running(self):
         """Return QProcess state."""
-        return self._process.state() == QProcess.Running
+        return self._process.state() == QProcess.ProcessState.Running
