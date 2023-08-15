@@ -20,14 +20,14 @@
 """This module contains some utilities and functions."""
 
 import os
-from locale import getdefaultlocale
+from locale import getlocale
 from os.path import pathsep
 from pathlib import Path
 
 
 def get_locale():
     """Return the default locale string."""
-    return "es_ES" if getdefaultlocale()[0].startswith("es_") else "en_US"
+    return "es_ES" if getlocale()[1].startswith("es_") else "en_US"
     # return 'es_ES'
 
 
