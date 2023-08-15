@@ -3,7 +3,7 @@
 # File name: codec.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2020 VideoMorph Development Team
+#   Copyright 2016-2022 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -29,21 +29,23 @@ class CodecsReader:
     """Class to get codecs out of ffmpeg -codecs output."""
 
     def __init__(self):
-        self.vcodecs, self.acodecs, self.scodecs = self._read("-codecs")
+        self.vcodecs, self.acodecs, self.scodecs = self._read(
+            "-codecs", 12
+        )
         self.vencoders, self.aencoders, self.sencoders = self._read(
-            "-encoders"
+            "-encoders", 11
         )
         self.vdecoders, self.adecoders, self.sdecoders = self._read(
-            "-decoders"
+            "-decoders", 11
         )
 
-    def _read(self, param):
-        """Read the available encoders form ffmpeg."""
+    def _read(self, param, start):
+        """Read the available encoders from ffmpeg."""
         video = {}
         audio = {}
         subtitle = {}
         with spawn_process([LIBRARY_PATH, param]).stdout as output:
-            for line in islice(output, 10, None):
+            for line in islice(output, start, None):
                 functionality, name, *description = line.split()
                 if "V" in functionality:
                     video[name] = (functionality, " ".join(description))

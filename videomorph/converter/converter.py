@@ -3,7 +3,7 @@
 # File name: converter.py
 #
 #   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2020 VideoMorph Development Team
+#   Copyright 2016-2022 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 """This module provides Converter Class."""
 
-from PyQt5.QtCore import QProcess
+from PyQt6.QtCore import QProcess
 
 from .vmpath import LIBRARY_PATH
 
@@ -31,10 +31,11 @@ class Converter:
         """Class initializer."""
         self._library_path = library_path
         self._process = QProcess()
+        self._process.setProcessChannelMode(QProcess.ProcessChannelMode.MergedChannels)
 
-    def setup_converter(self, reader, finisher, process_channel):
+    def setup_converter(self, reader, finisher):#, process_channel):
         """Set up the QProcess object."""
-        self._process.setProcessChannelMode(process_channel)
+        #self._process.setProcessChannelMode(process_channel)
         self._process.readyRead.connect(reader)
         self._process.finished.connect(finisher)
 
@@ -75,4 +76,4 @@ class Converter:
     @property
     def converter_is_running(self):
         """Return QProcess state."""
-        return self._process.state() == QProcess.Running
+        return self._process.state() == QProcess.ProcessState.Running

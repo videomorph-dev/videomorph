@@ -2,8 +2,8 @@
 #
 # File name: library.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2020 VideoMorph Development Team
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
+#   Copyright 2016-2022 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -48,3 +48,4 @@ class Library:
         """Play a video file with user default player."""
         launcher = launcher_factory()
         launcher.open_with_user_app(url=file_path)
+

@@ -40,7 +40,7 @@ VideoMorph is a video converter, just that. Consists on a GUI wrapper for [Ffmpe
 
 VideoMorph uses the following libraries and programs:
 
-- [PyQt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/introduction.html)
+- [PyQt](https://www.riverbankcomputing.com/static/Docs/PyQt6/introduction.html)
 - [FFmpeg](http://ffmpeg.org)
 - [Python](https://python.org) > 3.4
 
@@ -52,7 +52,7 @@ On Windows systems, you also need:
 
 ## Installation
 
-You can install and use VideoMorph on GNU/Linux and Windows systems. There are several ways you can use to install the application. Let's take a look at them. We haven't tried properly **yet** on MacO :-|
+You can install and use VideoMorph on GNU/Linux and on Windows systems. There are several ways you can use to install the application. Let's take a look at them. We haven't tried properly **yet** on macOS :-|
 
 ### Installing From the Binary Packages
 
@@ -63,12 +63,13 @@ If you're using GNU/Linux or Windows, then you can install VideoMorph by using t
 You can install VideoMorph on Debian/Ubuntu and derivatives by running the following steps:
 
 1. Download the `.deb` package
+
 2. Open a terminal, and run the following commands as **root** or using **sudo**:
 
-```bash
-$ apt install ffmpeg python3 python3-pyqt5
+```sh
+$ sudo apt install ffmpeg python3 python3-pyqt6
 $ cd <directory containing VideoMorph binary>
-$ dpkg -i videomorph_x.x_all.deb
+$ sudo dpkg -i videomorph_x.x_all.deb
 ```
 
 That should be enough to get VideoMorph (and its dependencies) installed on your system.
@@ -80,7 +81,9 @@ You can also install VideoMorph's `.deb` package, by using GDebi, which is a GUI
 To install VideoMorph on your Windows system, you can:
 
 1. Download the installer that corresponds to your architecture
+
 2. Run the installer as an `administrator`
+
 3. Follow on-screen instructions
 
 ### Installing Form the Source Packages
@@ -92,7 +95,7 @@ You can install VideoMorph from the source packages. Let's take a look at how to
 To install the application from the source package on a GNU/Linux system, do the following:
 
 1. Download the `.tar.gz` package
-2. Open a terminal, and run the following commands as **root** or using **sudo **when specified (as in step 3 and 5):
+2. Open a terminal, and type in this:
 
 ```bash
 $ tar -xvf videomorph-x.x.tar.gz
@@ -123,7 +126,7 @@ $ cd videomorph-x.x
 $ sudo ./install.sh
 ```
 
-This command will install VideoMorph and its dependencies (Ffmpeg, and PyQt5) from your distro's current repository.
+This command will install VideoMorph, and its dependencies, (Ffmpeg, and PyQt6), from your distro's current repository.
 
 #### On Windows
 
@@ -132,11 +135,11 @@ To install VideoMorph from the source package on your Windows system, first, mak
 1. Download and decompress the `.zip` source package
 2. Open your Windows' command-line (`cmd.exe`), and type the following commands:
 
-```doscon
-C:/> cd videomorph-x.x
-C:/> pip install -r requirements.txt
-C:/> python3 setup.py build
-C:/> python3 setup.py install
+```powershell
+PS> cd videomorph-x.x
+PS> pip install -r requirements.txt
+PS> python3 setup.py build
+PS> python3 setup.py install
 ```
 
 This will install VideoMorph on your system, but you'll need to install Ffmpeg manually.
@@ -174,7 +177,7 @@ To set up the development environment, and contribute code to VideoMorph, just o
 ```console
 $ python3 -m venv venv
 $ source venv/bin/activate
-(venv)$ pip install -r requirements.txt
+(venv) $ pip install -r requirements.txt
 ```
 
 You also need to install the Ffmpeg library on your system.
@@ -183,9 +186,9 @@ You also need to install the Ffmpeg library on your system.
 
 The members of the VideoMorph Development Team that can commit changes into the repo are:
 
+- [Ozkar L. Garcell](https://github.com/codeshard)
 - [Leodanis Pozo Ramos](https://github.com/lpozo)
 - [Leonel Salazar Videaux](https://github.com/leonel-lordford)
-- [Ozkar L. Garcell](https://github.com/codeshard)
 
 ### Internal Contributions Procedure
 
@@ -239,11 +242,11 @@ General rules for writing commit messages:
 5. Use the imperative mood in the subject line
 6. Wrap the body at 72 characters
 7. Use the body to explain what and why vs how
-
 ```
+
 Add support for MOV format
 
-Add support for MOV format with several presets to give more
+Add support for MOV format with several presets to give more 
 default conversion options to the user.
 ```
 
@@ -261,16 +264,15 @@ Following the idea of [python-video-converter](https://github.com/senko/python-v
 
 Authors:
 
-- [Leodanis Pozo Ramos](mailto:lpozor78@gmail.com)
 - [Ozkar L. Garcell](mailto:ozkar.garcell@gmail.com)
+- [Leodanis Pozo Ramos](mailto:lpozor78@gmail.com)
 
 Contributors:
-
-- [Maikel Llamaret Heredia](http://gutl.jovenclub.cu) **[Rest In Peace Dear Friend]**
 - [Leonel Salazar Videaux](http://debianhlg.cubava.cu/)
-- [Carlos Parra Zaldivar](http://libreoffice.cubava.cu)
+- [Maikel Llamaret Heredia](http://gutl.jovenclub.cu) **[Rest in peace dear friend.]**
+- [Carlos Parra Zaldivar](http://libreoffice.cubava.cu) **[Rest in peace dear friend.]**
 - Osmel Cruz
 
 ## Copyright
 
-Copyright 2016-2020 VideoMorph Development Team.
+Copyright 2016-2022 VideoMorph Development Team.

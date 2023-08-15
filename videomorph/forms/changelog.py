@@ -2,8 +2,8 @@
 #
 # File name: changelog.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2020 VideoMorph Development Team
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
+#   Copyright 2016-2022 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import re
 from os.path import exists
 from os.path import join as join_path
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 from videomorph.converter import (
     APP_NAME,
@@ -65,11 +65,11 @@ class ChangelogDialog(QtWidgets.QDialog):
         font.setPointSize(12)
         self.text_edit.setFont(font)
         self.text_edit.viewport().setProperty(
-            "cursor", QtGui.QCursor(QtCore.Qt.PointingHandCursor)
-        )
+            "cursor",
+            QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.text_edit.setReadOnly(True)
         self.horizontal_layout.addWidget(self.text_edit)
-        self.text_edit.setAlignment(QtCore.Qt.AlignJustify)
+        self.text_edit.setAlignment(QtCore.Qt.AlignmentFlag.AlignJustify)
 
         self._generate_changelog()
 

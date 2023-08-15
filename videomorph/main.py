@@ -2,8 +2,8 @@
 #
 # File name: main.py
 #
-#   VideoMorph - A PyQt5 frontend to ffmpeg.
-#   Copyright 2016-2020 VideoMorph Development Team
+#   VideoMorph - A PyQt6 frontend to ffmpeg.
+#   Copyright 2016-2022 VideoMorph Development Team
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@
 import sys
 from pathlib import Path
 
-from PyQt5.QtCore import QTranslator
-from PyQt5.QtWidgets import QApplication, QMessageBox, qApp
+from PyQt6.QtCore import QTranslator
+from PyQt6.QtWidgets import QApplication, QMessageBox
 
 from .converter import BASE_DIR, LOCALE, VM_PATHS
 from .converter.console import run_on_console
@@ -35,6 +35,7 @@ def main():
     """Main app function."""
     # Create the app
     app = QApplication(sys.argv)
+    qApp= QApplication.instance()
 
     # Setup app translator
     app_translator = QTranslator()
@@ -56,15 +57,13 @@ def main():
             run_on_console(app, main_win)
         else:  # Or is running on GUI
             main_win.show()
-            sys.exit(app.exec_())
+            sys.exit(app.exec())
     else:
         msg_box = QMessageBox(
-            QMessageBox.Critical,
-            main_win.tr("Error!"),
-            main_win.tr("Ffmpeg Library not Found in your System"),
-            QMessageBox.NoButton,
-            main_win,
-        )
-        msg_box.addButton("&Ok", QMessageBox.AcceptRole)
-        if msg_box.exec_() == QMessageBox.AcceptRole:
+            QMessageBox.Icon.Critical,
+            main_win.tr('Error!'),
+            main_win.no_library_msg,
+            QMessageBox.StandardButton.NoButton, main_win)
+        msg_box.addButton("&Ok", QMessageBox.ButtonRole.AcceptRole)
+        if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
             qApp.closeAllWindows()

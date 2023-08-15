@@ -23,7 +23,9 @@
 
 - Implement a Dialog to generate the conversion commands using the Ffmpeg options
 - Write a Disclaimer about Ffmpeg options in customized profiles, available codecs and input video quality
-- Implement an alternative class for `conversionlib._Converter` (`subprocess` maybe) to decouple from `PyQt5`
+- Pack in `RPM` format
+- Pack for Arch Linux
+- Implement an alternative class for `conversionlib._Converter` (`subprocess` maybe) to decouple from `PyQt6`
 - Move the business logic present in `videomorph.py`, `about.py` and other views to `converter` package package
 - Move the `HTML` text hardcoded in `about.py` to a file distributed as doc. Read the about info from that file as done with the License
 - Pack in AppImage, Flatpack or Snap

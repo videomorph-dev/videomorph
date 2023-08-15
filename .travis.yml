@@ -9,8 +9,8 @@ services:
 matrix:
   include:
     - os: linux
-      python: 3.7
-      env: TESTENV=py37-pyqt5151 QT_API=pyqt5 PEP8=1 COV=1
+      python: 3.10
+      env: TESTENV=py310-pyqt640 QT_API=pyqt6 PEP8=1 COV=1
   fast_finish: true
 
 before_install:
@@ -27,7 +27,7 @@ cache:
 install:
   - pip install pip --upgrade
   - pip install pytest pytest-cov black flake8 pep8-naming flake8-debugger flake8-docstrings codecov
-  - pip install PyQt5==5.15.1
+  - pip install PyQt6==6.4.0
 
 script:
   - flake8 --select=D1 videomorph/*.py
