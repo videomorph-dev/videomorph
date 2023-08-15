@@ -348,7 +348,7 @@ class VideoMorphMW(QMainWindow):
             "open_media_file_action": dict(
                 icon=QIcon(":/icons/video-file.png"),
                 text=self.tr("&Add Videos..."),
-                shortcut=QKeySequence.Open,
+                shortcut=QKeySequence.StandardKey.Open,
                 tip=self.tr("Add Videos to the " "List of Conversion Tasks"),
                 callback=self.open_media_files,
             ),
@@ -384,7 +384,7 @@ class VideoMorphMW(QMainWindow):
             "remove_media_file_action": dict(
                 icon=QIcon(":/icons/remove-file.png"),
                 text=self.tr("&Remove Video"),
-                shortcut=QKeySequence.Delete,
+                shortcut=QKeySequence.StandardKey.Delete,
                 tip=self.tr(
                     "Remove Selected Video from the "
                     "List of Conversion Tasks"
@@ -419,7 +419,7 @@ class VideoMorphMW(QMainWindow):
             "help_content_action": dict(
                 icon=QIcon(":/icons/about.png"),
                 text=self.tr("&Contents"),
-                shortcut=QKeySequence.HelpContents,
+                shortcut=QKeySequence.StandardKey.HelpContents,
                 tip=self.tr("Help Contents"),
                 callback=self.help_content,
             ),
@@ -448,7 +448,7 @@ class VideoMorphMW(QMainWindow):
             "exit_action": dict(
                 icon=QIcon(":/icons/exit.png"),
                 text=self.tr("E&xit"),
-                shortcut=QKeySequence.Quit,
+                shortcut=QKeySequence.StandardKey.Quit,
                 tip=self.tr("Exit") + " " + self.title,
                 callback=self.close,
             ),
