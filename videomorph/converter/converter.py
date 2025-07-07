@@ -12,11 +12,12 @@ class Converter:
         """Class initializer."""
         self._library_path = library_path
         self._process = QProcess()
-        self._process.setProcessChannelMode(QProcess.ProcessChannelMode.MergedChannels)
+        self._process.setProcessChannelMode(
+            QProcess.ProcessChannelMode.MergedChannels
+        )
 
-    def setup_converter(self, reader, finisher):#, process_channel):
+    def setup_converter(self, reader, finisher):
         """Set up the QProcess object."""
-        #self._process.setProcessChannelMode(process_channel)
         self._process.readyRead.connect(reader)
         self._process.finished.connect(finisher)
 

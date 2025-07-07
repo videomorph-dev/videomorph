@@ -40,9 +40,6 @@ class Task:
         # Get the output path
         output_path = self._get_output_path(tagged)
 
-        # if output_path.exists():
-        #     raise FileExistsError('Video file already exits')
-
         # Build the conversion command
         params = self.profile.params or ""
         cmd = (
