@@ -1,25 +1,7 @@
-# -*- coding: utf-8 -*-
-#
-# File name: __init__.py
-#
-#   VideoMorph - A PyQt6 frontend to ffmpeg.
-#   Copyright 2016-2022 VideoMorph Development Team
-
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-
-#       http://www.apache.org/licenses/LICENSE-2.0
-
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
 """This module defines the converter package."""
 
 from collections import namedtuple
+from typing import Callable, Optional
 
 from .utils import get_locale
 from .vmpath import BASE_DIR, SYS_PATHS, VM_PATHS
@@ -27,7 +9,22 @@ from .vmpath import BASE_DIR, SYS_PATHS, VM_PATHS
 try:
     from os import cpu_count
 except ImportError:
-    cpu_count = None
+    cpu_count: Optional[Callable[[], Optional[int]]] = None
+
+
+def get_cpu_cores() -> int:
+    """Get the number of CPU cores available for processing.
+
+    Returns:
+        Number of CPU cores minus 1 (to leave one core free), or 1 as minimum.
+    """
+    if cpu_count is None:
+        return 1
+
+    cores = cpu_count()
+    if cores is None or cores <= 1:
+        return 1
+    return cores - 1
 
 
 APP_NAME = "VideoMorph"
@@ -45,4 +42,21 @@ VALID_VIDEO_EXT = {ext.lstrip("*") for ext in VIDEO_FILTERS.split()}
 MediaFileStatus = namedtuple("MediaFileStatus", "todo done stopped")
 STATUS = MediaFileStatus("Todo", "Done", "Stopped")
 
-CPU_CORES = cpu_count() - 1 if cpu_count() is not None else 0
+CPU_CORES = get_cpu_cores()
+
+# Export these for use by other modules
+__all__ = [
+    "APP_NAME",
+    "CODENAME",
+    "VERSION",
+    "LOCALE",
+    "VIDEO_FILTERS",
+    "VALID_VIDEO_EXT",
+    "MediaFileStatus",
+    "STATUS",
+    "CPU_CORES",
+    "get_cpu_cores",
+    "BASE_DIR",
+    "SYS_PATHS",
+    "VM_PATHS",
+]

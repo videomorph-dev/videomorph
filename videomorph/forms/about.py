@@ -1,26 +1,8 @@
-# -*- coding: utf-8 -*-
-#
-# File name: about.py
-#
-#   VideoMorph - A PyQt6 frontend to ffmpeg.
-#   Copyright 2016-2022 VideoMorph Development Team
-
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-
-#       http://www.apache.org/licenses/LICENSE-2.0
-
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
 """This module provides a dialog to show app information."""
 
 from os.path import isfile
 from os.path import join as join_path
+from typing import Optional
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QPixmap
@@ -41,16 +23,16 @@ from PyQt6.QtWidgets import (
 from videomorph.converter import (
     APP_NAME,
     BASE_DIR,
+    CODENAME,
     SYS_PATHS,
     VERSION,
-    CODENAME,
 )
 
 
 class AboutVMDialog(QDialog):
     """Dialog to show info about VideoMorph."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         """Class initializer."""
         super(AboutVMDialog, self).__init__(parent)
         self.setWindowTitle(self.tr("About"))
@@ -97,10 +79,9 @@ class AboutVMDialog(QDialog):
         self.tab_widget.addTab(self.tab_3, "")
         self.vertical_layout_4.addWidget(self.tab_widget)
         self.horizontal_layout = QHBoxLayout()
-        spacer_item = QSpacerItem(40,
-                                  20,
-                                  QSizePolicy.Policy.Expanding,
-                                  QSizePolicy.Policy.Minimum)
+        spacer_item = QSpacerItem(
+            40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+        )
         self.horizontal_layout.addItem(spacer_item)
         self.button_box = QDialogButtonBox(self)
         self.button_box.setOrientation(Qt.Orientation.Horizontal)
@@ -162,7 +143,7 @@ class AboutVMDialog(QDialog):
 
         self.plain_text_edit.setPlainText(self.get_license_text())
 
-    def get_license_text(self):
+    def get_license_text(self) -> str:
         """Get the license text from the license file."""
         doc_license = join_path(SYS_PATHS["doc"], "LICENSE")
         basedir_license = join_path(BASE_DIR, "LICENSE")

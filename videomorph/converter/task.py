@@ -1,41 +1,29 @@
-# -*- coding: utf-8 -*-
-
-# File name: task.py
-#
-#   VideoMorph - A PyQt6 frontend to ffmpeg.
-#   Copyright 2016-2022 VideoMorph Development Team
-
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-
-#       http://www.apache.org/licenses/LICENSE-2.0
-
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
 """This module provides Conversion Task Class."""
 
 import shlex
 from os import W_OK, access
 from pathlib import Path
+from typing import List, Union
 
 from . import CPU_CORES, STATUS
+from .profile import Profile
+from .video import Video
 
 
 class Task:
     """Class to represent a conversion task."""
 
-    def __init__(self, video, profile, output_dir):
+    def __init__(
+        self, video: Video, profile: Profile, output_dir: Union[str, Path]
+    ) -> None:
         self.video = video
         self.profile = profile
-        self.output_dir = output_dir
+        self.output_dir = Path(output_dir)
         self.status = STATUS.todo
 
-    def build_conversion_cmd(self, target_quality, tagged, subtitle):
+    def build_conversion_cmd(
+        self, target_quality: str, tagged: bool, subtitle: bool
+    ) -> List[str]:
         """Return the conversion command."""
         if not access(self.output_dir, W_OK):
             raise PermissionError("Access denied")
@@ -56,17 +44,18 @@ class Task:
         #     raise FileExistsError('Video file already exits')
 
         # Build the conversion command
+        params = self.profile.params or ""
         cmd = (
             ["-i", self.video.path.__str__()]
             + subtitle_opt
-            + shlex.split(self.profile.params)
+            + shlex.split(params)
             + ["-threads", str(CPU_CORES)]
             + ["-y", output_path.__str__()]
         )
 
         return cmd
 
-    def delete_output(self, tagged):
+    def delete_output(self, tagged: bool) -> None:
         """Delete the output file if conversion is stopped."""
         while True:
             try:
@@ -78,7 +67,7 @@ class Task:
             except PermissionError:
                 continue
 
-    def delete_input(self):
+    def delete_input(self) -> None:
         """Delete the input file (and subtitle) when conversion is finished."""
         try:
             self.video.path.unlink()
@@ -90,25 +79,26 @@ class Task:
         except FileNotFoundError:
             pass
 
-    def get_output_file_name(self, tagged):
+    def get_output_file_name(self, tagged: bool) -> str:
         """Return the name of the output video file."""
         output_file = self._get_output_path(tagged)
         return output_file.name
 
-    def get_output_path(self, tagged):
+    def get_output_path(self, tagged: bool) -> str:
         """Return the the output file path as str."""
         return str(self._get_output_path(tagged))
 
-    def _get_output_path(self, tagged):
+    def _get_output_path(self, tagged: bool) -> Path:
         """Return the the output file path as pathlib.Path."""
         tag = self.profile.quality_tag if tagged else ""
+        extension = self.profile.extension or ".mp4"
         output_file_name = "".join(
-            (tag, self.video.get_name(False), self.profile.extension)
+            (tag, self.video.get_name(False), extension)
         )
         return Path(self.output_dir, output_file_name)
 
     @property
-    def subtitle_path(self):
+    def subtitle_path(self) -> Path:
         """Return the subtitle path as pathlib.Path if it exits."""
         extensions = [".srt", ".ssa", ".stl"]
 
@@ -123,7 +113,7 @@ class Task:
 
         raise FileNotFoundError("Subtitle file not found")
 
-    def _process_subtitles(self, subtitle):
+    def _process_subtitles(self, subtitle: bool) -> List[str]:
         """Process subtitles if available."""
         if subtitle:
             try:

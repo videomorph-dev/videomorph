@@ -1,43 +1,24 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-# File name: test_profiles.py
-#
-#   VideoMorph - A PyQt6 frontend to ffmpeg.
-#   Copyright 2016-2022 VideoMorph Development Team
-
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-
-#       http://www.apache.org/licenses/LICENSE-2.0
-
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
 """This module provides tests for profile.py module."""
 
-import pytest
+from typing import Dict, List, Optional
 
 from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
 
-profile = None
+profile: Optional[Profile] = None
 conv = Library()
 
 
-def setup():
+def setup() -> None:
     """Function to setup the test."""
     global profile
     profile = Profile()
     profile.update(new_quality="MP4 Fullscreen (4:3)")
 
 
-def test_get_xml_profile_attr():
+def test_get_xml_profile_attr() -> None:
     """Test get_xml_profile_attr."""
+    assert profile is not None
     attr = profile.get_xml_profile_attr(
         target_quality="MP4 Fullscreen (4:3)", attr_name="preset_params"
     )
@@ -48,9 +29,12 @@ def test_get_xml_profile_attr():
     )
 
 
-def test_get_xml_profile_qualities_en():
+def test_get_xml_profile_qualities_en() -> None:
     """Test get_xml_profile_qualities -> english."""
-    qualities = profile.get_xml_profile_qualities("en_US")
+    assert profile is not None
+    qualities: Dict[str, List[str]] = profile.get_xml_profile_qualities(
+        "en_US"
+    )
     assert qualities["AVI"] == [
         "MS Compatible 640x480",
         "MS Compatible 720x480",
@@ -60,9 +44,12 @@ def test_get_xml_profile_qualities_en():
     ]
 
 
-def test_get_xml_profile_qualities_es():
+def test_get_xml_profile_qualities_es() -> None:
     """Test get_xml_profile_qualities -> spanish."""
-    qualities = profile.get_xml_profile_qualities("es_ES")
+    assert profile is not None
+    qualities: Dict[str, List[str]] = profile.get_xml_profile_qualities(
+        "es_ES"
+    )
     assert qualities["AVI"] == [
         "Compatible MS 640x480",
         "Compatible MS 720x480",
@@ -72,13 +59,15 @@ def test_get_xml_profile_qualities_es():
     ]
 
 
-def test_quality_tag():
+def test_quality_tag() -> None:
     """Test Profile.quality_tag."""
+    assert profile is not None
     assert profile.quality_tag == "[MP4F]-"
 
 
-def test_update():
+def test_update() -> None:
     """Test update."""
+    assert profile is not None
     profile.update(new_quality="WMV Generic")
     assert (
         profile.params == "-vcodec wmv2 -acodec wmav2 -b:v 1000k "

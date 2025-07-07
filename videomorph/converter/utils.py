@@ -1,52 +1,44 @@
-# -*- coding: utf-8 -*-
-#
-# File name: utils.py
-#
-#   VideoMorph - A PyQt6 frontend to ffmpeg.
-#   Copyright 2016-2022 VideoMorph Development Team
-
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-
-#       http://www.apache.org/licenses/LICENSE-2.0
-
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
 """This module contains some utilities and functions."""
 
 import os
 from locale import getlocale
 from os.path import pathsep
 from pathlib import Path
+from typing import Union
 
 
-def get_locale():
+def get_locale() -> str:
     """Return the default locale string."""
-    return "es_ES" if getlocale()[1].startswith("es_") else "en_US"
-    # return 'es_ES'
+    try:
+        locale_info = getlocale()
+        if locale_info and locale_info[1] and locale_info[1].startswith("es_"):
+            return "es_ES"
+        return "en_US"
+    except (TypeError, AttributeError):
+        # Fallback to English if locale detection fails
+        return "en_US"
 
 
-def which(app):
+def which(app: str) -> str | None:
     """Detect if an app is installed in your system."""
-    if app == "":
-        raise ValueError("Invalid app name")
+    if not app or not app.strip():
+        return None
 
     sys_paths = os.environ.get("PATH", os.defpath).split(pathsep)
 
     for path in sys_paths:
-        app_path = Path(path, app)
-        if app_path.exists():
-            return app_path.__str__()
+        try:
+            app_path = Path(path, app)
+            if app_path.exists() and app_path.is_file():
+                return app_path.__str__()
+        except (OSError, PermissionError):
+            # Skip paths that can't be accessed
+            continue
 
-    raise ValueError("Command {0} not found".format(app))
+    return None
 
 
-def write_time(time_in_secs):
+def write_time(time_in_secs: Union[int, float, str]) -> str:
     """Return time in 00h:00m:00s format."""
     try:
         time = round(float(time_in_secs))
@@ -72,7 +64,7 @@ def write_time(time_in_secs):
     return "{secs:02d}s".format(secs=secs)
 
 
-def write_size(size_in_bytes):
+def write_size(size_in_bytes: Union[int, float, str]) -> str:
     """Return size in appropriate measure."""
     try:
         size = round(float(size_in_bytes))

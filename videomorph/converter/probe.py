@@ -1,23 +1,7 @@
-# -*- coding: utf-8 -*-
-
-# File name: probe.py
-#
-#   VideoMorph - A PyQt6 frontend to ffmpeg.
-#   Copyright 2016-2022 VideoMorph Development Team
-
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-
-#       http://www.apache.org/licenses/LICENSE-2.0
-
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
 """This module provides Probe Class."""
+
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 from .launchers import spawn_process
 from .vmpath import PROBE_PATH
@@ -27,8 +11,11 @@ class Probe:
     """Probe Class to get info about a video."""
 
     def __init__(
-        self, video_path, probe_path=PROBE_PATH, probe_runner=spawn_process
-    ):
+        self,
+        video_path: Union[str, Path],
+        probe_path: Optional[str] = PROBE_PATH,
+        probe_runner: Callable = spawn_process,
+    ) -> None:
         """Class initializer."""
         self._probe_path = probe_path
         self._video_path = video_path
@@ -39,7 +26,7 @@ class Probe:
         self.audio_info = self._parse_probe_audio_stream()
         self.subtitle_info = self._parse_probe_sub_stream()
 
-    def _probe(self, args):
+    def _probe(self, args: List[str]) -> Any:
         """Return the probe output as a file like object."""
         process_args = [self._probe_path, self._video_path.__str__()]
         process_args[1:-1] = args
@@ -47,7 +34,9 @@ class Probe:
 
         return process.stdout
 
-    def _parse_probe(self, selected_params, cmd):
+    def _parse_probe(
+        self, selected_params: Set[str], cmd: List[str]
+    ) -> Dict[str, str]:
         """Parse the probe output."""
         info = {}
 
@@ -62,14 +51,14 @@ class Probe:
                     stream_count += 1
 
                 if "=" in format_line and param[0] in selected_params:
-                    if not param[0] in info:
+                    if param[0] not in info:
                         info[param[0]] = param[1]
                     else:
                         info[param[0] + "_{0}".format(stream_count)] = param[1]
 
         return info
 
-    def _parse_probe_format(self):
+    def _parse_probe_format(self) -> Dict[str, str]:
         """Parse the probe output."""
         selected_params = {
             "filename",
@@ -85,7 +74,7 @@ class Probe:
             selected_params=selected_params, cmd=["-show_format"]
         )
 
-    def _parse_probe_video_stream(self):
+    def _parse_probe_video_stream(self) -> Dict[str, str]:
         """Parse the probe output."""
         selected_params = {
             "codec_name",
@@ -100,7 +89,7 @@ class Probe:
             cmd=["-show_streams", "-select_streams", "v"],
         )
 
-    def _parse_probe_audio_stream(self):
+    def _parse_probe_audio_stream(self) -> Dict[str, str]:
         """Parse the probe output."""
         selected_params = {"codec_name", "codec_long_name"}
 
@@ -109,7 +98,7 @@ class Probe:
             cmd=["-show_streams", "-select_streams", "a"],
         )
 
-    def _parse_probe_sub_stream(self):
+    def _parse_probe_sub_stream(self) -> Dict[str, str]:
         """Parse the probe output."""
         selected_params = {"codec_name", "codec_long_name", "TAG:language"}
 

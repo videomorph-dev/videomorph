@@ -1,25 +1,7 @@
-# -*- coding: utf-8 -*-
-#
-# File name: vmwidgets.py
-#
-#   VideoMorph - A PyQt6 frontend to ffmpeg.
-#   Copyright 2016-2022 VideoMorph Development Team
-
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-
-#       http://www.apache.org/licenses/LICENSE-2.0
-
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
 """This module provides customized widgets for VideoMorph."""
 
 from functools import partial
+from typing import Any, List, Optional
 from urllib.request import url2pathname
 
 from PyQt6.QtCore import Qt
@@ -39,7 +21,7 @@ from . import COLUMNS
 class TasksListTable(QTableWidget):
     """Customized class to provide Tasks List Table."""
 
-    def __init__(self, parent, window):
+    def __init__(self, parent: Optional[Any], window: Any) -> None:
         """Class initializer."""
         super(TasksListTable, self).__init__(parent)
         self._window = window
@@ -47,8 +29,12 @@ class TasksListTable(QTableWidget):
         self.setColumnCount(4)
         self.setRowCount(0)
         self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
+        self.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Stretch
+        )
         self.setHorizontalHeaderLabels(
             [
                 self.tr("Video Name"),
@@ -66,14 +52,14 @@ class TasksListTable(QTableWidget):
 
         self.setAcceptDrops(True)
 
-    def dragEnterEvent(self, event):
+    def dragEnterEvent(self, event: Any) -> None:
         """Drag Enter Event."""
         if event.mimeData().hasUrls():
             event.accept()
         else:
             event.ignore()
 
-    def dragMoveEvent(self, event):
+    def dragMoveEvent(self, event: Any) -> None:
         """Drag Move Event."""
         if event.mimeData().hasUrls():
             event.setDropAction(Qt.CopyAction)
@@ -81,9 +67,9 @@ class TasksListTable(QTableWidget):
         else:
             event.ignore()
 
-    def dropEvent(self, event):
+    def dropEvent(self, event: Any) -> None:
         """Drop Event."""
-        files = []
+        files: List[str] = []
 
         for url in event.mimeData().urls():
             extension = ".{0}".format(url.path().split(".")[-1]).lower()
@@ -101,12 +87,14 @@ class TasksListTable(QTableWidget):
 class TargetQualityDelegate(QItemDelegate):
     """Combobox to select the target quality from the task list."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[Any] = None) -> None:
         """Class initializer."""
         super(TargetQualityDelegate, self).__init__(parent)
         self.parent = parent
 
-    def createEditor(self, parent, option, index):
+    def createEditor(
+        self, parent: Any, option: Any, index: Any
+    ) -> Optional[Any]:
         """Create a ComboBox to edit the Target Quality."""
         if index.column() == COLUMNS.QUALITY:
             editor = QComboBox(parent)
@@ -116,7 +104,7 @@ class TargetQualityDelegate(QItemDelegate):
 
         return QItemDelegate.createEditor(self, parent, option, index)
 
-    def setEditorData(self, editor, index):
+    def setEditorData(self, editor: Any, index: Any) -> None:
         """Set Target Quality."""
         text = index.model().data(index, Qt.DisplayRole)
         if index.column() == COLUMNS.QUALITY:
@@ -131,7 +119,7 @@ class TargetQualityDelegate(QItemDelegate):
             QAbstractItemView.NoEditTriggers
         )
 
-    def update(self, editor, index):
+    def update(self, editor: Any, index: Any) -> None:
         """Update several things in the interface."""
         self.parent.update_table_progress_column(row=index.row())
         self.parent.task_list.set_task_status(

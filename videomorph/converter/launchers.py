@@ -1,22 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# File name: launchers.py
-#
-#   VideoMorph - A PyQt6 frontend to ffmpeg.
-#   Copyright 2016-2022 VideoMorph Development Team
-
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-
-#       http://www.apache.org/licenses/LICENSE-2.0
-
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
 """This module provides classes for handing platform dependent stuffs."""
 
 import os
@@ -24,11 +5,12 @@ import subprocess
 import webbrowser
 from subprocess import PIPE, Popen
 from sys import platform
+from typing import Any, Optional, Type
 
 from .utils import which
 
 
-def generic_factory(parent_class):
+def generic_factory(parent_class: Type[Any]) -> Any:
     """Generic factory function."""
     for concrete_class in parent_class.__subclasses__():
         if concrete_class.__name__.lower().startswith("_" + platform):
@@ -43,23 +25,23 @@ def generic_factory(parent_class):
 class _Launcher:
     """Abstract class to implement external apps launcher."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.players = None
 
-    def open_with_user_app(self, url):
+    def open_with_user_app(self, url: str) -> None:
         """Open a file or url with user's preferred app."""
         raise NotImplementedError("Must be implemented in subclasses")
 
     @staticmethod
-    def open_with_user_browser(url):
+    def open_with_user_browser(url: str) -> None:
         """Open a web page with default browser."""
         webbrowser.open(url)
 
-    def shutdown_machine(self):
+    def shutdown_machine(self) -> None:
         """Shutdown computer."""
         raise NotImplementedError("Must be implemented in subclasses")
 
-    def sound_notify(self, sound=None):
+    def sound_notify(self, sound: Optional[str] = None) -> None:
         """Show system notification."""
         raise NotImplementedError("Must be implemented in subclasses")
 
@@ -96,7 +78,7 @@ class _LinuxLauncher(_Launcher):
     def _get_player(self):
         """Return a player from a list of popular players."""
         for player in self.players:
-            if which(player):
+            if which(player) is not None:
                 return player
 
         raise FileNotFoundError("Player not found")
@@ -177,7 +159,7 @@ class _Win32Launcher(_Launcher):
 
     def sound_notify(self, sound=None):
         """Show system notification."""
-        from winsound import PlaySound, MB_OK
+        from winsound import MB_OK, PlaySound
 
         PlaySound(sound, MB_OK)
 

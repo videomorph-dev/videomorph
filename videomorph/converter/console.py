@@ -1,22 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# File name: console.py
-#
-#   VideoMorph - A PyQt6 frontend to ffmpeg.
-#   Copyright 2016-2022 VideoMorph Development Team
-
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-
-#       http://www.apache.org/licenses/LICENSE-2.0
-
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
 """This module defines the VideoMorph terminal options."""
 
 import argparse
@@ -24,11 +5,14 @@ import sys
 from os import walk
 from os.path import isdir
 from pathlib import Path
+from typing import List, Optional
+
+from PyQt6.QtWidgets import QApplication
 
 from . import APP_NAME, VALID_VIDEO_EXT, VERSION
 
 
-def run_on_console(app, main_win):
+def run_on_console(app: QApplication, main_win) -> None:
     """Provide options to run VideoMorph from the command line."""
 
     # Add a parser for command line
@@ -59,12 +43,18 @@ def run_on_console(app, main_win):
 
     if args.input_file:
         for file in args.input_file:
-            path = Path(file)
-            if path.exists():
-                files.append(path.__str__())
-            else:
+            try:
+                path = Path(file)
+                if path.exists() and path.is_file():
+                    files.append(path.__str__())
+                else:
+                    print(
+                        "Video file: {0}, doesn't exist".format(file),
+                        file=sys.stderr,
+                    )
+            except (OSError, PermissionError) as e:
                 print(
-                    "Video file: {0}, doesn't exit".format(file),
+                    "Error accessing file {0}: {1}".format(file, e),
                     file=sys.stderr,
                 )
 
@@ -88,7 +78,9 @@ def run_on_console(app, main_win):
         sys.exit(app.exec())
 
 
-def search_directory_recursively(directory, files=None):
+def search_directory_recursively(
+    directory: str, files: Optional[List[str]] = None
+) -> List[str]:
     """Search a directory for video files."""
     if files is None:
         files = []

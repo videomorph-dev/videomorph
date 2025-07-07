@@ -1,23 +1,7 @@
-# -*- coding: utf-8 -*-
-#
-# File name: library.py
-#
-#   VideoMorph - A PyQt6 frontend to ffmpeg.
-#   Copyright 2016-2022 VideoMorph Development Team
-
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-
-#       http://www.apache.org/licenses/LICENSE-2.0
-
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-
 """This module provides the definition of the Library class."""
+
+from pathlib import Path
+from typing import Any, Optional, Union
 
 from .converter import Converter
 from .launchers import launcher_factory
@@ -28,24 +12,23 @@ from .timer import ConversionTimer
 class Library:
     """Conversion Library class."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Class initializer."""
         self._converter = Converter()
-        self.error = None
+        self.error: Optional[str] = None
         self.reader = OutputReader()
         self.timer = ConversionTimer()
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attr: str) -> Any:
         """Delegate to use instance member objects."""
         return getattr(self._converter, attr)
 
-    def catch_errors(self):
+    def catch_errors(self) -> None:
         """Catch the library error when running."""
         self.error = self.reader.catch_library_error()
 
     @staticmethod
-    def run_player(file_path):
+    def run_player(file_path: Union[str, Path]) -> None:
         """Play a video file with user default player."""
         launcher = launcher_factory()
         launcher.open_with_user_app(url=file_path)
-

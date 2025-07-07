@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Resource object code
-#
-# Created by: The Resource Compiler for PyQt6 (Qt v6.4.0)
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt6 import QtCore
 
 qt_resource_data = b"\
