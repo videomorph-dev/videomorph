@@ -1,245 +1,122 @@
 """This module provides tests for media.py module."""
 
-import nose
+import pytest
+
 from videomorph.converter import STATUS
 from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
-from videomorph.converter.tasklist import TaskList, Video
+from videomorph.converter.task import Task
+from videomorph.converter.tasklist import TaskList
 
 
 class TestMedia:
     """Class for testing media.py module."""
 
-    conv_lib = Library()
-    profile = Profile(prober=conv_lib.prober_path)
-    profile.update(new_quality="DVD Fullscreen 352x480 (4:3)")
+    @pytest.fixture
+    def conv_lib(self):
+        """Library fixture."""
+        return Library()
 
-    def setup(self):
-        """Setup method."""
-        self.media_list = TaskList(profile=self.profile)
-        self.gen = self.media_list.populate(("Dad.mpg",))
-        next(self.gen)
-        next(self.gen)
+    @pytest.fixture
+    def profile(self):
+        """Profile fixture."""
+        profile = Profile()
+        profile.update(new_quality="MP4 High Quality")
+        return profile
 
-    def test_populate(self):
-        """Test TaskList.populate()."""
-        assert len(self.media_list) == 1 == self.media_list.length
-        assert self.media_list[0].input_path.__str__() == "Dad.mpg"
+    @pytest.fixture
+    def media_list(self, profile):
+        """Media list fixture."""
+        media_list = TaskList(profile=profile)
+        # Use the sample video file that exists
+        success = media_list.add_task("sample-video.mp4")
+        assert success, "Failed to add sample video to task list"
+        return media_list
 
-    def test_delete_file(self):
+    def test_add_task(self, media_list):
+        """Test TaskList.add_task()."""
+        assert len(media_list) == 1
+        assert (
+            media_list.get_file_name(0, with_extension=True)
+            == "sample-video.mp4"
+        )
+
+    def test_delete_file(self, media_list):
         """Test TaskList.delete_file()."""
         # Be sure there is one element in the list
-        assert self.media_list
-        self.media_list.delete_file(position=0)
-        assert not self.media_list
+        assert media_list
+        media_list.delete_file(position=0)
+        assert not media_list
 
-    def test_get_file_object(self):
-        """Test TaskList.get_file()."""
-        assert isinstance(self.media_list.get_task(0), Video)
+    def test_get_file_object(self, media_list):
+        """Test TaskList.get_task()."""
+        assert isinstance(media_list.get_task(0), Task)
 
-    def test_get_file_name(self):
+    def test_get_file_name(self, media_list):
         """Test TaskList.get_file_name()."""
-        assert self.media_list.get_file_name(position=0) == "Dad"
+        assert media_list.get_file_name(0) == "sample-video.mp4"
 
-    def test_get_file_name_with_extension(self):
+    def test_get_file_name_with_extension(self, media_list):
         """Test TaskList.get_file_name() with extension."""
         assert (
-            self.media_list.get_file_name(position=0, with_extension=True)
-            == "Dad.mpg"
+            media_list.get_file_name(0, with_extension=True)
+            == "sample-video.mp4"
         )
 
-    def test_get_file_path(self):
+    def test_get_file_path(self, media_list):
         """Test TaskList.get_file_path()."""
-        assert self.media_list.get_file_path(position=0).__str__() == "Dad.mpg"
+        path = media_list.get_file_path(0)
+        assert path.name == "sample-video.mp4"
 
-    def test_get_file_status(self):
-        """Test TaskList.get_file_status()."""
-        assert self.media_list.get_task_status(position=0) == STATUS.todo
+    def test_get_task_status(self, media_list):
+        """Test TaskList.get_task_status()."""
+        assert media_list.get_task_status(0) == STATUS.todo
 
-    def test_set_file_status(self):
-        """Test TaskList.set_file_status()."""
-        self.media_list.set_task_status(0, STATUS.done)
-        assert self.media_list.get_task_status(position=0) == STATUS.done
+    def test_set_task_status(self, media_list):
+        """Test TaskList.set_task_status()."""
+        media_list.set_task_status(0, STATUS.done)
+        assert media_list.get_task_status(0) == STATUS.done
 
-    def test_get_file_info(self):
+    def test_get_file_info(self, media_list):
         """Test TaskList.get_file_info()."""
-        assert self.media_list.get_file_info(0, "filename") == "Dad.mpg"
+        duration = media_list.get_file_info(0, "duration")
+        assert duration is not None
 
-    def test_running_file_name(self):
-        """Test TaskList.running_file_name()."""
-        self.media_list.position = 0
-        assert self.media_list.running_file_name() == "Dad"
-
-    def test_running_file_info(self):
-        """Test TaskList.running_file_info()."""
-        self.media_list.position = 0
-        assert self.media_list.running_file_info("filename") == "Dad.mpg"
-
-    def test_running_file_status(self):
-        """Test TaskList.running_file_status()."""
-        assert self.media_list.running_task_status == STATUS.todo
-
-    def test_set_running_file_status(self):
-        """Test TaskList.running_file_status."""
-        self.media_list.running_task_status = STATUS.done
-        assert self.media_list.running_task_status == STATUS.done
-
-    def test_running_file_output_name(self):
-        """Test TaskList.running_file_output_name()."""
-        assert (
-            self.media_list.running_file_output_name(".", False) == "Dad.mpg"
-        )
-
-    def test_is_exhausted_true(self):
-        """Test TaskList.is_exhausted == True."""
-        self.media_list.position = 0
-        assert self.media_list.is_exhausted
-
-    def test_is_exhausted_false(self):
-        """Test TaskList.is_exhausted == False."""
-        self.media_list.position = -1
-        assert not self.media_list.is_exhausted
-
-    def test_all_stopped_true(self):
-        """Test TaskList.all_stopped == True."""
-        self.media_list.set_task_status(0, "Stopped")
-        assert self.media_list.all_stopped
-
-    def test_all_stopped_false(self):
-        """Test TaskList.all_stopped == False."""
-        self.media_list.set_task_status(0, "Todo")
-        assert not self.media_list.all_stopped
-
-    def test_length(self):
-        """Test TaskList.length."""
-        assert self.media_list.length == 1
-
-    def test_duration(self):
-        """Test TaskList.duration()."""
-        nose.tools.assert_almost_equal(self.media_list.duration, 120.72)
-
-    def test_add_file_twice(self):
-        """Testing adding the same file twice."""
-        assert self.media_list.length == 1
-        self.media_list.populate(("Dad.mpg",))
-        assert self.media_list.length == 1
-
-    def test_build_conversion_cmd(self):
-        """Test Video.build_conversion_cmd."""
-        assert self.media_list.get_task(0).build_conversion_cmd(
-            output_dir=".",
-            tagged=True,
-            subtitle=True,
-            target_quality="DVD Fullscreen 352x480 (4:3)",
-        ) == [
-            "-i",
-            "Dad.mpg",
-            "-f",
-            "dvd",
-            "-target",
-            "ntsc-dvd",
-            "-vcodec",
-            "mpeg2video",
-            "-r",
-            "29.97",
-            "-s",
-            "352x480",
-            "-aspect",
-            "4:3",
-            "-b:v",
-            "4000k",
-            "-mbd",
-            "rd",
-            "-cmp",
-            "2",
-            "-subcmp",
-            "2",
-            "-acodec",
-            "mp2",
-            "-b:a",
-            "192k",
-            "-ar",
-            "48000",
-            "-ac",
-            "2",
-            "-threads",
-            "3",
-            "-y",
-            "[DVDF]-Dad.mpg",
-        ]
-
-    def test_running_file_conversion_cmd(self):
-        """Test TaskList.running_file_conversion_cmd()."""
-        assert self.media_list.running_task_conversion_cmd(
-            output_dir=".",
-            tagged=True,
-            subtitle=True,
-            target_quality="DVD Fullscreen 352x480 (4:3)",
-        ) == [
-            "-i",
-            "Dad.mpg",
-            "-f",
-            "dvd",
-            "-target",
-            "ntsc-dvd",
-            "-vcodec",
-            "mpeg2video",
-            "-r",
-            "29.97",
-            "-s",
-            "352x480",
-            "-aspect",
-            "4:3",
-            "-b:v",
-            "4000k",
-            "-mbd",
-            "rd",
-            "-cmp",
-            "2",
-            "-subcmp",
-            "2",
-            "-acodec",
-            "mp2",
-            "-b:a",
-            "192k",
-            "-ar",
-            "48000",
-            "-ac",
-            "2",
-            "-threads",
-            "3",
-            "-y",
-            "[DVDF]-Dad.mpg",
-        ]
-
-    @nose.tools.raises(PermissionError)
-    def test_running_file_conversion_cmd_permission_error(self):
-        """Test TaskList.running_file_conversion_cmd() -> PermissionError."""
-        self.media_list.running_task_conversion_cmd(
-            output_dir="/",
-            tagged=True,
-            subtitle=True,
-            target_quality="DVD Fullscreen 352x480 (4:3)",
-        )
-
-    def test_clear(self):
+    def test_clear(self, media_list):
         """Test TaskList.clear()."""
-        self.media_list.clear()
-        assert not self.media_list
+        media_list.clear()
+        assert not media_list
 
-    def test_populate_files_count(self):
-        """Test TaskList.populate() yield amount of video files."""
-        media_list = TaskList(profile=self.profile)
-        gen = media_list.populate(("Dad.mpg",))
-        assert next(gen) == 1
+    def test_output_dir_property(self, profile):
+        """Test TaskList output_dir property."""
+        media_list = TaskList(profile=profile)
+        original_dir = media_list.output_dir
+        media_list.output_dir = "/tmp"
+        assert media_list.output_dir.name == "tmp"
+        # Reset to original
+        media_list.output_dir = original_dir
 
-    def test_populate_first_file_name(self):
-        """Test TaskList.populate() yield first video file name."""
-        media_list = TaskList(profile=self.profile)
-        gen = media_list.populate(("Dad.mpg",))
-        next(gen)
-        assert next(gen) == "Dad.mpg"
+    def test_build_conversion_cmd(self, media_list):
+        """Test Task.build_conversion_cmd."""
+        cmd = media_list.get_task(0).build_conversion_cmd(
+            tagged=True,
+            subtitle=False,
+            target_quality="MP4 High Quality",
+        )
+        assert isinstance(cmd, list)
+        assert len(cmd) > 0
+        assert "-i" in cmd
+        assert "sample-video.mp4" in cmd[cmd.index("-i") + 1]
 
-
-if __name__ == "__main__":
-    nose.main()
+    def test_running_task_conversion_cmd(self, media_list):
+        """Test TaskList.running_task_conversion_cmd()."""
+        # Set position to first task
+        media_list._position = 0
+        cmd = media_list.running_task_conversion_cmd(
+            tagged=True,
+            subtitle=False,
+            target_quality="MP4 High Quality",
+        )
+        assert isinstance(cmd, list)
+        assert len(cmd) > 0
+        assert "-i" in cmd

@@ -12,19 +12,21 @@ def test_get_locale_all_es() -> None:
 
 def test_which_existing_app() -> None:
     """Test for an existing app."""
-    assert utils.which("dir").endswith("dir")  # Depends on your system
+    result = utils.which("ls")  # ls is available on macOS/Linux
+    assert result is not None
+    assert result.endswith("ls")
 
 
 def test_which_non_existing_app() -> None:
-    """Test for a non existing app (raises a ValueError)."""
-    with pytest.raises(ValueError):
-        utils.which("hypothetical_app")
+    """Test for a non existing app."""
+    result = utils.which("hypothetical_app")
+    assert result is None
 
 
 def test_which_null_arg() -> None:
-    """Test for a null string param (raises a ValueError)."""
-    with pytest.raises(ValueError):
-        utils.which("")
+    """Test for a null string param."""
+    result = utils.which("")
+    assert result is None
 
 
 def test_write_time_none() -> None:

@@ -4,14 +4,14 @@ from os.path import expandvars
 from pathlib import Path
 from sys import prefix
 
-import nose
 from videomorph.converter.vmpath import darwin_paths, linux_paths, win32_paths
 
 
 class TestPaths:
     """Class for testing vmpath.py module."""
 
-    def setup(self):
+    def setup_method(self):
+        """Setup method for each test."""
         self.posix_path = dict(
             apps=Path(prefix, "share", "applications"),
             config=Path(Path.home(), ".videomorph"),
@@ -49,10 +49,4 @@ class TestPaths:
 
     def test_win32_paths(self):
         """Test win32_paths()."""
-        print(self.win32_paths)
-        print(win32_paths())
         assert self.win32_paths == win32_paths()
-
-
-if __name__ == "__main__":
-    nose.main()

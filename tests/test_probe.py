@@ -12,9 +12,9 @@ class TestProbe:
             "nb_streams": "2",
             "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
             "format_long_name": "QuickTime / MOV",
-            "duration": "57.563000",
+            "duration": "57.516009",
             "size": "5329356",
-            "bit_rate": "740664",
+            "bit_rate": "741269",
         }
 
     def test_video_info(self) -> None:

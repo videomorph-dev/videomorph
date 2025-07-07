@@ -1,24 +1,29 @@
 """This module provides tests for profile.py module."""
 
-from typing import Dict, List, Optional
+from typing import Dict, List
+
+import pytest
 
 from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
 
-profile: Optional[Profile] = None
-conv = Library()
 
-
-def setup() -> None:
-    """Function to setup the test."""
-    global profile
+@pytest.fixture
+def profile() -> Profile:
+    """Profile fixture for tests."""
     profile = Profile()
     profile.update(new_quality="MP4 Fullscreen (4:3)")
+    return profile
 
 
-def test_get_xml_profile_attr() -> None:
+@pytest.fixture
+def conv() -> Library:
+    """Library fixture for tests."""
+    return Library()
+
+
+def test_get_xml_profile_attr(profile: Profile) -> None:
     """Test get_xml_profile_attr."""
-    assert profile is not None
     attr = profile.get_xml_profile_attr(
         target_quality="MP4 Fullscreen (4:3)", attr_name="preset_params"
     )
@@ -29,9 +34,8 @@ def test_get_xml_profile_attr() -> None:
     )
 
 
-def test_get_xml_profile_qualities_en() -> None:
+def test_get_xml_profile_qualities_en(profile: Profile) -> None:
     """Test get_xml_profile_qualities -> english."""
-    assert profile is not None
     qualities: Dict[str, List[str]] = profile.get_xml_profile_qualities(
         "en_US"
     )
@@ -44,9 +48,8 @@ def test_get_xml_profile_qualities_en() -> None:
     ]
 
 
-def test_get_xml_profile_qualities_es() -> None:
+def test_get_xml_profile_qualities_es(profile: Profile) -> None:
     """Test get_xml_profile_qualities -> spanish."""
-    assert profile is not None
     qualities: Dict[str, List[str]] = profile.get_xml_profile_qualities(
         "es_ES"
     )
@@ -59,15 +62,13 @@ def test_get_xml_profile_qualities_es() -> None:
     ]
 
 
-def test_quality_tag() -> None:
+def test_quality_tag(profile: Profile) -> None:
     """Test Profile.quality_tag."""
-    assert profile is not None
     assert profile.quality_tag == "[MP4F]-"
 
 
-def test_update() -> None:
+def test_update(profile: Profile) -> None:
     """Test update."""
-    assert profile is not None
     profile.update(new_quality="WMV Generic")
     assert (
         profile.params == "-vcodec wmv2 -acodec wmav2 -b:v 1000k "
