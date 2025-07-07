@@ -1,4 +1,4 @@
-# **<div style="text-align:center;">VideoMorph</div>**
+# **<div style="... multiplataforma, dedicada a la conversión de formatos de video. Existen muchas aplicaciones para estos fines, pero todas de un modo u otro disponen de muchas opciones que pueden resultar complicadas para los usuarios noveles, por eso decidimos concentrar la atención en la tarea principal, facilitar la conversión de sus materiales audiovisuales de una manera intuitiva y fácil. **VideoMorph** se desarrolla con el lenguaje de programación Python 3, la librería de procesamiento multimedia Ffmpeg y PyQt6 para la Interfaz Gráfica de Usuario. Con **VideoMorph** es posible convertir a los formatos de video más empleados en la actualidad, dígase **MP4**, **AVI**, **DVD**, **VCD**, **MOV**, **MPG**, **FLV**, **WEBM**, **OGV**, **WMV**, **MKV**, algunos de ellos listos para usar en redes sociales como **Youtube**, también es posible usar **VideoMorph** para extraer el audio en formatos **MP3** y **OGA**.ext-align:center;">VideoMorph</div>**
 
 <img src="images/logo.png" alt="logo" style="zoom:20%;" />
 

@@ -62,7 +62,7 @@ class TasksListTable(QTableWidget):
     def dragMoveEvent(self, event: Any) -> None:
         """Drag Move Event."""
         if event.mimeData().hasUrls():
-            event.setDropAction(Qt.CopyAction)
+            event.setDropAction(Qt.DropAction.CopyAction)
             event.accept()
         else:
             event.ignore()
@@ -106,7 +106,7 @@ class TargetQualityDelegate(QItemDelegate):
 
     def setEditorData(self, editor: Any, index: Any) -> None:
         """Set Target Quality."""
-        text = index.model().data(index, Qt.DisplayRole)
+        text = index.model().data(index, Qt.ItemDataRole.DisplayRole)
         if index.column() == COLUMNS.QUALITY:
             i = editor.findText(text)
             if i == -1:
@@ -116,7 +116,7 @@ class TargetQualityDelegate(QItemDelegate):
             QItemDelegate.setEditorData(self, editor, index)
 
         self.parent.tasks_table.setEditTriggers(
-            QAbstractItemView.NoEditTriggers
+            QAbstractItemView.EditTrigger.NoEditTriggers
         )
 
     def update(self, editor: Any, index: Any) -> None:
@@ -128,5 +128,5 @@ class TargetQualityDelegate(QItemDelegate):
         self.parent.total_duration = self.parent.task_list.duration
         self.parent.update_ui_when_ready()
         self.parent.tasks_table.setEditTriggers(
-            QAbstractItemView.NoEditTriggers
+            QAbstractItemView.EditTrigger.NoEditTriggers
         )
