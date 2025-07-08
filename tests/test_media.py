@@ -54,7 +54,7 @@ class TestMedia:
 
     def test_get_file_name(self, media_list):
         """Test TaskList.get_file_name()."""
-        assert media_list.get_file_name(0) == "sample-video.mp4"
+        assert media_list.get_file_name(0) == "sample-video"
 
     def test_get_file_name_with_extension(self, media_list):
         """Test TaskList.get_file_name() with extension."""

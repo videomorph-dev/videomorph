@@ -22,10 +22,10 @@ def conv() -> Library:
     return Library()
 
 
-def test_get_xml_profile_attr(profile: Profile) -> None:
-    """Test get_xml_profile_attr."""
-    attr = profile.get_xml_profile_attr(
-        target_quality="MP4 Fullscreen (4:3)", attr_name="preset_params"
+def test_get_json_profile_attr(profile: Profile) -> None:
+    """Test get_json_profile_attr."""
+    attr = profile.get_json_profile_attr(
+        target_quality="MP4 Fullscreen (4:3)", attr_name="params"
     )
 
     assert (
@@ -34,9 +34,9 @@ def test_get_xml_profile_attr(profile: Profile) -> None:
     )
 
 
-def test_get_xml_profile_qualities_en(profile: Profile) -> None:
-    """Test get_xml_profile_qualities -> english."""
-    qualities: Dict[str, List[str]] = profile.get_xml_profile_qualities(
+def test_get_json_profile_qualities_en(profile: Profile) -> None:
+    """Test get_json_profile_qualities -> english."""
+    qualities: Dict[str, List[str]] = profile.get_json_profile_qualities(
         "en_US"
     )
     assert qualities["AVI"] == [
@@ -48,9 +48,9 @@ def test_get_xml_profile_qualities_en(profile: Profile) -> None:
     ]
 
 
-def test_get_xml_profile_qualities_es(profile: Profile) -> None:
-    """Test get_xml_profile_qualities -> spanish."""
-    qualities: Dict[str, List[str]] = profile.get_xml_profile_qualities(
+def test_get_json_profile_qualities_es(profile: Profile) -> None:
+    """Test get_json_profile_qualities -> spanish."""
+    qualities: Dict[str, List[str]] = profile.get_json_profile_qualities(
         "es_ES"
     )
     assert qualities["AVI"] == [
