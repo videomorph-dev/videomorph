@@ -1,7 +1,5 @@
 """This module provides classes for handing platform dependent stuffs."""
 
-import os
-import subprocess
 import webbrowser
 from subprocess import PIPE, Popen
 from sys import platform
@@ -10,16 +8,43 @@ from typing import Any, Optional, Type
 from .utils import which
 
 
+def get_all_subclasses(cls):
+    """Get all subclasses recursively."""
+    all_subclasses = []
+    for subclass in cls.__subclasses__():
+        all_subclasses.append(subclass)
+        all_subclasses.extend(get_all_subclasses(subclass))
+    return all_subclasses
+
+
 def generic_factory(parent_class: Type[Any]) -> Any:
     """Generic factory function."""
-    for concrete_class in parent_class.__subclasses__():
-        if concrete_class.__name__.lower().startswith("_" + platform):
-            return concrete_class()
+    platform_map = {
+        "darwin": "_darwin",
+        "linux": "_linux",
+        "linux2": "_linux",
+        "win32": "_win32",
+    }
+
+    # Get all subclasses recursively
+    all_subclasses = get_all_subclasses(parent_class)
+
+    # Try exact platform match first
+    platform_pattern = platform_map.get(platform)
+    if platform_pattern:
+        for concrete_class in all_subclasses:
+            class_name_lower = concrete_class.__name__.lower()
+            if class_name_lower.startswith(platform_pattern):
+                return concrete_class()
+
+    # Fall back to checking if platform starts with linux
+    if platform.startswith("linux"):
+        for concrete_class in all_subclasses:
+            class_name_lower = concrete_class.__name__.lower()
+            if class_name_lower.startswith("_linux"):
+                return concrete_class()
 
     raise ValueError("No implementation available for {0}".format(platform))
-
-
-# EXTERNAL APP LAUNCHER
 
 
 class _Launcher:
@@ -46,30 +71,24 @@ class _Launcher:
         raise NotImplementedError("Must be implemented in subclasses")
 
 
-class _LinuxLauncher(_Launcher):
-    """Concrete class to implement external apps launcher in Linux."""
+class _UnixLauncher(_Launcher):
+    """Concrete class to implement external apps launcher in Unix-like systems."""
 
     def __init__(self):
-        super(_LinuxLauncher, self).__init__()
+        super(_UnixLauncher, self).__init__()
         self.players = [
             "vlc",
-            "xplayer",
-            "totem",
-            "kmplayer",
-            "smplayer",
-            "mplayer",
-            "banshee",
             "mpv",
-            "gxine",
-            "xine-ui",
-            "gmlive",
-            "dragon",
+            "mplayer",
             "ffplay",
         ]
 
     def open_with_user_app(self, url):
         """Open a file or url with user's preferred app."""
-        if which("xdg-open") is not None:
+        if platform == "darwin":
+            # Use macOS native 'open' command
+            spawn_process(["open", url])
+        elif which("xdg-open") is not None:
             spawn_process([which("xdg-open"), url])
         else:
             player = self._get_player()
@@ -85,72 +104,72 @@ class _LinuxLauncher(_Launcher):
 
     def shutdown_machine(self):
         """Shutdown computer."""
-        spawn_process(["shutdown", "now"])
-
-    def sound_notify(self, sound=None):
-        """Show system notification on Linux."""
-        players = ("paplay", "aplay", "play")
-        for player in (which(p) for p in players):
-            if player is not None:
-                spawn_process([player, sound])
-                break
-
-
-class _DarwinLauncher(_Launcher):
-    """Concrete class to implement external apps launcher in MacOS."""
-
-    def __init__(self):
-        super(_DarwinLauncher, self).__init__()
-        self.players = [
-            "vlc",
-            "xplayer",
-            "totem",
-            "kmplayer",
-            "smplayer",
-            "mplayer",
-            "banshee",
-            "mpv",
-            "gxine",
-            "xine-ui",
-            "gmlive",
-            "dragon",
-            "ffplay",
-        ]
-
-    def open_with_user_app(self, url):
-        """Open a file or url with user's preferred app."""
-        if which("xdg-open") is not None:
-            spawn_process([which("xdg-open"), url])
+        if platform == "darwin":
+            # Use AppleScript for macOS - will show GUI authentication dialog
+            spawn_process(
+                ["osascript", "-e", 'tell application "System Events" to shut down']
+            )
         else:
-            player = self._get_player()
-            spawn_process([which(player), url])
-
-    def _get_player(self):
-        """Return a player from a list of popular players."""
-        for player in self.players:
-            if which(player):
-                return player
-
-        raise FileNotFoundError("Player not found")
-
-    def shutdown_machine(self):
-        """Shutdown computer."""
-        spawn_process(["shutdown", "now"])
+            spawn_process(["shutdown", "now"])
 
     def sound_notify(self, sound=None):
-        """Show system notification on Linux."""
-        players = ("paplay", "aplay", "play")
-        for player in (which(p) for p in players):
-            if player is not None:
-                spawn_process([player, sound])
-                break
+        """Show system notification."""
+
+        def _get_ffplay_command(sound_file):
+            base_cmd = [
+                "ffplay",
+                "-nodisp",
+                "-autoexit",
+                "-loglevel",
+                "quiet",
+            ]
+
+            if sound_file and sound_file.strip():
+                return base_cmd + [sound_file]
+            else:
+                return base_cmd + [
+                    "-f",
+                    "lavfi",
+                    "-i",
+                    "sine=frequency=800:duration=0.3",
+                ]
+
+        if which("ffplay") is not None:
+            import subprocess
+
+            cmd = _get_ffplay_command(sound)
+            try:
+                subprocess.run(cmd, check=False, timeout=10)
+                return
+            except (subprocess.TimeoutExpired, FileNotFoundError):
+                pass
+
+        # Fallback to platform-specific players
+        if platform == "darwin":
+            spawn_process(["osascript", "-e", "beep"])
+        else:
+            spawn_process(["echo", "-e", "\\a"])
+
+
+class _LinuxLauncher(_UnixLauncher):
+    """Linux launcher (inherits from Unix)."""
+
+    pass
+
+
+class _DarwinLauncher(_UnixLauncher):
+    """macOS launcher (inherits from Unix)."""
+
+    pass
 
 
 class _Win32Launcher(_Launcher):
-    """Concrete class to implement external apps launcher in Linux."""
+    """Concrete class to implement external apps launcher in Windows."""
 
     def open_with_user_app(self, url):
         """Open a file or url with user's preferred app."""
+        import os
+
         os.startfile(url)
 
     def shutdown_machine(self):
@@ -159,9 +178,12 @@ class _Win32Launcher(_Launcher):
 
     def sound_notify(self, sound=None):
         """Show system notification."""
-        from winsound import MB_OK, PlaySound
+        try:
+            from winsound import MB_OK, PlaySound
 
-        PlaySound(sound, MB_OK)
+            PlaySound(sound, MB_OK)
+        except ImportError:
+            pass  # winsound not available
 
 
 def launcher_factory():
@@ -169,40 +191,40 @@ def launcher_factory():
     return generic_factory(parent_class=_Launcher)
 
 
-# PROCESSES
-
-
-def spawn_process_linux(cmd):
-    """Return a Popen object on Linux systems."""
-
-    return Popen(
-        cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True
-    )
-
-
-def spawn_process_darwin(cmd):
-    """Return a Popen object on MacOS systems."""
-
-    return spawn_process_linux(cmd)
-
-
-def spawn_process_win32(cmd):
-    """Return a Popen object on Windows systems."""
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
-    startupinfo.wShowWindow = subprocess.SW_HIDE
-
-    return Popen(
-        cmd,
-        stdin=PIPE,
-        stdout=PIPE,
-        stderr=PIPE,
-        shell=True,
-        startupinfo=startupinfo,
-        universal_newlines=True,
-    )
-
-
 def spawn_process(cmd):
-    """Launch processes on different platforms."""
-    return globals()[spawn_process.__name__ + "_" + platform](cmd)
+    """Launch a process with platform-appropriate settings."""
+    if platform == "win32":
+        try:
+            import subprocess
+
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = subprocess.SW_HIDE
+
+            return Popen(
+                cmd,
+                stdin=PIPE,
+                stdout=PIPE,
+                stderr=PIPE,
+                shell=True,
+                startupinfo=startupinfo,
+                universal_newlines=True,
+            )
+        except AttributeError:
+            # Fallback for platforms without Windows-specific subprocess attributes
+            return Popen(
+                cmd,
+                stdin=PIPE,
+                stdout=PIPE,
+                stderr=PIPE,
+                shell=True,
+                universal_newlines=True,
+            )
+    else:  # Unix-like systems (Linux, macOS)
+        return Popen(
+            cmd,
+            stdin=PIPE,
+            stdout=PIPE,
+            stderr=PIPE,
+            universal_newlines=True,
+        )
