@@ -5,7 +5,6 @@ from sys import platform
 
 from videomorph.converter import (
     APP_NAME,
-    CODENAME,
     SYS_PATHS,
     VERSION,
     VM_PATHS,
@@ -33,9 +32,8 @@ VideoMorph isn't for you."""
 
 COMMONS = dict(
     name=APP_NAME.lower(),
-    version=VERSION + "-" + CODENAME.lower(),
-    description="Video Converter based on ffmpeg, "
-    "Python 3 and Qt6, focused on usability.",
+    version=VERSION,
+    description="Video Converter based on ffmpeg, Python, and Qt6.",
     long_description=LONG_DESCRIPTION,
     author="Ozkar L. Garcell",
     author_email="ozkar.garcell@gmail.com",
@@ -78,8 +76,8 @@ LINUX_DATA_FILES = dict(
         (
             SYS_PATHS["profiles"].__str__(),
             [
-                Path(VM_PATHS["profiles"], "default.xml").__str__(),
-                Path(VM_PATHS["profiles"], "customized.xml").__str__(),
+                Path(VM_PATHS["profiles"], "default.json").__str__(),
+                Path(VM_PATHS["profiles"], "customized.json").__str__(),
             ],
         ),
         # Documentation files
@@ -137,8 +135,8 @@ WIN32_DATA_FILES = dict(
         (
             SYS_PATHS["profiles"].__str__(),
             [
-                Path(VM_PATHS["profiles"], "default.xml").__str__(),
-                Path(VM_PATHS["profiles"], "customized.xml").__str__(),
+                Path(VM_PATHS["profiles"], "default.json").__str__(),
+                Path(VM_PATHS["profiles"], "customized.json").__str__(),
             ],
         ),
         # Documentation files
