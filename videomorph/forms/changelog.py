@@ -24,7 +24,7 @@ class ChangelogDialog(QtWidgets.QDialog):
         self.resize(800, 600)
         self.setWindowTitle(APP_NAME + " " + VERSION)
         size_policy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
+            QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum
         )
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
