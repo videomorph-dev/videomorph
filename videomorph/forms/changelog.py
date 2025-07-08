@@ -10,7 +10,6 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from videomorph.converter import (
     APP_NAME,
     BASE_DIR,
-    CODENAME,
     SYS_PATHS,
     VERSION,
 )
@@ -23,15 +22,7 @@ class ChangelogDialog(QtWidgets.QDialog):
         super(ChangelogDialog, self).__init__(parent)
 
         self.resize(800, 600)
-        self.setWindowTitle(
-            APP_NAME
-            + " "
-            + VERSION
-            + " "
-            + CODENAME
-            + " "
-            + self.tr("Changelog")
-        )
+        self.setWindowTitle(APP_NAME + " " + VERSION)
         size_policy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
         )
@@ -46,8 +37,8 @@ class ChangelogDialog(QtWidgets.QDialog):
         font.setPointSize(12)
         self.text_edit.setFont(font)
         self.text_edit.viewport().setProperty(
-            "cursor",
-            QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+            "cursor", QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor)
+        )
         self.text_edit.setReadOnly(True)
         self.horizontal_layout.addWidget(self.text_edit)
         self.text_edit.setAlignment(QtCore.Qt.AlignmentFlag.AlignJustify)

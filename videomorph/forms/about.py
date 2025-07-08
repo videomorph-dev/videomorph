@@ -23,7 +23,6 @@ from PyQt6.QtWidgets import (
 from videomorph.converter import (
     APP_NAME,
     BASE_DIR,
-    CODENAME,
     SYS_PATHS,
     VERSION,
 )
@@ -51,8 +50,8 @@ class AboutVMDialog(QDialog):
             '<p align="center"><span style=" '
             'font-size:20pt; font-weight:600;">{n}</span>'
             '</p><p align="center"><span style=" '
-            'font-size:9pt; font-weight:600;">Version {v} {c}'
-            "</span></p>".format(n=APP_NAME, v=VERSION, c=CODENAME)
+            'font-size:9pt; font-weight:600;">Version {v}'
+            "</span></p>".format(n=APP_NAME, v=VERSION)
         )
         self.label_2.setMinimumSize(QSize(0, 64))
         self.label_2.setMaximumSize(QSize(16777215, 64))
@@ -91,9 +90,7 @@ class AboutVMDialog(QDialog):
         self.vertical_layout_4.addLayout(self.horizontal_layout)
         self.horizontal_layout_3.addLayout(self.vertical_layout_4)
 
-        self.tab_widget.setTabText(
-            self.tab_widget.indexOf(self.tab), self.tr("Info")
-        )
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab), self.tr("Info"))
         self.tab_widget.setTabText(
             self.tab_widget.indexOf(self.tab_2), self.tr("Credits")
         )

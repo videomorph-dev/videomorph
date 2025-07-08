@@ -28,8 +28,7 @@ def get_cpu_cores() -> int:
 
 
 APP_NAME = "VideoMorph"
-CODENAME = "Canelo"
-VERSION = "1.5"
+VERSION = "1.6.0"
 LOCALE = get_locale()
 
 VIDEO_FILTERS = (
@@ -47,7 +46,6 @@ CPU_CORES = get_cpu_cores()
 # Export these for use by other modules
 __all__ = [
     "APP_NAME",
-    "CODENAME",
     "VERSION",
     "LOCALE",
     "VIDEO_FILTERS",
