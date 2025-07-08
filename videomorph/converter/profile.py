@@ -1,19 +1,19 @@
-"""This module provides the Profile class."""
+"""This module provides the Profile class for JSON-based profiles."""
 
+import json
 import re
-import xml.etree.ElementTree as ET
 from collections import OrderedDict, namedtuple
 from os import makedirs
 from os.path import exists, getmtime, getsize
 from os.path import join as join_path
 from shutil import copy2
-from typing import Any, Optional
+from typing import Any, Optional, Dict, List
 
 from . import BASE_DIR, LOCALE, SYS_PATHS, VALID_VIDEO_EXT, VM_PATHS
 from .codec import CodecsReader
 
-XMLFiles = namedtuple("XMLFiles", "default customized")
-XML_FILES = XMLFiles("default.xml", "customized.xml")
+JSONFiles = namedtuple("JSONFiles", "default customized")
+JSON_FILES = JSONFiles("default.json", "customized.json")
 
 
 class Profile:
@@ -21,24 +21,24 @@ class Profile:
 
     def __init__(self) -> None:
         """Class initializer."""
-        self._xml_profile = _XMLProfile()
+        self._json_profile = _JSONProfile()
         self._quality: Optional[str] = None
         self.extension: Optional[str] = None
         self.params: Optional[str] = None
 
     def __getattr__(self, attr: str) -> Any:
-        """Delegate to manage the _XMLProfile object."""
-        return getattr(self._xml_profile, attr)
+        """Delegate to manage the _JSONProfile object."""
+        return getattr(self._json_profile, attr)
 
     def update(self, new_quality):
         """Set the target Quality and other parameters needed to get it."""
         self._quality = new_quality
         # Update the params and extension when the target quality change
-        self.params = self.get_xml_profile_attr(
-            target_quality=self._quality, attr_name="preset_params"
+        self.params = self.get_json_profile_attr(
+            target_quality=self._quality, attr_name="params"
         )
-        self.extension = self.get_xml_profile_attr(
-            target_quality=self._quality, attr_name="preset_extension"
+        self.extension = self.get_json_profile_attr(
+            target_quality=self._quality, attr_name="extension"
         )
 
     @property
@@ -56,77 +56,77 @@ class Profile:
         return "[" + tag + "]-"
 
 
-class _XMLProfile:
-    """Class to manage the xml profiles file."""
+class _JSONProfile:
+    """Class to manage the json profiles file."""
 
     def __init__(
         self,
-        xml_files=XML_FILES,
+        json_files=JSON_FILES,
         base_dir=BASE_DIR,
         sys_path=SYS_PATHS,
         vmpath=VM_PATHS,
         valid_extensions=VALID_VIDEO_EXT,
     ):
         """Class initializer."""
-        self._xml_files = xml_files
+        self._json_files = json_files
         self._base_dir = base_dir
         self._sys_path = sys_path
         self._vmpath = vmpath
         self._valid_ext = valid_extensions
         self._available_codecs = CodecsReader()
 
-        self._create_xml_files()
+        self._create_json_files()
 
-    def get_xml_profile_qualities(self, locale=LOCALE):
+    def get_json_profile_qualities(self, locale=LOCALE) -> OrderedDict:
         """Return a list of available Qualities per conversion profile."""
         qualities_per_profile = OrderedDict()
 
-        for xml_file in self._xml_files:
-            for profile in self._xml_root(xml_file):
+        for json_file in self._json_files:
+            profiles_data = self._load_json_data(json_file)
+            
+            for profile in profiles_data:
                 qualities = self._get_qualities(profile, locale)
 
                 if not qualities:
                     continue
 
-                if profile.get("name") not in qualities_per_profile:
-                    qualities_per_profile[profile.get("name")] = qualities
+                profile_name = profile.get("name")
+                if profile_name not in qualities_per_profile:
+                    qualities_per_profile[profile_name] = qualities
                 else:
-                    qualities_per_profile[profile.get("name")] += qualities
+                    qualities_per_profile[profile_name] += qualities
 
         return qualities_per_profile
 
-    def _get_qualities(self, profile, locale=LOCALE):
+    def _get_qualities(self, profile: Dict, locale=LOCALE) -> List[str]:
+        """Extract quality names from profile presets."""
         qualities = []
-        for preset in profile:
-            if self._codecs_are_available(preset[1].text):
+        for preset in profile.get("presets", []):
+            if self._codecs_are_available(preset.get("params", "")):
                 if locale == "es_ES":
-                    qualities.append(preset[3].text)
+                    qualities.append(preset.get("name_es", ""))
                 else:
-                    qualities.append(preset[0].text)
+                    qualities.append(preset.get("name_en", ""))
         return qualities
 
-    def get_xml_profile_attr(self, target_quality, attr_name="preset_params"):
+    def get_json_profile_attr(self, target_quality: str, attr_name: str = "params") -> str:
         """Return a param of Profile."""
-        param_map = {
-            "preset_name_en": 0,
-            "preset_params": 1,
-            "preset_extension": 2,
-            "preset_name_es": 3,
-        }
-
-        for xml_file in self._xml_files:
-            for profile in self._xml_root(xml_file):
-                for preset in profile:
+        for json_file in self._json_files:
+            profiles_data = self._load_json_data(json_file)
+            
+            for profile in profiles_data:
+                for preset in profile.get("presets", []):
                     if (
-                        preset[0].text == target_quality
-                        or preset[3].text == target_quality
+                        preset.get("name_en") == target_quality
+                        or preset.get("name_es") == target_quality
                     ):
-                        return preset[param_map[attr_name]].text
+                        return preset.get(attr_name, "")
 
-        raise ValueError("Wrong quality or param.")
+        raise ValueError(f"Wrong quality '{target_quality}' or param '{attr_name}'.")
 
     @staticmethod
-    def _get_preset_codecs(params):
+    def _get_preset_codecs(params: str):
+        """Extract codec information from ffmpeg parameters."""
         acodec_regex = re.compile(r"-acodec\s+([^ ]+)")
         vcodec_regex = re.compile(r"-vcodec\s+([^ ]+)")
         scodec_regex = re.compile(r"-scodec\s+([^ ]+)")
@@ -135,7 +135,6 @@ class _XMLProfile:
             result = regex.findall(params)
             if result:
                 return result[0]
-
             return None
 
         Codecs = namedtuple("Codecs", ["acodec", "vcodec", "scodec"])
@@ -144,7 +143,8 @@ class _XMLProfile:
             codec(acodec_regex), codec(vcodec_regex), codec(scodec_regex)
         )
 
-    def _codecs_are_available(self, params):
+    def _codecs_are_available(self, params: str) -> bool:
+        """Check if all codecs in params are available in the system."""
         preset_codecs = self._get_preset_codecs(params)
         vcodec = acodec = scodec = True
 
@@ -173,75 +173,81 @@ class _XMLProfile:
 
     def restore_default_profiles(self):
         """Restore default profiles."""
-        for xml_file in self._xml_files:
-            self._copy_xml_file(file_name=xml_file)
+        for json_file in self._json_files:
+            self._copy_json_file(file_name=json_file)
 
-    def _user_xml_file_path(self, file_name):
+    def _user_json_file_path(self, file_name: str) -> str:
         """Return the path to the profiles file."""
-        return join_path(self._user_xml_files_directory(), file_name)
+        return join_path(self._user_json_files_directory(), file_name)
 
-    def _create_xml_files(self):
-        """Create a xml file with the conversion profiles."""
-        makedirs(self._user_xml_files_directory(), exist_ok=True)
+    def _create_json_files(self):
+        """Create a json file with the conversion profiles."""
+        makedirs(self._user_json_files_directory(), exist_ok=True)
 
-        for xml_file in self._xml_files:
-            if not self._xml_file_is_correct(xml_file):
-                self._copy_xml_file(file_name=xml_file)
+        for json_file in self._json_files:
+            if not self._json_file_is_correct(json_file):
+                self._copy_json_file(file_name=json_file)
 
-    def _copy_xml_file(self, file_name):
-        """Copy profiles xml file."""
-        xml_file_sys_path = self._sys_xml_file_path(file_name)
-        xml_file_user_path = self._user_xml_file_path(file_name)
+    def _copy_json_file(self, file_name: str):
+        """Copy profiles json file."""
+        json_file_sys_path = self._sys_json_file_path(file_name)
+        json_file_user_path = self._user_json_file_path(file_name)
 
-        copy2(src=xml_file_sys_path, dst=xml_file_user_path)
+        copy2(src=json_file_sys_path, dst=json_file_user_path)
 
-    def _xml_file_is_correct(self, file_name):
-        """Validate xml files in user config directory."""
-        xml_file_user_path = self._user_xml_file_path(file_name)
-        xml_file_sys_path = self._sys_xml_file_path(file_name)
+    def _json_file_is_correct(self, file_name: str) -> bool:
+        """Validate json files in user config directory."""
+        json_file_user_path = self._user_json_file_path(file_name)
+        json_file_sys_path = self._sys_json_file_path(file_name)
 
-        if not exists(xml_file_user_path) or not getsize(xml_file_user_path):
+        if not exists(json_file_user_path) or not getsize(json_file_user_path):
             return False
 
-        if getmtime(xml_file_sys_path) > getmtime(xml_file_user_path):
+        if getmtime(json_file_sys_path) > getmtime(json_file_user_path):
             return False
 
         return True
 
-    def _xml_root(self, xml_file_name):
-        """Return the xml root."""
-        path = self._user_xml_file_path(file_name=xml_file_name)
+    def _load_json_data(self, json_file_name: str) -> List[Dict]:
+        """Load and validate JSON data from file."""
+        path = self._user_json_file_path(file_name=json_file_name)
         try:
-            tree = ET.parse(path)
-            self._validate_xml(tree.getroot())
-        except (ET.ParseError, AssertionError):
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            self._validate_json(data)
+            return data
+        except (json.JSONDecodeError, AssertionError, FileNotFoundError) as e:
+            print(f"Error loading JSON file {path}: {e}")
             self.restore_default_profiles()
-            tree = ET.parse(path)
-
-        return tree.getroot()
+            # Try again after restoring defaults
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return data
 
     @staticmethod
-    def _validate_xml(xml_root):
-        """Validate xml profiles."""
-        assert xml_root.tag == "videomorph", "videomorph"
+    def _validate_json(profiles_data: List[Dict]):
+        """Validate json profiles structure."""
+        assert isinstance(profiles_data, list), "Root must be an array"
 
-        for profile in xml_root:
-            assert profile.tag == "profile", "profile"
-            assert "name" in profile.attrib, "name"
-            for preset in profile:
-                assert preset.tag == "preset", "preset"
-                assert preset[0].tag == "preset_name_en", "preset_name_en"
-                assert preset[1].tag == "preset_params", "preset_params"
-                assert preset[2].tag == "preset_extension", "preset_extension"
-                assert preset[3].tag == "preset_name_es", "preset_name_es"
-                assert len(preset) == 4, "fields"
+        for profile in profiles_data:
+            assert isinstance(profile, dict), "Profile must be an object"
+            assert "name" in profile, "Profile must have 'name'"
+            assert "presets" in profile, "Profile must have 'presets'"
+            assert isinstance(profile["presets"], list), "Presets must be an array"
+            
+            for preset in profile["presets"]:
+                assert isinstance(preset, dict), "Preset must be an object"
+                required_fields = ["name_en", "params", "extension", "name_es"]
+                for field in required_fields:
+                    assert field in preset, f"Preset must have '{field}'"
+                    assert isinstance(preset[field], str), f"'{field}' must be a string"
 
-    def _user_xml_files_directory(self):
-        """Return the user xml directory path."""
+    def _user_json_files_directory(self) -> str:
+        """Return the user json directory path."""
         return join_path(self._sys_path["config"], "profiles")
 
-    def _sys_xml_file_path(self, file_name):
-        """Return the path to xml profiles file in the system."""
+    def _sys_json_file_path(self, file_name: str) -> str:
+        """Return the path to json profiles file in the system."""
         file_path = join_path(self._sys_path["profiles"], file_name)
         if exists(file_path):
             # if VideoMorph is installed

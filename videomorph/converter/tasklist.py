@@ -58,7 +58,9 @@ class TaskList(list):
         """Return a file object."""
         return self[position]
 
-    def get_file_name(self, position: int, with_extension: bool = True) -> str:
+    def get_file_name(
+        self, position: int, with_extension: bool = False
+    ) -> str:
         """Return the name of a video file."""
         return self[position].video.get_name(with_extension)
 

@@ -1,0 +1,386 @@
+[
+  {
+    "name": "AVI",
+    "presets": [
+          {
+            "name_en": "MS Compatible 640x480",
+            "params": "-acodec libmp3lame -vcodec msmpeg4 -b:a 192k -b:v 1000k -s 640x480 -ar 44100",
+            "extension": ".avi",
+            "name_es": "Compatible MS 640x480"
+          },
+          {
+            "name_en": "MS Compatible 720x480",
+            "params": "-acodec libmp3lame -vcodec msmpeg4 -b:a 192k -b:v 1000k -s 720x480 -ar 44100",
+            "extension": ".avi",
+            "name_es": "Compatible MS 720x480"
+          },
+          {
+            "name_en": "XVID Fullscreen 640x480 (4:3)",
+            "params": "-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 640x480 -aspect 4:3 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2",
+            "extension": ".avi",
+            "name_es": "XVID Pantalla Completa 640x480 (4:3)"
+          },
+          {
+            "name_en": "XVID Widescreen 704x384 (16:9)",
+            "params": "-f avi -r 29.97 -vcodec libxvid -vtag XVID -s 704x384 -aspect 16:9 -maxrate 1800k -b:v 1500k -qmin 3 -qmax 5 -bufsize 4096 -mbd 2 -bf 2 -flags +4m -cmp 2 -subcmp 2 -g 300 -acodec libmp3lame -ar 48000 -b:a 128k -ac 2",
+            "extension": ".avi",
+            "name_es": "XVID Pantalla Panorámica 704x384 (16:9)"
+          },
+          {
+            "name_en": "AVI Optimized for YouTube",
+            "params": "-c:v libx264 -preset slow -profile:v high -crf 18 -coder 1 -pix_fmt yuv420p -movflags +faststart -g 30 -bf 2 -c:a aac -b:a 384k -profile:a aac_low",
+            "extension": ".avi",
+            "name_es": "AVI Optimizado para YouTube"
+          }
+        ]
+      },
+      {
+        "name": "DVD",
+        "presets": [
+          {
+            "name_en": "DVD NTSC Fullscreen 352x480 (4:3)",
+            "params": "-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 4:3 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2",
+            "extension": ".mpg",
+            "name_es": "DVD NTSC Pantalla Completa 352x480 (4:3)"
+          },
+          {
+            "name_en": "DVD Fullscreen 352x480 (4:3)",
+            "params": "-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 4:3 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2",
+            "extension": ".mpg",
+            "name_es": "DVD Pantalla Completa 352x480 (4:3)"
+          },
+          {
+            "name_en": "DVD NTSC Widescreen 352x480 (16:9)",
+            "params": "-f dvd -target ntsc-dvd -vcodec mpeg2video -r 29.97 -s 352x480 -aspect 16:9 -b:v 4000k -mbd rd -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2",
+            "extension": ".mpg",
+            "name_es": "DVD NTSC Pantalla Panorámica 352x480 (16:9)"
+          },
+          {
+            "name_en": "DVD NTSC Fullscreen 720x480 (4:3) High Quality",
+            "params": "-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 4:3 -b:v 8000k -mbd rd -cmp 0 -subcmp 2",
+            "extension": ".mpg",
+            "name_es": "DVD NTSC Pantalla Completa 720x480 (4:3) Alta Calidad"
+          },
+          {
+            "name_en": "DVD NTSC Widescreen 720x480 (16:9) High Quality",
+            "params": "-f dvd -target ntsc-dvd -r 29.97 -s 720x480 -aspect 16:9 -b:v 8000k -g 12 -mbd rd -cmp 0 -subcmp 2",
+            "extension": ".mpg",
+            "name_es": "DVD NTSC Pantalla Panorámica 720x480 (16:9) Alta Calidad"
+          },
+          {
+            "name_en": "DVD NTSC Low Quality 720x480",
+            "params": "-f dvd -target ntsc-dvd -b:v 5000k -r 29.97 -s 720x480 -ar 48000 -b:a 384k",
+            "extension": ".mpg",
+            "name_es": "DVD Baja Calidad 720x480"
+          },
+          {
+            "name_en": "DVD PAL Fullscreen",
+            "params": "-f dvd -vcodec mpeg2video -r 25.00 -aspect 4:3 -b:v 4000k -mbd rd -trellis 1 -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2",
+            "extension": ".mpg",
+            "name_es": "DVD PAL Pantalla Completa"
+          },
+          {
+            "name_en": "DVD PAL Widescreen",
+            "params": "-f dvd -vcodec mpeg2video -r 25.00 -aspect 16:9 -b:v 4000k -mbd rd -trellis 1 -cmp 2 -subcmp 2 -acodec mp2 -b:a 192k -ar 48000 -ac 2",
+            "extension": ".mpg",
+            "name_es": "DVD PAL Pantalla Panorámica"
+          },
+          {
+            "name_en": "PAL DVD HQ Fullscreen",
+            "params": "-f dvd -target pal-dvd -aspect 4:3 -vb 8000k -mbd rd -trellis 1 -cmp 0 -subcmp 2",
+            "extension": ".mpg",
+            "name_es": "PAL DVD HQ Pantalla Completa"
+          },
+          {
+            "name_en": "PAL DVD HQ Widescreen",
+            "params": "-f dvd -target pal-dvd -aspect 16:9 -vb 8000k -mbd rd -trellis 1 -cmp 0 -subcmp 2",
+            "extension": ".mpg",
+            "name_es": "PAL DVD HQ Pantalla Panorámica"
+          }
+        ]
+      },
+      {
+        "name": "FLV",
+        "presets": [
+          {
+            "name_en": "FLV Fullscreen 320x240 (4:3)",
+            "params": "-vcodec flv -f flv -r 29.97 -s 320x240 -aspect 4:3 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -ac 1 -ar 22050 -b:a 56k",
+            "extension": ".flv",
+            "name_es": "FLV Pantalla Completa 320x240 (4:3)"
+          },
+          {
+            "name_en": "FLV Widescreen 320x180 (16:9)",
+            "params": "-vcodec flv -f flv -r 29.97 -s 320x180 -aspect 16:9 -b:v 300k -g 160 -cmp dct -subcmp dct -mbd 2 -ac 1 -ar 22050 -b:a 56k",
+            "extension": ".flv",
+            "name_es": "FLV Pantalla Panorámica 320x180 (16:9)"
+          }
+        ]
+      },
+      {
+        "name": "MOV",
+        "presets": [
+          {
+            "name_en": "MOV Generic",
+            "params": "-acodec aac -vcodec libx264 -f mov",
+            "extension": ".mov",
+            "name_es": "MOV Genérico"
+          },
+          {
+            "name_en": "QuickTime H.264 High quality",
+            "params": "-crf 35.0 -vcodec libx264 -acodec aac -ar 48000 -ab 128k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1",
+            "extension": ".mov",
+            "name_es": "QuickTime H.264 Alta Calidad"
+          },
+          {
+            "name_en": "QuickTime H.264 Very High Quality",
+            "params": "-crf 25.0 -vcodec libx264 -acodec aac -ar 48000 -ab 160k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1",
+            "extension": ".mov",
+            "name_es": "QuickTime H.264 Muy Alta Calidad"
+          },
+          {
+            "name_en": "MOV Optimized for YouTube",
+            "params": "-crf 25.0 -vcodec libx264 -acodec aac -ar 48000 -ab 160k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1",
+            "extension": ".mov",
+            "name_es": "MOV Optimizado para YouTube"
+          }
+        ]
+      },
+      {
+        "name": "MP4",
+        "presets": [
+          {
+            "name_en": "MP4 High Quality",
+            "params": "-crf 35.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 128k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2",
+            "extension": ".mp4",
+            "name_es": "MP4 Alta Calidad"
+          },
+          {
+            "name_en": "MP4 Very High Quality",
+            "params": "-crf 25.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 160k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2",
+            "extension": ".mp4",
+            "name_es": "MP4 Muy Alta Calidad"
+          },
+          {
+            "name_en": "MP4 Super High Quality",
+            "params": "-crf 15.0 -vcodec libx264 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2",
+            "extension": ".mp4",
+            "name_es": "MP4 Súper Alta Calidad"
+          },
+          {
+            "name_en": "MP4 Fullscreen (4:3)",
+            "params": "-f mp4 -r 29.97 -vcodec libx264 -s 640x480 -b:v 1000k -aspect 4:3 -flags +loop -cmp +chroma -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2",
+            "extension": ".mp4",
+            "name_es": "MP4 Pantalla Completa (4:3)"
+          },
+          {
+            "name_en": "MP4 Widescreen (16:9)",
+            "params": "-f mp4 -r 29.97 -vcodec libx264 -s 704x384 -b:v 1000k -aspect 16:9 -flags +loop -cmp +chroma -maxrate 1500k -bufsize 4M -bt 256k -refs 1 -bf 3 -coder 1 -me_method umh -me_range 16 -subq 7 -partitions +parti4x4+parti8x8+partp8x8+partb8x8 -g 250 -keyint_min 25 -level 30 -qmin 10 -qmax 51 -qcomp 0.6 -trellis 2 -sc_threshold 40 -i_qfactor 0.71 -acodec aac -b:a 112k -ar 48000 -ac 2 -strict -2",
+            "extension": ".mp4",
+            "name_es": "MP4 Pantalla Panorámica (16:9)"
+          },
+          {
+            "name_en": "MP4 H.265 Fullscreen (4:3) High Compression",
+            "params": "-c:v libx265 -preset medium -crf 28 -s 640x480 -c:a aac -b:a 128k -aspect 4:3 -strict -2",
+            "extension": ".mp4",
+            "name_es": "MP4 H.265 Pantalla Completa (4:3) Alta Compresión"
+          },
+          {
+            "name_en": "MP4 H.265 Widescreen (16:9) High Compression",
+            "params": "-c:v libx265 -preset medium -crf 28 -s 704x384 -c:a aac -b:a 128k -aspect 16:9 -strict -2",
+            "extension": ".mp4",
+            "name_es": "MP4 H.265 Pantalla Panorámica (16:9) Alta Compresión"
+          },
+          {
+            "name_en": "MP4 H.265 Not Resizing High Compression",
+            "params": "-c:v libx265 -preset medium -crf 28  -c:a aac -b:a 128k -strict -2",
+            "extension": ".mp4",
+            "name_es": "MP4 H.265 Sin Redimensionar Alta Compresión"
+          },
+          {
+            "name_en": "MP4 Optimized for YouTube",
+            "params": "-c:v libx265 -preset medium -crf 28  -c:a aac -b:a 128k -strict -2",
+            "extension": ".mp4",
+            "name_es": "MP4 Optimizado para YouTube"
+          }
+        ]
+      },
+      {
+        "name": "VCD",
+        "presets": [
+          {
+            "name_en": "NTSC VCD High Quality",
+            "params": "-f vcd -target ntsc-vcd -mbd rd -cmp 0 -subcmp 2",
+            "extension": ".mpg",
+            "name_es": "VCD Alta Calidad"
+          },
+          {
+            "name_en": "PAL VCD High Quality",
+            "params": "-f vcd -target pal-vcd -mbd rd -trellis 1 -cmp 0 -subcmp 2",
+            "extension": ".mpg",
+            "name_es": "PAL VCD Alta Calidad"
+          }
+        ]
+      },
+      {
+        "name": "WEBM",
+        "presets": [
+          {
+            "name_en": "WEBM VP8 Fullscreen (4:3)",
+            "params": "-f webm -aspect 4:3 -vcodec libvpx -g 120 -level 216 -profile:v 0 -qmax 42 -qmin 10 -rc_buf_aggressivity 0.95 -vb 2M -acodec libvorbis -aq 90 -ac 2",
+            "extension": ".webm",
+            "name_es": "WEBM VP8 Pantalla Completa (4:3)"
+          },
+          {
+            "name_en": "WEBM VP8 Widescreen (16:9)",
+            "params": "-f webm -aspect 16:9 -vcodec libvpx -g 120 -level 216 -profile:v 0 -qmax 42 -qmin 10 -rc_buf_aggressivity 0.95 -vb 2M -acodec libvorbis -aq 90 -ac 2",
+            "extension": ".webm",
+            "name_es": "WEBM VP8 Pantalla Panorámica (16:9)"
+          },
+          {
+            "name_en": "WEBM VP9 Fullscreen (4:3)",
+            "params": "-f webm -aspect 4:3 -vcodec libvpx-vp9 -b:v 1M -acodec libvorbis",
+            "extension": ".webm",
+            "name_es": "WEBM VP9 Pantalla Completa (4:3)"
+          },
+          {
+            "name_en": "WEBM VP9 Widescreen (16:9)",
+            "params": "-f webm -aspect 16:9 -vcodec libvpx-vp9 -b:v 1M -acodec libvorbis",
+            "extension": ".webm",
+            "name_es": "WEBM VP9 Pantalla Panorámica (16:9)"
+          }
+        ]
+      },
+      {
+        "name": "WMV",
+        "presets": [
+          {
+            "name_en": "WMV Generic",
+            "params": "-vcodec wmv2 -acodec wmav2 -b:v 1000k -b:a 160k -r 25",
+            "extension": ".wmv",
+            "name_es": "WMV Genérico"
+          },
+          {
+            "name_en": "WMV for Web Use",
+            "params": "-vcodec wmv2 -acodec wmav2 -b:v 640k -b:a 128k -r 29.97 -ac 2",
+            "extension": ".wmv",
+            "name_es": "WMV para Uso en la Web"
+          },
+          {
+            "name_en": "WMV Xbox 360",
+            "params": "-vcodec wmv2 -acodec wmav2 -b:v 1200k -b:a 160k -r 25 -ac 2",
+            "extension": ".wmv",
+            "name_es": "WMV Xbox 360"
+          },
+          {
+            "name_en": "WMV Zune",
+            "params": "-vcodec wmv2 -acodec wmav2 -b:v 640k -b:a 128k -r 23.97 -ac 2",
+            "extension": ".wmv",
+            "name_es": "WMV Zune"
+          },
+          {
+            "name_en": "WMV Power Point",
+            "params": "-vcodec wmv2 -acodec wmav2 -aspect 4:3 -b:v 500k -b:a 32k -ac 1 -ar 22050 -ac 2",
+            "extension": ".wmv",
+            "name_es": "WMV Power Point"
+          }
+        ]
+      },
+      {
+        "name": "OGV",
+        "presets": [
+          {
+            "name_en": "OGV Generic",
+            "params": "-c:v libtheora -q:v 7 -c:a libvorbis -q:a 4",
+            "extension": ".ogv",
+            "name_es": "OGV Genérico"
+          }
+        ]
+      },
+      {
+        "name": "MKV",
+        "presets": [
+          {
+            "name_en": "MKV VP8",
+            "params": "-crf 15.0 -f matroska -b:v 8000k -r 25 -vcodec vp8 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2",
+            "extension": ".mkv",
+            "name_es": "MKV VP8"
+          },
+          {
+            "name_en": "MKV VP9",
+            "params": "-crf 15.0 -f matroska -b:v 8000k -r 25 -vcodec vp9 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2",
+            "extension": ".mkv",
+            "name_es": "MKV VP9"
+          },
+          {
+            "name_en": "MKV MPEG4",
+            "params": "-crf 15.0 -f matroska -b:v 8000k -r 25 -vcodec vp9 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2",
+            "extension": ".mkv",
+            "name_es": "MKV MPEG4"
+          },
+          {
+            "name_en": "MKV H265",
+            "params": "-crf 15.0 -f matroska -b:v 8000k -r 25 -vcodec libx265 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2",
+            "extension": ".mkv",
+            "name_es": "MKV H265"
+          },
+          {
+            "name_en": "MKV Optimized for YouTube",
+            "params": "-crf 15.0 -f matroska -b:v 8000k -r 25 -vcodec libx265 -acodec aac -ar 48000 -b:a 192k -coder 1 -flags +loop -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -me_method hex -subq 6 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -b_strategy 1 -strict -2",
+            "extension": ".mkv",
+            "name_es": "MKV Optimizado para YouTube"
+          },
+          {
+            "name_en": "MKV High Compression",
+            "params": "-strict strict -map 0 -q:v 2 -vcodec libx265 -preset slow -s 1280:720",
+            "extension": ".mkv",
+            "name_es": "High Compression"
+          }
+        ]
+      },
+      {
+        "name": "MP3",
+        "presets": [
+          {
+            "name_en": "Extract Audio mp3",
+            "params": "-q:a 0 -map a",
+            "extension": ".mp3",
+            "name_es": "Extraer Audio mp3"
+          },
+          {
+            "name_en": "MP3 Good Quality (160 Kbps)",
+            "params": "-acodec libmp3lame -ab 160k -ac 2 -ar 44100 -vn",
+            "extension": ".mp3",
+            "name_es": "MP3 Buena Calidad (160 Kbps)"
+          },
+          {
+            "name_en": "MP3 High Quality (192 Kbps)",
+            "params": "-acodec libmp3lame -ab 192k -ac 2 -ar 44100 -vn",
+            "extension": ".mp3",
+            "name_es": "MP3 Alta Calidad (192 Kbps)"
+          },
+          {
+            "name_en": "Optimized MP3",
+            "params": "-c:a libmp3lame -joint_stereo 1 -abr 1 -b:a 128k -vn",
+            "extension": ".mp3",
+            "name_es": "MP3 Optimizado"
+          }
+        ]
+      },
+      {
+        "name": "OGA",
+        "presets": [
+          {
+            "name_en": "OGA (libvorbis)",
+            "params": "-acodec libvorbis -vn -ac 2",
+            "extension": ".oga",
+            "name_es": "OGA (libvorbis)"
+          },
+          {
+            "name_en": "OGA Mono (libvorbis)",
+            "params": "-acodec libvorbis -vn -ac 2",
+            "extension": ".oga",
+            "name_es": "OGA Mono (libvorbis)"
+          }
+        ]
+      }
+]
