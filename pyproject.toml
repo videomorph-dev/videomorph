@@ -1,2 +1,13 @@
-[tool.black]
-line-length = 79
+[project]
+name = "videomorph"
+version = "1.6.0"
+description = "Video Converter based on ffmpeg, Python, and Qt6"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-qt>=4.5.0",
+]
