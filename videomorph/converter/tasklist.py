@@ -110,9 +110,13 @@ class TaskList(list):
         """Return the output name."""
         return self._running_task.get_output_file_name(tagged)
 
-    def delete_running_file_output(self, tagged: bool) -> None:
-        """Delete output file."""
-        self._running_task.delete_output(tagged)
+    def delete_running_file_output(self, tagged: bool) -> bool:
+        """Delete output file.
+        
+        Returns:
+            True if file was deleted or didn't exist, False if deletion failed.
+        """
+        return self._running_task.delete_output(tagged)
 
     def delete_running_file_input(self) -> None:
         """Delete input file."""

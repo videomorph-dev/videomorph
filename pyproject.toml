@@ -1,12 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "videomorph"
 version = "1.6.0"
 description = "Video Converter based on ffmpeg, Python, and Qt6"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.9"
 dependencies = [
     "pyqt6>=6.9.1",
 ]
+
+[project.scripts]
+videomorph = "videomorph.main:main"
 
 [dependency-groups]
 dev = [

@@ -714,9 +714,20 @@ class VideoMorphMW(QMainWindow):
                 )
                 self.library.kill_converter()
                 self.library.close_converter()
-                self.task_list.delete_running_file_output(
+                if not self.task_list.delete_running_file_output(
                     tagged=self.tag_chb.isChecked()
-                )
+                ):
+                    output_path = self.task_list.get_task(self.task_list.position).get_output_path(
+                        tagged=self.tag_chb.isChecked()
+                    )
+                    self._show_message_box(
+                        type_=QMessageBox.Icon.Warning,
+                        title=self.tr("Warning!"),
+                        msg=self.tr(
+                            "Could not delete the output file:\n{0}\n\n"
+                            "The file may be in use by another application."
+                        ).format(output_path),
+                    )
                 # Save settings
                 self._write_app_settings()
                 QCoreApplication.exit(0)
@@ -783,11 +794,13 @@ class VideoMorphMW(QMainWindow):
         for i, file in enumerate(files):
             progress_dlg.setLabelText(self.tr("Adding Video: ") + file)
             progress_dlg.setValue(i)
+            QApplication.processEvents()  # Keep UI responsive during I/O
 
             if progress_dlg.wasCanceled():
                 break
 
             self.add_task(file)
+            QApplication.processEvents()  # Process events after each file
 
         progress_dlg.setValue(max_value)
         progress_dlg.close()
@@ -1042,7 +1055,18 @@ class VideoMorphMW(QMainWindow):
             self.tr("Stopped!")
         )
         # Delete the file when conversion is stopped by the user
-        self.task_list.delete_running_file_output(tagged=self.tag_chb.isChecked())
+        if not self.task_list.delete_running_file_output(tagged=self.tag_chb.isChecked()):
+            output_path = self.task_list.get_task(self.task_list.position).get_output_path(
+                tagged=self.tag_chb.isChecked()
+            )
+            self._show_message_box(
+                type_=QMessageBox.Icon.Warning,
+                title=self.tr("Warning!"),
+                msg=self.tr(
+                    "Could not delete the output file:\n{0}\n\n"
+                    "The file may be in use by another application."
+                ).format(output_path),
+            )
         # Update the list duration and partial time for total progress bar
         self.library.timer.reset_progress_times()
         self.task_list_duration = self.task_list.duration()
@@ -1051,7 +1075,18 @@ class VideoMorphMW(QMainWindow):
         """Stop the conversion process for all the files in list."""
         # Delete the file when conversion is stopped by the user
         self.library.stop_converter()
-        self.task_list.delete_running_file_output(tagged=self.tag_chb.isChecked())
+        if not self.task_list.delete_running_file_output(tagged=self.tag_chb.isChecked()):
+            output_path = self.task_list.get_task(self.task_list.position).get_output_path(
+                tagged=self.tag_chb.isChecked()
+            )
+            self._show_message_box(
+                type_=QMessageBox.Icon.Warning,
+                title=self.tr("Warning!"),
+                msg=self.tr(
+                    "Could not delete the output file:\n{0}\n\n"
+                    "The file may be in use by another application."
+                ).format(output_path),
+            )
         for media_file in self.task_list:
             # Set Video.status attribute
             if media_file.status != STATUS.done:

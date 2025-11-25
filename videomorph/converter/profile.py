@@ -73,9 +73,16 @@ class _JSONProfile:
         self._sys_path = sys_path
         self._vmpath = vmpath
         self._valid_ext = valid_extensions
-        self._available_codecs = CodecsReader()
+        self._codecs_reader = None  # Lazy initialization
 
         self._create_json_files()
+    
+    @property
+    def _available_codecs(self):
+        """Lazy-load codecs only when needed."""
+        if self._codecs_reader is None:
+            self._codecs_reader = CodecsReader()
+        return self._codecs_reader
 
     def get_json_profile_qualities(self, locale=LOCALE) -> OrderedDict:
         """Return a list of available Qualities per conversion profile."""

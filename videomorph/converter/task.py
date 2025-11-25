@@ -1,6 +1,7 @@
 """This module provides Conversion Task Class."""
 
 import shlex
+import time
 from os import W_OK, access
 from pathlib import Path
 from typing import List, Union
@@ -8,6 +9,9 @@ from typing import List, Union
 from . import CPU_CORES, STATUS
 from .profile import Profile
 from .video import Video
+
+_DELETE_RETRY_ATTEMPTS = 3
+_DELETE_RETRY_DELAY = 0.2  # seconds
 
 
 class Task:
@@ -52,17 +56,27 @@ class Task:
 
         return cmd
 
-    def delete_output(self, tagged: bool) -> None:
-        """Delete the output file if conversion is stopped."""
-        while True:
+    def delete_output(self, tagged: bool) -> bool:
+        """Delete the output file if conversion is stopped.
+
+        Returns:
+            True if file was deleted or didn't exist, False if deletion failed.
+        """
+        output_path = self._get_output_path(tagged)
+
+        for attempt in range(_DELETE_RETRY_ATTEMPTS):
             try:
-                output_path = self._get_output_path(tagged)
                 output_path.unlink()
-                break
+                return True
             except FileNotFoundError:
-                break
+                return True  # File doesn't exist, consider it "deleted"
             except PermissionError:
-                continue
+                if attempt + 1 == _DELETE_RETRY_ATTEMPTS:
+                    # File is locked/in use - failed after all retries
+                    return False
+                time.sleep(_DELETE_RETRY_DELAY)
+
+        return False  # Should never reach here, but safety fallback
 
     def delete_input(self) -> None:
         """Delete the input file (and subtitle) when conversion is finished."""
@@ -89,9 +103,7 @@ class Task:
         """Return the the output file path as pathlib.Path."""
         tag = self.profile.quality_tag if tagged else ""
         extension = self.profile.extension or ".mp4"
-        output_file_name = "".join(
-            (tag, self.video.get_name(False), extension)
-        )
+        output_file_name = "".join((tag, self.video.get_name(False), extension))
         return Path(self.output_dir, output_file_name)
 
     @property
