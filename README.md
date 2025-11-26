@@ -9,28 +9,28 @@
 
 VideoMorph is a video converter, just that. Consists on a GUI wrapper for [Ffmpeg](http://ffmpeg.org), based on general ideas from [python-video-converter](https://github.com/senko/python-video-converter), and presets idea from [QWinFF](http://qwinff.github.io). If you're looking for a video editor, we're sorry but VideoMorph isn't for you.
 
-- [VideoMorph](#videomorph)
-  - [GUI Screenshot](#gui-screenshot)
-  - [Requirements](#requirements)
-  - [Installation](#installation)
-    - [Installing From the Binary Packages](#installing-from-the-binary-packages)
-      - [On GNU/Linux](#on-gnulinux)
-      - [On Windows](#on-windows)
-    - [Installing Form the Source Packages](#installing-form-the-source-packages)
-      - [On GNU/Linux](#on-gnulinux-1)
-      - [On Windows](#on-windows-1)
-    - [Using Portable Editions (if available)](#using-portable-editions-if-available)
-  - [How to Contribute to the Source](#how-to-contribute-to-the-source)
-    - [Setting up the Development Environment](#setting-up-the-development-environment)
-    - [Commits](#commits)
-    - [Internal Contributions Procedure](#internal-contributions-procedure)
-    - [External Contributions Procedure](#external-contributions-procedure)
-    - [Branch Naming Conventions](#branch-naming-conventions)
-    - [Coding, and Docstrings Style](#coding-and-docstrings-style)
-    - [Commit Messaging Style](#commit-messaging-style)
-  - [Licensing](#licensing)
-  - [Authors and Contributors](#authors-and-contributors)
-  - [Copyright](#copyright)
+- [GUI Screenshot](#gui-screenshot)
+- [Requirements](#requirements)
+- [Usage](#usage)
+- [Installation](#installation)
+  - [Installing From the Binary Packages](#installing-from-the-binary-packages)
+    - [On GNU/Linux](#on-gnulinux)
+    - [On Windows](#on-windows)
+  - [Installing Form the Source Packages](#installing-form-the-source-packages)
+    - [On GNU/Linux](#on-gnulinux-1)
+    - [On Windows](#on-windows-1)
+  - [Using Portable Editions (if available)](#using-portable-editions-if-available)
+- [How to Contribute to the Source](#how-to-contribute-to-the-source)
+  - [Setting up the Development Environment](#setting-up-the-development-environment)
+  - [Commits](#commits)
+  - [Internal Contributions Procedure](#internal-contributions-procedure)
+  - [External Contributions Procedure](#external-contributions-procedure)
+  - [Branch Naming Conventions](#branch-naming-conventions)
+  - [Coding, and Docstrings Style](#coding-and-docstrings-style)
+  - [Commit Messaging Style](#commit-messaging-style)
+- [Licensing](#licensing)
+- [Authors and Contributors](#authors-and-contributors)
+- [Copyright](#copyright)
 
 ## GUI Screenshot
 
@@ -49,6 +49,10 @@ You need to install these programs and libraries for VideoMorph to work properly
 On Windows systems, you also need:
 
 - [setuptools](https://pypi.python.org/pypi/setuptools)
+
+## Usage
+
+VideoMorph runs strictly as a GUI application. Launch it from your desktop environment (or with `uv run ./bin/videomorph` when working from source) and use the **Add Files**/**Add Folder** actions to populate the conversion list. The legacy command-line flags (`videomorph -i`, `videomorph -d`, etc.) have been removed, so adding media is now done exclusively through the interface.
 
 ## Installation
 
