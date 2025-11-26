@@ -4,7 +4,7 @@ import shlex
 import time
 from os import W_OK, access
 from pathlib import Path
-from typing import List, Union
+from typing import List, Optional, Union
 
 from . import CPU_CORES, STATUS
 from .profile import Profile
@@ -12,6 +12,10 @@ from .video import Video
 
 _DELETE_RETRY_ATTEMPTS = 3
 _DELETE_RETRY_DELAY = 0.2  # seconds
+
+
+class OutputPathCollisionError(Exception):
+    """Raised when input and output paths refer to the same file without replacement."""
 
 
 class Task:
@@ -24,9 +28,17 @@ class Task:
         self.profile = profile
         self.output_dir = Path(output_dir)
         self.status = STATUS.todo
+        self._active_output_path: Optional[Path] = None
+        self._final_output_path: Optional[Path] = None
+        self._temp_output_path: Optional[Path] = None
+        self._skip_video_delete: bool = False
 
     def build_conversion_cmd(
-        self, target_quality: str, tagged: bool, subtitle: bool
+        self,
+        target_quality: str,
+        tagged: bool,
+        subtitle: bool,
+        replace_source: bool = False,
     ) -> List[str]:
         """Return the conversion command."""
         if not access(self.output_dir, W_OK):
@@ -42,7 +54,19 @@ class Task:
         subtitle_opt = self._process_subtitles(subtitle)
 
         # Get the output path
-        output_path = self._get_output_path(tagged)
+        desired_output = self._get_output_path(tagged)
+        self._final_output_path = desired_output
+        self._temp_output_path = None
+        self._active_output_path = desired_output
+        self._skip_video_delete = False
+
+        if self._paths_conflict_with_input(desired_output):
+            if replace_source:
+                self._temp_output_path = self._build_temp_output_path(desired_output)
+                self._active_output_path = self._temp_output_path
+                self._skip_video_delete = True
+            else:
+                raise OutputPathCollisionError(desired_output.__str__())
 
         # Build the conversion command
         params = self.profile.params or ""
@@ -51,10 +75,24 @@ class Task:
             + subtitle_opt
             + shlex.split(params)
             + ["-threads", str(CPU_CORES)]
-            + ["-y", output_path.__str__()]
+            + ["-y", self._active_output_path.__str__()]
         )
 
         return cmd
+
+    def finalize_output(self) -> None:
+        """Finalize output file when temporary output was used."""
+        if self._temp_output_path is None:
+            return
+
+        if not self._temp_output_path.exists():
+            raise FileNotFoundError(
+                f"Temporary output {self._temp_output_path} is missing."
+            )
+
+        self._temp_output_path.replace(self._final_output_path)
+        self._active_output_path = self._final_output_path
+        self._temp_output_path = None
 
     def delete_output(self, tagged: bool) -> bool:
         """Delete the output file if conversion is stopped.
@@ -62,7 +100,11 @@ class Task:
         Returns:
             True if file was deleted or didn't exist, False if deletion failed.
         """
-        output_path = self._get_output_path(tagged)
+        output_path = (
+            self._active_output_path
+            if self._active_output_path is not None
+            else self._get_output_path(tagged)
+        )
 
         for attempt in range(_DELETE_RETRY_ATTEMPTS):
             try:
@@ -80,10 +122,11 @@ class Task:
 
     def delete_input(self) -> None:
         """Delete the input file (and subtitle) when conversion is finished."""
-        try:
-            self.video.path.unlink()
-        except FileNotFoundError:
-            pass
+        if not self._skip_video_delete:
+            try:
+                self.video.path.unlink()
+            except FileNotFoundError:
+                pass
 
         try:
             self.subtitle_path.unlink()
@@ -92,12 +135,21 @@ class Task:
 
     def get_output_file_name(self, tagged: bool) -> str:
         """Return the name of the output video file."""
-        output_file = self._get_output_path(tagged)
+        output_file = (
+            self._final_output_path
+            if self._final_output_path is not None
+            else self._get_output_path(tagged)
+        )
         return output_file.name
 
     def get_output_path(self, tagged: bool) -> str:
         """Return the the output file path as str."""
-        return str(self._get_output_path(tagged))
+        path = (
+            self._final_output_path
+            if self._final_output_path is not None
+            else self._get_output_path(tagged)
+        )
+        return str(path)
 
     def _get_output_path(self, tagged: bool) -> Path:
         """Return the the output file path as pathlib.Path."""
@@ -105,6 +157,32 @@ class Task:
         extension = self.profile.extension or ".mp4"
         output_file_name = "".join((tag, self.video.get_name(False), extension))
         return Path(self.output_dir, output_file_name)
+
+    def _paths_conflict_with_input(self, desired_output: Path) -> bool:
+        """Return True when desired output refers to the same file as the input."""
+        input_path = self.video.path
+        try:
+            return input_path.samefile(desired_output)
+        except FileNotFoundError:
+            # If either path doesn't exist yet, fall back to normalized comparison
+            return (
+                input_path.resolve().as_posix().casefold()
+                == desired_output.resolve().as_posix().casefold()
+            )
+
+    def _build_temp_output_path(self, desired_output: Path) -> Path:
+        """Create a unique temporary output path next to the final file."""
+        base_name = desired_output.name
+        candidate = desired_output.with_name(f".tmp_videomorph_{base_name}")
+        counter = 1
+
+        while candidate.exists():
+            candidate = desired_output.with_name(
+                f".tmp_videomorph_{counter}_{base_name}"
+            )
+            counter += 1
+
+        return candidate
 
     @property
     def subtitle_path(self) -> Path:

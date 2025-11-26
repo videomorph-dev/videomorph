@@ -99,11 +99,18 @@ class TaskList(list):
         self._running_task.status = status
 
     def running_task_conversion_cmd(
-        self, target_quality: str, tagged: bool, subtitle: bool
+        self,
+        target_quality: str,
+        tagged: bool,
+        subtitle: bool,
+        replace_source: bool = False,
     ) -> List[str]:
         """Return the conversion command."""
         return self._running_task.build_conversion_cmd(
-            target_quality, tagged, subtitle
+            target_quality,
+            tagged,
+            subtitle,
+            replace_source=replace_source,
         )
 
     def running_file_output_name(self, tagged: bool) -> str:
@@ -121,6 +128,10 @@ class TaskList(list):
     def delete_running_file_input(self) -> None:
         """Delete input file."""
         self._running_task.delete_input()
+
+    def finalize_running_task_output(self) -> None:
+        """Finalize output when a temporary file was used."""
+        self._running_task.finalize_output()
 
     @property
     def position(self) -> int:

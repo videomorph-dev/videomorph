@@ -47,6 +47,7 @@ from videomorph.converter.console import search_directory_recursively
 from videomorph.converter.launchers import launcher_factory
 from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
+from videomorph.converter.task import OutputPathCollisionError
 from videomorph.converter.tasklist import TaskList
 from videomorph.converter.utils import write_time
 from videomorph.converter.vmpath import (
@@ -924,6 +925,21 @@ class VideoMorphMW(QMainWindow):
             self._reset_options_check_boxes()
             self._update_ui_when_no_file()
 
+    def _remove_completed_task_from_ui(self):
+        """Remove the currently finished task from the table and model."""
+        current_row = self.task_list.position
+        if current_row < 0 or current_row >= self.tasks_table.rowCount():
+            return
+
+        self.tasks_table.removeRow(current_row)
+        self.task_list.delete_file(current_row)
+        self.task_list.position = current_row - 1
+        self.task_list_duration = self.task_list.duration()
+
+        if not self.tasks_table.rowCount():
+            self._reset_options_check_boxes()
+            self._update_ui_when_no_file()
+
     def _select_directory(self, dialog_title, source_dir=QDir.homePath()):
         options = (
             QFileDialog.Option.DontResolveSymlinks
@@ -1009,9 +1025,21 @@ class VideoMorphMW(QMainWindow):
                     ).text(),
                     tagged=self.tag_chb.isChecked(),
                     subtitle=self.subtitle_chb.isChecked(),
+                    replace_source=self.delete_chb.isChecked(),
                 )
                 # Then pass it to the _converter
                 self.library.start_converter(cmd=conversion_cmd)
+            except OutputPathCollisionError as collision_err:
+                self._show_message_box(
+                    type_=QMessageBox.Icon.Warning,
+                    title=self.tr("Output Conflict"),
+                    msg=self.tr(
+                        "The selected settings would overwrite the original file:\n{0}\n\n"
+                        "Enable 'Delete Input Video Files when Finished' to replace the file "
+                        "or choose a different output folder or extension."
+                    ).format(collision_err),
+                )
+                self._update_ui_when_error_on_conversion()
             except PermissionError:
                 self._show_message_box(
                     type_=QMessageBox.Icon.Critical,
@@ -1106,11 +1134,44 @@ class VideoMorphMW(QMainWindow):
                 self.task_list.running_task_status = STATUS.done
                 self.operation_pb.setProperty("value", 0)
 
+                finalize_err = None
+                try:
+                    self.task_list.finalize_running_task_output()
+                except (FileNotFoundError, OSError) as err:
+                    finalize_err = err
+
+                if finalize_err is not None:
+                    self._show_message_box(
+                        type_=QMessageBox.Icon.Warning,
+                        title=self.tr("Warning!"),
+                        msg=self.tr(
+                            "Could not finalize the converted file:\n{0}\n\n"
+                            "The temporary file remains on disk."
+                        ).format(finalize_err),
+                    )
+
                 # Only delete input file if checkbox is explicitly checked AND output file actually exists
                 if self.delete_chb.isChecked():
                     output_path_str = self._get_output_path(self.task_list.position)
-                    if output_path_str and Path(output_path_str).exists():
-                        self.task_list.delete_running_file_input()
+                    output_path = Path(output_path_str) if output_path_str else None
+
+                    if output_path and output_path.exists():
+                        delete_error = None
+                        try:
+                            self.task_list.delete_running_file_input()
+                        except OSError as err:
+                            delete_error = err
+
+                        if delete_error is not None:
+                            self._show_message_box(
+                                type_=QMessageBox.Icon.Warning,
+                                title=self.tr("Warning!"),
+                                msg=self.tr(
+                                    "Could not delete the original file:\n{0}\n\n{1}"
+                                ).format(output_path_str, delete_error),
+                            )
+                        else:
+                            self._remove_completed_task_from_ui()
                     else:
                         # Show warning if output file doesn't exist
                         self._show_message_box(
@@ -1354,8 +1415,16 @@ class VideoMorphMW(QMainWindow):
                 QMessageBox.ButtonRole.RejectRole,
             )
 
-            # If user chooses No, uncheck the box
-            if msg_box.exec() != QMessageBox.ButtonRole.AcceptRole:
+            msg_box.exec()
+            clicked_button = msg_box.clickedButton()
+            if clicked_button is None:
+                self.delete_chb.setChecked(False)
+                return
+
+            button_role = msg_box.buttonRole(clicked_button)
+
+            # If user chooses No (or closes), uncheck the box
+            if button_role != QMessageBox.ButtonRole.AcceptRole:
                 self.delete_chb.setChecked(False)
                 return
 

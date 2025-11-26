@@ -2,17 +2,20 @@
 
 from pathlib import Path
 
+import pytest
+
 from videomorph.converter.task import (
-    _DELETE_RETRY_ATTEMPTS,
+    OutputPathCollisionError,
     Task,
+    _DELETE_RETRY_ATTEMPTS,
 )
 
 
 class DummyProfile:
     """Minimal profile replacement for Task tests."""
 
-    def __init__(self):
-        self.extension = ".mp4"
+    def __init__(self, extension: str = ".mp4"):
+        self.extension = extension
         self.params = ""
         self.quality_tag = "[T]-"
 
@@ -34,12 +37,12 @@ class DummyVideo:
         return self.path.stem
 
 
-def _build_task(tmp_path):
-    video_file = tmp_path / "input.mp4"
+def _build_task(tmp_path, extension: str = ".mp4"):
+    video_file = tmp_path / f"input{extension}"
     video_file.write_text("video")
     return Task(
         video=DummyVideo(video_file),
-        profile=DummyProfile(),
+        profile=DummyProfile(extension=extension),
         output_dir=tmp_path,
     )
 
@@ -103,3 +106,47 @@ def test_delete_output_stops_after_limited_retries(monkeypatch, tmp_path):
     assert locked_path.attempts == _DELETE_RETRY_ATTEMPTS
     # Should return False when deletion fails after retries
     assert result is False
+
+
+def test_build_cmd_raises_when_output_matches_input(tmp_path):
+    """Same-path conversions must error unless replacement is allowed."""
+
+    task = _build_task(tmp_path)
+
+    with pytest.raises(OutputPathCollisionError):
+        task.build_conversion_cmd(
+            target_quality="default",
+            tagged=False,
+            subtitle=False,
+            replace_source=False,
+        )
+
+
+def test_replace_source_uses_temp_file_and_preserves_final_path(tmp_path):
+    """When replacing the source, Task should write to a temp file first."""
+
+    task = _build_task(tmp_path)
+
+    cmd = task.build_conversion_cmd(
+        target_quality="default",
+        tagged=False,
+        subtitle=False,
+        replace_source=True,
+    )
+
+    assert task._temp_output_path is not None
+    assert task._skip_video_delete is True
+    assert cmd[-1] == str(task._temp_output_path)
+
+    temp_output = task._temp_output_path
+    temp_output.write_text("converted")
+
+    task.finalize_output()
+
+    assert task._temp_output_path is None
+    assert task._active_output_path == task.video.path
+    assert not temp_output.exists()
+    assert task.video.path.read_text() == "converted"
+
+    task.delete_input()
+    assert task.video.path.exists()
