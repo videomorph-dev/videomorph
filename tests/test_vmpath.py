@@ -1,6 +1,6 @@
 """This module provides tests for vmpath.py module."""
 
-from os.path import expandvars
+import os
 from pathlib import Path
 from sys import prefix
 
@@ -25,7 +25,7 @@ class TestPaths:
             bin=Path(prefix, "bin"),
         )
 
-        program_files = expandvars("%ProgramFiles%")
+        program_files = os.environ.get("ProgramFiles", "C:\\Program Files")
         self.win32_paths = dict(
             apps=Path(program_files, "VideoMorph"),
             config=Path(Path.home(), ".videomorph"),

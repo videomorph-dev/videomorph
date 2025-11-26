@@ -1,6 +1,6 @@
 """This module provides a dialog to show changelog."""
 
-from os.path import basename
+from pathlib import Path
 
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import (
@@ -177,7 +177,7 @@ class InfoDialog(QtWidgets.QDialog):
         """Show video info on the Info Panel."""
         task = self.task_list.get_task(position)
         file_path = task.video.format_info["filename"]
-        filename = basename(file_path)
+        filename = Path(file_path).name
         self.label_file_name_value.setText(filename)
         self.label_size_value.setText(
             write_size(task.video.format_info["size"])

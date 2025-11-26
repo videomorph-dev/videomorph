@@ -3,14 +3,13 @@
 import json
 import re
 from collections import OrderedDict, namedtuple
-from os import makedirs
-from os.path import exists, getmtime, getsize
-from os.path import join as join_path
+from pathlib import Path
 from shutil import copy2
-from typing import Any, Optional, Dict, List
+from typing import Any, Dict, List, Optional
 
-from . import BASE_DIR, LOCALE, SYS_PATHS, VALID_VIDEO_EXT, VM_PATHS
+from . import LOCALE, VALID_VIDEO_EXT
 from .codec import CodecsReader
+from .vmpath import packaged_profile, profiles_user_dir
 
 JSONFiles = namedtuple("JSONFiles", "default customized")
 JSON_FILES = JSONFiles("default.json", "customized.json")
@@ -62,18 +61,13 @@ class _JSONProfile:
     def __init__(
         self,
         json_files=JSON_FILES,
-        base_dir=BASE_DIR,
-        sys_path=SYS_PATHS,
-        vmpath=VM_PATHS,
         valid_extensions=VALID_VIDEO_EXT,
     ):
         """Class initializer."""
         self._json_files = json_files
-        self._base_dir = base_dir
-        self._sys_path = sys_path
-        self._vmpath = vmpath
         self._valid_ext = valid_extensions
         self._codecs_reader = None  # Lazy initialization
+        self._user_profiles_dir = profiles_user_dir()
 
         self._create_json_files()
     
@@ -183,13 +177,13 @@ class _JSONProfile:
         for json_file in self._json_files:
             self._copy_json_file(file_name=json_file)
 
-    def _user_json_file_path(self, file_name: str) -> str:
+    def _user_json_file_path(self, file_name: str) -> Path:
         """Return the path to the profiles file."""
-        return join_path(self._user_json_files_directory(), file_name)
+        return self._user_json_files_directory() / file_name
 
     def _create_json_files(self):
         """Create a json file with the conversion profiles."""
-        makedirs(self._user_json_files_directory(), exist_ok=True)
+        self._user_json_files_directory().mkdir(parents=True, exist_ok=True)
 
         for json_file in self._json_files:
             if not self._json_file_is_correct(json_file):
@@ -197,20 +191,20 @@ class _JSONProfile:
 
     def _copy_json_file(self, file_name: str):
         """Copy profiles json file."""
-        json_file_sys_path = self._sys_json_file_path(file_name)
-        json_file_user_path = self._user_json_file_path(file_name)
-
-        copy2(src=json_file_sys_path, dst=json_file_user_path)
+        copy2(
+            src=self._sys_json_file_path(file_name),
+            dst=self._user_json_file_path(file_name),
+        )
 
     def _json_file_is_correct(self, file_name: str) -> bool:
         """Validate json files in user config directory."""
         json_file_user_path = self._user_json_file_path(file_name)
         json_file_sys_path = self._sys_json_file_path(file_name)
 
-        if not exists(json_file_user_path) or not getsize(json_file_user_path):
+        if not json_file_user_path.exists() or json_file_user_path.stat().st_size == 0:
             return False
 
-        if getmtime(json_file_sys_path) > getmtime(json_file_user_path):
+        if json_file_sys_path.stat().st_mtime > json_file_user_path.stat().st_mtime:
             return False
 
         return True
@@ -219,7 +213,7 @@ class _JSONProfile:
         """Load and validate JSON data from file."""
         path = self._user_json_file_path(file_name=json_file_name)
         try:
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             self._validate_json(data)
             return data
@@ -227,7 +221,7 @@ class _JSONProfile:
             print(f"Error loading JSON file {path}: {e}")
             self.restore_default_profiles()
             # Try again after restoring defaults
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             return data
 
@@ -249,16 +243,10 @@ class _JSONProfile:
                     assert field in preset, f"Preset must have '{field}'"
                     assert isinstance(preset[field], str), f"'{field}' must be a string"
 
-    def _user_json_files_directory(self) -> str:
+    def _user_json_files_directory(self) -> Path:
         """Return the user json directory path."""
-        return join_path(self._sys_path["config"], "profiles")
+        return self._user_profiles_dir
 
-    def _sys_json_file_path(self, file_name: str) -> str:
+    def _sys_json_file_path(self, file_name: str) -> Path:
         """Return the path to json profiles file in the system."""
-        file_path = join_path(self._sys_path["profiles"], file_name)
-        if exists(file_path):
-            # if VideoMorph is installed
-            return file_path
-
-        # if not installed
-        return join_path(self._base_dir, self._vmpath["profiles"], file_name)
+        return packaged_profile(file_name)

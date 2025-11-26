@@ -1,85 +1,18 @@
-"""This module provides Path."""
+"""Centralized path helpers for VideoMorph."""
 
-from os.path import dirname, expandvars
+from __future__ import annotations
+
+import configparser
+import os
+import shutil
+from dataclasses import dataclass, field
 from pathlib import Path
 from sys import platform, prefix
-from typing import Dict, Optional
+from typing import Dict, Iterator, Optional
 
-from .launchers import generic_factory
-from .utils import which
-
-BASE_DIR = dirname(dirname(dirname(__file__)))
+BASE_DIR = Path(__file__).resolve().parents[2]
 LIBRARY = "ffmpeg"
 PROBE = "ffprobe"
-
-
-class _LibraryPath:
-    """Class to define platform dependent conversion tools."""
-
-    def _get_system_path(self, app: str) -> Optional[str]:
-        """Return the name of the conversion library installed on system."""
-        local_dir = self._get_local_dir()
-        if local_dir.is_dir():
-            app_path = local_dir.joinpath(app)
-            if app_path.exists():
-                return app_path.__str__()
-
-        app_path = which(app)
-        if app_path:
-            return app_path
-        return None  # Not available library
-
-    @property
-    def library_path(self) -> Optional[str]:
-        """Get conversion library path."""
-        return self._get_system_path(LIBRARY)
-
-    @property
-    def prober_path(self) -> Optional[str]:
-        """Get prober path."""
-        return self._get_system_path(PROBE)
-
-    def _get_local_dir(self) -> Path:
-        """Return the local directory for ffmpeg library."""
-        return Path(BASE_DIR, LIBRARY)
-
-
-class _LinuxLibraryPath(_LibraryPath):
-    """Class to define platform dependent conversion lib for Linux."""
-
-    pass
-
-
-class _DarwinLibraryPath(_LibraryPath):
-    """Class to define platform dependent conversion lib for MacOS."""
-
-    pass
-
-
-class _Win32LibraryPath(_LibraryPath):
-    """Class to define platform dependent conversion lib for Win32."""
-
-    def _get_local_dir(self) -> Path:
-        """Return the local directory for ffmpeg library."""
-        return Path(super(_Win32LibraryPath, self)._get_local_dir(), "bin")
-
-    @property
-    def library_path(self) -> str:
-        return Path(self._get_local_dir(), LIBRARY + ".exe").__str__()
-
-    @property
-    def prober_path(self) -> str:
-        return Path(self._get_local_dir(), PROBE + ".exe").__str__()
-
-
-def library_path_factory() -> _LibraryPath:
-    """Factory method to create the appropriate lib name."""
-    return generic_factory(parent_class=_LibraryPath)
-
-
-_PATHS = library_path_factory()
-LIBRARY_PATH = _PATHS.library_path
-PROBE_PATH = _PATHS.prober_path
 
 
 VM_PATHS = dict(
@@ -97,14 +30,14 @@ VM_PATHS = dict(
 
 
 def _unix_paths(base_paths: Dict[str, Path] = VM_PATHS) -> Dict[str, Path]:
-    """Return the system paths used by VideoMorph."""
-    paths = {}
-    for key, path in base_paths.items():
-        if key != "config":
-            paths[key] = Path(prefix, path)
+    """Return the system paths used by VideoMorph for POSIX platforms."""
+    resolved = {}
+    for key, relative in base_paths.items():
+        if key == "config":
+            resolved[key] = relative
         else:
-            paths[key] = path
-    return paths
+            resolved[key] = Path(prefix, relative)
+    return resolved
 
 
 def linux_paths(base_paths: Dict[str, Path] = VM_PATHS) -> Dict[str, Path]:
@@ -116,18 +49,223 @@ def darwin_paths(base_paths: Dict[str, Path] = VM_PATHS) -> Dict[str, Path]:
 
 
 def win32_paths(base_paths: Dict[str, Path] = VM_PATHS) -> Dict[str, Path]:
-    program_files = expandvars("%ProgramFiles%")
-    paths = {}
-    for key, path in base_paths.items():
+    program_files = Path(os.environ.get("ProgramFiles", "C:\\Program Files"))
+    resolved = {}
+    for key, relative in base_paths.items():
         if key == "config":
-            paths[key] = path
+            resolved[key] = relative
         elif key == "apps":
-            paths[key] = Path(program_files, "VideoMorph")
+            resolved[key] = Path(program_files, "VideoMorph")
         elif key == "doc":
-            paths[key] = Path(program_files, "VideoMorph", path.parts[-2])
+            resolved[key] = Path(program_files, "VideoMorph", relative.parts[-2])
         else:
-            paths[key] = Path(program_files, "VideoMorph", path.parts[-1])
-    return paths
+            resolved[key] = Path(program_files, "VideoMorph", relative.parts[-1])
+    return resolved
 
 
 SYS_PATHS = globals()[platform + "_paths"]()
+
+
+@dataclass(slots=True)
+class PathResolver:
+    """Resolve runtime, data, and user paths with optional overrides."""
+
+    sys_paths: Dict[str, Path]
+    base_paths: Dict[str, Path]
+    base_dir: Path
+    user_root: Path = field(init=False)
+    _paths_ini: Path = field(init=False)
+    _config: configparser.ConfigParser = field(init=False)
+
+    def __post_init__(self) -> None:
+        self.user_root = Path(self.sys_paths["config"])
+        self.user_root.mkdir(parents=True, exist_ok=True)
+        self._paths_ini = self.user_root / "paths.ini"
+        self._config = configparser.ConfigParser()
+        if self._paths_ini.exists():
+            self._config.read(self._paths_ini)
+
+    @property
+    def overrides(self) -> configparser.ConfigParser:
+        return self._config
+
+    @property
+    def paths_ini(self) -> Path:
+        return self._paths_ini
+
+    @property
+    def settings_file(self) -> Path:
+        return self.user_root / "config.ini"
+
+    @property
+    def profiles_dir(self) -> Path:
+        return self._ensure_user_subdir("profiles")
+
+    def _ensure_user_subdir(self, name: str) -> Path:
+        target = self.user_root / name
+        target.mkdir(parents=True, exist_ok=True)
+        return target
+
+    def _override_path(self, key: str) -> Optional[Path]:
+        if self._config.has_option("paths", key):
+            candidate = Path(self._config.get("paths", key)).expanduser()
+            if candidate.exists():
+                return candidate
+        return None
+
+    @staticmethod
+    def _join(base: Path, parts: tuple[str, ...]) -> Path:
+        return base.joinpath(*parts) if parts else base
+
+    def resource_path(self, key: str, *parts: str) -> Path:
+        """Return a resolved path for the given resource key."""
+        suffix = parts
+        candidates = []
+        override = self._override_path(key)
+        if override:
+            candidates.append(override)
+
+        sys_path = self.sys_paths.get(key)
+        if sys_path:
+            candidates.append(sys_path)
+
+        candidates.append(self.base_dir / self.base_paths[key])
+
+        for base in candidates:
+            candidate = self._join(base, suffix)
+            if candidate.exists():
+                return candidate
+
+        # Nothing exists yet; return the last candidate so callers can create it.
+        return self._join(candidates[-1], suffix)
+
+    def packaged_resource(self, key: str, *parts: str) -> Path:
+        """Return a path inside the repository checkout."""
+        return self._join(self.base_dir / self.base_paths[key], parts)
+
+    def tool_override(self, tool_name: str) -> Optional[Path]:
+        """Return user-configured tool override if available."""
+        if self._config.has_option("tools", tool_name):
+            candidate = Path(self._config.get("tools", tool_name)).expanduser()
+            if candidate.exists():
+                return candidate
+        return None
+
+    def manual_path(self, locale: str) -> Optional[Path]:
+        """Return the manual PDF path matching locale, if available."""
+        file_name = "manual_es.pdf" if locale == "es_ES" else "manual_en.pdf"
+        manual = self.resource_path("help", file_name)
+        return manual if manual.exists() else None
+
+
+PATHS = PathResolver(sys_paths=SYS_PATHS, base_paths=VM_PATHS, base_dir=BASE_DIR)
+
+
+class FFmpegLocator:
+    """Locate ffmpeg/ffprobe binaries via overrides, bundles, or PATH."""
+
+    def __init__(self, resolver: PathResolver) -> None:
+        self._resolver = resolver
+
+    @staticmethod
+    def _exe_name(binary: str) -> str:
+        return f"{binary}.exe" if os.name == "nt" else binary
+
+    def _bundle_dirs(self) -> Iterator[Path]:
+        bundle_names = ("ffmpeg", "ffmpeg-linux64", "ffmpeg-mac", "ffmpeg-win64")
+        for bundle in bundle_names:
+            base = self._resolver.base_dir / bundle
+            if base.is_dir():
+                yield base
+            bin_dir = base / "bin"
+            if bin_dir.is_dir():
+                yield bin_dir
+
+    def _candidate_binaries(self, binary: str) -> Iterator[Path]:
+        env_key = f"VIDEOMORPH_{binary.upper()}"
+        env_override = os.environ.get(env_key)
+        if env_override:
+            path = Path(env_override).expanduser()
+            if path.exists():
+                yield path
+
+        config_override = self._resolver.tool_override(binary)
+        if config_override:
+            yield config_override
+
+        for directory in self._bundle_dirs():
+            candidate = directory / self._exe_name(binary)
+            if candidate.exists():
+                yield candidate
+
+        system_binary = shutil.which(binary)
+        if system_binary:
+            yield Path(system_binary)
+
+    def locate(self, binary: str) -> Optional[str]:
+        for candidate in self._candidate_binaries(binary):
+            return candidate.__str__()
+        return None
+
+    @property
+    def library_path(self) -> Optional[str]:
+        return self.locate(LIBRARY)
+
+    @property
+    def probe_path(self) -> Optional[str]:
+        return self.locate(PROBE)
+
+
+_FFMPEG = FFmpegLocator(PATHS)
+LIBRARY_PATH = _FFMPEG.library_path
+PROBE_PATH = _FFMPEG.probe_path
+
+
+def resource_path(key: str, *parts: str) -> Path:
+    """Return a resolved resource path (icons, docs, etc.)."""
+    return PATHS.resource_path(key, *parts)
+
+
+def packaged_resource_path(key: str, *parts: str) -> Path:
+    """Return a resource path anchored at the repository root."""
+    return PATHS.packaged_resource(key, *parts)
+
+
+def doc_file(name: str) -> Path:
+    """Return a documentation file path."""
+    return resource_path("doc", name)
+
+
+def help_file(name: str) -> Path:
+    """Return a help/manual file path."""
+    return resource_path("help", name)
+
+
+def sound_file(name: str) -> Path:
+    """Return a sound asset path."""
+    return resource_path("sounds", name)
+
+
+def manual_path(locale: str) -> Optional[Path]:
+    """Return the manual for the requested locale if present."""
+    return PATHS.manual_path(locale)
+
+
+def profiles_user_dir() -> Path:
+    """Return the user profile storage directory, creating it if needed."""
+    return PATHS.profiles_dir
+
+
+def packaged_profile(name: str) -> Path:
+    """Return the bundled conversion profile path."""
+    return PATHS.packaged_resource("profiles", name)
+
+
+def settings_file() -> Path:
+    """Return the path to the Qt settings INI file."""
+    return PATHS.settings_file
+
+
+def paths_ini_file() -> Path:
+    """Return the location of the optional paths.ini overrides."""
+    return PATHS.paths_ini

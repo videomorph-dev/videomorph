@@ -2,8 +2,6 @@
 
 from collections import OrderedDict
 from functools import partial
-from os.path import dirname, exists, isdir, isfile
-from os.path import join as join_path
 from pathlib import Path
 
 from PyQt6.QtCore import (
@@ -40,13 +38,10 @@ from PyQt6.QtWidgets import (
 
 from videomorph.converter import (
     APP_NAME,
-    BASE_DIR,
     LOCALE,
     STATUS,
-    SYS_PATHS,
     VERSION,
     VIDEO_FILTERS,
-    VM_PATHS,
 )
 from videomorph.converter.console import search_directory_recursively
 from videomorph.converter.launchers import launcher_factory
@@ -54,6 +49,11 @@ from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
 from videomorph.converter.tasklist import TaskList
 from videomorph.converter.utils import write_time
+from videomorph.converter.vmpath import (
+    manual_path,
+    settings_file as settings_file_path,
+    sound_file,
+)
 
 from . import COLUMNS, videomorph_qrc
 from .about import AboutVMDialog
@@ -522,13 +522,13 @@ class VideoMorphMW(QMainWindow):
     @staticmethod
     def _get_settings_file():
         return QSettings(
-            join_path(SYS_PATHS["config"], "config.ini"),
+            settings_file_path().__str__(),
             QSettings.Format.IniFormat,
         )
 
     def _create_initial_settings(self):
         """Create initial settings file."""
-        if not exists(join_path(SYS_PATHS["config"], "config.ini")):
+        if not settings_file_path().exists():
             self._write_app_settings(
                 pos=QPoint(100, 50),
                 size=QSize(1096, 510),
@@ -551,7 +551,8 @@ class VideoMorphMW(QMainWindow):
             self.quality_combo.setCurrentIndex(int(preset))
         if "output_dir" in settings.allKeys():
             directory = str(settings.value("output_dir"))
-            output_dir = directory if isdir(directory) else QDir.homePath()
+            dir_path = Path(directory)
+            output_dir = dir_path.__str__() if dir_path.is_dir() else QDir.homePath()
             self.output_edit.setText(output_dir)
             self.task_list.output_dir = output_dir
         if "source_dir" in settings.allKeys():
@@ -615,33 +616,20 @@ class VideoMorphMW(QMainWindow):
 
     def notify(self):
         """Notify when conversion finished."""
-        if exists(join_path(BASE_DIR, VM_PATHS["sounds"])):
-            sound = join_path(BASE_DIR, VM_PATHS["sounds"], "successful.wav")
-        else:
-            sound = join_path(SYS_PATHS["sounds"], "successful.wav")
+        sound_path = sound_file("successful.wav")
+        sound = sound_path.__str__() if sound_path.exists() else None
         launcher = launcher_factory()
         launcher.sound_notify(sound)
 
     @staticmethod
     def help_content():
         """Open VideoMorph documentation manual."""
-        if LOCALE == "es_ES":
-            file_name = "manual_es.pdf"
-        else:
-            file_name = "manual_en.pdf"
-
         # Check if manual exists in system paths first
-        file_path = join_path(SYS_PATHS["help"], file_name)
-        if isfile(file_path):
-            url = "file://" + file_path
+        manual = manual_path(LOCALE)
+        if manual and manual.exists():
+            url = manual.as_uri()
         else:
-            # Fall back to local manual in project directory
-            file_path = join_path(BASE_DIR, VM_PATHS["help"], file_name)
-            if isfile(file_path):
-                url = "file://" + file_path
-            else:
-                # If no manual found, fall back to online documentation
-                url = "https://videomorph-dev.github.io/videomorph/"
+            url = "https://videomorph-dev.github.io/videomorph/"
 
         launcher = launcher_factory()
         launcher.open_with_user_browser(url=url)
@@ -956,7 +944,10 @@ class VideoMorphMW(QMainWindow):
         single_file=False,
     ):
         # Validate source_dir
-        source_directory = source_dir if isdir(source_dir) else QDir.homePath()
+        source_path = Path(source_dir)
+        source_directory = (
+            source_path.__str__() if source_path.is_dir() else QDir.homePath()
+        )
 
         # Create a custom file dialog for cleaner appearance
         dialog = QFileDialog(self, dialog_title, source_directory)
@@ -971,7 +962,7 @@ class VideoMorphMW(QMainWindow):
         if dialog.exec() == QFileDialog.DialogCode.Accepted:
             files_paths = dialog.selectedFiles()
             if files_paths:
-                self.source_dir = dirname(files_paths[0])
+                self.source_dir = Path(files_paths[0]).parent.__str__()
                 return files_paths
 
         return None
@@ -1515,10 +1506,11 @@ class VideoMorphMW(QMainWindow):
         self.play_input_media_file_action.setEnabled(True)
 
         path = self._get_output_path(row=self.tasks_table.currentIndex().row())
+        path_exists = Path(path).exists() if path else False
         # Only enable the menu if output file exist and if it not .mp4,
         # cause .mp4 files doesn't run until conversion is finished
         self.play_output_media_file_action.setEnabled(
-            exists(path) and self.profiles_combo.currentText() != "MP4"
+            path_exists and self.profiles_combo.currentText() != "MP4"
         )
         self.info_action.setEnabled(bool(self.task_list.length))
 

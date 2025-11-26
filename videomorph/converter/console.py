@@ -2,8 +2,6 @@
 
 import argparse
 import sys
-from os import walk
-from os.path import isdir
 from pathlib import Path
 from typing import List, Optional
 
@@ -85,16 +83,15 @@ def search_directory_recursively(
     if files is None:
         files = []
 
-    if isdir(directory):
-        for dir_path, _, files_names in walk(directory):
-            for file_name in files_names:
-                path = Path(dir_path, file_name)
-                if path.suffix.lower() in VALID_VIDEO_EXT:
-                    files.append(path.__str__())
-    else:
+    dir_path = Path(directory)
+    if not dir_path.is_dir():
         raise IsADirectoryError(
             "Directory: {0}, doesn't exist".format(directory)
         )
+
+    for path in dir_path.rglob("*"):
+        if path.is_file() and path.suffix.lower() in VALID_VIDEO_EXT:
+            files.append(path.__str__())
 
     if not files:
         raise FileNotFoundError(

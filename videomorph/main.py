@@ -1,14 +1,13 @@
 """This module contains the main function for VideoMorph."""
 
 import sys
-from pathlib import Path
 
 from PyQt6.QtCore import QTranslator
 from PyQt6.QtWidgets import QApplication, QMessageBox
 
-from .converter import BASE_DIR, LOCALE, VM_PATHS
+from .converter import LOCALE
 from .converter.console import run_on_console
-from .converter.vmpath import LIBRARY_PATH
+from .converter.vmpath import LIBRARY_PATH, resource_path
 from .forms.videomorph import VideoMorphMW
 
 
@@ -21,25 +20,18 @@ def main() -> None:
     app_translator = QTranslator()
 
     try:
-        i18n_dir = Path(BASE_DIR, VM_PATHS["i18n"])
-        i18n_file = i18n_dir.joinpath(
-            "".join(("videomorph_", LOCALE[:2], ".qm"))
-        )
+        i18n_dir = resource_path("i18n")
+        i18n_file = i18n_dir / f"videomorph_{LOCALE[:2]}.qm"
 
         if i18n_file.exists():
-            trans = i18n_dir.joinpath(
-                "videomorph_{0}".format(LOCALE)
-            ).__str__()
-            if app_translator.load(trans):
+            trans = i18n_dir / f"videomorph_{LOCALE}"
+            if app_translator.load(trans.__str__()):
                 app.installTranslator(app_translator)
             else:
                 print(
                     f"Warning: Failed to load translation file: {trans}",
                     file=sys.stderr,
                 )
-        else:
-            # Silently continue with default English if translation not found
-            pass
     except (KeyError, OSError) as e:
         print(f"Warning: Translation setup failed: {e}", file=sys.stderr)
 

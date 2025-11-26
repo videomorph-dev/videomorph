@@ -1,7 +1,6 @@
 """This module provides a dialog to show app information."""
 
-from os.path import isfile
-from os.path import join as join_path
+from pathlib import Path
 from typing import Optional
 
 from PyQt6.QtCore import QSize, Qt
@@ -20,12 +19,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from videomorph.converter import (
-    APP_NAME,
-    BASE_DIR,
-    SYS_PATHS,
-    VERSION,
-)
+from videomorph.converter import APP_NAME, VERSION
+from videomorph.converter.vmpath import doc_file
 
 
 class AboutVMDialog(QDialog):
@@ -142,21 +137,17 @@ class AboutVMDialog(QDialog):
 
     def get_license_text(self) -> str:
         """Get the license text from the license file."""
-        doc_license = join_path(SYS_PATHS["doc"], "LICENSE")
-        basedir_license = join_path(BASE_DIR, "LICENSE")
-        deb_license = "/usr/share/common-licenses/Apache-2.0"
-        if isfile(doc_license):
-            license_path = doc_license
-        elif isfile(basedir_license):
-            license_path = basedir_license
-        elif isfile(deb_license):
-            license_path = deb_license
-        else:
+        license_path = doc_file("LICENSE")
+        deb_license = Path("/usr/share/common-licenses/Apache-2.0")
+
+        if not license_path.exists() and not deb_license.exists():
             return (
                 self.tr("See License at:")
                 + "\n\n"
                 + "http://www.apache.org/licenses/LICENSE-2.0"
             )
 
-        with open(license_path, "r", encoding="UTF-8") as lic:
+        resolved = license_path if license_path.exists() else deb_license
+
+        with open(resolved, "r", encoding="UTF-8") as lic:
             return "".join(lic.readlines())

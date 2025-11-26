@@ -2,7 +2,7 @@
 
 import os
 from locale import getlocale
-from os.path import pathsep
+from os import pathsep
 from pathlib import Path
 from typing import Union
 

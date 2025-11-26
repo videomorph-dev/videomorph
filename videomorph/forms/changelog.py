@@ -2,17 +2,11 @@
 
 import gzip
 import re
-from os.path import exists
-from os.path import join as join_path
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from videomorph.converter import (
-    APP_NAME,
-    BASE_DIR,
-    SYS_PATHS,
-    VERSION,
-)
+from videomorph.converter import APP_NAME, VERSION
+from videomorph.converter.vmpath import doc_file
 
 
 class ChangelogDialog(QtWidgets.QDialog):
@@ -47,11 +41,7 @@ class ChangelogDialog(QtWidgets.QDialog):
 
     def _generate_changelog(self):
         """Return a human readable changelog."""
-        changelog_path = join_path(SYS_PATHS["doc"], "changelog.gz")
-        if exists(changelog_path):
-            changelog_file = changelog_path
-        else:
-            changelog_file = join_path(BASE_DIR, "changelog.gz")
+        changelog_file = doc_file("changelog.gz")
 
         line_start_pattern = re.compile(r"\s+\*\s+")
 
