@@ -3,8 +3,8 @@
 from collections import namedtuple
 from typing import Callable, Optional
 
-from .utils import get_locale
-from .vmpath import BASE_DIR, SYS_PATHS, VM_PATHS
+from videomorph.converter.utils import get_locale
+from videomorph.converter.vmpath import BASE_DIR, SYS_PATHS, VM_PATHS
 
 try:
     from os import cpu_count

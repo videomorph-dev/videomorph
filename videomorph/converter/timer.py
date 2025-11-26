@@ -2,7 +2,7 @@
 
 from time import time
 
-from .utils import write_time
+from videomorph.converter.utils import write_time
 
 
 class ConversionTimer:

@@ -3,10 +3,10 @@
 from pathlib import Path
 from typing import Any, Optional, Union
 
-from .converter import Converter
-from .launchers import launcher_factory
-from .reader import OutputReader
-from .timer import ConversionTimer
+from videomorph.converter.converter import Converter
+from videomorph.converter.launchers import launcher_factory
+from videomorph.converter.reader import OutputReader
+from videomorph.converter.timer import ConversionTimer
 
 
 class Library:

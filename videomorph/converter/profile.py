@@ -7,9 +7,9 @@ from pathlib import Path
 from shutil import copy2
 from typing import Any, Dict, List, Optional
 
-from . import LOCALE, VALID_VIDEO_EXT
-from .codec import CodecsReader
-from .vmpath import packaged_profile, profiles_user_dir
+from videomorph.converter import LOCALE, VALID_VIDEO_EXT
+from videomorph.converter.codec import CodecsReader
+from videomorph.converter.vmpath import packaged_profile, profiles_user_dir
 
 JSONFiles = namedtuple("JSONFiles", "default customized")
 JSON_FILES = JSONFiles("default.json", "customized.json")

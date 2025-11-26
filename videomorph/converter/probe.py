@@ -3,8 +3,8 @@
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Union
 
-from .launchers import spawn_process
-from .vmpath import PROBE_PATH
+from videomorph.converter.launchers import spawn_process
+from videomorph.converter.vmpath import PROBE_PATH
 
 
 class Probe:

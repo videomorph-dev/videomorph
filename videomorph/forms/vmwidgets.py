@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (
 
 from videomorph.converter import STATUS, VALID_VIDEO_EXT
 
-from . import COLUMNS
+from videomorph.forms import COLUMNS
 
 
 class TasksListTable(QTableWidget):

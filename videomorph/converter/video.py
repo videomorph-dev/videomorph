@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Any, Union
 
-from .probe import Probe
+from videomorph.converter.probe import Probe
 
 
 class Video:

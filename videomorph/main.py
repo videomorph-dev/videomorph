@@ -6,10 +6,10 @@ from pathlib import Path
 from PyQt6.QtCore import QTranslator
 from PyQt6.QtWidgets import QApplication, QMessageBox
 
-from .converter import LOCALE
-from .converter.console import run_on_console
-from .converter.vmpath import LIBRARY_PATH, resource_path
-from .forms.videomorph import VideoMorphMW
+from videomorph.converter import LOCALE
+from videomorph.converter.console import run_on_console
+from videomorph.converter.vmpath import LIBRARY_PATH, resource_path
+from videomorph.forms.videomorph import VideoMorphMW
 
 
 def load_translation(

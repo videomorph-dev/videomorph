@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from PyQt6.QtWidgets import QApplication
 
-from . import APP_NAME, VALID_VIDEO_EXT, VERSION
+from videomorph.converter import APP_NAME, VALID_VIDEO_EXT, VERSION
 
 
 def run_on_console(app: QApplication, main_win) -> None:

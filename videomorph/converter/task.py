@@ -6,9 +6,9 @@ from os import W_OK, access
 from pathlib import Path
 from typing import List, Optional, Union
 
-from . import CPU_CORES, STATUS
-from .profile import Profile
-from .video import Video
+from videomorph.converter import CPU_CORES, STATUS
+from videomorph.converter.profile import Profile
+from videomorph.converter.video import Video
 
 _DELETE_RETRY_ATTEMPTS = 3
 _DELETE_RETRY_DELAY = 0.2  # seconds

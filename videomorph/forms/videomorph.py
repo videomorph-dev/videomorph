@@ -56,11 +56,11 @@ from videomorph.converter.vmpath import (
     sound_file,
 )
 
-from . import COLUMNS, videomorph_qrc
-from .about import AboutVMDialog
-from .changelog import ChangelogDialog
-from .info import InfoDialog
-from .vmwidgets import TasksListTable
+from videomorph.forms import COLUMNS, videomorph_qrc
+from videomorph.forms.about import AboutVMDialog
+from videomorph.forms.changelog import ChangelogDialog
+from videomorph.forms.info import InfoDialog
+from videomorph.forms.vmwidgets import TasksListTable
 
 
 class VideoMorphMW(QMainWindow):

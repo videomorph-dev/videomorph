@@ -5,7 +5,7 @@ from subprocess import PIPE, Popen
 from sys import platform
 from typing import Any, Optional, Type
 
-from .utils import which
+from videomorph.converter.utils import which
 
 
 def get_all_subclasses(cls):
