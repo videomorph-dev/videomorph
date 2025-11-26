@@ -54,6 +54,10 @@ class Profile:
 
         return "[" + tag + "]-"
 
+    def consume_warning(self) -> Optional[str]:
+        """Return and clear the latest profile warning message, if any."""
+        return self._json_profile.consume_warning()
+
 
 class _JSONProfile:
     """Class to manage the json profiles file."""
@@ -68,6 +72,7 @@ class _JSONProfile:
         self._valid_ext = valid_extensions
         self._codecs_reader = None  # Lazy initialization
         self._user_profiles_dir = profiles_user_dir()
+        self._warning_message: Optional[str] = None
 
         self._create_json_files()
     
@@ -218,7 +223,10 @@ class _JSONProfile:
             self._validate_json(data)
             return data
         except (json.JSONDecodeError, AssertionError, FileNotFoundError) as e:
-            print(f"Error loading JSON file {path}: {e}")
+            self._warning_message = (
+                f"Conversion profiles were reset because {path} could not be read.\n"
+                f"Details: {e}"
+            )
             self.restore_default_profiles()
             # Try again after restoring defaults
             with open(path, "r", encoding="utf-8") as f:
@@ -250,3 +258,9 @@ class _JSONProfile:
     def _sys_json_file_path(self, file_name: str) -> Path:
         """Return the path to json profiles file in the system."""
         return packaged_profile(file_name)
+
+    def consume_warning(self) -> Optional[str]:
+        """Return and clear the pending warning message."""
+        message = self._warning_message
+        self._warning_message = None
+        return message

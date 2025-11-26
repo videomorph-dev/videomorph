@@ -87,6 +87,13 @@ class VideoMorphMW(QMainWindow):
         )
 
         self.profile = Profile()
+        warning_msg = self.profile.consume_warning()
+        if warning_msg:
+            QMessageBox.warning(
+                self,
+                self.tr("Profiles Reset"),
+                warning_msg,
+            )
 
         self.task_list = TaskList(
             profile=self.profile, output_dir=self.output_edit.text()

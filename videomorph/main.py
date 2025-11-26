@@ -2,23 +2,46 @@ import sys
 from pathlib import Path
 
 from PyQt6.QtCore import QTranslator
-from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMessageBox, QWidget
 
-from videomorph.converter import LOCALE
+from videomorph.converter import APP_NAME, LOCALE
 from videomorph.converter.vmpath import LIBRARY_PATH, resource_path
 from videomorph.forms.videomorph import VideoMorphMW
+
+
+def _warn_user(
+    log_message: str,
+    dialog_message: str,
+    parent: QWidget | None = None,
+) -> None:
+    """Log a warning and show a dialog when a QApplication is available."""
+    sys.stderr.write(f"{log_message}\n")
+    if QApplication.instance() is None:
+        return
+
+    QMessageBox.warning(parent, APP_NAME, dialog_message)
 
 
 def load_translation(
     locale: str,
     translator: QTranslator,
     resolver=resource_path,
+    *,
+    parent: QWidget | None = None,
 ) -> Path | None:
     """Attempt to load a translation file for the given locale."""
     try:
         i18n_dir = resolver("i18n")
     except (KeyError, OSError) as exc:
-        print(f"Warning: Translation path lookup failed: {exc}", file=sys.stderr)
+        _warn_user(
+            f"Warning: Translation path lookup failed: {exc}",
+            (
+                "VideoMorph could not locate the translations directory.\n"
+                "English will be used.\n\n"
+                f"Details: {exc}"
+            ),
+            parent,
+        )
         return None
 
     candidates = [
@@ -38,13 +61,20 @@ def load_translation(
             return translation
 
     if not locale.lower().startswith("en"):
-        print("Warning: No translation loaded.", file=sys.stderr)
+        _warn_user(
+            "Warning: No translation loaded.",
+            (
+                "VideoMorph could not load the selected language.\n"
+                "English will be used instead."
+            ),
+            parent,
+        )
     return None
 
 
 def main() -> None:
     """Main app function."""
-    app = QApplication([])
+    app = QApplication(sys.argv)
     app_translator = QTranslator()
     loaded_translation = load_translation(LOCALE, app_translator)
     if loaded_translation:
