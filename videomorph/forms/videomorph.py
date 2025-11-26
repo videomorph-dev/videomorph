@@ -89,11 +89,7 @@ class VideoMorphMW(QMainWindow):
         self.profile = Profile()
         warning_msg = self.profile.consume_warning()
         if warning_msg:
-            QMessageBox.warning(
-                self,
-                self.tr("Profiles Reset"),
-                warning_msg,
-            )
+            self._show_message_box(QMessageBox.Icon.Warning, warning_msg)
 
         self.task_list = TaskList(
             profile=self.profile, output_dir=self.output_edit.text()
@@ -589,8 +585,23 @@ class VideoMorphMW(QMainWindow):
         for key, setting in settings.items():
             settings_file.setValue(key, setting)
 
-    def _show_message_box(self, type_, title, msg):
-        QMessageBox(type_, title, msg, QMessageBox.StandardButton.Ok, self).show()
+    def _dialog_title(self, icon: QMessageBox.Icon) -> str:
+        """Return a consistent title for message boxes."""
+        if icon == QMessageBox.Icon.Critical:
+            return self.tr("Error!")
+        if icon == QMessageBox.Icon.Warning:
+            return self.tr("Warning!")
+        return self.tr("Info!")
+
+    def _show_message_box(
+        self,
+        icon: QMessageBox.Icon,
+        message: str,
+        buttons: QMessageBox.StandardButton = QMessageBox.StandardButton.Ok,
+    ) -> QMessageBox.StandardButton:
+        """Show a modal message box with consistent styling."""
+        msg_box = QMessageBox(icon, self._dialog_title(icon), message, buttons, self)
+        return msg_box.exec()
 
     def about(self):
         """Show About dialog."""
@@ -693,14 +704,12 @@ class VideoMorphMW(QMainWindow):
         # Close communication and kill the encoding process
         if self.library.converter_is_running:
             # ask for confirmation
-            user_answer = QMessageBox.question(
-                self,
-                APP_NAME,
+            user_answer = self._show_message_box(
+                QMessageBox.Icon.Warning,
                 self.tr(
-                    "There are on Going Conversion Tasks."
-                    " Are you Sure you Want to Exit?"
+                    "There are ongoing conversion tasks. Are you sure you want to exit?"
                 ),
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                buttons=QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             )
 
             if user_answer == QMessageBox.StandardButton.Yes:
@@ -717,9 +726,8 @@ class VideoMorphMW(QMainWindow):
                         tagged=self.tag_chb.isChecked()
                     )
                     self._show_message_box(
-                        type_=QMessageBox.Icon.Warning,
-                        title=self.tr("Warning!"),
-                        msg=self.tr(
+                        QMessageBox.Icon.Warning,
+                        self.tr(
                             "Could not delete the output file:\n{0}\n\n"
                             "The file may be in use by another application."
                         ).format(output_path),
@@ -809,11 +817,7 @@ class VideoMorphMW(QMainWindow):
                 + "\n"
                 + self.tr("Video not Added to the List of Conversion Tasks")
             )
-            self._show_message_box(
-                type_=QMessageBox.Icon.Critical,
-                title=self.tr("Error!"),
-                msg=msg,
-            )
+            self._show_message_box(QMessageBox.Icon.Critical, msg)
 
             if not self.task_list.length:
                 self._update_ui_when_no_file()
@@ -852,9 +856,8 @@ class VideoMorphMW(QMainWindow):
             self.library.run_player(file_path=file_path)
         except FileNotFoundError:
             self._show_message_box(
-                type_=QMessageBox.Icon.Critical,
-                title=self.tr("Error!"),
-                msg=self.tr("No Video Player Found in your System"),
+                QMessageBox.Icon.Critical,
+                self.tr("No video player was found on this system."),
             )
 
     def open_media_files(self):
@@ -892,9 +895,8 @@ class VideoMorphMW(QMainWindow):
             self.add_tasks(*media_files)
         except FileNotFoundError:
             self._show_message_box(
-                type_=QMessageBox.Icon.Critical,
-                title=self.tr("Error!"),
-                msg=self.tr("No Videos Found in:" + " " + directory),
+                QMessageBox.Icon.Critical,
+                self.tr("No videos were found in: {0}").format(directory),
             )
 
     def remove_media_file(self):
@@ -907,19 +909,17 @@ class VideoMorphMW(QMainWindow):
 
         msg_box = QMessageBox(
             QMessageBox.Icon.Warning,
-            self.tr("Warning!"),
-            self.tr("Remove Video from the List of Conversion Tasks?"),
+            self._dialog_title(QMessageBox.Icon.Warning),
+            self.tr("Remove the selected video from the list?"),
             QMessageBox.StandardButton.NoButton,
             self,
         )
 
-        msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
+        yes_button = msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
         msg_box.addButton(self.tr("&No"), QMessageBox.ButtonRole.RejectRole)
 
         msg_box.exec()
-        if msg_box.clickedButton().text().replace("&", "") == self.tr("Yes").replace(
-            "&", ""
-        ):
+        if msg_box.clickedButton() == yes_button:
             # Delete file from table
             self.tasks_table.removeRow(file_row)
             # Remove file from self.media_list
@@ -994,19 +994,17 @@ class VideoMorphMW(QMainWindow):
         """Clear media conversion list with user confirmation."""
         msg_box = QMessageBox(
             QMessageBox.Icon.Warning,
-            self.tr("Warning!"),
-            self.tr("Remove all the Videos from the List?"),
+            self._dialog_title(QMessageBox.Icon.Warning),
+            self.tr("Remove all videos from the list?"),
             QMessageBox.StandardButton.NoButton,
             self,
         )
 
-        msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
+        yes_button = msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
         msg_box.addButton(self.tr("&No"), QMessageBox.ButtonRole.RejectRole)
 
         msg_box.exec()
-        if msg_box.clickedButton().text().replace("&", "") == self.tr("Yes").replace(
-            "&", ""
-        ):
+        if msg_box.clickedButton() == yes_button:
             # If user says YES clear table of conversion tasks
             self.tasks_table.clearContents()
             self.tasks_table.setRowCount(0)
@@ -1038,9 +1036,8 @@ class VideoMorphMW(QMainWindow):
                 self.library.start_converter(cmd=conversion_cmd)
             except OutputPathCollisionError as collision_err:
                 self._show_message_box(
-                    type_=QMessageBox.Icon.Warning,
-                    title=self.tr("Output Conflict"),
-                    msg=self.tr(
+                    QMessageBox.Icon.Warning,
+                    self.tr(
                         "The selected settings would overwrite the original file:\n{0}\n\n"
                         "Enable 'Delete Input Video Files when Finished' to replace the file "
                         "or choose a different output folder or extension."
@@ -1049,16 +1046,14 @@ class VideoMorphMW(QMainWindow):
                 self._update_ui_when_error_on_conversion()
             except PermissionError:
                 self._show_message_box(
-                    type_=QMessageBox.Icon.Critical,
-                    title=self.tr("Error!"),
-                    msg=self.tr("Can not Write to Selected Folder"),
+                    QMessageBox.Icon.Critical,
+                    self.tr("VideoMorph cannot write to the selected folder."),
                 )
                 self._update_ui_when_error_on_conversion()
             except FileNotFoundError:
                 self._show_message_box(
-                    type_=QMessageBox.Icon.Critical,
-                    title=self.tr("Error!"),
-                    msg=(
+                    QMessageBox.Icon.Critical,
+                    (
                         self.tr("Input Video:")
                         + " "
                         + self.task_list.running_file_name()
@@ -1086,9 +1081,8 @@ class VideoMorphMW(QMainWindow):
                 tagged=self.tag_chb.isChecked()
             )
             self._show_message_box(
-                type_=QMessageBox.Icon.Warning,
-                title=self.tr("Warning!"),
-                msg=self.tr(
+                QMessageBox.Icon.Warning,
+                self.tr(
                     "Could not delete the output file:\n{0}\n\n"
                     "The file may be in use by another application."
                 ).format(output_path),
@@ -1106,9 +1100,8 @@ class VideoMorphMW(QMainWindow):
                 tagged=self.tag_chb.isChecked()
             )
             self._show_message_box(
-                type_=QMessageBox.Icon.Warning,
-                title=self.tr("Warning!"),
-                msg=self.tr(
+                QMessageBox.Icon.Warning,
+                self.tr(
                     "Could not delete the output file:\n{0}\n\n"
                     "The file may be in use by another application."
                 ).format(output_path),
@@ -1149,9 +1142,8 @@ class VideoMorphMW(QMainWindow):
 
                 if finalize_err is not None:
                     self._show_message_box(
-                        type_=QMessageBox.Icon.Warning,
-                        title=self.tr("Warning!"),
-                        msg=self.tr(
+                        QMessageBox.Icon.Warning,
+                        self.tr(
                             "Could not finalize the converted file:\n{0}\n\n"
                             "The temporary file remains on disk."
                         ).format(finalize_err),
@@ -1171,9 +1163,8 @@ class VideoMorphMW(QMainWindow):
 
                         if delete_error is not None:
                             self._show_message_box(
-                                type_=QMessageBox.Icon.Warning,
-                                title=self.tr("Warning!"),
-                                msg=self.tr(
+                                QMessageBox.Icon.Warning,
+                                self.tr(
                                     "Could not delete the original file:\n{0}\n\n{1}"
                                 ).format(output_path_str, delete_error),
                             )
@@ -1182,9 +1173,8 @@ class VideoMorphMW(QMainWindow):
                     else:
                         # Show warning if output file doesn't exist
                         self._show_message_box(
-                            type_=QMessageBox.Icon.Warning,
-                            title=self.tr("Warning!"),
-                            msg=self.tr(
+                            QMessageBox.Icon.Warning,
+                            self.tr(
                                 "Output file was not created successfully. "
                                 "Original file will NOT be deleted for safety."
                             ),
@@ -1198,9 +1188,8 @@ class VideoMorphMW(QMainWindow):
         if self.task_list.is_exhausted:
             if self.library.error is not None:
                 self._show_message_box(
-                    type_=QMessageBox.Icon.Critical,
-                    title="Error!",
-                    msg=self.tr("The Conversion Library has " "Failed with Error:")
+                    QMessageBox.Icon.Critical,
+                    self.tr("The conversion library failed with error:")
                     + " "
                     + self.library.error,
                 )
@@ -1211,9 +1200,8 @@ class VideoMorphMW(QMainWindow):
                     self.shutdown_machine()
                     return
                 self._show_message_box(
-                    type_=QMessageBox.Icon.Information,
-                    title=self.tr("Information!"),
-                    msg=self.tr("Conversion Process Successfully Finished!"),
+                    QMessageBox.Icon.Information,
+                    self.tr("Conversion process successfully finished."),
                 )
                 if self.task_list.all_done:
                     self._update_ui_when_done()
@@ -1221,9 +1209,8 @@ class VideoMorphMW(QMainWindow):
                     self.update_ui_when_ready()
             else:
                 self._show_message_box(
-                    type_=QMessageBox.Icon.Information,
-                    title=self.tr("Information!"),
-                    msg=self.tr("Conversion Process Stopped by the User!"),
+                    QMessageBox.Icon.Information,
+                    self.tr("Conversion process stopped by the user."),
                 )
                 self._update_ui_when_problem()
 
@@ -1403,7 +1390,7 @@ class VideoMorphMW(QMainWindow):
             # Show a warning dialog when user tries to enable file deletion
             msg_box = QMessageBox(
                 QMessageBox.Icon.Warning,
-                self.tr("Warning!"),
+                self._dialog_title(QMessageBox.Icon.Warning),
                 self.tr(
                     "This will PERMANENTLY DELETE the original video files "
                     "after conversion! This action CANNOT be undone.\n\n"

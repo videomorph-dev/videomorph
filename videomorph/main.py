@@ -9,17 +9,39 @@ from videomorph.converter.vmpath import LIBRARY_PATH, resource_path
 from videomorph.forms.videomorph import VideoMorphMW
 
 
+def _dialog_title(icon: QMessageBox.Icon) -> str:
+    """Return a consistent message-box title for the provided icon."""
+    titles = {
+        QMessageBox.Icon.Critical: "Error!",
+        QMessageBox.Icon.Warning: "Warning!",
+        QMessageBox.Icon.Information: "Info!",
+        QMessageBox.Icon.Question: "Info!",
+    }
+    return titles.get(icon, "Info!")
+
+
+def _show_dialog(
+    icon: QMessageBox.Icon,
+    message: str,
+    parent: QWidget | None = None,
+    buttons: QMessageBox.StandardButton = QMessageBox.StandardButton.Ok,
+) -> QMessageBox.StandardButton | None:
+    """Display a modal dialog with consistent styling."""
+    if QApplication.instance() is None:
+        return None
+
+    dialog = QMessageBox(icon, _dialog_title(icon), message, buttons, parent)
+    return dialog.exec()
+
+
 def _warn_user(
     log_message: str,
     dialog_message: str,
     parent: QWidget | None = None,
 ) -> None:
-    """Log a warning and show a dialog when a QApplication is available."""
+    """Log a warning and show a dialog when possible."""
     sys.stderr.write(f"{log_message}\n")
-    if QApplication.instance() is None:
-        return
-
-    QMessageBox.warning(parent, APP_NAME, dialog_message)
+    _show_dialog(QMessageBox.Icon.Warning, dialog_message, parent)
 
 
 def load_translation(
@@ -91,17 +113,8 @@ def main() -> None:
         # Create error message for missing ffmpeg library
         error_msg = main_win.tr(
             "VideoMorph could not find the ffmpeg library on your system.\n\n"
-            "Please install ffmpeg and make sure it is available in your PATH,\n"
-            "or place the ffmpeg executable in the application directory."
+            "Please install ffmpeg and make sure it is available in your PATH"
         )
 
-        msg_box = QMessageBox(
-            QMessageBox.Icon.Critical,
-            main_win.tr("Error!"),
-            error_msg,
-            QMessageBox.StandardButton.NoButton,
-            main_win,
-        )
-        msg_box.addButton("&Ok", QMessageBox.ButtonRole.AcceptRole)
-        if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
-            app.quit()  # Use app.quit() instead of qApp.closeAllWindows()
+        _show_dialog(QMessageBox.Icon.Critical, error_msg, main_win)
+        app.quit()
