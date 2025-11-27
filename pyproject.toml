@@ -7,7 +7,7 @@ name = "videomorph"
 version = "1.6.0"
 description = "Video Converter based on ffmpeg, Python, and Qt6"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "pyqt6>=6.9.1",
 ]

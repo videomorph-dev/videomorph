@@ -42,7 +42,7 @@ VideoMorph uses the following libraries and programs:
 
 - [PyQt](https://www.riverbankcomputing.com/static/Docs/PyQt6/introduction.html)
 - [FFmpeg](http://ffmpeg.org)
-- [Python](https://python.org) > 3.4
+- [Python](https://python.org) >= 3.10
 
 You need to install these programs and libraries for VideoMorph to work properly.
 
