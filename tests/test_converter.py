@@ -1,11 +1,12 @@
 """This module provides tests for converter library."""
 
 from typing import List
+
 from PyQt6.QtCore import QProcess
 
-from videomorph.converter import tasklist
 from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
+from videomorph.converter.tasklist import TaskList
 
 
 class TestConversionLib:
@@ -14,7 +15,7 @@ class TestConversionLib:
     conv_lib = Library()
     profile = Profile()
     profile.update(new_quality="FLV Fullscreen 320x240 (4:3)")
-    media_list = tasklist.TaskList(profile)
+    media_list = TaskList(profile)
 
     @classmethod
     def setup_class(cls) -> None:
@@ -57,9 +58,7 @@ class TestConversionLib:
         """Test Library.start_converter()."""
         self.conv_lib.start_converter(cmd=self.get_conversion_cmd())
 
-        assert (
-            self.conv_lib.converter_state() == QProcess.ProcessState.Starting
-        )
+        assert self.conv_lib.converter_state() == QProcess.ProcessState.Starting
         self.conv_lib.stop_converter()
 
     def test_read_converter_output(self) -> None:

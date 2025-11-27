@@ -13,8 +13,7 @@ from PyQt6.QtWidgets import (
     QTableWidget,
 )
 
-from videomorph.converter import STATUS, VALID_VIDEO_EXT
-
+from videomorph.converter.constants import STATUS, VALID_VIDEO_EXT
 from videomorph.forms import COLUMNS
 
 
@@ -29,12 +28,8 @@ class TasksListTable(QTableWidget):
         self.setColumnCount(4)
         self.setRowCount(0)
         self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        self.setSelectionBehavior(
-            QAbstractItemView.SelectionBehavior.SelectRows
-        )
-        self.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Stretch
-        )
+        self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.setHorizontalHeaderLabels(
             [
                 self.tr("Video Name"),
@@ -92,9 +87,7 @@ class TargetQualityDelegate(QItemDelegate):
         super(TargetQualityDelegate, self).__init__(parent)
         self.parent = parent
 
-    def createEditor(
-        self, parent: Any, option: Any, index: Any
-    ) -> Optional[Any]:
+    def createEditor(self, parent: Any, option: Any, index: Any) -> Optional[Any]:
         """Create a ComboBox to edit the Target Quality."""
         if index.column() == COLUMNS.QUALITY:
             editor = QComboBox(parent)
@@ -122,9 +115,7 @@ class TargetQualityDelegate(QItemDelegate):
     def update(self, editor: Any, index: Any) -> None:
         """Update several things in the interface."""
         self.parent.update_table_progress_column(row=index.row())
-        self.parent.task_list.set_task_status(
-            position=index.row(), status=STATUS.todo
-        )
+        self.parent.task_list.set_task_status(position=index.row(), status=STATUS.todo)
         self.parent.total_duration = self.parent.task_list.duration
         self.parent.update_ui_when_ready()
         self.parent.tasks_table.setEditTriggers(
