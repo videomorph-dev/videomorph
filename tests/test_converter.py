@@ -1,8 +1,6 @@
 """This module provides tests for converter library."""
 
 from typing import List
-
-import pytest
 from PyQt6.QtCore import QProcess
 
 from videomorph.converter import tasklist

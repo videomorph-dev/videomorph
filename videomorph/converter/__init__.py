@@ -4,7 +4,6 @@ from collections import namedtuple
 from typing import Callable, Optional
 
 from videomorph.converter.utils import get_locale
-from videomorph.converter.vmpath import BASE_DIR, SYS_PATHS, VM_PATHS
 
 try:
     from os import cpu_count
@@ -54,7 +53,4 @@ __all__ = [
     "STATUS",
     "CPU_CORES",
     "get_cpu_cores",
-    "BASE_DIR",
-    "SYS_PATHS",
-    "VM_PATHS",
 ]

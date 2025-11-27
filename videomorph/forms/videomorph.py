@@ -56,11 +56,14 @@ from videomorph.converter.vmpath import (
     sound_file,
 )
 
-from videomorph.forms import COLUMNS, videomorph_qrc
+from videomorph.forms import COLUMNS, videomorph_qrc as _videomorph_qrc
 from videomorph.forms.about import AboutVMDialog
 from videomorph.forms.changelog import ChangelogDialog
 from videomorph.forms.info import InfoDialog
 from videomorph.forms.vmwidgets import TasksListTable
+
+
+_ = _videomorph_qrc  # Ensure Qt resources are registered.
 
 
 class VideoMorphMW(QMainWindow):
