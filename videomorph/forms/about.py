@@ -1,5 +1,3 @@
-"""This module provides a dialog to show app information."""
-
 from pathlib import Path
 from typing import Optional
 
@@ -19,7 +17,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from videomorph.converter.constants import __app_name__, __version__
+from videomorph import __app_name__, __version__
 from videomorph.converter.vmpath import doc_file
 
 

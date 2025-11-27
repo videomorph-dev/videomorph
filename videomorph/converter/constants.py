@@ -2,17 +2,30 @@
 
 from collections import namedtuple
 
-from videomorph.converter.utils import get_cpu_cores, get_locale
-
-__app_name__ = "VideoMorph"
-__version__ = "1.6.0"
+from videomorph.converter.utils import get_locale
 
 LOCALE = get_locale()
-CPU_CORES = get_cpu_cores()
 
-VIDEO_FILTERS = (
-    "*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv"
-    " *.flv *.vob *.ts *.mts *.3gp *.ogv *.mpg *.mp4 *.avi"
+VIDEO_FILTERS = " ".join(
+    [
+        "*.mov",
+        "*.f4v",
+        "*.webm",
+        "*.dat",
+        "*.ogg",
+        "*.mkv",
+        "*.wv",
+        "*.wmv",
+        "*.flv",
+        "*.vob",
+        "*.ts",
+        "*.mts",
+        "*.3gp",
+        "*.ogv",
+        "*.mpg",
+        "*.mp4",
+        "*.avi",
+    ]
 )
 
 VALID_VIDEO_EXT = {ext.lstrip("*") for ext in VIDEO_FILTERS.split()}

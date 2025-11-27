@@ -1,11 +1,9 @@
-"""This module provides a dialog to show changelog."""
-
 import gzip
 import re
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from videomorph.converter.constants import __app_name__, __version__
+from videomorph import __app_name__, __version__
 from videomorph.converter.vmpath import doc_file
 
 

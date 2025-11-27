@@ -2,11 +2,11 @@
 
 import shlex
 import time
-from os import W_OK, access
+from os import W_OK, access, cpu_count
 from pathlib import Path
 from typing import List, Optional, Union
 
-from videomorph.converter.constants import CPU_CORES, STATUS
+from videomorph.converter.constants import STATUS
 from videomorph.converter.profile import Profile
 from videomorph.converter.video import Video
 
@@ -74,11 +74,17 @@ class Task:
             ["-i", str(self.video.path)]
             + subtitle_opt
             + shlex.split(params)
-            + ["-threads", str(CPU_CORES)]
+            + ["-threads", str(self.get_cpu_cores())]
             + ["-y", str(self._active_output_path)]
         )
 
         return cmd
+
+    def get_cpu_cores(self) -> int:
+        """Return usable CPU cores (leave one core free)."""
+        if (cores := cpu_count()) is None or cores <= 1:
+            return 1
+        return cores - 1
 
     def finalize_output(self) -> None:
         """Finalize output file when temporary output was used."""
@@ -207,7 +213,7 @@ class Task:
                 subtitle_opt = [
                     "-vf",
                     "subtitles='{0}':force_style='Fontsize=24'"
-                ":charenc=cp1252".format(str(self.subtitle_path)),
+                    ":charenc=cp1252".format(str(self.subtitle_path)),
                 ]
                 return subtitle_opt
             except FileNotFoundError:

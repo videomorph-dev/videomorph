@@ -29,7 +29,8 @@ class TasksListTable(QTableWidget):
         self.setRowCount(0)
         self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        if (header := self.horizontalHeader()) is not None:
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.setHorizontalHeaderLabels(
             [
                 self.tr("Video Name"),

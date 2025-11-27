@@ -1,5 +1,3 @@
-"""This module defines the VideoMorph main window that holds the UI."""
-
 from collections import OrderedDict
 from functools import partial
 from pathlib import Path
@@ -36,8 +34,13 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from videomorph import __app_name__, __version__
 from videomorph.converter.console import search_directory_recursively
-from videomorph.converter.constants import LOCALE, STATUS, VIDEO_FILTERS, __app_name__, __version__
+from videomorph.converter.constants import (
+    LOCALE,
+    STATUS,
+    VIDEO_FILTERS,
+)
 from videomorph.converter.launchers import launcher_factory
 from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
@@ -81,7 +84,6 @@ class VideoMorphMW(QMainWindow):
         self.library.setup_converter(
             reader=self._ready_read,
             finisher=self._finish_file_encoding,
-            # process_channel=QProcess.ProcessChannelMode.MergedChannels # does not work
         )
 
         self.profile = Profile()
@@ -128,7 +130,8 @@ class VideoMorphMW(QMainWindow):
         settings_gb = QGroupBox(self.central_widget)
         settings_gb.setTitle(self.tr("Conversion Options"))
         size_policy = QSizePolicy(
-            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
+            QSizePolicy.Policy.Fixed,
+            QSizePolicy.Policy.Preferred,
         )
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
@@ -142,7 +145,9 @@ class VideoMorphMW(QMainWindow):
 
         profile_tip = self.tr("Select a Video Format")
         self.profiles_combo = QComboBox(
-            settings_gb, statusTip=profile_tip, toolTip=profile_tip
+            settings_gb,
+            statusTip=profile_tip,
+            toolTip=profile_tip,
         )
         self.profiles_combo.setMinimumSize(QSize(200, 0))
         self.profiles_combo.setIconSize(QSize(22, 22))
@@ -153,7 +158,9 @@ class VideoMorphMW(QMainWindow):
 
         preset_tip = self.tr("Select a Video Target Quality")
         self.quality_combo = QComboBox(
-            settings_gb, statusTip=preset_tip, toolTip=preset_tip
+            settings_gb,
+            statusTip=preset_tip,
+            toolTip=preset_tip,
         )
         self.quality_combo.setMinimumSize(QSize(200, 0))
         self.profiles_combo.currentIndexChanged.connect(
@@ -196,10 +203,10 @@ class VideoMorphMW(QMainWindow):
 
         shutdown_text = self.tr("Shutdown Computer when Conversion Finished")
         self.shutdown_chb = QCheckBox(
-            shutdown_text, statusTip=shutdown_text, toolTip=shutdown_text
+            shutdown_text,
+            statusTip=shutdown_text,
+            toolTip=shutdown_text,
         )
-        # IMPORTANT: Shutdown should NEVER be default behavior - user must explicitly check this
-        self.shutdown_chb.setChecked(False)  # Ensure unchecked by default for safety
         settings_layout.addWidget(self.shutdown_chb)
         settings_layout.addStretch()
 
@@ -248,7 +255,9 @@ class VideoMorphMW(QMainWindow):
 
         outputbtn_tip = self.tr("Choose the Output Folder")
         self.output_btn = QToolButton(
-            output_dir_gb, statusTip=outputbtn_tip, toolTip=outputbtn_tip
+            output_dir_gb,
+            statusTip=outputbtn_tip,
+            toolTip=outputbtn_tip,
         )
         self.output_btn.setIcon(QIcon(":/icons/output-folder.png"))
         self.output_btn.clicked.connect(self.output_directory)
@@ -869,7 +878,6 @@ class VideoMorphMW(QMainWindow):
         # Use custom dialog with cleaner filter display
         files_paths = self._select_files(
             dialog_title=self.tr("Select Videos"),
-            files_filter="",  # Not used with custom dialog
             source_dir=source_dir,
         )
 
@@ -959,9 +967,7 @@ class VideoMorphMW(QMainWindow):
     def _select_files(
         self,
         dialog_title,
-        files_filter,
         source_dir=QDir.homePath(),
-        single_file=False,
     ):
         # Validate source_dir
         source_path = Path(source_dir)

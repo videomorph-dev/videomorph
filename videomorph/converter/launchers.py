@@ -1,11 +1,11 @@
 """This module provides classes for handing platform dependent stuffs."""
 
+import os
 import webbrowser
+from pathlib import Path
 from subprocess import PIPE, Popen
 from sys import platform
 from typing import Any, Optional, Type
-
-from videomorph.converter.utils import which
 
 
 def get_all_subclasses(cls):
@@ -88,16 +88,21 @@ class _UnixLauncher(_Launcher):
         if platform == "darwin":
             # Use macOS native 'open' command
             spawn_process(["open", url])
-        elif which("xdg-open") is not None:
-            spawn_process([which("xdg-open"), url])
         else:
-            player = self._get_player()
-            spawn_process([which(player), url])
+            opener = self._which("xdg-open")
+            if opener is not None:
+                spawn_process([opener, url])
+            else:
+                player = self._get_player()
+                resolved_player = self._which(player)
+                if resolved_player is None:
+                    raise FileNotFoundError("Player not found")
+                spawn_process([resolved_player, url])
 
     def _get_player(self):
         """Return a player from a list of popular players."""
         for player in self.players:
-            if which(player) is not None:
+            if self._which(player) is not None:
                 return player
 
         raise FileNotFoundError("Player not found")
@@ -134,7 +139,7 @@ class _UnixLauncher(_Launcher):
                     "sine=frequency=800:duration=0.3",
                 ]
 
-        if which("ffplay") is not None:
+        if self._which("ffplay") is not None:
             import subprocess
 
             cmd = _get_ffplay_command(sound)
@@ -149,6 +154,22 @@ class _UnixLauncher(_Launcher):
             spawn_process(["osascript", "-e", "beep"])
         else:
             spawn_process(["echo", "-e", "\\a"])
+
+    @staticmethod
+    def _which(app: str) -> str | None:
+        """Resolve the absolute path for an executable in PATH."""
+        if not app or not app.strip():
+            return None
+
+        sys_paths = os.environ.get("PATH", os.defpath).split(os.pathsep)
+        for path in sys_paths:
+            try:
+                candidate = Path(path, app)
+                if candidate.exists() and candidate.is_file():
+                    return str(candidate)
+            except (OSError, PermissionError):
+                continue
+        return None
 
 
 class _LinuxLauncher(_UnixLauncher):

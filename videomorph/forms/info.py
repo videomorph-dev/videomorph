@@ -1,5 +1,3 @@
-"""This module provides a dialog to show changelog."""
-
 from pathlib import Path
 
 from PyQt6 import QtWidgets
@@ -165,8 +163,13 @@ class InfoDialog(QtWidgets.QDialog):
         self.ok_button.clicked.connect(self.close)
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addSpacerItem(
-            QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding,
-                        QtWidgets.QSizePolicy.Policy.Minimum))
+            QSpacerItem(
+                40,
+                20,
+                QtWidgets.QSizePolicy.Policy.Expanding,
+                QtWidgets.QSizePolicy.Policy.Minimum,
+            )
+        )
         button_layout.addWidget(self.ok_button)
         whole_layout.addLayout(button_layout)
         self._show_video_info(self.position)
@@ -179,31 +182,23 @@ class InfoDialog(QtWidgets.QDialog):
         file_path = task.video.format_info["filename"]
         filename = Path(file_path).name
         self.label_file_name_value.setText(filename)
-        self.label_size_value.setText(
-            write_size(task.video.format_info["size"])
-        )
+        self.label_size_value.setText(write_size(task.video.format_info["size"]))
         self.label_duration_value.setText(
             write_time(task.video.format_info["duration"])
         )
-        self.label_format_name_value.setText(
-            task.video.format_info["format_name"]
-        )
+        self.label_format_name_value.setText(task.video.format_info["format_name"])
         self.label_format_long_name_value.setText(
             task.video.format_info["format_long_name"]
         )
 
-        self.label_codec_name_value.setText(
-            task.video.video_info["codec_name"]
-        )
+        self.label_codec_name_value.setText(task.video.video_info["codec_name"])
         self.label_codec_long_name_value.setText(
             task.video.video_info["codec_long_name"]
         )
         self.label_bit_rate_value.setText(task.video.video_info["bit_rate"])
         self.label_width_value.setText(task.video.video_info["width"])
         self.label_height_value.setText(task.video.video_info["height"])
-        self.label_acodec_name_value.setText(
-            task.video.audio_info["codec_name"]
-        )
+        self.label_acodec_name_value.setText(task.video.audio_info["codec_name"])
         self.label_acodec_long_name_value.setText(
             task.video.audio_info["codec_long_name"]
         )

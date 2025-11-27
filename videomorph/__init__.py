@@ -1,1 +1,2 @@
-"""This module defines the videomorph package and the needed constants."""
+__app_name__ = "VideoMorph"
+__version__ = "1.6.0"

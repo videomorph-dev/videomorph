@@ -2,36 +2,12 @@
 
 import pytest
 
-from videomorph.converter.utils import (
-    get_locale,
-    which,
-    write_size,
-    write_time,
-)
+from videomorph.converter.utils import get_locale, write_size, write_time
 
 
 def test_get_locale_all_es() -> None:
     """Test get_locale."""
     assert get_locale() in {"en_US", "es_ES"}
-
-
-def test_which_existing_app() -> None:
-    """Test for an existing app."""
-    result = which("ls")  # ls is available on macOS/Linux
-    assert result is not None
-    assert result.endswith("ls")
-
-
-def test_which_non_existing_app() -> None:
-    """Test for a non existing app."""
-    result = which("hypothetical_app")
-    assert result is None
-
-
-def test_which_null_arg() -> None:
-    """Test for a null string param."""
-    result = which("")
-    assert result is None
 
 
 def test_write_time_none() -> None:

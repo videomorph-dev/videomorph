@@ -1,5 +1,3 @@
-"""This module defines the forms package."""
-
 from collections import namedtuple
 
 # Conversion tasks list table columns
