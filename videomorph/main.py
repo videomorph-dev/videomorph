@@ -1,10 +1,11 @@
 import sys
 from pathlib import Path
+from typing import Callable
 
 from PyQt6.QtCore import QTranslator
 from PyQt6.QtWidgets import QApplication, QMessageBox, QWidget
 
-from videomorph.converter import APP_NAME, LOCALE
+from videomorph.converter import LOCALE
 from videomorph.converter.vmpath import LIBRARY_PATH, resource_path
 from videomorph.forms.videomorph import VideoMorphMW
 
@@ -25,13 +26,13 @@ def _show_dialog(
     message: str,
     parent: QWidget | None = None,
     buttons: QMessageBox.StandardButton = QMessageBox.StandardButton.Ok,
-) -> QMessageBox.StandardButton | None:
+) -> None:
     """Display a modal dialog with consistent styling."""
     if QApplication.instance() is None:
-        return None
+        return
 
     dialog = QMessageBox(icon, _dialog_title(icon), message, buttons, parent)
-    return dialog.exec()
+    dialog.exec()
 
 
 def _warn_user(
@@ -44,10 +45,13 @@ def _warn_user(
     _show_dialog(QMessageBox.Icon.Warning, dialog_message, parent)
 
 
+Resolver = Callable[[str], Path]
+
+
 def load_translation(
     locale: str,
     translator: QTranslator,
-    resolver=resource_path,
+    resolver: Resolver = resource_path,
     *,
     parent: QWidget | None = None,
 ) -> Path | None:
@@ -97,24 +101,20 @@ def load_translation(
 def main() -> None:
     """Main app function."""
     app = QApplication(sys.argv)
-    app_translator = QTranslator()
-    loaded_translation = load_translation(LOCALE, app_translator)
+    translator = QTranslator()
+    loaded_translation = load_translation(LOCALE, translator)
     if loaded_translation:
-        app.installTranslator(app_translator)
+        app.installTranslator(translator)
 
-    # Create the Main Window
-    main_win = VideoMorphMW()
+    window = VideoMorphMW()
 
-    # Check for conversion library and run
-    if LIBRARY_PATH:
-        main_win.show()
-        sys.exit(app.exec())
-    else:
-        # Create error message for missing ffmpeg library
-        error_msg = main_win.tr(
+    if not LIBRARY_PATH:
+        error_msg = window.tr(
             "VideoMorph could not find the ffmpeg library on your system.\n\n"
             "Please install ffmpeg and make sure it is available in your PATH"
         )
-
-        _show_dialog(QMessageBox.Icon.Critical, error_msg, main_win)
+        _show_dialog(QMessageBox.Icon.Critical, error_msg, window)
         app.quit()
+
+    window.show()
+    sys.exit(app.exec())
