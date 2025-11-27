@@ -36,7 +36,13 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from videomorph.converter.constants import APP_NAME, LOCALE, STATUS, VERSION, VIDEO_FILTERS
+from videomorph.converter import (
+    LOCALE,
+    STATUS,
+    VIDEO_FILTERS,
+    __app_name__,
+    __version__,
+)
 from videomorph.converter.console import search_directory_recursively
 from videomorph.converter.launchers import launcher_factory
 from videomorph.converter.library import Library
@@ -46,16 +52,17 @@ from videomorph.converter.tasklist import TaskList
 from videomorph.converter.utils import write_time
 from videomorph.converter.vmpath import (
     manual_path,
-    settings_file as settings_file_path,
     sound_file,
 )
-
-from videomorph.forms import COLUMNS, videomorph_qrc as _videomorph_qrc
+from videomorph.converter.vmpath import (
+    settings_file as settings_file_path,
+)
+from videomorph.forms import COLUMNS
+from videomorph.forms import videomorph_qrc as _videomorph_qrc
 from videomorph.forms.about import AboutVMDialog
 from videomorph.forms.changelog import ChangelogDialog
 from videomorph.forms.info import InfoDialog
 from videomorph.forms.vmwidgets import TasksListTable
-
 
 _ = _videomorph_qrc  # Ensure Qt resources are registered.
 
@@ -65,7 +72,7 @@ class VideoMorphMW(QMainWindow):
 
     def __init__(self):
         super(VideoMorphMW, self).__init__()
-        self.title = APP_NAME + " " + VERSION
+        self.title = __app_name__ + " " + __version__
         self.icon = self._get_app_icon()
         self.source_dir = QDir.homePath()
         self.task_list_duration = 0.0
@@ -400,8 +407,8 @@ class VideoMorphMW(QMainWindow):
             ),
             "videomorph_web_action": dict(
                 icon=QIcon(":/logo/videomorph.png"),
-                text=APP_NAME + " " + self.tr("&Web Page"),
-                tip=self.tr("Open") + " " + APP_NAME + " " + self.tr("Web Page"),
+                text=__app_name__ + " " + self.tr("&Web Page"),
+                tip=self.tr("Open") + " " + __app_name__ + " " + self.tr("Web Page"),
                 callback=self.videomorph_web,
             ),
             "exit_action": dict(
@@ -719,9 +726,9 @@ class VideoMorphMW(QMainWindow):
                 if not self.task_list.delete_running_file_output(
                     tagged=self.tag_chb.isChecked()
                 ):
-                    output_path = self.task_list.get_task(self.task_list.position).get_output_path(
-                        tagged=self.tag_chb.isChecked()
-                    )
+                    output_path = self.task_list.get_task(
+                        self.task_list.position
+                    ).get_output_path(tagged=self.tag_chb.isChecked())
                     self._show_message_box(
                         QMessageBox.Icon.Warning,
                         self.tr(
@@ -912,7 +919,9 @@ class VideoMorphMW(QMainWindow):
             self,
         )
 
-        yes_button = msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
+        yes_button = msg_box.addButton(
+            self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole
+        )
         msg_box.addButton(self.tr("&No"), QMessageBox.ButtonRole.RejectRole)
 
         msg_box.exec()
@@ -997,7 +1006,9 @@ class VideoMorphMW(QMainWindow):
             self,
         )
 
-        yes_button = msg_box.addButton(self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole)
+        yes_button = msg_box.addButton(
+            self.tr("&Yes"), QMessageBox.ButtonRole.AcceptRole
+        )
         msg_box.addButton(self.tr("&No"), QMessageBox.ButtonRole.RejectRole)
 
         msg_box.exec()
@@ -1073,10 +1084,12 @@ class VideoMorphMW(QMainWindow):
             self.tr("Stopped!")
         )
         # Delete the file when conversion is stopped by the user
-        if not self.task_list.delete_running_file_output(tagged=self.tag_chb.isChecked()):
-            output_path = self.task_list.get_task(self.task_list.position).get_output_path(
-                tagged=self.tag_chb.isChecked()
-            )
+        if not self.task_list.delete_running_file_output(
+            tagged=self.tag_chb.isChecked()
+        ):
+            output_path = self.task_list.get_task(
+                self.task_list.position
+            ).get_output_path(tagged=self.tag_chb.isChecked())
             self._show_message_box(
                 QMessageBox.Icon.Warning,
                 self.tr(
@@ -1092,10 +1105,12 @@ class VideoMorphMW(QMainWindow):
         """Stop the conversion process for all the files in list."""
         # Delete the file when conversion is stopped by the user
         self.library.stop_converter()
-        if not self.task_list.delete_running_file_output(tagged=self.tag_chb.isChecked()):
-            output_path = self.task_list.get_task(self.task_list.position).get_output_path(
-                tagged=self.tag_chb.isChecked()
-            )
+        if not self.task_list.delete_running_file_output(
+            tagged=self.tag_chb.isChecked()
+        ):
+            output_path = self.task_list.get_task(
+                self.task_list.position
+            ).get_output_path(tagged=self.tag_chb.isChecked())
             self._show_message_box(
                 QMessageBox.Icon.Warning,
                 self.tr(

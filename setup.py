@@ -3,7 +3,7 @@
 from pathlib import Path
 from sys import platform
 
-from videomorph.converter.constants import APP_NAME, VERSION
+from videomorph.converter.constants import __app_name__, __version__
 from videomorph.converter.vmpath import SYS_PATHS, VM_PATHS
 
 try:
@@ -27,8 +27,8 @@ VideoMorph is a video converter, just that. If you want a video editor,
 VideoMorph isn't for you."""
 
 COMMONS = dict(
-    name=APP_NAME.lower(),
-    version=VERSION,
+    name=__app_name__.lower(),
+    version=__version__,
     description="Video Converter based on ffmpeg, Python, and Qt6.",
     long_description=LONG_DESCRIPTION,
     author="Ozkar L. Garcell",

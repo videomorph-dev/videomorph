@@ -4,9 +4,11 @@ from collections import namedtuple
 
 from videomorph.converter.utils import get_cpu_cores, get_locale
 
-APP_NAME = "VideoMorph"
-VERSION = "1.6.0"
+__app_name__ = "VideoMorph"
+__version__ = "1.6.0"
+
 LOCALE = get_locale()
+CPU_CORES = get_cpu_cores()
 
 VIDEO_FILTERS = (
     "*.mov *.f4v *.webm *.dat *.ogg *.mkv *.wv *.wmv"
@@ -15,18 +17,17 @@ VIDEO_FILTERS = (
 
 VALID_VIDEO_EXT = {ext.lstrip("*") for ext in VIDEO_FILTERS.split()}
 
-MediaFileStatus = namedtuple("MediaFileStatus", "todo done stopped")
-STATUS = MediaFileStatus("Todo", "Done", "Stopped")
+_MediaFileStatus = namedtuple("MediaFileStatus", "todo done stopped")
+STATUS = _MediaFileStatus("Todo", "Done", "Stopped")
 
-CPU_CORES = get_cpu_cores()
 
 __all__ = [
-    "APP_NAME",
-    "VERSION",
+    "__app_name__",
+    "__version__",
     "LOCALE",
     "VIDEO_FILTERS",
     "VALID_VIDEO_EXT",
-    "MediaFileStatus",
+    "_MediaFileStatus",
     "STATUS",
     "CPU_CORES",
     "get_cpu_cores",

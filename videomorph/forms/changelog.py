@@ -5,7 +5,7 @@ import re
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from videomorph.converter.constants import APP_NAME, VERSION
+from videomorph.converter import __app_name__, __version__
 from videomorph.converter.vmpath import doc_file
 
 
@@ -16,7 +16,7 @@ class ChangelogDialog(QtWidgets.QDialog):
         super(ChangelogDialog, self).__init__(parent)
 
         self.resize(800, 600)
-        self.setWindowTitle(APP_NAME + " " + VERSION)
+        self.setWindowTitle(__app_name__ + " " + __version__)
         size_policy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum
         )

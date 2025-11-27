@@ -5,7 +5,7 @@ from typing import Callable
 from PyQt6.QtCore import QTranslator
 from PyQt6.QtWidgets import QApplication, QMessageBox, QWidget
 
-from videomorph.converter.constants import LOCALE
+from videomorph.converter import LOCALE
 from videomorph.converter.vmpath import LIBRARY_PATH, resource_path
 from videomorph.forms.videomorph import VideoMorphMW
 

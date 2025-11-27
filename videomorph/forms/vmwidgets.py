@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (
     QTableWidget,
 )
 
-from videomorph.converter.constants import STATUS, VALID_VIDEO_EXT
+from videomorph.converter import STATUS, VALID_VIDEO_EXT
 
 from videomorph.forms import COLUMNS
 

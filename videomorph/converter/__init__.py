@@ -1,5 +1,24 @@
 """This module defines the converter package."""
 
-"""Backward compatibility import shim for legacy code."""
+from . import tasklist, utils
+from .constants import (
+    CPU_CORES,
+    LOCALE,
+    STATUS,
+    VALID_VIDEO_EXT,
+    VIDEO_FILTERS,
+    __app_name__,
+    __version__,
+)
 
-from videomorph.converter.constants import *  # noqa: F401,F403
+__all__ = [
+    "__app_name__",
+    "__version__",
+    "LOCALE",
+    "VIDEO_FILTERS",
+    "VALID_VIDEO_EXT",
+    "STATUS",
+    "CPU_CORES",
+    "tasklist",
+    "utils",
+]

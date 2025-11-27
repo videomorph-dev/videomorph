@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from videomorph.converter.constants import APP_NAME, VERSION
+from videomorph.converter import __app_name__, __version__
 from videomorph.converter.vmpath import doc_file
 
 
@@ -46,7 +46,7 @@ class AboutVMDialog(QDialog):
             'font-size:20pt; font-weight:600;">{n}</span>'
             '</p><p align="center"><span style=" '
             'font-size:9pt; font-weight:600;">Version {v}'
-            "</span></p>".format(n=APP_NAME, v=VERSION)
+            "</span></p>".format(n=__app_name__, v=__version__)
         )
         self.label_2.setMinimumSize(QSize(0, 64))
         self.label_2.setMaximumSize(QSize(16777215, 64))

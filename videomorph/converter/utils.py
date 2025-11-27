@@ -1,5 +1,3 @@
-"""This module contains some utilities and functions."""
-
 import os
 from collections.abc import Callable
 from locale import getlocale
@@ -14,15 +12,14 @@ except ImportError:  # pragma: no cover - fallback for exotic platforms
 
 
 def get_locale() -> str:
-    """Return the default locale string."""
+    """Return the default locale string or en_US."""
     try:
         locale_info = getlocale()
         if locale_info and locale_info[1] and locale_info[1].startswith("es_"):
             return "es_ES"
         return "en_US"
     except (TypeError, AttributeError):
-        # Fallback to English if locale detection fails
-        return "en_US"
+        return "en_US"  # Fallback to English
 
 
 def which(app: str) -> str | None:
