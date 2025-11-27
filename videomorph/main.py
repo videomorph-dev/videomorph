@@ -79,9 +79,9 @@ def load_translation(
         if not translation.exists():
             continue
 
-        path_str = translation.__str__()
+        path_str = str(translation)
         filename = translation.stem
-        directory = translation.parent.__str__()
+        directory = str(translation.parent)
 
         if translator.load(path_str) or translator.load(filename, directory):
             return translation

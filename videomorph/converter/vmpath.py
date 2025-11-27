@@ -202,7 +202,7 @@ class FFmpegLocator:
 
     def locate(self, binary: str) -> Optional[str]:
         for candidate in self._candidate_binaries(binary):
-            return candidate.__str__()
+            return str(candidate)
         return None
 
     @property

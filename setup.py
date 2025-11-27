@@ -49,36 +49,24 @@ COMMONS_SETUPTOOLS = dict(
 
 LINUX_DATA_FILES = dict(
     data_files=[  # Desktop entry
-        (
-            SYS_PATHS["apps"].__str__(),
-            [Path(VM_PATHS["apps"], "videomorph.desktop").__str__()],
-        ),
+        (str(SYS_PATHS["apps"]), [str(Path(VM_PATHS["apps"], "videomorph.desktop"))]),
         # App icon
-        (
-            SYS_PATHS["icons"].__str__(),
-            [Path(VM_PATHS["icons"], "videomorph.png").__str__()],
-        ),
+        (str(SYS_PATHS["icons"]), [str(Path(VM_PATHS["icons"], "videomorph.png"))]),
         # App sounds
-        (
-            SYS_PATHS["sounds"].__str__(),
-            [Path(VM_PATHS["sounds"], "successful.wav").__str__()],
-        ),
+        (str(SYS_PATHS["sounds"]), [str(Path(VM_PATHS["sounds"], "successful.wav"))]),
         # App translation file
-        (
-            SYS_PATHS["i18n"].__str__(),
-            [Path(VM_PATHS["i18n"], "videomorph_es.qm").__str__()],
-        ),
+        (str(SYS_PATHS["i18n"]), [str(Path(VM_PATHS["i18n"], "videomorph_es.qm"))]),
         # Default conversion profiles
         (
-            SYS_PATHS["profiles"].__str__(),
+            str(SYS_PATHS["profiles"]),
             [
-                Path(VM_PATHS["profiles"], "default.json").__str__(),
-                Path(VM_PATHS["profiles"], "customized.json").__str__(),
+                str(Path(VM_PATHS["profiles"], "default.json")),
+                str(Path(VM_PATHS["profiles"], "customized.json")),
             ],
         ),
         # Documentation files
         (
-            SYS_PATHS["doc"].__str__(),
+            str(SYS_PATHS["doc"]),
             [
                 "README.md",
                 "LICENSE",
@@ -91,21 +79,18 @@ LINUX_DATA_FILES = dict(
         ),
         # User's manual
         (
-            SYS_PATHS["help"].__str__(),
+            str(SYS_PATHS["help"]),
             [
-                Path(VM_PATHS["help"], "manual_es.pdf").__str__(),
-                Path(VM_PATHS["help"], "manual_en.pdf").__str__(),
+                str(Path(VM_PATHS["help"], "manual_es.pdf")),
+                str(Path(VM_PATHS["help"], "manual_en.pdf")),
             ],
         ),
         # Man page
-        (
-            SYS_PATHS["man"].__str__(),
-            [Path(VM_PATHS["man"], "videomorph.1.gz").__str__()],
-        ),
+        (str(SYS_PATHS["man"]), [str(Path(VM_PATHS["man"], "videomorph.1.gz"))]),
     ]
 )
 
-LINUX_DISTUTILS = dict(scripts=[Path(VM_PATHS["bin"], "videomorph").__str__()])
+LINUX_DISTUTILS = dict(scripts=[str(Path(VM_PATHS["bin"], "videomorph"))])
 
 DARWIN_DATA_FILES = LINUX_DATA_FILES
 
@@ -113,31 +98,22 @@ DARWIN_DISTUTILS = LINUX_DISTUTILS
 
 WIN32_DATA_FILES = dict(
     data_files=[  # App icon
-        (
-            SYS_PATHS["icons"].__str__(),
-            [Path(VM_PATHS["icons"], "videomorph.ico").__str__()],
-        ),
+        (str(SYS_PATHS["icons"]), [str(Path(VM_PATHS["icons"], "videomorph.ico"))]),
         # App sounds
-        (
-            SYS_PATHS["sounds"].__str__(),
-            [Path(VM_PATHS["sounds"], "successful.wav").__str__()],
-        ),
+        (str(SYS_PATHS["sounds"]), [str(Path(VM_PATHS["sounds"], "successful.wav"))]),
         # App translation file
-        (
-            SYS_PATHS["i18n"].__str__(),
-            [Path(VM_PATHS["i18n"], "videomorph_es.qm").__str__()],
-        ),
+        (str(SYS_PATHS["i18n"]), [str(Path(VM_PATHS["i18n"], "videomorph_es.qm"))]),
         # Default conversion profiles
         (
-            SYS_PATHS["profiles"].__str__(),
+            str(SYS_PATHS["profiles"]),
             [
-                Path(VM_PATHS["profiles"], "default.json").__str__(),
-                Path(VM_PATHS["profiles"], "customized.json").__str__(),
+                str(Path(VM_PATHS["profiles"], "default.json")),
+                str(Path(VM_PATHS["profiles"], "customized.json")),
             ],
         ),
         # Documentation files
         (
-            SYS_PATHS["doc"].__str__(),
+            str(SYS_PATHS["doc"]),
             [
                 "README.md",
                 "LICENSE",
@@ -150,10 +126,10 @@ WIN32_DATA_FILES = dict(
         ),
         # User's manual
         (
-            SYS_PATHS["help"].__str__(),
+            str(SYS_PATHS["help"]),
             [
-                Path(VM_PATHS["help"], "manual_es.pdf").__str__(),
-                Path(VM_PATHS["help"], "manual_en.pdf").__str__(),
+                str(Path(VM_PATHS["help"], "manual_es.pdf")),
+                str(Path(VM_PATHS["help"], "manual_en.pdf")),
             ],
         ),
     ]

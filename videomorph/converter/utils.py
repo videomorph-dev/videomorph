@@ -5,10 +5,7 @@ from os import pathsep
 from pathlib import Path
 from typing import Optional, Union
 
-try:
-    from os import cpu_count
-except ImportError:  # pragma: no cover - fallback for exotic platforms
-    cpu_count = None  # type: ignore[assignment]
+from os import cpu_count
 
 
 def get_locale() -> str:
@@ -33,7 +30,7 @@ def which(app: str) -> str | None:
         try:
             app_path = Path(path, app)
             if app_path.exists() and app_path.is_file():
-                return app_path.__str__()
+                return str(app_path)
         except (OSError, PermissionError):
             # Skip paths that can't be accessed
             continue

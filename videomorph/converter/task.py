@@ -66,16 +66,16 @@ class Task:
                 self._active_output_path = self._temp_output_path
                 self._skip_video_delete = True
             else:
-                raise OutputPathCollisionError(desired_output.__str__())
+                raise OutputPathCollisionError(str(desired_output))
 
         # Build the conversion command
         params = self.profile.params or ""
         cmd = (
-            ["-i", self.video.path.__str__()]
+            ["-i", str(self.video.path)]
             + subtitle_opt
             + shlex.split(params)
             + ["-threads", str(CPU_CORES)]
-            + ["-y", self._active_output_path.__str__()]
+            + ["-y", str(self._active_output_path)]
         )
 
         return cmd
@@ -207,7 +207,7 @@ class Task:
                 subtitle_opt = [
                     "-vf",
                     "subtitles='{0}':force_style='Fontsize=24'"
-                    ":charenc=cp1252".format(self.subtitle_path.__str__()),
+                ":charenc=cp1252".format(str(self.subtitle_path)),
                 ]
                 return subtitle_opt
             except FileNotFoundError:

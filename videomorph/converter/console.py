@@ -19,7 +19,7 @@ def search_directory_recursively(
 
     for path in dir_path.rglob("*"):
         if path.is_file() and path.suffix.lower() in VALID_VIDEO_EXT:
-            files.append(path.__str__())
+                    files.append(str(path))
 
     if not files:
         raise FileNotFoundError(f"No Video Files Found in: {directory}")

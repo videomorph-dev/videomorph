@@ -28,7 +28,7 @@ class Probe:
 
     def _probe(self, args: List[str]) -> Any:
         """Return the probe output as a file like object."""
-        process_args = [self._probe_path, self._video_path.__str__()]
+        process_args = [self._probe_path, str(self._video_path)]
         process_args[1:-1] = args
         process = self._probe_runner(process_args)
 

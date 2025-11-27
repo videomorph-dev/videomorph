@@ -170,7 +170,7 @@ class TaskList(list):
     @property
     def length(self) -> int:
         """Return the number of elements in the list."""
-        return self.__len__()
+        return len(self)
 
     def duration(self, step: int = 1) -> float:
         """Return the duration time of TaskList counting files to do only."""
@@ -196,6 +196,6 @@ class TaskList(list):
     def task_is_added(self, file_path: Union[str, Path]) -> bool:
         """Determine if a video file is already in the list."""
         for task in self:
-            if task.video.path.__str__() == str(file_path):
+            if str(task.video.path) == str(file_path):
                 return True
         return False

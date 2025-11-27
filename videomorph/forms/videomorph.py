@@ -529,10 +529,7 @@ class VideoMorphMW(QMainWindow):
 
     @staticmethod
     def _get_settings_file():
-        return QSettings(
-            settings_file_path().__str__(),
-            QSettings.Format.IniFormat,
-        )
+        return QSettings(str(settings_file_path()), QSettings.Format.IniFormat)
 
     def _create_initial_settings(self):
         """Create initial settings file."""
@@ -560,7 +557,7 @@ class VideoMorphMW(QMainWindow):
         if "output_dir" in settings.allKeys():
             directory = str(settings.value("output_dir"))
             dir_path = Path(directory)
-            output_dir = dir_path.__str__() if dir_path.is_dir() else QDir.homePath()
+            output_dir = str(dir_path) if dir_path.is_dir() else QDir.homePath()
             self.output_edit.setText(output_dir)
             self.task_list.output_dir = output_dir
         if "source_dir" in settings.allKeys():
@@ -640,7 +637,7 @@ class VideoMorphMW(QMainWindow):
     def notify(self):
         """Notify when conversion finished."""
         sound_path = sound_file("successful.wav")
-        sound = sound_path.__str__() if sound_path.exists() else None
+        sound = str(sound_path) if sound_path.exists() else None
         launcher = launcher_factory()
         launcher.sound_notify(sound)
 
@@ -795,7 +792,7 @@ class VideoMorphMW(QMainWindow):
         Args:
             files (list): List of video file paths
         """
-        max_value = files.__len__()
+        max_value = len(files)
         progress_dlg = self._create_progress_dialog()
         progress_dlg.setMaximum(max_value)
 
@@ -974,9 +971,7 @@ class VideoMorphMW(QMainWindow):
     ):
         # Validate source_dir
         source_path = Path(source_dir)
-        source_directory = (
-            source_path.__str__() if source_path.is_dir() else QDir.homePath()
-        )
+        source_directory = str(source_path) if source_path.is_dir() else QDir.homePath()
 
         # Create a custom file dialog for cleaner appearance
         dialog = QFileDialog(self, dialog_title, source_directory)
@@ -991,7 +986,7 @@ class VideoMorphMW(QMainWindow):
         if dialog.exec() == QFileDialog.DialogCode.Accepted:
             files_paths = dialog.selectedFiles()
             if files_paths:
-                self.source_dir = Path(files_paths[0]).parent.__str__()
+                self.source_dir = str(Path(files_paths[0]).parent)
                 return files_paths
 
         return None
