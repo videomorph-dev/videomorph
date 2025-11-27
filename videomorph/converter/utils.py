@@ -1,10 +1,16 @@
 """This module contains some utilities and functions."""
 
 import os
+from collections.abc import Callable
 from locale import getlocale
 from os import pathsep
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
+
+try:
+    from os import cpu_count
+except ImportError:  # pragma: no cover - fallback for exotic platforms
+    cpu_count = None  # type: ignore[assignment]
 
 
 def get_locale() -> str:
@@ -82,3 +88,14 @@ def write_size(size_in_bytes: Union[int, float, str]) -> str:
         return str(round(mib, 1)) + "MiB"
     gib = mib / 1024
     return str(round(gib, 1)) + "GiB"
+
+
+def get_cpu_cores(detector: Callable[[], Optional[int]] | None = cpu_count) -> int:
+    """Return usable CPU cores (leave one core free)."""
+    if detector is None:
+        return 1
+
+    cores = detector()
+    if cores is None or cores <= 1:
+        return 1
+    return cores - 1

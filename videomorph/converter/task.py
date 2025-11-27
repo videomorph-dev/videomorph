@@ -6,7 +6,7 @@ from os import W_OK, access
 from pathlib import Path
 from typing import List, Optional, Union
 
-from videomorph.converter import CPU_CORES, STATUS
+from videomorph.converter.constants import CPU_CORES, STATUS
 from videomorph.converter.profile import Profile
 from videomorph.converter.video import Video
 

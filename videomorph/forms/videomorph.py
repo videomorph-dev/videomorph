@@ -36,13 +36,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from videomorph.converter import (
-    APP_NAME,
-    LOCALE,
-    STATUS,
-    VERSION,
-    VIDEO_FILTERS,
-)
+from videomorph.converter.constants import APP_NAME, LOCALE, STATUS, VERSION, VIDEO_FILTERS
 from videomorph.converter.console import search_directory_recursively
 from videomorph.converter.launchers import launcher_factory
 from videomorph.converter.library import Library

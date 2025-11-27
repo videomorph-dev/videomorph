@@ -3,12 +3,8 @@
 from pathlib import Path
 from sys import platform
 
-from videomorph.converter import (
-    APP_NAME,
-    SYS_PATHS,
-    VERSION,
-    VM_PATHS,
-)
+from videomorph.converter.constants import APP_NAME, VERSION
+from videomorph.converter.vmpath import SYS_PATHS, VM_PATHS
 
 try:
     from setuptools import setup

@@ -5,7 +5,7 @@ import re
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from videomorph.converter import APP_NAME, VERSION
+from videomorph.converter.constants import APP_NAME, VERSION
 from videomorph.converter.vmpath import doc_file
 
 

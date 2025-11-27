@@ -4,7 +4,7 @@ from collections import deque
 from pathlib import Path
 from typing import Deque, List, Optional, Union
 
-from videomorph.converter import STATUS
+from videomorph.converter.constants import STATUS
 from videomorph.converter.profile import Profile
 from videomorph.converter.task import Task
 from videomorph.converter.video import Video

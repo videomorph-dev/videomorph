@@ -2,7 +2,7 @@
 
 import pytest
 
-from videomorph.converter import STATUS
+from videomorph.converter.constants import STATUS
 from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
 from videomorph.converter.task import Task

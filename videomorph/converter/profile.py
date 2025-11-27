@@ -7,7 +7,7 @@ from pathlib import Path
 from shutil import copy2
 from typing import Any, Dict, List, Optional
 
-from videomorph.converter import LOCALE, VALID_VIDEO_EXT
+from videomorph.converter.constants import LOCALE, VALID_VIDEO_EXT
 from videomorph.converter.codec import CodecsReader
 from videomorph.converter.vmpath import packaged_profile, profiles_user_dir
 

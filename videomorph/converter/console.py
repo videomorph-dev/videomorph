@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import List, Optional
 
-from videomorph.converter import VALID_VIDEO_EXT
+from videomorph.converter.constants import VALID_VIDEO_EXT
 
 
 def search_directory_recursively(

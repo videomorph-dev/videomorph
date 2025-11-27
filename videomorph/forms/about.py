@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from videomorph.converter import APP_NAME, VERSION
+from videomorph.converter.constants import APP_NAME, VERSION
 from videomorph.converter.vmpath import doc_file
 
 
