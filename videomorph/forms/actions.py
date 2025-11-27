@@ -1,0 +1,127 @@
+"""Action metadata for the VideoMorph main window."""
+
+from PyQt6.QtGui import QKeySequence
+
+ACTION_SPECS = [
+    dict(
+        attr="open_media_file_action",
+        icon=":/icons/video-file.png",
+        text="&Add Videos...",
+        shortcut=QKeySequence.StandardKey.Open,
+        tip="Add Videos to the List of Conversion Tasks",
+        callback="open_media_files",
+    ),
+    dict(
+        attr="open_media_dir_action",
+        icon=":/icons/add-folder.png",
+        text="Add &Folder...",
+        shortcut="Ctrl+D",
+        tip="Add all the Video Files in a Folder to the List of Conversion Tasks",
+        callback="open_media_dir",
+    ),
+    dict(
+        attr="play_input_media_file_action",
+        icon=":/icons/video-player-input.png",
+        text="Play Input Video",
+        callback="play_video",
+    ),
+    dict(
+        attr="play_output_media_file_action",
+        icon=":/icons/video-player-output.png",
+        text="Play Output Video",
+        callback="play_video",
+    ),
+    dict(
+        attr="clear_media_list_action",
+        icon=":/icons/clear-list.png",
+        text="Clear &List",
+        shortcut="Ctrl+Del",
+        tip="Remove all the Video from the List of Conversion Tasks",
+        callback="clear_media_list",
+    ),
+    dict(
+        attr="remove_media_file_action",
+        icon=":/icons/remove-file.png",
+        text="&Remove Video",
+        shortcut=QKeySequence.StandardKey.Delete,
+        tip="Remove Selected Video from the List of Conversion Tasks",
+        callback="remove_media_file",
+    ),
+    dict(
+        attr="convert_action",
+        icon=":/icons/convert.png",
+        text="&Convert",
+        shortcut="Ctrl+R",
+        tip="Start Conversion Process",
+        callback="start_encoding",
+    ),
+    dict(
+        attr="stop_action",
+        icon=":/icons/stop.png",
+        text="&Stop",
+        shortcut="Esc",
+        tip="Stop Current Video Conversion",
+        callback="stop_file_encoding",
+    ),
+    dict(
+        attr="stop_all_action",
+        icon=":/icons/stop-all.png",
+        text="S&top All",
+        tip="Stop all Video Conversions",
+        callback="stop_all_files_encoding",
+    ),
+    dict(
+        attr="about_action",
+        text="&About {title}",
+        tip="About {title}",
+        callback="about",
+        format_title=True,
+    ),
+    dict(
+        attr="help_content_action",
+        icon=":/icons/about.png",
+        text="&Contents",
+        shortcut=QKeySequence.StandardKey.HelpContents,
+        tip="Help Contents",
+        callback="help_content",
+    ),
+    dict(
+        attr="changelog_action",
+        icon=":/icons/changelog.png",
+        text="Changelog",
+        tip="Changelog",
+        callback="changelog",
+    ),
+    dict(
+        attr="ffmpeg_doc_action",
+        icon=":/icons/ffmpeg.png",
+        text="&Ffmpeg Documentation",
+        tip="Open Ffmpeg On-Line Documentation",
+        callback="ffmpeg_doc",
+    ),
+    dict(
+        attr="videomorph_web_action",
+        icon=":/logo/videomorph.png",
+        text="{app} &Web Page",
+        tip="Open {app} Web Page",
+        callback="videomorph_web",
+        format_title=True,
+    ),
+    dict(
+        attr="exit_action",
+        icon=":/icons/exit.png",
+        text="E&xit",
+        shortcut=QKeySequence.StandardKey.Quit,
+        tip="Exit {title}",
+        callback="close",
+        format_title=True,
+    ),
+    dict(
+        attr="info_action",
+        text="Properties...",
+        tip="Show Video Properties",
+        callback="show_video_info",
+    ),
+]
+
+__all__ = ["ACTION_SPECS"]

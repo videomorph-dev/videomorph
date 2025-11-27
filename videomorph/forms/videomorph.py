@@ -11,7 +11,7 @@ from PyQt6.QtCore import (
     QSize,
     Qt,
 )
-from PyQt6.QtGui import QAction, QIcon, QKeySequence, QPixmap
+from PyQt6.QtGui import QAction, QIcon, QPixmap
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -57,6 +57,7 @@ from videomorph.converter.vmpath import (
 from videomorph.forms import COLUMNS
 from videomorph.forms import videomorph_qrc as _videomorph_qrc
 from videomorph.forms.about import AboutVMDialog
+from videomorph.forms.actions import ACTION_SPECS
 from videomorph.forms.changelog import ChangelogDialog
 from videomorph.forms.info import InfoDialog
 from videomorph.forms.vmwidgets import TasksListTable
@@ -291,145 +292,24 @@ class VideoMorphMW(QMainWindow):
 
         return progress_gb
 
-    def _action_factory(self, **kwargs):
-        action = QAction(
-            kwargs["text"],
-            self,
-            triggered=kwargs["callback"],
-        )
-
-        try:
-            action.setIcon(kwargs["icon"])
-        except KeyError:
-            pass
-
-        try:
-            action.setShortcut(kwargs["shortcut"])
-        except KeyError:
-            pass
-
-        try:
-            action.setToolTip(kwargs["tip"])
-            action.setStatusTip(kwargs["tip"])
-        except KeyError:
-            pass
-
-        try:
-            action.setCheckable(kwargs["checkable"])
-        except KeyError:
-            pass
-
-        return action
-
     def _create_actions(self):
-        actions = {
-            "open_media_file_action": dict(
-                icon=QIcon(":/icons/video-file.png"),
-                text=self.tr("&Add Videos..."),
-                shortcut=QKeySequence.StandardKey.Open,
-                tip=self.tr("Add Videos to the List of Conversion Tasks"),
-                callback=self.open_media_files,
-            ),
-            "open_media_dir_action": dict(
-                icon=QIcon(":/icons/add-folder.png"),
-                text=self.tr("Add &Folder..."),
-                shortcut="Ctrl+D",
-                tip=self.tr(
-                    "Add all the Video Files in a Folder "
-                    "to the List of Conversion Tasks"
-                ),
-                callback=self.open_media_dir,
-            ),
-            "play_input_media_file_action": dict(
-                icon=QIcon(":/icons/video-player-input.png"),
-                text=self.tr("Play Input Video"),
-                callback=self.play_video,
-            ),
-            "play_output_media_file_action": dict(
-                icon=QIcon(":/icons/video-player-output.png"),
-                text=self.tr("Play Output Video"),
-                callback=self.play_video,
-            ),
-            "clear_media_list_action": dict(
-                icon=QIcon(":/icons/clear-list.png"),
-                text=self.tr("Clear &List"),
-                shortcut="Ctrl+Del",
-                tip=self.tr("Remove all the Video from the List of Conversion Tasks"),
-                callback=self.clear_media_list,
-            ),
-            "remove_media_file_action": dict(
-                icon=QIcon(":/icons/remove-file.png"),
-                text=self.tr("&Remove Video"),
-                shortcut=QKeySequence.StandardKey.Delete,
-                tip=self.tr("Remove Selected Video from the List of Conversion Tasks"),
-                callback=self.remove_media_file,
-            ),
-            "convert_action": dict(
-                icon=QIcon(":/icons/convert.png"),
-                text=self.tr("&Convert"),
-                shortcut="Ctrl+R",
-                tip=self.tr("Start Conversion Process"),
-                callback=self.start_encoding,
-            ),
-            "stop_action": dict(
-                icon=QIcon(":/icons/stop.png"),
-                text=self.tr("&Stop"),
-                shortcut="Esc",
-                tip=self.tr("Stop Current Video Conversion"),
-                callback=self.stop_file_encoding,
-            ),
-            "stop_all_action": dict(
-                icon=QIcon(":/icons/stop-all.png"),
-                text=self.tr("S&top All"),
-                tip=self.tr("Stop all Video Conversions"),
-                callback=self.stop_all_files_encoding,
-            ),
-            "about_action": dict(
-                text=self.tr("&About") + " " + self.title,
-                tip=self.tr("About") + " " + self.title,
-                callback=self.about,
-            ),
-            "help_content_action": dict(
-                icon=QIcon(":/icons/about.png"),
-                text=self.tr("&Contents"),
-                shortcut=QKeySequence.StandardKey.HelpContents,
-                tip=self.tr("Help Contents"),
-                callback=self.help_content,
-            ),
-            "changelog_action": dict(
-                icon=QIcon(":/icons/changelog.png"),
-                text=self.tr("Changelog"),
-                tip=self.tr("Changelog"),
-                callback=self.changelog,
-            ),
-            "ffmpeg_doc_action": dict(
-                icon=QIcon(":/icons/ffmpeg.png"),
-                text=self.tr("&Ffmpeg Documentation"),
-                tip=self.tr("Open Ffmpeg On-Line Documentation"),
-                callback=self.ffmpeg_doc,
-            ),
-            "videomorph_web_action": dict(
-                icon=QIcon(":/logo/videomorph.png"),
-                text=__app_name__ + " " + self.tr("&Web Page"),
-                tip=self.tr("Open") + " " + __app_name__ + " " + self.tr("Web Page"),
-                callback=self.videomorph_web,
-            ),
-            "exit_action": dict(
-                icon=QIcon(":/icons/exit.png"),
-                text=self.tr("E&xit"),
-                shortcut=QKeySequence.StandardKey.Quit,
-                tip=self.tr("Exit") + " " + self.title,
-                callback=self.close,
-            ),
-            "info_action": dict(
-                text=self.tr("Properties..."),
-                tip=self.tr("Show Video Properties"),
-                callback=self.show_video_info,
-            ),
-        }
-
-        for action in actions:
-            self.__dict__[action] = self._action_factory(**actions[action])
+        for spec in ACTION_SPECS:
+            text = self.tr(spec["text"])
+            if spec.get("format_title"):
+                text = text.format(app=__app_name__, title=self.title)
+            action = QAction(text, self)
+            if icon_path := spec.get("icon"):
+                action.setIcon(QIcon(icon_path))
+            if shortcut := spec.get("shortcut"):
+                action.setShortcut(shortcut)
+            if tip := spec.get("tip"):
+                tip_text = self.tr(tip)
+                if spec.get("format_title"):
+                    tip_text = tip_text.format(app=__app_name__, title=self.title)
+                action.setToolTip(tip_text)
+                action.setStatusTip(tip_text)
+            action.triggered.connect(getattr(self, spec["callback"]))
+            setattr(self, spec["attr"], action)
 
     def _create_context_menu(self):
         first_separator = QAction(self)
@@ -437,59 +317,59 @@ class VideoMorphMW(QMainWindow):
         second_separator = QAction(self)
         second_separator.setSeparator(True)
         self.tasks_table.setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu)
-        self.tasks_table.addAction(self.open_media_file_action)
-        self.tasks_table.addAction(self.open_media_dir_action)
+        self.tasks_table.addAction(getattr(self, "open_media_file_action"))
+        self.tasks_table.addAction(getattr(self, "open_media_dir_action"))
         self.tasks_table.addAction(first_separator)
-        self.tasks_table.addAction(self.remove_media_file_action)
-        self.tasks_table.addAction(self.clear_media_list_action)
+        self.tasks_table.addAction(getattr(self, "remove_media_file_action"))
+        self.tasks_table.addAction(getattr(self, "clear_media_list_action"))
         self.tasks_table.addAction(second_separator)
-        self.tasks_table.addAction(self.play_input_media_file_action)
-        self.tasks_table.addAction(self.play_output_media_file_action)
-        self.tasks_table.addAction(self.info_action)
+        self.tasks_table.addAction(getattr(self, "play_input_media_file_action"))
+        self.tasks_table.addAction(getattr(self, "play_output_media_file_action"))
+        self.tasks_table.addAction(getattr(self, "info_action"))
 
     def _create_main_menu(self):
         """Create main app menu."""
         # File menu
         self.file_menu = self.menuBar().addMenu(self.tr("&File"))
-        self.file_menu.addAction(self.open_media_file_action)
-        self.file_menu.addAction(self.open_media_dir_action)
+        self.file_menu.addAction(getattr(self, "open_media_file_action"))
+        self.file_menu.addAction(getattr(self, "open_media_dir_action"))
         self.file_menu.addSeparator()
-        self.file_menu.addAction(self.exit_action)
+        self.file_menu.addAction(getattr(self, "exit_action"))
         # Edit menu
         self.edit_menu = self.menuBar().addMenu(self.tr("&Edit"))
-        self.edit_menu.addAction(self.clear_media_list_action)
-        self.edit_menu.addAction(self.remove_media_file_action)
+        self.edit_menu.addAction(getattr(self, "clear_media_list_action"))
+        self.edit_menu.addAction(getattr(self, "remove_media_file_action"))
         # Conversion menu
         self.conversion_menu = self.menuBar().addMenu(self.tr("&Conversion"))
-        self.conversion_menu.addAction(self.convert_action)
+        self.conversion_menu.addAction(getattr(self, "convert_action"))
         self.conversion_menu.addSeparator()
-        self.conversion_menu.addAction(self.stop_action)
-        self.conversion_menu.addAction(self.stop_all_action)
+        self.conversion_menu.addAction(getattr(self, "stop_action"))
+        self.conversion_menu.addAction(getattr(self, "stop_all_action"))
         # Help menu
         self.help_menu = self.menuBar().addMenu(self.tr("&Help"))
-        self.help_menu.addAction(self.help_content_action)
-        self.help_menu.addAction(self.changelog_action)
-        self.help_menu.addAction(self.videomorph_web_action)
+        self.help_menu.addAction(getattr(self, "help_content_action"))
+        self.help_menu.addAction(getattr(self, "changelog_action"))
+        self.help_menu.addAction(getattr(self, "videomorph_web_action"))
         self.help_menu.addSeparator()
-        self.help_menu.addAction(self.ffmpeg_doc_action)
+        self.help_menu.addAction(getattr(self, "ffmpeg_doc_action"))
         self.help_menu.addSeparator()
-        self.help_menu.addAction(self.about_action)
+        self.help_menu.addAction(getattr(self, "about_action"))
 
     def _create_toolbar(self):
         """Create a toolbar and add it to the interface."""
         self.tool_bar = QToolBar(self)
         # Add actions to the tool bar
-        self.tool_bar.addAction(self.open_media_file_action)
-        self.tool_bar.addAction(self.open_media_dir_action)
+        self.tool_bar.addAction(getattr(self, "open_media_file_action"))
+        self.tool_bar.addAction(getattr(self, "open_media_dir_action"))
         self.tool_bar.addSeparator()
-        self.tool_bar.addAction(self.clear_media_list_action)
-        self.tool_bar.addAction(self.remove_media_file_action)
+        self.tool_bar.addAction(getattr(self, "clear_media_list_action"))
+        self.tool_bar.addAction(getattr(self, "remove_media_file_action"))
         self.tool_bar.addSeparator()
-        self.tool_bar.addAction(self.convert_action)
-        self.tool_bar.addAction(self.stop_action)
-        self.tool_bar.addAction(self.stop_all_action)
+        self.tool_bar.addAction(getattr(self, "convert_action"))
+        self.tool_bar.addAction(getattr(self, "stop_action"))
+        self.tool_bar.addAction(getattr(self, "stop_all_action"))
         self.tool_bar.addSeparator()
-        self.tool_bar.addAction(self.exit_action)
+        self.tool_bar.addAction(getattr(self, "exit_action"))
         self.tool_bar.setIconSize(QSize(28, 28))
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         # Add the toolbar to main window
@@ -497,7 +377,9 @@ class VideoMorphMW(QMainWindow):
 
     def _create_status_bar(self):
         """Create app status bar."""
-        self.statusBar().showMessage(self.tr("Ready"))
+        status_bar = self.statusBar()
+        if status_bar is not None:
+            status_bar.showMessage(self.tr("Ready"))
 
     def _create_progress_dialog(self):
         label = QLabel()
