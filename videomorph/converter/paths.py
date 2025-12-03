@@ -8,21 +8,24 @@ from pathlib import Path
 from sys import platform, prefix
 from typing import Dict, Iterator, Optional
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-LIBRARY = "ffmpeg"
-PROBE = "ffprobe"
+_BASE_DIR = Path(__file__).resolve().parents[2]
+_LIBRARY = "ffmpeg"
+_PROBE = "ffprobe"
 
+_SHARE = Path("share")
+_VM_SHARE = _SHARE / "videomorph"
+_DOC_SHARE = _SHARE / "doc" / "videomorph"
 
 VM_PATHS = dict(
-    apps=Path("share", "applications"),
-    config=Path(Path.home(), ".videomorph"),
-    icons=Path("share", "icons"),
-    i18n=Path("share", "videomorph", "translations"),
-    profiles=Path("share", "videomorph", "profiles"),
-    sounds=Path("share", "videomorph", "sounds"),
-    doc=Path("share", "doc", "videomorph"),
-    help=Path("share", "doc", "videomorph", "manual"),
-    man=Path("share", "man", "man1"),
+    apps=_SHARE / "applications",
+    config=Path.home() / ".videomorph",
+    icons=_SHARE / "icons",
+    i18n=_VM_SHARE / "translations",
+    profiles=_VM_SHARE / "profiles",
+    sounds=_VM_SHARE / "sounds",
+    doc=_DOC_SHARE,
+    help=_DOC_SHARE / "manual",
+    man=_SHARE / "man" / "man1",
     bin=Path("bin"),
 )
 
@@ -156,7 +159,7 @@ class PathResolver:
         return manual if manual.exists() else None
 
 
-PATHS = PathResolver(sys_paths=SYS_PATHS, base_paths=VM_PATHS, base_dir=BASE_DIR)
+PATHS = PathResolver(sys_paths=SYS_PATHS, base_paths=VM_PATHS, base_dir=_BASE_DIR)
 
 
 class FFmpegLocator:
@@ -207,11 +210,11 @@ class FFmpegLocator:
 
     @property
     def library_path(self) -> Optional[str]:
-        return self.locate(LIBRARY)
+        return self.locate(_LIBRARY)
 
     @property
     def probe_path(self) -> Optional[str]:
-        return self.locate(PROBE)
+        return self.locate(_PROBE)
 
 
 _FFMPEG = FFmpegLocator(PATHS)
@@ -224,19 +227,9 @@ def resource_path(key: str, *parts: str) -> Path:
     return PATHS.resource_path(key, *parts)
 
 
-def packaged_resource_path(key: str, *parts: str) -> Path:
-    """Return a resource path anchored at the repository root."""
-    return PATHS.packaged_resource(key, *parts)
-
-
 def doc_file(name: str) -> Path:
     """Return a documentation file path."""
     return resource_path("doc", name)
-
-
-def help_file(name: str) -> Path:
-    """Return a help/manual file path."""
-    return resource_path("help", name)
 
 
 def sound_file(name: str) -> Path:
@@ -263,7 +256,3 @@ def settings_file() -> Path:
     """Return the path to the Qt settings INI file."""
     return PATHS.settings_file
 
-
-def paths_ini_file() -> Path:
-    """Return the location of the optional paths.ini overrides."""
-    return PATHS.paths_ini

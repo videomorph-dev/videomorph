@@ -3,7 +3,7 @@
 from itertools import islice
 
 from videomorph.converter.launchers import spawn_process
-from videomorph.converter.vmpath import LIBRARY_PATH
+from videomorph.converter.paths import LIBRARY_PATH
 
 
 class CodecsReader:

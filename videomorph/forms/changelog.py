@@ -4,7 +4,7 @@ import re
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from videomorph import __app_name__, __version__
-from videomorph.converter.vmpath import doc_file
+from videomorph.converter.paths import doc_file
 
 
 class ChangelogDialog(QtWidgets.QDialog):

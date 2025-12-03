@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from sys import prefix
 
-from videomorph.converter.vmpath import darwin_paths, linux_paths, win32_paths
+from videomorph.converter.paths import darwin_paths, linux_paths, win32_paths
 
 
 class TestPaths:

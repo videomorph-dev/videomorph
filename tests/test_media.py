@@ -3,7 +3,7 @@
 import pytest
 
 from videomorph.converter.constants import STATUS
-from videomorph.converter.library import Library
+from videomorph.converter.converter import Converter
 from videomorph.converter.profile import Profile
 from videomorph.converter.task import Task
 from videomorph.converter.tasklist import TaskList
@@ -15,7 +15,7 @@ class TestMedia:
     @pytest.fixture
     def conv_lib(self):
         """Library fixture."""
-        return Library()
+        return Converter()
 
     @pytest.fixture
     def profile(self):
@@ -41,12 +41,14 @@ class TestMedia:
             == "sample-video.mp4"
         )
 
-    def test_delete_file(self, media_list):
-        """Test TaskList.delete_file()."""
-        # Be sure there is one element in the list
-        assert media_list
-        media_list.delete_file(position=0)
-        assert not media_list
+    def test_remove_task(self, media_list):
+        """Test TaskList.remove_task()."""
+        # Verify we have one task
+        assert len(media_list) == 1
+        # Remove it
+        media_list.remove_task(position=0)
+        # Verify list is now empty
+        assert len(media_list) == 0
 
     def test_get_file_object(self, media_list):
         """Test TaskList.get_task()."""

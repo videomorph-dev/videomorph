@@ -18,7 +18,7 @@ from PyQt6.QtWidgets import (
 )
 
 from videomorph import __app_name__, __version__
-from videomorph.converter.vmpath import doc_file
+from videomorph.converter.paths import doc_file
 
 
 class AboutVMDialog(QDialog):

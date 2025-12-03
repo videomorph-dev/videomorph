@@ -42,6 +42,8 @@ class ConversionTimer:
 
     def operation_progress(self, file_duration):
         """Return the operation progress percentage."""
+        if not file_duration:
+            return 0
         return int(self._operation_time_read / file_duration * 100)
 
     def process_progress(self, list_duration):
@@ -51,6 +53,9 @@ class ConversionTimer:
 
         self._total_time = self._time_jump + self._operation_time_read
         self._partial_time = self._operation_time_read
+
+        if not list_duration:
+            return 0
 
         return int(self._total_time / float(list_duration) * 100)
 

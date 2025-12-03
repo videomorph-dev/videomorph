@@ -3,7 +3,7 @@ from pathlib import Path
 
 from PyQt6.QtCore import QPoint, QSettings, QSize, QDir
 
-from videomorph.converter.vmpath import settings_file as settings_file_path
+from videomorph.converter.paths import settings_file as settings_file_path
 
 
 class SettingsManager:

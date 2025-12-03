@@ -4,7 +4,7 @@ from pathlib import Path
 from sys import platform
 
 from videomorph import __app_name__, __version__
-from videomorph.converter.vmpath import SYS_PATHS, VM_PATHS
+from videomorph.converter.paths import SYS_PATHS, VM_PATHS
 
 try:
     from setuptools import setup

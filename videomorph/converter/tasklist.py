@@ -19,11 +19,10 @@ class TaskList(list):
         """Class initializer."""
         super(TaskList, self).__init__()
         self._profile = profile
-        self._position: Optional[int] = (
-            None  # None, no item running, 0, the first item,...
-        )
+        self._position: Optional[int] = None
         self.not_added_files: Deque[Union[str, Path]] = deque()
         self._output_dir = Path(output_dir)
+        self._task_paths: set = set()  # Cache for O(1) lookup
 
     @property
     def output_dir(self) -> Path:
@@ -38,20 +37,45 @@ class TaskList(list):
     def clear(self) -> None:
         """Clear the list of videos."""
         super(TaskList, self).clear()
+        self._task_paths.clear()
         self.position = None
 
     def add_task(self, video_path: Union[str, Path]) -> bool:
-        """Add a task to the task list."""
+        """Add a task to the task list.
+        
+        Args:
+            video_path: Path to the video file
+            
+        Returns:
+            True if task was added successfully, False otherwise
+        """
+        video_path_str = str(video_path)
+        if video_path_str in self._task_paths:
+            return False  # Already added
+            
         video = Video(video_path=video_path)
         if video.is_valid():
             self.append(Task(video, self._profile, self.output_dir))
+            self._task_paths.add(video_path_str)
             return True
 
         self.not_added_files.append(video_path)
         return False
 
-    def delete_file(self, position: int) -> None:
-        """Delete a video file from the list."""
+    def remove_task(self, position: int) -> None:
+        """Remove a task from the list.
+        
+        Args:
+            position: Index of the task to remove
+            
+        Raises:
+            IndexError: If position is out of bounds
+        """
+        if position < 0 or position >= len(self):
+            raise IndexError(f"Task position {position} out of range")
+        
+        task = self[position]
+        self._task_paths.discard(str(task.video.path))
         del self[position]
 
     def get_task(self, position: int) -> Task:
@@ -134,22 +158,29 @@ class TaskList(list):
         self._running_task.finalize_output()
 
     @property
-    def position(self) -> int:
-        """self._position getter."""
-        if self._position is None:
-            return -1
-
+    def position(self) -> Optional[int]:
+        """Get the current task position.
+        
+        Returns:
+            Current position or None if not set
+        """
         return self._position
 
     @position.setter
     def position(self, value: Optional[int]) -> None:
-        """self._position setter."""
+        """Set the current task position.
+        
+        Args:
+            value: Position to set, or None to unset
+        """
         self._position = value
 
     @property
     def is_exhausted(self) -> bool:
-        """Return True if all file in media list are processed."""
-        return self.position + 1 >= self.length
+        """Return True if all files in media list are processed."""
+        if self._position is None:
+            return False
+        return self._position + 1 >= len(self)
 
     @property
     def all_stopped(self) -> bool:
@@ -167,15 +198,10 @@ class TaskList(list):
                 return False
         return True
 
-    @property
-    def length(self) -> int:
-        """Return the number of elements in the list."""
-        return len(self)
-
     def duration(self, step: int = 1) -> float:
         """Return the duration time of TaskList counting files to do only."""
-        if self.position >= 0:
-            tasks = self[self.position + step :]
+        if self._position is not None and self._position >= 0:
+            tasks = self[self._position + step :]
             return sum(
                 float(task.video.format_info["duration"])
                 for task in tasks
@@ -188,14 +214,24 @@ class TaskList(list):
             if task.status != STATUS.done
         )
 
+    def __contains__(self, file_path: Union[str, Path]) -> bool:
+        """Check if a file path is already in the task list.
+        
+        Args:
+            file_path: Path to check
+            
+        Returns:
+            True if path is in the list, False otherwise
+        """
+        return str(file_path) in self._task_paths
+
     @property
     def _running_task(self) -> Task:
-        """Return the task that is currently running."""
-        return self[self.position]
-
-    def task_is_added(self, file_path: Union[str, Path]) -> bool:
-        """Determine if a video file is already in the list."""
-        for task in self:
-            if str(task.video.path) == str(file_path):
-                return True
-        return False
+        """Return the task that is currently running.
+        
+        Raises:
+            ValueError: If no task is currently running
+        """
+        if self._position is None:
+            raise ValueError("No task is currently running")
+        return self[self._position]

@@ -4,7 +4,7 @@ from typing import Dict, List
 
 import pytest
 
-from videomorph.converter.library import Library
+from videomorph.converter.converter import Converter
 from videomorph.converter.profile import Profile
 
 
@@ -16,10 +16,10 @@ def profile() -> Profile:
     return profile
 
 
-@pytest.fixture
-def conv() -> Library:
-    """Library fixture for tests."""
-    return Library()
+@pytest.fixture()
+def conv() -> Converter:
+    """Converter fixture."""
+    return Converter()
 
 
 def test_get_json_profile_attr(profile: Profile) -> None:

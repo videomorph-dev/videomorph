@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional
 
 from videomorph.converter.constants import LOCALE, VALID_VIDEO_EXT
 from videomorph.converter.codec import CodecsReader
-from videomorph.converter.vmpath import packaged_profile, profiles_user_dir
+from videomorph.converter.paths import packaged_profile, profiles_user_dir
 
 JSONFiles = namedtuple("JSONFiles", "default customized")
 JSON_FILES = JSONFiles("default.json", "customized.json")

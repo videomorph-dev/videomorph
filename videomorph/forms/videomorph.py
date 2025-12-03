@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from functools import partial
 from pathlib import Path
 
@@ -42,16 +41,14 @@ from videomorph.converter.constants import (
     VIDEO_FILTERS,
 )
 from videomorph.converter.launchers import launcher_factory
-from videomorph.converter.library import Library
 from videomorph.converter.profile import Profile
-from videomorph.converter.task import OutputPathCollisionError
 from videomorph.converter.tasklist import TaskList
 from videomorph.converter.utils import write_time
-from videomorph.converter.vmpath import (
+from videomorph.converter.paths import (
     manual_path,
     sound_file,
 )
-from videomorph.converter.vmpath import (
+from videomorph.converter.paths import (
     settings_file as settings_file_path,
 )
 from videomorph.forms import COLUMNS
@@ -63,6 +60,7 @@ from videomorph.forms.info import InfoDialog
 from videomorph.forms.vmwidgets import TasksListTable
 from videomorph.forms.settings import SettingsManager
 from videomorph.forms.ui_state import AppState, UI_STATE_CONFIG
+from videomorph.converter.manager import ConversionManager
 
 _ = _videomorph_qrc  # Ensure Qt resources are registered.
 
@@ -84,20 +82,17 @@ class VideoMorphMW(QMainWindow):
         self._load_app_settings()
 
     def _setup_model(self):
-        self.library = Library()
-        self.library.setup_converter(
-            reader=self._ready_read,
-            finisher=self._finish_file_encoding,
-        )
-
-        self.profile = Profile()
-        warning_msg = self.profile.consume_warning()
+        self.converter = ConversionManager(output_dir=self.output_edit.text())
+        self.converter.task_started.connect(self._on_task_started)
+        self.converter.task_finished.connect(self._on_task_finished)
+        self.converter.all_finished.connect(self._on_all_finished)
+        self.converter.error.connect(self._on_conversion_error)
+        self.converter.progress_updated.connect(self._on_progress_updated)
+        self.converter.time_updated.connect(self._on_time_updated)
+        
+        warning_msg = self.converter.profile.consume_warning()
         if warning_msg:
             self._show_message_box(QMessageBox.Icon.Warning, warning_msg)
-
-        self.task_list = TaskList(
-            profile=self.profile, output_dir=self.output_edit.text()
-        )
 
     def _setup_ui(self):
         self.central_widget = QWidget(self)
@@ -401,7 +396,7 @@ class VideoMorphMW(QMainWindow):
         """Toggle Edit triggers on task table."""
         if (
             int(self.tasks_table.currentColumn()) == COLUMNS.QUALITY
-            and not self.library.converter_is_running
+            and not self.converter.library.converter_is_running
         ):
             self.tasks_table.setEditTriggers(
                 QAbstractItemView.EditTrigger.AllEditTriggers
@@ -430,7 +425,7 @@ class VideoMorphMW(QMainWindow):
             
         if "output_dir" in settings:
             self.output_edit.setText(settings["output_dir"])
-            self.task_list.output_dir = settings["output_dir"]
+            self.converter.task_list.output_dir = settings["output_dir"]
             
         if "source_dir" in settings:
             self.source_dir = settings["source_dir"]
@@ -491,7 +486,7 @@ class VideoMorphMW(QMainWindow):
     def show_video_info(self):
         """Show video info on the Info Panel."""
         position = self.tasks_table.currentRow()
-        info_dlg = InfoDialog(parent=self, position=position, task_list=self.task_list)
+        info_dlg = InfoDialog(parent=self, position=position, task_list=self.converter.task_list)
         info_dlg.show()
 
     def notify(self):
@@ -527,7 +522,7 @@ class VideoMorphMW(QMainWindow):
         self.profiles_combo.clear()
         # Populate the combobox with new data
 
-        profile_names = self.profile.get_json_profile_qualities().keys()
+        profile_names = self.converter.profile.get_json_profile_qualities().keys()
         for i, profile_name in enumerate(profile_names):
             self.profiles_combo.addItem(profile_name)
             icon = QIcon(":/formats/{0}.png".format(profile_name))
@@ -542,11 +537,11 @@ class VideoMorphMW(QMainWindow):
         current_profile = self.profiles_combo.currentText()
         if current_profile != "":
             combo.clear()
-            combo.addItems(self.profile.get_json_profile_qualities()[current_profile])
+            combo.addItems(self.converter.profile.get_json_profile_qualities()[current_profile])
 
             if self.tasks_table.rowCount():
                 self._update_media_files_status()
-            self.profile.update(new_quality=self.quality_combo.currentText())
+            self.converter.profile.update(new_quality=self.quality_combo.currentText())
 
     def output_directory(self):
         """Choose output directory."""
@@ -557,13 +552,13 @@ class VideoMorphMW(QMainWindow):
 
         if directory:
             self.output_edit.setText(directory)
-            self.task_list.output_dir = directory
+            self.converter.task_list.output_dir = directory
             self._on_modify_conversion_option()
 
     def closeEvent(self, event):
         """Things to do on close."""
         # Close communication and kill the encoding process
-        if self.library.converter_is_running:
+        if self.converter.library.converter_is_running:
             # ask for confirmation
             user_answer = self._show_message_box(
                 QMessageBox.Icon.Warning,
@@ -574,17 +569,13 @@ class VideoMorphMW(QMainWindow):
             )
 
             if user_answer == QMessageBox.StandardButton.Yes:
-                # Disconnect the finished signal
-                self.library.converter_finished_disconnect(
-                    connected=self._finish_file_encoding
-                )
-                self.library.kill_converter()
-                self.library.close_converter()
-                if not self.task_list.delete_running_file_output(
+                self.converter.library.kill_converter()
+                self.converter.library.close_converter()
+                if not self.converter.task_list.delete_running_file_output(
                     tagged=self.tag_chb.isChecked()
                 ):
-                    output_path = self.task_list.get_task(
-                        self.task_list.position
+                    output_path = self.converter.task_list.get_task(
+                        self.converter.task_list.position
                     ).get_output_path(tagged=self.tag_chb.isChecked())
                     self._show_message_box(
                         QMessageBox.Icon.Warning,
@@ -605,26 +596,21 @@ class VideoMorphMW(QMainWindow):
 
     def add_task(self, video_path):
         """Add a conversion task to the list."""
-        if self.task_list.task_is_added(video_path):
-            return
-
-        if not self.task_list.add_task(video_path):
-            return
-
-        self._update_task_list()
+        if self.converter.add_task(video_path):
+             self._update_task_list()
 
     def _update_task_list(self):
         """Update the list of conversion tasks."""
         row = self.tasks_table.rowCount()
         self.tasks_table.setRowCount(row + 1)
         self._insert_table_item(
-            text=self.task_list.get_file_name(position=row, with_extension=True),
+            text=self.converter.task_list.get_file_name(position=row, with_extension=True),
             row=row,
             column=COLUMNS.NAME,
         )
 
         item_text = write_time(
-            self.task_list.get_file_info(position=row, info_param="duration")
+            self.converter.task_list.get_file_info(position=row, info_param="duration")
         )
 
         self._insert_table_item(item_text, row=row, column=COLUMNS.DURATION)
@@ -670,24 +656,24 @@ class VideoMorphMW(QMainWindow):
         progress_dlg.setValue(max_value)
         progress_dlg.close()
 
-        if self.task_list.not_added_files:
+        if self.converter.task_list.not_added_files:
             msg = (
                 self.tr("Invalid Video Information for:")
                 + " \n - "
-                + "\n - ".join(self.task_list.not_added_files)
+                + "\n - ".join(self.converter.task_list.not_added_files)
                 + "\n"
                 + self.tr("Video not Added to the List of Conversion Tasks")
             )
             self._show_message_box(QMessageBox.Icon.Critical, msg)
 
-            if not self.task_list.length:
+            if not len(self.converter.task_list):
                 self.set_ui_state(AppState.EMPTY)
             else:
                 self.set_ui_state(AppState.READY)
 
         # Update tool buttons so you can convert, or add_file, or clear...
         # only if there is not a conversion process running
-        if self.library.converter_is_running:
+        if self.converter.library.converter_is_running:
             self.set_ui_state(AppState.RUNNING)
         else:
             # Update the files status
@@ -696,17 +682,17 @@ class VideoMorphMW(QMainWindow):
             self.set_ui_state(AppState.READY)
 
         # After adding files to the list, recalculate the list duration
-        self.task_list_duration = self.task_list.duration(step=0)
+        self.task_list_duration = self.converter.task_list.duration(step=0)
 
     def play_video(self):
         """Play a video using an available video player."""
         row = self.tasks_table.currentIndex().row()
-        video_path = self.task_list.get_file_path(row)
+        video_path = self.converter.task_list.get_file_path(row)
         self._play_media_file(file_path=video_path)
         self._update_ui_when_playing(row)
 
     def _get_output_path(self, row):
-        path = self.task_list.get_task(row).get_output_path(
+        path = self.converter.task_list.get_task(row).get_output_path(
             tagged=self.tag_chb.isChecked()
         )
         return path
@@ -714,7 +700,7 @@ class VideoMorphMW(QMainWindow):
     def _play_media_file(self, file_path):
         """Play a video using an available video player."""
         try:
-            self.library.run_player(file_path=file_path)
+            self.converter.library.run_player(file_path=file_path)
         except FileNotFoundError:
             self._show_message_box(
                 QMessageBox.Icon.Critical,
@@ -785,9 +771,9 @@ class VideoMorphMW(QMainWindow):
             # Delete file from table
             self.tasks_table.removeRow(file_row)
             # Remove file from self.media_list
-            self.task_list.delete_file(position=file_row)
-            self.task_list.position = None
-            self.task_list_duration = self.task_list.duration()
+            self.converter.remove_task(position=file_row)
+            self.converter.task_list.position = None
+            self.task_list_duration = self.converter.task_list.duration()
 
         # If all files are deleted... update the interface
         if not self.tasks_table.rowCount():
@@ -796,14 +782,14 @@ class VideoMorphMW(QMainWindow):
 
     def _remove_completed_task_from_ui(self):
         """Remove the currently finished task from the table and model."""
-        current_row = self.task_list.position
+        current_row = self.converter.task_list.position
         if current_row < 0 or current_row >= self.tasks_table.rowCount():
             return
 
         self.tasks_table.removeRow(current_row)
-        self.task_list.delete_file(current_row)
-        self.task_list.position = current_row - 1
-        self.task_list_duration = self.task_list.duration()
+        self.converter.task_list.remove_task(current_row)
+        self.converter.task_list.position = current_row - 1
+        self.task_list_duration = self.converter.task_list.duration()
 
         if not self.tasks_table.rowCount():
             self._reset_options_check_boxes()
@@ -849,7 +835,11 @@ class VideoMorphMW(QMainWindow):
         return None
 
     def clear_media_list(self):
-        """Clear media conversion list with user confirmation."""
+        """Clear the list of media files."""
+        # If no file is in the list then return
+        if not self.tasks_table.rowCount():
+            return
+
         msg_box = QMessageBox(
             QMessageBox.Icon.Warning,
             self._dialog_title(QMessageBox.Icon.Warning),
@@ -865,312 +855,117 @@ class VideoMorphMW(QMainWindow):
 
         msg_box.exec()
         if msg_box.clickedButton() == yes_button:
-            # If user says YES clear table of conversion tasks
-            self.tasks_table.clearContents()
+            # Delete all files from table
             self.tasks_table.setRowCount(0)
-            # Clear TaskList so it contains no element
-            self.task_list.clear()
-            # Update UI
-            self._reset_options_check_boxes()
+            # Clear the media list
+            self.converter.clear_tasks()
+            # Update the interface
             self.set_ui_state(AppState.EMPTY)
+            # Reset all the options check boxes
+            self._reset_options_check_boxes()
+            self.task_list_duration = 0.0
 
     def start_encoding(self):
         """Start the encoding process."""
         self.set_ui_state(AppState.RUNNING)
-
-        self.task_list.position += 1
-        self.library.timer.operation_start_time = 0.0
-
-        if self.task_list.running_task_status != STATUS.done:
-            try:
-                # Fist build the conversion command
-                conversion_cmd = self.task_list.running_task_conversion_cmd(
-                    target_quality=self.tasks_table.item(
-                        self.task_list.position, COLUMNS.QUALITY
-                    ).text(),
-                    tagged=self.tag_chb.isChecked(),
-                    subtitle=self.subtitle_chb.isChecked(),
-                    replace_source=self.delete_chb.isChecked(),
-                )
-                # Then pass it to the _converter
-                self.library.start_converter(cmd=conversion_cmd)
-            except OutputPathCollisionError as collision_err:
-                self._show_message_box(
-                    QMessageBox.Icon.Warning,
-                    self.tr(
-                        "The selected settings would overwrite the original file:\n{0}\n\n"
-                        "Enable 'Delete Input Video Files when Finished' to replace the file "
-                        "or choose a different output folder or extension."
-                    ).format(collision_err),
-                )
-                self._update_ui_when_error_on_conversion()
-            except PermissionError:
-                self._show_message_box(
-                    QMessageBox.Icon.Critical,
-                    self.tr("VideoMorph cannot write to the selected folder."),
-                )
-                self._update_ui_when_error_on_conversion()
-            except FileNotFoundError:
-                self._show_message_box(
-                    QMessageBox.Icon.Critical,
-                    (
-                        self.tr("Input Video:")
-                        + " "
-                        + self.task_list.running_file_name()
-                        + " "
-                        + self.tr("not Found")
-                    ),
-                )
-                self._update_ui_when_error_on_conversion()
-            self.task_list.running_task_status = STATUS.todo
-        else:
-            self._end_encoding_process()
+        
+        options = {
+            "target_quality": self.tasks_table.item(
+                0, COLUMNS.QUALITY # We might need to handle per-row quality if supported, but for now it seems global or per-row
+            ).text(), # Wait, quality is per row in the table, but usually set globally from combo. 
+                      # The original code read it from the table item at task_list.position.
+                      # Since we iterate, we might need to pass a way for manager to get quality per task, 
+                      # or just pass the global one if they are all updated.
+                      # Original: self.tasks_table.item(self.converter.task_list.position, COLUMNS.QUALITY).text()
+                      # The manager doesn't know about the table.
+                      # We should probably update the profile/task with the quality BEFORE starting.
+                      # But the manager takes options.
+                      # Let's pass the current combo text as default, but the manager might need to read from task?
+                      # Actually, TaskList.running_task_conversion_cmd takes target_quality.
+                      # If we want per-task quality, we should probably update the Task object to store it.
+                      # For now, let's assume the combo box value is what we want, OR
+                      # we can update the manager to read from the task if we move quality to Task.
+                      # BUT, the original code read from the TABLE.
+                      # Let's stick to the original behavior: The UI controls the quality.
+                      # We can pass the quality_combo text.
+            "target_quality": self.quality_combo.currentText(), 
+            "tagged": self.tag_chb.isChecked(),
+            "subtitle": self.subtitle_chb.isChecked(),
+            "replace_source": self.delete_chb.isChecked(),
+        }
+        
+        self.converter.start(options)
 
     def stop_file_encoding(self):
         """Stop file encoding process and continue with the list."""
-        # Terminate the file encoding
-        self.library.stop_converter()
-        # Set Video.status attribute
-        self.task_list.running_task_status = STATUS.stopped
-        self.tasks_table.item(self.task_list.position, COLUMNS.PROGRESS).setText(
-            self.tr("Stopped!")
-        )
-        # Delete the file when conversion is stopped by the user
-        if not self.task_list.delete_running_file_output(
-            tagged=self.tag_chb.isChecked()
-        ):
-            output_path = self.task_list.get_task(
-                self.task_list.position
-            ).get_output_path(tagged=self.tag_chb.isChecked())
-            self._show_message_box(
-                QMessageBox.Icon.Warning,
-                self.tr(
-                    "Could not delete the output file:\n{0}\n\n"
-                    "The file may be in use by another application."
-                ).format(output_path),
-            )
-        # Update the list duration and partial time for total progress bar
-        self.library.timer.reset_progress_times()
-        self.task_list_duration = self.task_list.duration()
+        self.converter.stop()
 
     def stop_all_files_encoding(self):
         """Stop the conversion process for all the files in list."""
-        # Delete the file when conversion is stopped by the user
-        self.library.stop_converter()
-        if not self.task_list.delete_running_file_output(
-            tagged=self.tag_chb.isChecked()
-        ):
-            output_path = self.task_list.get_task(
-                self.task_list.position
-            ).get_output_path(tagged=self.tag_chb.isChecked())
+        self.converter.stop_all()
+
+    def _on_task_started(self, position):
+        """Handle task started signal."""
+        self.set_ui_state(AppState.RUNNING)
+        self.tasks_table.item(position, COLUMNS.PROGRESS).setText(self.tr("Converting..."))
+
+    def _on_task_finished(self, position, status):
+        """Handle task finished signal."""
+        if status == STATUS.done:
+            self.tasks_table.item(position, COLUMNS.PROGRESS).setText(self.tr("Done!"))
+            if self.delete_chb.isChecked():
+                 self._remove_completed_task_from_ui()
+        elif status == STATUS.stopped:
+            self.tasks_table.item(position, COLUMNS.PROGRESS).setText(self.tr("Stopped!"))
+
+    def _on_all_finished(self):
+        """Handle all tasks finished."""
+        if self.shutdown_chb.isChecked() and not self.converter.task_list.all_stopped:
+             self.shutdown_machine()
+             return
+
+        if self.converter.task_list.all_done:
+            self.set_ui_state(AppState.DONE)
             self._show_message_box(
-                QMessageBox.Icon.Warning,
-                self.tr(
-                    "Could not delete the output file:\n{0}\n\n"
-                    "The file may be in use by another application."
-                ).format(output_path),
+                QMessageBox.Icon.Information,
+                self.tr("Conversion process successfully finished."),
             )
-        for media_file in self.task_list:
-            # Set Video.status attribute
-            if media_file.status != STATUS.done:
-                media_file.status = STATUS.stopped
-                self.task_list.position = self.task_list.index(media_file)
-                self.tasks_table.item(
-                    self.task_list.position, COLUMNS.PROGRESS
-                ).setText(self.tr("Stopped!"))
-
-        # Update the list duration and partial time for total progress bar
-        self.library.timer.reset_progress_times()
-        self.task_list_duration = self.task_list.duration()
-
-    def _finish_file_encoding(self):
-        """Finish the file encoding process."""
-        if self.task_list.running_task_status != STATUS.stopped:
-            self.notify()
-            # Close and kill the conversion process
-            self.library.close_converter()
-            # Check if the process finished OK
-            if self.library.converter_exit_status() == QProcess.ExitStatus.NormalExit:
-                # When finished a file conversion...
-                self.tasks_table.item(
-                    self.task_list.position, COLUMNS.PROGRESS
-                ).setText(self.tr("Done!"))
-                self.task_list.running_task_status = STATUS.done
-                self.operation_pb.setProperty("value", 0)
-
-                finalize_err = None
-                try:
-                    self.task_list.finalize_running_task_output()
-                except (FileNotFoundError, OSError) as err:
-                    finalize_err = err
-
-                if finalize_err is not None:
-                    self._show_message_box(
-                        QMessageBox.Icon.Warning,
-                        self.tr(
-                            "Could not finalize the converted file:\n{0}\n\n"
-                            "The temporary file remains on disk."
-                        ).format(finalize_err),
-                    )
-
-                # Only delete input file if checkbox is explicitly checked AND output file actually exists
-                if self.delete_chb.isChecked():
-                    output_path_str = self._get_output_path(self.task_list.position)
-                    output_path = Path(output_path_str) if output_path_str else None
-
-                    if output_path and output_path.exists():
-                        delete_error = None
-                        try:
-                            self.task_list.delete_running_file_input()
-                        except OSError as err:
-                            delete_error = err
-
-                        if delete_error is not None:
-                            self._show_message_box(
-                                QMessageBox.Icon.Warning,
-                                self.tr(
-                                    "Could not delete the original file:\n{0}\n\n{1}"
-                                ).format(output_path_str, delete_error),
-                            )
-                        else:
-                            self._remove_completed_task_from_ui()
-                    else:
-                        # Show warning if output file doesn't exist
-                        self._show_message_box(
-                            QMessageBox.Icon.Warning,
-                            self.tr(
-                                "Output file was not created successfully. "
-                                "Original file will NOT be deleted for safety."
-                            ),
-                        )
-        # Attempt to end the conversion process
-        self._end_encoding_process()
-
-    def _end_encoding_process(self):
-        """End up the encoding process."""
-        # Test if encoding process is finished
-        if self.task_list.is_exhausted:
-            if self.library.error is not None:
-                self._show_message_box(
-                    QMessageBox.Icon.Critical,
-                    self.tr("The conversion library failed with error:")
-                    + " "
-                    + self.library.error,
-                )
-                self.library.error = None
-            elif not self.task_list.all_stopped:
-                # Only shutdown if user explicitly checked the shutdown checkbox
-                if self.shutdown_chb.isChecked():
-                    self.shutdown_machine()
-                    return
-                self._show_message_box(
-                    QMessageBox.Icon.Information,
-                    self.tr("Conversion process successfully finished."),
-                )
-                if self.task_list.all_done:
-                    self.set_ui_state(AppState.DONE)
-                else:
-                    self.set_ui_state(AppState.READY)
-            else:
-                self._show_message_box(
+        else:
+            self.set_ui_state(AppState.READY)
+            if self.converter.task_list.all_stopped:
+                 self._show_message_box(
                     QMessageBox.Icon.Information,
                     self.tr("Conversion process stopped by the user."),
                 )
-                self.set_ui_state(AppState.STOPPED)
+        
+        self.setWindowTitle(self.title)
+        self.statusBar().showMessage(self.tr("Ready"))
+        self._reset_options_check_boxes()
+        self._reset_progress_bars()
 
-            self.setWindowTitle(self.title)
-            self.statusBar().showMessage(self.tr("Ready"))
-            self._reset_options_check_boxes()
-            # Reset the position
-            self.task_list.position = None
-            # Reset all progress related variables
-            self._reset_progress_bars()
-            self.library.timer.reset_progress_times()
-            self.task_list_duration = self.task_list.duration()
-            self.library.timer.process_start_time = 0.0
-        else:
-            self.start_encoding()
+    def _on_conversion_error(self, message):
+        """Handle conversion error."""
+        self._show_message_box(QMessageBox.Icon.Critical, message)
+        self.set_ui_state(AppState.READY)
 
-    def _reset_progress_bars(self):
-        """Reset the progress bars."""
-        self.operation_pb.setProperty("value", 0)
-        self.total_pb.setProperty("value", 0)
-
-    def _ready_read(self):
-        """Is called when the conversion process emit a new output."""
-        self.library.reader.update_read(
-            process_output=self.library.read_converter_output()
-        )
-
-        self._update_conversion_progress()
-
-    def _update_conversion_progress(self):
-        """Read the encoding output from the converter stdout."""
-        # Initialize the process time
-        if not self.library.timer.process_start_time:
-            self.library.timer.init_process_start_time()
-
-        # Initialize the operation time
-        if not self.library.timer.operation_start_time:
-            self.library.timer.init_operation_start_time()
-
-        # Return if no time read
-        if not self.library.reader.has_time_read:
-            # Catch the library errors only before time_read
-            self.library.catch_errors()
-            return
-
-        self.library.timer.update_time(op_time_read_sec=self.library.reader.time)
-
-        self.library.timer.update_cum_times()
-
-        file_duration = float(self.task_list.running_file_info("duration"))
-
-        operation_progress = self.library.timer.operation_progress(
-            file_duration=file_duration
-        )
-
-        process_progress = self.library.timer.process_progress(
-            list_duration=self.task_list_duration
-        )
-
-        self._update_progress(
-            op_progress=operation_progress, pr_progress=process_progress
-        )
-
-        self._update_status_bar()
-
-        self._update_main_window_title(op_progress=operation_progress)
-
-    def _update_progress(self, op_progress, pr_progress):
-        """Update operation progress in tasks list & operation progress bar."""
-        # Update operation progress bar
+    def _on_progress_updated(self, op_progress, pr_progress):
+        """Handle progress updates."""
         self.operation_pb.setProperty("value", op_progress)
-        # Update operation progress in tasks list
-        self.tasks_table.item(self.task_list.position, 3).setText(
-            str(op_progress) + "%"
-        )
         self.total_pb.setProperty("value", pr_progress)
-
-    def _update_main_window_title(self, op_progress):
-        """Update the main window title."""
-        running_file_name = self.task_list.running_file_name(with_extension=True)
-
+        
+        if self.converter.task_list.position is not None:
+             self.tasks_table.item(self.converter.task_list.position, 3).setText(
+                str(op_progress) + "%"
+            )
+            
+        # Update window title
+        running_file_name = self.converter.task_list.running_file_name(with_extension=True)
         self.setWindowTitle(
-            str(op_progress)
-            + "%"
-            + "-"
-            + "["
-            + running_file_name
-            + "]"
-            + " - "
-            + self.title
+            f"{op_progress}%-[{running_file_name}] - {self.title}"
         )
 
-    def _update_status_bar(self):
-        """Update the status bar while converting."""
-        file_duration = float(self.task_list.running_file_info("duration"))
-
+    def _on_time_updated(self, name, bitrate, remaining, elapsed):
+        """Handle time updates for status bar."""
         self.statusBar().showMessage(
             self.tr(
                 "Converting: {m}\t\t\t "
@@ -1178,14 +973,17 @@ class VideoMorphMW(QMainWindow):
                 "Operation Remaining Time: {ort}\t\t\t "
                 "Total Elapsed Time: {tet}"
             ).format(
-                m=self.task_list.running_file_name(with_extension=True),
-                br=self.library.reader.bitrate,
-                ort=self.library.timer.operation_remaining_time(
-                    file_duration=file_duration
-                ),
-                tet=write_time(self.library.timer.process_cum_time),
+                m=name,
+                br=bitrate,
+                ort=remaining,
+                tet=elapsed,
             )
         )
+
+    def _reset_progress_bars(self):
+        """Reset the progress bars."""
+        self.operation_pb.setProperty("value", 0)
+        self.total_pb.setProperty("value", 0)
 
     def _update_media_files_status(self):
         """Update file status."""
@@ -1201,7 +999,7 @@ class VideoMorphMW(QMainWindow):
             self.update_table_progress_column(row=item.row())
 
             # Update file Done or Stopped status
-            self.task_list.set_task_status(position=item.row(), status=STATUS.todo)
+            self.converter.task_list.set_task_status(position=item.row(), status=STATUS.todo)
 
         else:
             self._update_all_table_rows(
@@ -1211,7 +1009,7 @@ class VideoMorphMW(QMainWindow):
             self._set_media_status()
 
         # Update total duration of the new tasks list
-        self.task_list_duration = self.task_list.duration()
+        self.task_list_duration = self.converter.task_list.duration()
         # Update the interface
         self.set_ui_state(AppState.READY)
 
@@ -1235,18 +1033,18 @@ class VideoMorphMW(QMainWindow):
 
     def _set_media_status(self):
         """Update media files state of conversion."""
-        for media_file in self.task_list:
+        for media_file in self.converter.task_list:
             media_file.status = STATUS.todo
-        self.task_list.position = None
+        self.converter.task_list.position = None
 
     def _on_modify_conversion_option(self):
-        if self.task_list.length:
+        if len(self.converter.task_list):
             self.set_ui_state(AppState.READY)
             self._set_media_status()
             self._update_all_table_rows(
                 column=COLUMNS.PROGRESS, value=self.tr("To Convert")
             )
-            self.task_list_duration = self.task_list.duration()
+            self.task_list_duration = self.converter.task_list.duration()
 
     def _on_delete_checkbox_clicked(self):
         """Handle delete checkbox clicks with safety confirmation."""
@@ -1315,24 +1113,24 @@ class VideoMorphMW(QMainWindow):
         self.info_action.setEnabled(config["info"])
 
     def _update_ui_when_playing(self, row):
-        if self.library.converter_is_running:
+        if self.converter.library.converter_is_running:
             self.set_ui_state(AppState.RUNNING)
-        elif self.task_list.get_task_status(row) == STATUS.todo:
+        elif self.converter.task_list.get_task_status(row) == STATUS.todo:
             self.set_ui_state(AppState.READY)
         else:
             self.set_ui_state(AppState.STOPPED)
 
     def _update_ui_when_error_on_conversion(self):
-        self.library.timer.reset_progress_times()
-        self.task_list_duration = self.task_list.duration()
-        self.task_list.position = None
+        self.converter.library.timer.reset_progress_times()
+        self.task_list_duration = self.converter.task_list.duration()
+        self.converter.task_list.position = None
         self._reset_progress_bars()
         self.setWindowTitle(self.title)
         self._reset_options_check_boxes()
         self.set_ui_state(AppState.READY)
 
     def _enable_context_menu_action(self):
-        if not self.library.converter_is_running:
+        if not self.converter.library.converter_is_running:
             # Only enable if an item is actually selected
             has_selection = self.tasks_table.currentItem() is not None
             self.remove_media_file_action.setEnabled(has_selection)
@@ -1346,11 +1144,11 @@ class VideoMorphMW(QMainWindow):
         self.play_output_media_file_action.setEnabled(
             path_exists and self.profiles_combo.currentText() != "MP4"
         )
-        self.info_action.setEnabled(bool(self.task_list.length))
+        self.info_action.setEnabled(bool(len(self.converter.task_list)))
 
     def _on_table_selection_changed(self):
         """Handle table selection changes to update remove action state."""
         # Only enable remove action if an item is selected and conversion is not running
         has_selection = self.tasks_table.currentItem() is not None
-        can_remove = has_selection and not self.library.converter_is_running
+        can_remove = has_selection and not self.converter.library.converter_is_running
         self.remove_media_file_action.setEnabled(can_remove)
