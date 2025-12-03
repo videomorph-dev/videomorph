@@ -118,7 +118,7 @@ class TargetQualityDelegate(QItemDelegate):
 
     def setEditorData(self, editor, index):
         """Set Target Quality."""
-        text = index.model().data(index, Qt.DisplayRole)
+        text = index.model().data(index, Qt.ItemDataRole.DisplayRole)
         if index.column() == COLUMNS.QUALITY:
             i = editor.findText(text)
             if i == -1:
@@ -128,7 +128,7 @@ class TargetQualityDelegate(QItemDelegate):
             QItemDelegate.setEditorData(self, editor, index)
 
         self.parent.tasks_table.setEditTriggers(
-            QAbstractItemView.NoEditTriggers
+            QAbstractItemView.EditTrigger.NoEditTriggers
         )
 
     def update(self, editor, index):
@@ -140,5 +140,5 @@ class TargetQualityDelegate(QItemDelegate):
         self.parent.total_duration = self.parent.task_list.duration
         self.parent.update_ui_when_ready()
         self.parent.tasks_table.setEditTriggers(
-            QAbstractItemView.NoEditTriggers
+            QAbstractItemView.EditTrigger.NoEditTriggers
         )
