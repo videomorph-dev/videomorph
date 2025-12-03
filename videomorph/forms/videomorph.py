@@ -61,6 +61,8 @@ from videomorph.forms.actions import ACTION_SPECS
 from videomorph.forms.changelog import ChangelogDialog
 from videomorph.forms.info import InfoDialog
 from videomorph.forms.vmwidgets import TasksListTable
+from videomorph.forms.settings import SettingsManager
+from videomorph.forms.ui_state import AppState, UI_STATE_CONFIG
 
 _ = _videomorph_qrc  # Ensure Qt resources are registered.
 
@@ -74,6 +76,7 @@ class VideoMorphMW(QMainWindow):
         self.icon = self._get_app_icon()
         self.source_dir = QDir.homePath()
         self.task_list_duration = 0.0
+        self.settings_manager = SettingsManager()
 
         self._setup_ui()
         self._setup_model()
@@ -108,7 +111,7 @@ class VideoMorphMW(QMainWindow):
         self._create_toolbar()
         self._create_status_bar()
         self._create_context_menu()
-        self._update_ui_when_no_file()
+        self.set_ui_state(AppState.EMPTY)
 
     @staticmethod
     def _get_app_icon():
@@ -412,51 +415,29 @@ class VideoMorphMW(QMainWindow):
 
         self._update_ui_when_playing(row=self.tasks_table.currentIndex().row())
 
-    @staticmethod
-    def _get_settings_file():
-        return QSettings(str(settings_file_path()), QSettings.Format.IniFormat)
-
-    def _create_initial_settings(self):
-        """Create initial settings file."""
-        if not settings_file_path().exists():
-            self._write_app_settings(
-                pos=QPoint(100, 50),
-                size=QSize(1096, 510),
-                profile_index=0,
-                preset_index=0,
-            )
-
     def _load_app_settings(self):
         """Read the app settings."""
-        self._create_initial_settings()
-        settings = self._get_settings_file()
-        pos = settings.value("pos", QPoint(600, 200), type=QPoint)
-        size = settings.value("size", QSize(1096, 510), type=QSize)
-        self.resize(size)
-        self.move(pos)
-        if "profile_index" and "preset_index" in settings.allKeys():
-            profile = settings.value("profile_index")
-            preset = settings.value("preset_index")
-            self.profiles_combo.setCurrentIndex(int(profile))
-            self.quality_combo.setCurrentIndex(int(preset))
-        if "output_dir" in settings.allKeys():
-            directory = str(settings.value("output_dir"))
-            dir_path = Path(directory)
-            output_dir = str(dir_path) if dir_path.is_dir() else QDir.homePath()
-            self.output_edit.setText(output_dir)
-            self.task_list.output_dir = output_dir
-        if "source_dir" in settings.allKeys():
-            self.source_dir = str(settings.value("source_dir"))
+        settings = self.settings_manager.load()
+        
+        if "pos" in settings:
+            self.move(settings["pos"])
+        if "size" in settings:
+            self.resize(settings["size"])
+            
+        if "profile_index" in settings and "preset_index" in settings:
+            self.profiles_combo.setCurrentIndex(settings["profile_index"])
+            self.quality_combo.setCurrentIndex(settings["preset_index"])
+            
+        if "output_dir" in settings:
+            self.output_edit.setText(settings["output_dir"])
+            self.task_list.output_dir = settings["output_dir"]
+            
+        if "source_dir" in settings:
+            self.source_dir = settings["source_dir"]
 
-    def _write_app_settings(self, **app_settings):
-        """Write app settings on exit.
-
-        Args:
-            app_settings (OrderedDict): OrderedDict to collect all app settings
-        """
-        settings_file = self._get_settings_file()
-
-        settings = OrderedDict(
+    def _write_app_settings(self):
+        """Write app settings on exit."""
+        self.settings_manager.write(
             pos=self.pos(),
             size=self.size(),
             profile_index=self.profiles_combo.currentIndex(),
@@ -464,12 +445,6 @@ class VideoMorphMW(QMainWindow):
             source_dir=self.source_dir,
             output_dir=self.output_edit.text(),
         )
-
-        if app_settings:
-            settings.update(app_settings)
-
-        for key, setting in settings.items():
-            settings_file.setValue(key, setting)
 
     def _dialog_title(self, icon: QMessageBox.Icon) -> str:
         """Return a consistent title for message boxes."""
@@ -706,19 +681,19 @@ class VideoMorphMW(QMainWindow):
             self._show_message_box(QMessageBox.Icon.Critical, msg)
 
             if not self.task_list.length:
-                self._update_ui_when_no_file()
+                self.set_ui_state(AppState.EMPTY)
             else:
-                self.update_ui_when_ready()
+                self.set_ui_state(AppState.READY)
 
         # Update tool buttons so you can convert, or add_file, or clear...
         # only if there is not a conversion process running
         if self.library.converter_is_running:
-            self._update_ui_when_converter_running()
+            self.set_ui_state(AppState.RUNNING)
         else:
             # Update the files status
             self._set_media_status()
             # Update ui
-            self.update_ui_when_ready()
+            self.set_ui_state(AppState.READY)
 
         # After adding files to the list, recalculate the list duration
         self.task_list_duration = self.task_list.duration(step=0)
@@ -817,7 +792,7 @@ class VideoMorphMW(QMainWindow):
         # If all files are deleted... update the interface
         if not self.tasks_table.rowCount():
             self._reset_options_check_boxes()
-            self._update_ui_when_no_file()
+            self.set_ui_state(AppState.EMPTY)
 
     def _remove_completed_task_from_ui(self):
         """Remove the currently finished task from the table and model."""
@@ -832,7 +807,7 @@ class VideoMorphMW(QMainWindow):
 
         if not self.tasks_table.rowCount():
             self._reset_options_check_boxes()
-            self._update_ui_when_no_file()
+            self.set_ui_state(AppState.EMPTY)
 
     def _select_directory(self, dialog_title, source_dir=QDir.homePath()):
         options = (
@@ -897,11 +872,11 @@ class VideoMorphMW(QMainWindow):
             self.task_list.clear()
             # Update UI
             self._reset_options_check_boxes()
-            self._update_ui_when_no_file()
+            self.set_ui_state(AppState.EMPTY)
 
     def start_encoding(self):
         """Start the encoding process."""
-        self._update_ui_when_converter_running()
+        self.set_ui_state(AppState.RUNNING)
 
         self.task_list.position += 1
         self.library.timer.operation_start_time = 0.0
@@ -1093,15 +1068,15 @@ class VideoMorphMW(QMainWindow):
                     self.tr("Conversion process successfully finished."),
                 )
                 if self.task_list.all_done:
-                    self._update_ui_when_done()
+                    self.set_ui_state(AppState.DONE)
                 else:
-                    self.update_ui_when_ready()
+                    self.set_ui_state(AppState.READY)
             else:
                 self._show_message_box(
                     QMessageBox.Icon.Information,
                     self.tr("Conversion process stopped by the user."),
                 )
-                self._update_ui_when_problem()
+                self.set_ui_state(AppState.STOPPED)
 
             self.setWindowTitle(self.title)
             self.statusBar().showMessage(self.tr("Ready"))
@@ -1238,7 +1213,7 @@ class VideoMorphMW(QMainWindow):
         # Update total duration of the new tasks list
         self.task_list_duration = self.task_list.duration()
         # Update the interface
-        self.update_ui_when_ready()
+        self.set_ui_state(AppState.READY)
 
     def _update_all_table_rows(self, column, value):
         rows = self.tasks_table.rowCount()
@@ -1266,7 +1241,7 @@ class VideoMorphMW(QMainWindow):
 
     def _on_modify_conversion_option(self):
         if self.task_list.length:
-            self.update_ui_when_ready()
+            self.set_ui_state(AppState.READY)
             self._set_media_status()
             self._update_all_table_rows(
                 column=COLUMNS.PROGRESS, value=self.tr("To Convert")
@@ -1314,131 +1289,38 @@ class VideoMorphMW(QMainWindow):
         # If we get here, either unchecking or user confirmed deletion
         self._on_modify_conversion_option()
 
-    def _update_ui(self, **i_vars):
-        """Update the interface status.
+    def set_ui_state(self, state: AppState):
+        """Update the interface status based on the application state.
 
         Args:
-            i_vars (dict): Dict to collect all the interface variables
+            state (AppState): The current state of the application.
         """
-        variables = dict(
-            add=True,
-            convert=True,
-            clear=True,
-            remove=True,
-            stop=True,
-            stop_all=True,
-            presets=True,
-            profiles=True,
-            add_costume_profile=True,
-            import_profile=True,
-            restore_profile=True,
-            output_dir=True,
-            subtitles_chb=True,
-            delete_chb=True,
-            tag_chb=True,
-            shutdown_chb=True,
-            play_input=True,
-            play_output=True,
-            info=True,
-        )
+        config = UI_STATE_CONFIG[state]
 
-        variables.update(i_vars)
-
-        self.open_media_file_action.setEnabled(variables["add"])
-        self.convert_action.setEnabled(variables["convert"])
-        self.clear_media_list_action.setEnabled(variables["clear"])
-        self.remove_media_file_action.setEnabled(variables["remove"])
-        self.stop_action.setEnabled(variables["stop"])
-        self.stop_all_action.setEnabled(variables["stop_all"])
-        self.quality_combo.setEnabled(variables["presets"])
-        self.profiles_combo.setEnabled(variables["profiles"])
-        self.output_btn.setEnabled(variables["output_dir"])
-        self.subtitle_chb.setEnabled(variables["subtitles_chb"])
-        self.delete_chb.setEnabled(variables["delete_chb"])
-        self.tag_chb.setEnabled(variables["tag_chb"])
-        self.shutdown_chb.setEnabled(variables["shutdown_chb"])
-        self.play_input_media_file_action.setEnabled(variables["play_input"])
-        self.play_output_media_file_action.setEnabled(variables["play_output"])
-        self.info_action.setEnabled(variables["info"])
-        self.tasks_table.setCurrentItem(None)
-
-    def _update_ui_when_no_file(self):
-        """User cannot perform any action but to add files to list."""
-        self._update_ui(
-            clear=False,
-            remove=False,
-            convert=False,
-            stop=False,
-            stop_all=False,
-            profiles=False,
-            presets=False,
-            subtitles_chb=False,
-            delete_chb=False,
-            tag_chb=False,
-            shutdown_chb=False,
-            play_input=False,
-            play_output=False,
-            info=False,
-        )
-
-    def update_ui_when_ready(self):
-        """Update UI when app is ready to start conversion."""
-        self._update_ui(
-            stop=False,
-            stop_all=False,
-            remove=True,  # Allow removal when ready and files are present
-            play_input=False,
-            play_output=False,
-            info=False,
-        )
+        self.open_media_file_action.setEnabled(config["add"])
+        self.convert_action.setEnabled(config["convert"])
+        self.clear_media_list_action.setEnabled(config["clear"])
+        self.remove_media_file_action.setEnabled(config["remove"])
+        self.stop_action.setEnabled(config["stop"])
+        self.stop_all_action.setEnabled(config["stop_all"])
+        self.quality_combo.setEnabled(config["presets"])
+        self.profiles_combo.setEnabled(config["profiles"])
+        self.output_btn.setEnabled(config["output_dir"])
+        self.subtitle_chb.setEnabled(config["subtitles_chb"])
+        self.delete_chb.setEnabled(config["delete_chb"])
+        self.tag_chb.setEnabled(config["tag_chb"])
+        self.shutdown_chb.setEnabled(config["shutdown_chb"])
+        self.play_input_media_file_action.setEnabled(config["play_input"])
+        self.play_output_media_file_action.setEnabled(config["play_output"])
+        self.info_action.setEnabled(config["info"])
 
     def _update_ui_when_playing(self, row):
         if self.library.converter_is_running:
-            self._update_ui_when_converter_running()
+            self.set_ui_state(AppState.RUNNING)
         elif self.task_list.get_task_status(row) == STATUS.todo:
-            self.update_ui_when_ready()
+            self.set_ui_state(AppState.READY)
         else:
-            self._update_ui_when_problem()
-
-    def _update_ui_when_problem(self):
-        self._update_ui(
-            stop=False,
-            stop_all=False,
-            remove=False,
-            play_input=False,
-            play_output=False,
-            info=False,
-        )
-
-    def _update_ui_when_done(self):
-        self._update_ui(
-            convert=False,
-            stop=False,
-            stop_all=False,
-            remove=False,
-            play_input=False,
-            play_output=False,
-            info=False,
-        )
-
-    def _update_ui_when_converter_running(self):
-        self._update_ui(
-            presets=False,
-            profiles=False,
-            subtitles_chb=False,
-            add_costume_profile=False,
-            import_profile=False,
-            restore_profile=False,
-            convert=False,
-            clear=False,
-            remove=False,
-            output_dir=False,
-            delete_chb=False,
-            tag_chb=False,
-            play_input=False,
-            play_output=False,
-            info=False,
-        )
+            self.set_ui_state(AppState.STOPPED)
 
     def _update_ui_when_error_on_conversion(self):
         self.library.timer.reset_progress_times()
@@ -1447,7 +1329,7 @@ class VideoMorphMW(QMainWindow):
         self._reset_progress_bars()
         self.setWindowTitle(self.title)
         self._reset_options_check_boxes()
-        self.update_ui_when_ready()
+        self.set_ui_state(AppState.READY)
 
     def _enable_context_menu_action(self):
         if not self.library.converter_is_running:
