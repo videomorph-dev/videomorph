@@ -53,7 +53,7 @@ VideoMorph isn't for you."""
 
 COMMONS = dict(
     name=APP_NAME.lower(),
-    version=VERSION + "-" + CODENAME.lower(),
+    version=VERSION + "+" + CODENAME.lower(),
     description="Video Converter based on ffmpeg, "
     "Python 3 and Qt6, focused on usability.",
     long_description=LONG_DESCRIPTION,
