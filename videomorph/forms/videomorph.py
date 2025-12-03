@@ -549,9 +549,9 @@ class VideoMorphMW(QMainWindow):
             int(self.tasks_table.currentColumn()) == COLUMNS.QUALITY
             and not self.library.converter_is_running
         ):
-            self.tasks_table.setEditTriggers(QAbstractItemView.AllEditTriggers)
+            self.tasks_table.setEditTriggers(QAbstractItemView.EditTrigger.AllEditTriggers)
         else:
-            self.tasks_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+            self.tasks_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
             if int(self.tasks_table.currentColumn()) == COLUMNS.NAME:
                 self.play_video()
 
@@ -618,7 +618,7 @@ class VideoMorphMW(QMainWindow):
             settings_file.setValue(key, setting)
 
     def _show_message_box(self, type_, title, msg):
-        QMessageBox(type_, title, msg, QMessageBox.Icon.Ok, self).show()
+        QMessageBox(type_, title, msg, QMessageBox.StandardButton.Ok, self).show()
 
     def about(self):
         """Show About dialog."""
