@@ -138,6 +138,16 @@ class _UnixLauncher(_Launcher):
                     "-i",
                     "sine=frequency=800:duration=0.3",
                 ]
+        
+        # Try afplay on macOS first
+        if platform == "darwin" and self._which("afplay") is not None:
+            import subprocess
+            cmd = ["afplay", sound]
+            try:
+                subprocess.run(cmd, check=False, timeout=10)
+                return
+            except (subprocess.TimeoutExpired, FileNotFoundError):
+                pass
 
         if self._which("ffplay") is not None:
             import subprocess

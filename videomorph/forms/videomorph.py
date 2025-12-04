@@ -927,6 +927,7 @@ class VideoMorphMW(QMainWindow):
 
         if self.manager.all_tasks_done:
             self.set_ui_state(AppState.DONE)
+            self.notify()
             self._show_message_box(
                 QMessageBox.Icon.Information,
                 self.tr("Conversion process successfully finished."),
