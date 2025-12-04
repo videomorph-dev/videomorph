@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Callable
 
 from PyQt6.QtCore import QTranslator
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QMessageBox, QWidget
 
 from videomorph.converter.constants import LOCALE
@@ -105,6 +106,10 @@ def main() -> None:
     loaded_translation = load_translation(LOCALE, translator)
     if loaded_translation:
         app.installTranslator(translator)
+
+    icon_path = resource_path("icons", "videomorph.png")
+    if icon_path.exists():
+        app.setWindowIcon(QIcon(str(icon_path)))
 
     window = VideoMorphMW()
 
