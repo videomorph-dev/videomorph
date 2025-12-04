@@ -21,7 +21,7 @@ class ConversionManager(QObject):
 
     def __init__(self, output_dir=None):
         super().__init__()
-        self.converter = Converter()
+        self._converter = Converter()
         self.profile = Profile()
         self.task_list = TaskList(
             profile=self.profile, output_dir=output_dir if output_dir else Path.home()
@@ -30,7 +30,7 @@ class ConversionManager(QObject):
         self._current_options = {}
 
         # Connect library signals
-        self.converter.setup(
+        self._converter.setup(
             reader=self._on_converter_ready_read,
             finisher=self._on_converter_finished,
         )
@@ -44,13 +44,13 @@ class ConversionManager(QObject):
     def stop(self):
         """Stop the current task."""
         self._stop_requested = True
-        self.converter.stop()
+        self._converter.stop()
         # The finished signal will handle the rest
 
     def stop_all(self):
         """Stop all tasks."""
         self._stop_requested = True
-        self.converter.stop()
+        self._converter.stop()
         # We'll need to mark remaining tasks as stopped in the finished handler
 
     def _process_next_task(self):
@@ -71,7 +71,7 @@ class ConversionManager(QObject):
             return
 
         # Reset timer for new task
-        self.converter.timer.operation_start_time = 0.0
+        self._converter.timer.operation_start_time = 0.0
         
         # Check if task needs processing
         if self.task_list.running_task_status != STATUS.done:
@@ -91,7 +91,7 @@ class ConversionManager(QObject):
             )
             
             self.task_started.emit(self.task_list.position)
-            self.converter.start(cmd=cmd)
+            self._converter.start(cmd=cmd)
             
         except OutputPathCollisionError as e:
             self.error.emit(f"Output path collision: {e}")
@@ -110,24 +110,24 @@ class ConversionManager(QObject):
 
     def _on_converter_ready_read(self):
         """Handle output from converter."""
-        self.converter.reader.update_read(
-            process_output=self.converter.read_output()
+        self._converter.reader.update_read(
+            process_output=self._converter.read_output()
         )
         self._update_progress()
 
     def _update_progress(self):
         """Calculate and emit progress updates."""
-        if not self.converter.timer.process_start_time:
-            self.converter.timer.init_process_start_time()
-        if not self.converter.timer.operation_start_time:
-            self.converter.timer.init_operation_start_time()
+        if not self._converter.timer.process_start_time:
+            self._converter.timer.init_process_start_time()
+        if not self._converter.timer.operation_start_time:
+            self._converter.timer.init_operation_start_time()
 
-        if not self.converter.reader.has_time_read:
-            self.converter.catch_errors()
+        if not self._converter.reader.has_time_read:
+            self._converter.catch_errors()
             return
 
-        self.converter.timer.update_time(op_time_read_sec=self.converter.reader.time)
-        self.converter.timer.update_cum_times()
+        self._converter.timer.update_time(op_time_read_sec=self._converter.reader.time)
+        self._converter.timer.update_cum_times()
 
         file_duration = float(self.task_list.running_file_info("duration"))
         # We need the total list duration which is stored in MW usually.
@@ -140,8 +140,8 @@ class ConversionManager(QObject):
         # For simplicity, let's calculate it.
         list_duration = self.task_list.duration()
 
-        op_progress = self.converter.timer.operation_progress(file_duration=file_duration)
-        pr_progress = self.converter.timer.process_progress(list_duration=list_duration)
+        op_progress = self._converter.timer.operation_progress(file_duration=file_duration)
+        pr_progress = self._converter.timer.process_progress(list_duration=list_duration)
 
         self.progress_updated.emit(op_progress, pr_progress)
         
@@ -149,20 +149,20 @@ class ConversionManager(QObject):
         from videomorph.converter.utils import write_time
         self.time_updated.emit(
             self.task_list.running_file_name(with_extension=True),
-            self.converter.reader.bitrate,
-            self.converter.timer.operation_remaining_time(file_duration=file_duration),
-            write_time(self.converter.timer.process_cum_time)
+            self._converter.reader.bitrate,
+            self._converter.timer.operation_remaining_time(file_duration=file_duration),
+            write_time(self._converter.timer.process_cum_time)
         )
 
     def _on_converter_finished(self):
         """Handle converter process finished."""
-        self.converter.close()
+        self._converter.close()
         
         if self._stop_requested:
             self._handle_stop()
             return
 
-        if self.converter.exit_status() == QProcess.ExitStatus.NormalExit:
+        if self._converter.exit_status() == QProcess.ExitStatus.NormalExit:
             self.task_list.running_task_status = STATUS.done
             self.task_finished.emit(self.task_list.position, STATUS.done)
             
@@ -184,9 +184,9 @@ class ConversionManager(QObject):
                     self.error.emit(f"Delete input error: {e}")
         else:
             # Error happened
-            if self.converter.error:
-                self.error.emit(f"Converter error: {self.converter.error}")
-                self.converter.error = None
+            if self._converter.error:
+                self.error.emit(f"Converter error: {self._converter.error}")
+                self._converter.error = None
             else:
                 self.error.emit("Unknown converter error")
             
@@ -210,7 +210,7 @@ class ConversionManager(QObject):
             tagged=self._current_options.get("tagged", False)
         )
         
-        self.converter.timer.reset_progress_times()
+        self._converter.timer.reset_progress_times()
         
         # If stop_all was requested, mark all remaining as stopped?
         # The original code iterates and marks them.
@@ -218,6 +218,111 @@ class ConversionManager(QObject):
         # Let's just stop processing.
         
         self.all_finished.emit()
+
+    # Public API
+    @property
+    def is_running(self) -> bool:
+        """Check if conversion is currently running."""
+        return self._converter.is_running
+
+    def run_player(self, file_path) -> None:
+        """Play a file with the system player."""
+        self._converter.run_player(file_path=file_path)
+
+    def reset_progress(self) -> None:
+        """Reset progress timers."""
+        self._converter.timer.reset_progress_times()
+
+    def kill_converter(self) -> None:
+        """Forcefully kill the conversion process."""
+        self._converter.kill()
+        self._converter.close()
+
+    def get_profile_qualities(self):
+        """Get profile qualities for the current locale."""
+        return self.profile.get_json_profile_qualities()
+    
+    def update_profile(self, new_quality: str):
+        """Update the current profile quality."""
+        self.profile.update(new_quality=new_quality)
+    
+    def consume_profile_warning(self):
+        """Consume and return any profile warning."""
+        return self.profile.consume_warning()
+
+    # Task List Access Methods
+    @property
+    def output_dir(self):
+        return self.task_list.output_dir
+
+    @output_dir.setter
+    def output_dir(self, value):
+        self.task_list.output_dir = value
+
+    @property
+    def task_count(self):
+        return len(self.task_list)
+
+    @property
+    def has_tasks(self):
+        return bool(len(self.task_list))
+
+    @property
+    def current_task_position(self):
+        return self.task_list.position
+
+    @current_task_position.setter
+    def current_task_position(self, value):
+        self.task_list.position = value
+
+    @property
+    def all_tasks_done(self):
+        return self.task_list.all_done
+
+    @property
+    def all_tasks_stopped(self):
+        return self.task_list.all_stopped
+
+    @property
+    def not_added_files(self):
+        return self.task_list.not_added_files
+
+    def get_task_file_name(self, position, with_extension=False):
+        return self.task_list.get_file_name(position, with_extension)
+
+    def get_task_file_info(self, position, info_param):
+        return self.task_list.get_file_info(position, info_param)
+
+    def get_task_status(self, position):
+        return self.task_list.get_task_status(position)
+
+    def set_task_status(self, position, status):
+        self.task_list.set_task_status(position, status)
+
+    def get_task_output_path(self, position, tagged=False):
+        return self.task_list.get_task(position).get_output_path(tagged)
+    
+    def get_task_file_path(self, position):
+        return self.task_list.get_file_path(position)
+
+    def delete_running_file_output(self, tagged=False):
+        return self.task_list.delete_running_file_output(tagged)
+
+    def get_total_duration(self, step=None):
+        return self.task_list.duration(step)
+
+    def get_running_file_name(self, with_extension=False):
+        return self.task_list.running_file_name(with_extension)
+
+    def reset_all_tasks_status(self):
+        """Reset all tasks status to todo."""
+        for task in self.task_list:
+            task.status = STATUS.todo
+        self.task_list.position = None
+
+    def get_task(self, position):
+        """Get a task by position."""
+        return self.task_list.get_task(position)
 
     # Model Access Methods
     def add_task(self, file_path):

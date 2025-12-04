@@ -16,10 +16,10 @@ from videomorph.converter.utils import write_size, write_time
 class InfoDialog(QtWidgets.QDialog):
     """Changelog Dialog."""
 
-    def __init__(self, parent=None, position=0, task_list=None):
+    def __init__(self, parent=None, position=0, manager=None):
         super(InfoDialog, self).__init__(parent)
         self.position = position
-        self.task_list = task_list
+        self.manager = manager
 
         self.central_widget = QtWidgets.QWidget(self)
         self.resize(300, 400)
@@ -178,7 +178,9 @@ class InfoDialog(QtWidgets.QDialog):
 
     def _show_video_info(self, position):
         """Show video info on the Info Panel."""
-        task = self.task_list.get_task(position)
+    def _show_video_info(self, position):
+        """Show video info on the Info Panel."""
+        task = self.manager.get_task(position)
         file_path = task.video.format_info["filename"]
         filename = Path(file_path).name
         self.label_file_name_value.setText(filename)
