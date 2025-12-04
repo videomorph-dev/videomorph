@@ -57,3 +57,27 @@ def write_size(size_in_bytes: Union[int, float, str]) -> str:
         return str(round(mib, 1)) + "MiB"
     gib = mib / 1024
     return str(round(gib, 1)) + "GiB"
+
+
+def search_directory_recursively(
+    directory: str, files: list[str] | None = None
+) -> list[str]:
+    """Return a list of video files found recursively under ``directory``."""
+    from pathlib import Path
+    from videomorph.converter.constants import VALID_VIDEO_EXT
+
+    if files is None:
+        files = []
+
+    dir_path = Path(directory)
+    if not dir_path.is_dir():
+        raise IsADirectoryError(f"Directory: {directory}, doesn't exist")
+
+    for path in dir_path.rglob("*"):
+        if path.is_file() and path.suffix.lower() in VALID_VIDEO_EXT:
+            files.append(str(path))
+
+    if not files:
+        raise FileNotFoundError(f"No Video Files Found in: {directory}")
+
+    return files

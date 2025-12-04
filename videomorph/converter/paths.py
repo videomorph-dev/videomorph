@@ -68,7 +68,7 @@ SYS_PATHS = globals()[platform + "_paths"]()
 
 
 @dataclass(slots=True)
-class PathResolver:
+class _PathResolver:
     """Resolve runtime, data, and user paths with optional overrides."""
 
     sys_paths: Dict[str, Path]
@@ -159,13 +159,13 @@ class PathResolver:
         return manual if manual.exists() else None
 
 
-PATHS = PathResolver(sys_paths=SYS_PATHS, base_paths=VM_PATHS, base_dir=_BASE_DIR)
+_PATHS = _PathResolver(sys_paths=SYS_PATHS, base_paths=VM_PATHS, base_dir=_BASE_DIR)
 
 
-class FFmpegLocator:
+class _FFmpegLocator:
     """Locate ffmpeg/ffprobe binaries via overrides, bundles, or PATH."""
 
-    def __init__(self, resolver: PathResolver) -> None:
+    def __init__(self, resolver: _PathResolver) -> None:
         self._resolver = resolver
 
     @staticmethod
@@ -217,42 +217,35 @@ class FFmpegLocator:
         return self.locate(_PROBE)
 
 
-_FFMPEG = FFmpegLocator(PATHS)
+_FFMPEG = _FFmpegLocator(_PATHS)
+
+
+# Public API
 LIBRARY_PATH = _FFMPEG.library_path
 PROBE_PATH = _FFMPEG.probe_path
 
 
 def resource_path(key: str, *parts: str) -> Path:
     """Return a resolved resource path (icons, docs, etc.)."""
-    return PATHS.resource_path(key, *parts)
-
-
-def doc_file(name: str) -> Path:
-    """Return a documentation file path."""
-    return resource_path("doc", name)
-
-
-def sound_file(name: str) -> Path:
-    """Return a sound asset path."""
-    return resource_path("sounds", name)
+    return _PATHS.resource_path(key, *parts)
 
 
 def manual_path(locale: str) -> Optional[Path]:
     """Return the manual for the requested locale if present."""
-    return PATHS.manual_path(locale)
+    return _PATHS.manual_path(locale)
 
 
 def profiles_user_dir() -> Path:
     """Return the user profile storage directory, creating it if needed."""
-    return PATHS.profiles_dir
+    return _PATHS.profiles_dir
 
 
 def packaged_profile(name: str) -> Path:
     """Return the bundled conversion profile path."""
-    return PATHS.packaged_resource("profiles", name)
+    return _PATHS.packaged_resource("profiles", name)
 
 
 def settings_file() -> Path:
     """Return the path to the Qt settings INI file."""
-    return PATHS.settings_file
+    return _PATHS.settings_file
 

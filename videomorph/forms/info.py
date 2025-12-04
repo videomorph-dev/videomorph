@@ -14,7 +14,7 @@ from videomorph.converter.utils import write_size, write_time
 
 
 class InfoDialog(QtWidgets.QDialog):
-    """Changelog Dialog."""
+    """Info Dialog."""
 
     def __init__(self, parent=None, position=0, manager=None):
         super(InfoDialog, self).__init__(parent)
@@ -176,8 +176,6 @@ class InfoDialog(QtWidgets.QDialog):
 
         self.setMinimumSize(whole_layout.minimumSize())
 
-    def _show_video_info(self, position):
-        """Show video info on the Info Panel."""
     def _show_video_info(self, position):
         """Show video info on the Info Panel."""
         task = self.manager.get_task(position)

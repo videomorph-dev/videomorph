@@ -8,7 +8,7 @@ from shutil import copy2
 from typing import Any, Dict, List, Optional
 
 from videomorph.converter.constants import LOCALE, VALID_VIDEO_EXT
-from videomorph.converter.codec import CodecsReader
+from videomorph.converter.codec import _read_codecs
 from videomorph.converter.paths import packaged_profile, profiles_user_dir
 
 JSONFiles = namedtuple("JSONFiles", "default customized")
@@ -70,7 +70,7 @@ class _JSONProfile:
         """Class initializer."""
         self._json_files = json_files
         self._valid_ext = valid_extensions
-        self._codecs_reader = None  # Lazy initialization
+        self._codec_data = None  # Lazy initialization
         self._user_profiles_dir = profiles_user_dir()
         self._warning_message: Optional[str] = None
 
@@ -79,9 +79,9 @@ class _JSONProfile:
     @property
     def _available_codecs(self):
         """Lazy-load codecs only when needed."""
-        if self._codecs_reader is None:
-            self._codecs_reader = CodecsReader()
-        return self._codecs_reader
+        if self._codec_data is None:
+            self._codec_data = _read_codecs()
+        return self._codec_data
 
     def get_json_profile_qualities(self, locale=LOCALE) -> OrderedDict:
         """Return a list of available Qualities per conversion profile."""

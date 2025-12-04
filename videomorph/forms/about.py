@@ -18,7 +18,7 @@ from PyQt6.QtWidgets import (
 )
 
 from videomorph import __app_name__, __version__
-from videomorph.converter.paths import doc_file
+from videomorph.converter.paths import resource_path
 
 
 class AboutVMDialog(QDialog):
@@ -135,7 +135,7 @@ class AboutVMDialog(QDialog):
 
     def get_license_text(self) -> str:
         """Get the license text from the license file."""
-        license_path = doc_file("LICENSE")
+        license_path = resource_path("doc", "LICENSE")
         deb_license = Path("/usr/share/common-licenses/Apache-2.0")
 
         if not license_path.exists() and not deb_license.exists():

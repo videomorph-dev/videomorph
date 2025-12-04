@@ -36,7 +36,7 @@ def test_load_translation_prefers_full_locale(tmp_path: Path):
     full_path.write_bytes(b"")
 
     translator = DummyTranslator()
-    loaded = vm_main.load_translation(
+    loaded = vm_main._load_translation(
         "es_ES", translator, resolver=_resolver_factory(i18n_dir)
     )
 
@@ -53,7 +53,7 @@ def test_load_translation_falls_back_to_short_locale(tmp_path: Path):
     short_path.write_bytes(b"")
 
     translator = DummyTranslator()
-    loaded = vm_main.load_translation(
+    loaded = vm_main._load_translation(
         "es_ES", translator, resolver=_resolver_factory(i18n_dir)
     )
 
@@ -68,7 +68,7 @@ def test_load_translation_returns_none_when_missing(tmp_path: Path, capsys: pyte
     i18n_dir.mkdir()
 
     translator = DummyTranslator()
-    loaded = vm_main.load_translation(
+    loaded = vm_main._load_translation(
         "es_ES", translator, resolver=_resolver_factory(i18n_dir)
     )
 

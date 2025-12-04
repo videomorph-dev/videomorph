@@ -46,13 +46,57 @@ def _warn_user(
     _show_dialog(QMessageBox.Icon.Warning, dialog_message, parent)
 
 
-Resolver = Callable[[str], Path]
+_Resolver = Callable[[str], Path]
 
 
-def load_translation(
+def _set_translator(app: QApplication) -> None:
+    """Load and install application translator based on system locale."""
+    translator = QTranslator()
+    loaded_translation = _load_translation(LOCALE, translator)
+    if loaded_translation:
+        app.installTranslator(translator)
+
+
+def _set_app_icon(app: QApplication) -> None:
+    """Set the application window icon."""
+    from PyQt6.QtGui import QIcon
+    icon_path = resource_path("icons", "videomorph.png")
+    if icon_path.exists():
+        app.setWindowIcon(QIcon(str(icon_path)))
+
+
+def _validate_ffmpeg(window: VideoMorphMW, app: QApplication) -> None:
+    # Check if ffmpeg binary exists
+    if not LIBRARY_PATH:
+        error_msg = window.tr(
+            "VideoMorph could not find the ffmpeg library on your system.\n\n"
+            "Please install ffmpeg and make sure it is available in your PATH"
+        )
+        _show_dialog(QMessageBox.Icon.Critical, error_msg, window)
+        app.quit()
+        return
+
+    # Validate that ffmpeg codecs can be read
+    try:
+        # Force codec reader initialization to validate ffmpeg
+        window.manager.get_profile_qualities()
+    except RuntimeError as e:
+        error_msg = window.tr(
+            "VideoMorph detected ffmpeg but failed to read codec information.\n\n"
+            "This may indicate:\n"
+            "• ffmpeg is corrupted or incomplete\n"
+            "• Incompatible ffmpeg version\n"
+            "• Permission issues\n\n"
+            f"Technical details: {e}"
+        )
+        _show_dialog(QMessageBox.Icon.Critical, error_msg, window)
+        app.quit()
+
+
+def _load_translation(
     locale: str,
     translator: QTranslator,
-    resolver: Resolver = resource_path,
+    resolver: _Resolver = resource_path,
     *,
     parent: QWidget | None = None,
 ) -> Path | None:
@@ -102,24 +146,13 @@ def load_translation(
 def main() -> None:
     """Main app function."""
     app = QApplication(sys.argv)
-    translator = QTranslator()
-    loaded_translation = load_translation(LOCALE, translator)
-    if loaded_translation:
-        app.installTranslator(translator)
-
-    icon_path = resource_path("icons", "videomorph.png")
-    if icon_path.exists():
-        app.setWindowIcon(QIcon(str(icon_path)))
+    
+    _set_translator(app)
+    _set_app_icon(app)
 
     window = VideoMorphMW()
 
-    if not LIBRARY_PATH:
-        error_msg = window.tr(
-            "VideoMorph could not find the ffmpeg library on your system.\n\n"
-            "Please install ffmpeg and make sure it is available in your PATH"
-        )
-        _show_dialog(QMessageBox.Icon.Critical, error_msg, window)
-        app.quit()
+    _validate_ffmpeg(window, app)
 
     window.show()
     sys.exit(app.exec())

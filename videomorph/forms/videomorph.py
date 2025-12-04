@@ -34,7 +34,7 @@ from PyQt6.QtWidgets import (
 )
 
 from videomorph import __app_name__, __version__
-from videomorph.converter.console import search_directory_recursively
+from videomorph.converter.utils import search_directory_recursively
 from videomorph.converter.constants import (
     LOCALE,
     STATUS,
@@ -46,7 +46,7 @@ from videomorph.converter.tasklist import TaskList
 from videomorph.converter.utils import write_time
 from videomorph.converter.paths import (
     manual_path,
-    sound_file,
+
 )
 from videomorph.converter.paths import (
     settings_file as settings_file_path,
@@ -491,7 +491,7 @@ class VideoMorphMW(QMainWindow):
 
     def notify(self):
         """Notify when conversion finished."""
-        sound_path = sound_file("successful.wav")
+        sound_path = resource_path("sounds", "successful.wav")
         sound = str(sound_path) if sound_path.exists() else None
         launcher = launcher_factory()
         launcher.sound_notify(sound)
