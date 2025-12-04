@@ -412,7 +412,7 @@ class VideoMorphMW(QMainWindow):
 
     def _load_app_settings(self):
         """Read the app settings."""
-        settings = self.settings_manager.load()
+        settings = self.settings_manager.read()
         
         if "pos" in settings:
             self.move(settings["pos"])

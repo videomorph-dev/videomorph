@@ -26,8 +26,8 @@ class SettingsManager:
                 preset_index=0,
             )
 
-    def load(self):
-        """Load application settings.
+    def read(self):
+        """Read application settings.
 
         Returns:
             dict: A dictionary containing the loaded settings.
