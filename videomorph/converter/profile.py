@@ -7,8 +7,8 @@ from pathlib import Path
 from shutil import copy2
 from typing import Any, Dict, List, Optional
 
+from videomorph.converter.codec import read_codecs
 from videomorph.converter.constants import LOCALE, VALID_VIDEO_EXT
-from videomorph.converter.codec import _read_codecs
 from videomorph.converter.paths import packaged_profile, profiles_user_dir
 
 JSONFiles = namedtuple("JSONFiles", "default customized")
@@ -75,12 +75,12 @@ class _JSONProfile:
         self._warning_message: Optional[str] = None
 
         self._create_json_files()
-    
+
     @property
     def _available_codecs(self):
         """Lazy-load codecs only when needed."""
         if self._codec_data is None:
-            self._codec_data = _read_codecs()
+            self._codec_data = read_codecs()
         return self._codec_data
 
     def get_json_profile_qualities(self, locale=LOCALE) -> OrderedDict:
@@ -89,7 +89,7 @@ class _JSONProfile:
 
         for json_file in self._json_files:
             profiles_data = self._load_json_data(json_file)
-            
+
             for profile in profiles_data:
                 qualities = self._get_qualities(profile, locale)
 
@@ -115,11 +115,13 @@ class _JSONProfile:
                     qualities.append(preset.get("name_en", ""))
         return qualities
 
-    def get_json_profile_attr(self, target_quality: str, attr_name: str = "params") -> str:
+    def get_json_profile_attr(
+        self, target_quality: str, attr_name: str = "params"
+    ) -> str:
         """Return a param of Profile."""
         for json_file in self._json_files:
             profiles_data = self._load_json_data(json_file)
-            
+
             for profile in profiles_data:
                 for preset in profile.get("presets", []):
                     if (
@@ -145,9 +147,7 @@ class _JSONProfile:
 
         Codecs = namedtuple("Codecs", ["acodec", "vcodec", "scodec"])
 
-        return Codecs(
-            codec(acodec_regex), codec(vcodec_regex), codec(scodec_regex)
-        )
+        return Codecs(codec(acodec_regex), codec(vcodec_regex), codec(scodec_regex))
 
     def _codecs_are_available(self, params: str) -> bool:
         """Check if all codecs in params are available in the system."""
@@ -243,7 +243,7 @@ class _JSONProfile:
             assert "name" in profile, "Profile must have 'name'"
             assert "presets" in profile, "Profile must have 'presets'"
             assert isinstance(profile["presets"], list), "Presets must be an array"
-            
+
             for preset in profile["presets"]:
                 assert isinstance(preset, dict), "Preset must be an object"
                 required_fields = ["name_en", "params", "extension", "name_es"]

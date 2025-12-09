@@ -11,7 +11,7 @@ from videomorph.converter.paths import LIBRARY_PATH
 @dataclass(frozen=True, slots=True)
 class CodecData:
     """Immutable container for codec information from ffmpeg."""
-    
+
     vcodecs: Dict[str, tuple[str, str]]
     acodecs: Dict[str, tuple[str, str]]
     scodecs: Dict[str, tuple[str, str]]
@@ -23,12 +23,12 @@ class CodecData:
     sdecoders: Dict[str, tuple[str, str]]
 
 
-def _read_codecs() -> CodecData:
+def read_codecs() -> CodecData:
     """Read codec information from ffmpeg.
-    
+
     Returns:
         CodecData: Immutable container with all codec information.
-        
+
     Raises:
         RuntimeError: If codec reading fails or returns no data.
     """
@@ -42,14 +42,14 @@ def _read_codecs() -> CodecData:
             f"This may indicate ffmpeg is corrupted or incompatible. "
             f"Details: {e}"
         ) from e
-    
+
     # Verify we got some codecs
     if not any([vcodecs, acodecs, vencoders, aencoders]):
         raise RuntimeError(
             "ffmpeg returned no codec information. "
             "This may indicate ffmpeg is corrupted or incompatible."
         )
-    
+
     return CodecData(
         vcodecs=vcodecs,
         acodecs=acodecs,
@@ -65,18 +65,18 @@ def _read_codecs() -> CodecData:
 
 def _read_codec_list(param: str, start_line: int) -> tuple[dict, dict, dict]:
     """Read codec list from ffmpeg output.
-    
+
     Args:
         param: ffmpeg parameter ('-codecs', '-encoders', '-decoders')
         start_line: Line number to start parsing from
-        
+
     Returns:
         Tuple of (video_codecs, audio_codecs, subtitle_codecs) dictionaries
     """
     video = {}
     audio = {}
     subtitle = {}
-    
+
     try:
         with spawn_process([LIBRARY_PATH, param]).stdout as output:
             for line in islice(output, start_line, None):
