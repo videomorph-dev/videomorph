@@ -11,7 +11,6 @@ VIDEO_FILTERS = " ".join(
         "*.mov",
         "*.f4v",
         "*.webm",
-        "*.dat",
         "*.ogg",
         "*.mkv",
         "*.wv",

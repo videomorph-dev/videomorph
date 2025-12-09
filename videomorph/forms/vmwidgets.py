@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (
 
 from videomorph.converter.constants import STATUS, VALID_VIDEO_EXT
 from videomorph.forms import COLUMNS
+from videomorph.forms.ui_state import AppState
 
 
 class TasksListTable(QTableWidget):
@@ -119,9 +120,9 @@ class TargetQualityDelegate(QItemDelegate):
     def update(self, editor: Any, index: Any) -> None:
         """Update several things in the interface."""
         self.parent.update_table_progress_column(row=index.row())
-        self.parent.task_list.set_task_status(position=index.row(), status=STATUS.todo)
-        self.parent.total_duration = self.parent.task_list.duration
-        self.parent.update_ui_when_ready()
+        self.parent.manager.set_task_status(position=index.row(), status=STATUS.todo)
+        self.parent.task_list_duration = self.parent.manager.get_total_duration()
+        self.parent.set_ui_state(AppState.READY)
         self.parent.tasks_table.setEditTriggers(
             QAbstractItemView.EditTrigger.NoEditTriggers
         )

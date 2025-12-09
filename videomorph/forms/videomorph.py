@@ -46,9 +46,7 @@ from videomorph.converter.tasklist import TaskList
 from videomorph.converter.utils import write_time
 from videomorph.converter.paths import (
     manual_path,
-
-)
-from videomorph.converter.paths import (
+    resource_path,
     settings_file as settings_file_path,
 )
 from videomorph.forms import COLUMNS
