@@ -4,7 +4,7 @@ import re
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from videomorph import __app_name__, __version__
-from videomorph.converter.paths import resource_path
+from videomorph.converter.paths import get_resource_path
 
 
 class ChangelogDialog(QtWidgets.QDialog):
@@ -39,7 +39,7 @@ class ChangelogDialog(QtWidgets.QDialog):
 
     def _generate_changelog(self):
         """Return a human readable changelog."""
-        changelog_file = resource_path("doc", "changelog.gz")
+        changelog_file = get_resource_path("doc", "changelog.gz")
 
         line_start_pattern = re.compile(r"\s+\*\s+")
 

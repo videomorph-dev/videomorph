@@ -225,27 +225,26 @@ LIBRARY_PATH = _FFMPEG.library_path
 PROBE_PATH = _FFMPEG.probe_path
 
 
-def resource_path(key: str, *parts: str) -> Path:
+def get_resource_path(key: str, *parts: str) -> Path:
     """Return a resolved resource path (icons, docs, etc.)."""
     return _PATHS.resource_path(key, *parts)
 
 
-def manual_path(locale: str) -> Optional[Path]:
+def get_manual_path(locale: str) -> Optional[Path]:
     """Return the manual for the requested locale if present."""
     return _PATHS.manual_path(locale)
 
 
-def profiles_user_dir() -> Path:
+def get_profiles_user_dir() -> Path:
     """Return the user profile storage directory, creating it if needed."""
     return _PATHS.profiles_dir
 
 
-def packaged_profile(name: str) -> Path:
+def get_packaged_profile(name: str) -> Path:
     """Return the bundled conversion profile path."""
     return _PATHS.packaged_resource("profiles", name)
 
 
-def settings_file() -> Path:
+def get_settings_file_path() -> Path:
     """Return the path to the Qt settings INI file."""
     return _PATHS.settings_file
-

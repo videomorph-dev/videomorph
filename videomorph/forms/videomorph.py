@@ -34,31 +34,32 @@ from PyQt6.QtWidgets import (
 )
 
 from videomorph import __app_name__, __version__
-from videomorph.converter.utils import search_directory_recursively
 from videomorph.converter.constants import (
     LOCALE,
     STATUS,
     VIDEO_FILTERS,
 )
 from videomorph.converter.launchers import launcher_factory
+from videomorph.converter.manager import ConversionManager
+from videomorph.converter.paths import (
+    get_manual_path,
+    get_resource_path,
+)
+from videomorph.converter.paths import (
+    get_settings_file_path as get_settings_file_path,
+)
 from videomorph.converter.profile import Profile
 from videomorph.converter.tasklist import TaskList
-from videomorph.converter.utils import write_time
-from videomorph.converter.paths import (
-    manual_path,
-    resource_path,
-    settings_file as settings_file_path,
-)
+from videomorph.converter.utils import search_directory_recursively, write_time
 from videomorph.forms import COLUMNS
 from videomorph.forms import videomorph_qrc as _videomorph_qrc
 from videomorph.forms.about import AboutVMDialog
 from videomorph.forms.actions import ACTION_SPECS
 from videomorph.forms.changelog import ChangelogDialog
 from videomorph.forms.info import InfoDialog
-from videomorph.forms.vmwidgets import TasksListTable
 from videomorph.forms.settings import SettingsManager
-from videomorph.forms.ui_state import AppState, UI_STATE_CONFIG
-from videomorph.converter.manager import ConversionManager
+from videomorph.forms.ui_state import UI_STATE_CONFIG, AppState
+from videomorph.forms.vmwidgets import TasksListTable
 
 _ = _videomorph_qrc  # Ensure Qt resources are registered.
 
@@ -87,7 +88,7 @@ class VideoMorphMW(QMainWindow):
         self.manager.error.connect(self._on_conversion_error)
         self.manager.progress_updated.connect(self._on_progress_updated)
         self.manager.time_updated.connect(self._on_time_updated)
-        
+
         warning_msg = self.manager.consume_profile_warning()
         if warning_msg:
             self._show_message_box(QMessageBox.Icon.Warning, warning_msg)
@@ -411,20 +412,20 @@ class VideoMorphMW(QMainWindow):
     def _load_app_settings(self):
         """Read the app settings."""
         settings = self.settings_manager.read()
-        
+
         if "pos" in settings:
             self.move(settings["pos"])
         if "size" in settings:
             self.resize(settings["size"])
-            
+
         if "profile_index" in settings and "preset_index" in settings:
             self.profiles_combo.setCurrentIndex(settings["profile_index"])
             self.quality_combo.setCurrentIndex(settings["preset_index"])
-            
+
         if "output_dir" in settings:
             self.output_edit.setText(settings["output_dir"])
             self.manager.output_dir = settings["output_dir"]
-            
+
         if "source_dir" in settings:
             self.source_dir = settings["source_dir"]
 
@@ -489,7 +490,7 @@ class VideoMorphMW(QMainWindow):
 
     def notify(self):
         """Notify when conversion finished."""
-        sound_path = resource_path("sounds", "successful.wav")
+        sound_path = get_resource_path("sounds", "successful.wav")
         sound = str(sound_path) if sound_path.exists() else None
         launcher = launcher_factory()
         launcher.sound_notify(sound)
@@ -498,7 +499,7 @@ class VideoMorphMW(QMainWindow):
     def help_content():
         """Open VideoMorph documentation manual."""
         # Check if manual exists in system paths first
-        manual = manual_path(LOCALE)
+        manual = get_manual_path(LOCALE)
         if manual and manual.exists():
             url = manual.as_uri()
         else:
@@ -573,7 +574,7 @@ class VideoMorphMW(QMainWindow):
                 ):
                     output_path = self.manager.get_task_output_path(
                         position=self.manager.current_task_position,
-                        tagged=self.tag_chb.isChecked()
+                        tagged=self.tag_chb.isChecked(),
                     )
                     self._show_message_box(
                         QMessageBox.Icon.Warning,
@@ -595,7 +596,7 @@ class VideoMorphMW(QMainWindow):
     def add_task(self, video_path):
         """Add a conversion task to the list."""
         if self.manager.add_task(video_path):
-             self._update_task_list()
+            self._update_task_list()
 
     def _update_task_list(self):
         """Update the list of conversion tasks."""
@@ -691,8 +692,7 @@ class VideoMorphMW(QMainWindow):
 
     def _get_output_path(self, row):
         path = self.manager.get_task_output_path(
-            position=row,
-            tagged=self.tag_chb.isChecked()
+            position=row, tagged=self.tag_chb.isChecked()
         )
         return path
 
@@ -867,32 +867,33 @@ class VideoMorphMW(QMainWindow):
     def start_encoding(self):
         """Start the encoding process."""
         self.set_ui_state(AppState.RUNNING)
-        
+
         options = {
             "target_quality": self.tasks_table.item(
-                0, COLUMNS.QUALITY # We might need to handle per-row quality if supported, but for now it seems global or per-row
-            ).text(), # Wait, quality is per row in the table, but usually set globally from combo. 
-                      # The original code read it from the table item at task_list.position.
-                      # Since we iterate, we might need to pass a way for manager to get quality per task, 
-                      # or just pass the global one if they are all updated.
-                      # Original: self.tasks_table.item(self.converter.task_list.position, COLUMNS.QUALITY).text()
-                      # The manager doesn't know about the table.
-                      # We should probably update the profile/task with the quality BEFORE starting.
-                      # But the manager takes options.
-                      # Let's pass the current combo text as default, but the manager might need to read from task?
-                      # Actually, TaskList.running_task_conversion_cmd takes target_quality.
-                      # If we want per-task quality, we should probably update the Task object to store it.
-                      # For now, let's assume the combo box value is what we want, OR
-                      # we can update the manager to read from the task if we move quality to Task.
-                      # BUT, the original code read from the TABLE.
-                      # Let's stick to the original behavior: The UI controls the quality.
-                      # We can pass the quality_combo text.
-            "target_quality": self.quality_combo.currentText(), 
+                0,
+                COLUMNS.QUALITY,  # We might need to handle per-row quality if supported, but for now it seems global or per-row
+            ).text(),  # Wait, quality is per row in the table, but usually set globally from combo.
+            # The original code read it from the table item at task_list.position.
+            # Since we iterate, we might need to pass a way for manager to get quality per task,
+            # or just pass the global one if they are all updated.
+            # Original: self.tasks_table.item(self.converter.task_list.position, COLUMNS.QUALITY).text()
+            # The manager doesn't know about the table.
+            # We should probably update the profile/task with the quality BEFORE starting.
+            # But the manager takes options.
+            # Let's pass the current combo text as default, but the manager might need to read from task?
+            # Actually, TaskList.running_task_conversion_cmd takes target_quality.
+            # If we want per-task quality, we should probably update the Task object to store it.
+            # For now, let's assume the combo box value is what we want, OR
+            # we can update the manager to read from the task if we move quality to Task.
+            # BUT, the original code read from the TABLE.
+            # Let's stick to the original behavior: The UI controls the quality.
+            # We can pass the quality_combo text.
+            "target_quality": self.quality_combo.currentText(),
             "tagged": self.tag_chb.isChecked(),
             "subtitle": self.subtitle_chb.isChecked(),
             "replace_source": self.delete_chb.isChecked(),
         }
-        
+
         self.manager.start(options)
 
     def stop_file_encoding(self):
@@ -906,22 +907,26 @@ class VideoMorphMW(QMainWindow):
     def _on_task_started(self, position):
         """Handle task started signal."""
         self.set_ui_state(AppState.RUNNING)
-        self.tasks_table.item(position, COLUMNS.PROGRESS).setText(self.tr("Converting..."))
+        self.tasks_table.item(position, COLUMNS.PROGRESS).setText(
+            self.tr("Converting...")
+        )
 
     def _on_task_finished(self, position, status):
         """Handle task finished signal."""
         if status == STATUS.done:
             self.tasks_table.item(position, COLUMNS.PROGRESS).setText(self.tr("Done!"))
             if self.delete_chb.isChecked():
-                 self._remove_completed_task_from_ui()
+                self._remove_completed_task_from_ui()
         elif status == STATUS.stopped:
-            self.tasks_table.item(position, COLUMNS.PROGRESS).setText(self.tr("Stopped!"))
+            self.tasks_table.item(position, COLUMNS.PROGRESS).setText(
+                self.tr("Stopped!")
+            )
 
     def _on_all_finished(self):
         """Handle all tasks finished."""
         if self.shutdown_chb.isChecked() and not self.manager.all_tasks_stopped:
-             self.shutdown_machine()
-             return
+            self.shutdown_machine()
+            return
 
         if self.manager.all_tasks_done:
             self.set_ui_state(AppState.DONE)
@@ -933,11 +938,11 @@ class VideoMorphMW(QMainWindow):
         else:
             self.set_ui_state(AppState.READY)
             if self.manager.all_tasks_stopped:
-                 self._show_message_box(
+                self._show_message_box(
                     QMessageBox.Icon.Information,
                     self.tr("Conversion process stopped by the user."),
                 )
-        
+
         self.setWindowTitle(self.title)
         self.statusBar().showMessage(self.tr("Ready"))
         self._reset_options_check_boxes()
@@ -952,17 +957,15 @@ class VideoMorphMW(QMainWindow):
         """Handle progress updates."""
         self.operation_pb.setProperty("value", op_progress)
         self.total_pb.setProperty("value", pr_progress)
-        
+
         if self.manager.current_task_position is not None:
-             self.tasks_table.item(self.manager.current_task_position, 3).setText(
+            self.tasks_table.item(self.manager.current_task_position, 3).setText(
                 str(op_progress) + "%"
             )
-            
+
         # Update window title
         running_file_name = self.manager.get_running_file_name(with_extension=True)
-        self.setWindowTitle(
-            f"{op_progress}%-[{running_file_name}] - {self.title}"
-        )
+        self.setWindowTitle(f"{op_progress}%-[{running_file_name}] - {self.title}")
 
     def _on_time_updated(self, name, bitrate, remaining, elapsed):
         """Handle time updates for status bar."""
@@ -1033,6 +1036,7 @@ class VideoMorphMW(QMainWindow):
 
     def _set_media_status(self):
         """Update media files state of conversion."""
+
     def _set_media_status(self):
         """Update media files state of conversion."""
         self.manager.reset_all_tasks_status()
@@ -1152,4 +1156,3 @@ class VideoMorphMW(QMainWindow):
         has_selection = self.tasks_table.currentItem() is not None
         can_remove = has_selection and not self.manager.is_running
         self.remove_media_file_action.setEnabled(can_remove)
-

@@ -7,7 +7,7 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QMessageBox, QWidget
 
 from videomorph.converter.constants import LOCALE
-from videomorph.converter.paths import LIBRARY_PATH, resource_path
+from videomorph.converter.paths import LIBRARY_PATH, get_resource_path
 from videomorph.forms.videomorph import VideoMorphMW
 
 
@@ -60,7 +60,8 @@ def _set_translator(app: QApplication) -> None:
 def _set_app_icon(app: QApplication) -> None:
     """Set the application window icon."""
     from PyQt6.QtGui import QIcon
-    icon_path = resource_path("icons", "videomorph.png")
+
+    icon_path = get_resource_path("icons", "videomorph.png")
     if icon_path.exists():
         app.setWindowIcon(QIcon(str(icon_path)))
 
@@ -96,7 +97,7 @@ def _validate_ffmpeg(window: VideoMorphMW, app: QApplication) -> None:
 def _load_translation(
     locale: str,
     translator: QTranslator,
-    resolver: _Resolver = resource_path,
+    resolver: _Resolver = get_resource_path,
     *,
     parent: QWidget | None = None,
 ) -> Path | None:
@@ -146,7 +147,7 @@ def _load_translation(
 def main() -> None:
     """Main app function."""
     app = QApplication(sys.argv)
-    
+
     _set_translator(app)
     _set_app_icon(app)
 

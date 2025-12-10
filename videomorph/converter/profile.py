@@ -9,7 +9,10 @@ from typing import Any, Dict, List, Optional
 
 from videomorph.converter.codec import read_codecs
 from videomorph.converter.constants import LOCALE, VALID_VIDEO_EXT
-from videomorph.converter.paths import packaged_profile, profiles_user_dir
+from videomorph.converter.paths import (
+    get_packaged_profile,
+    get_profiles_user_dir,
+)
 
 JSONFiles = namedtuple("JSONFiles", "default customized")
 JSON_FILES = JSONFiles("default.json", "customized.json")
@@ -71,7 +74,7 @@ class _JSONProfile:
         self._json_files = json_files
         self._valid_ext = valid_extensions
         self._codec_data = None  # Lazy initialization
-        self._user_profiles_dir = profiles_user_dir()
+        self._user_profiles_dir = get_profiles_user_dir()
         self._warning_message: Optional[str] = None
 
         self._create_json_files()
@@ -257,7 +260,7 @@ class _JSONProfile:
 
     def _sys_json_file_path(self, file_name: str) -> Path:
         """Return the path to json profiles file in the system."""
-        return packaged_profile(file_name)
+        return get_packaged_profile(file_name)
 
     def consume_warning(self) -> Optional[str]:
         """Return and clear the pending warning message."""
