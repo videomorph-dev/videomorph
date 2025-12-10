@@ -413,21 +413,13 @@ class VideoMorphMW(QMainWindow):
         """Read the app settings."""
         settings = self.settings_manager.read()
 
-        if "pos" in settings:
-            self.move(settings["pos"])
-        if "size" in settings:
-            self.resize(settings["size"])
-
-        if "profile_index" in settings and "preset_index" in settings:
-            self.profiles_combo.setCurrentIndex(settings["profile_index"])
-            self.quality_combo.setCurrentIndex(settings["preset_index"])
-
-        if "output_dir" in settings:
-            self.output_edit.setText(settings["output_dir"])
-            self.manager.output_dir = settings["output_dir"]
-
-        if "source_dir" in settings:
-            self.source_dir = settings["source_dir"]
+        self.move(settings.pos)
+        self.resize(settings.size)
+        self.profiles_combo.setCurrentIndex(settings.profile_index)
+        self.quality_combo.setCurrentIndex(settings.preset_index)
+        self.output_edit.setText(settings.output_dir)
+        self.manager.output_dir = settings.output_dir
+        self.source_dir = settings.source_dir
 
     def _write_app_settings(self):
         """Write app settings on exit."""
