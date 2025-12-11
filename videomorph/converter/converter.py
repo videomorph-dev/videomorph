@@ -6,21 +6,19 @@ from typing import Any, Optional, Union
 from PyQt6.QtCore import QProcess
 
 from videomorph.converter.launchers import launcher_factory
+from videomorph.converter.paths import path_manager
 from videomorph.converter.reader import OutputReader
 from videomorph.converter.timer import ConversionTimer
-from videomorph.converter.paths import LIBRARY_PATH
 
 
 class Converter:
     """Converter class."""
 
-    def __init__(self, library_path=LIBRARY_PATH) -> None:
+    def __init__(self, library_path=None) -> None:
         """Class initializer."""
-        self._library_path = library_path
+        self._library_path = library_path or path_manager.library_path
         self._process = QProcess()
-        self._process.setProcessChannelMode(
-            QProcess.ProcessChannelMode.MergedChannels
-        )
+        self._process.setProcessChannelMode(QProcess.ProcessChannelMode.MergedChannels)
         self.error: Optional[str] = None
         self.reader = OutputReader()
         self.timer = ConversionTimer()

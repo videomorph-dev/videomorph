@@ -49,10 +49,10 @@ class TestConverter:
 
     def test_prober_path(self) -> None:
         """Test the Library.prober_path."""
-        from videomorph.converter.paths import PROBE_PATH
+        from videomorph.converter.paths import path_manager
 
-        assert PROBE_PATH is not None
-        assert "ffprobe" in PROBE_PATH
+        assert path_manager.probe_path is not None
+        assert "ffprobe" in path_manager.probe_path
 
     def test_start(self) -> None:
         """Test Library.start()."""

@@ -7,7 +7,7 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QMessageBox, QWidget
 
 from videomorph.converter.constants import LOCALE
-from videomorph.converter.paths import LIBRARY_PATH, get_resource_path
+from videomorph.converter.paths import path_manager
 from videomorph.forms.videomorph import VideoMorphMW
 
 
@@ -61,14 +61,14 @@ def _set_app_icon(app: QApplication) -> None:
     """Set the application window icon."""
     from PyQt6.QtGui import QIcon
 
-    icon_path = get_resource_path("icons", "videomorph.png")
+    icon_path = path_manager.resource_path("icons", "videomorph.png")
     if icon_path.exists():
         app.setWindowIcon(QIcon(str(icon_path)))
 
 
 def _validate_ffmpeg(window: VideoMorphMW, app: QApplication) -> None:
     # Check if ffmpeg binary exists
-    if not LIBRARY_PATH:
+    if not path_manager.library_path:
         error_msg = window.tr(
             "VideoMorph could not find the ffmpeg library on your system.\n\n"
             "Please install ffmpeg and make sure it is available in your PATH"
@@ -97,7 +97,7 @@ def _validate_ffmpeg(window: VideoMorphMW, app: QApplication) -> None:
 def _load_translation(
     locale: str,
     translator: QTranslator,
-    resolver: _Resolver = get_resource_path,
+    resolver: _Resolver = path_manager.resource_path,
     *,
     parent: QWidget | None = None,
 ) -> Path | None:

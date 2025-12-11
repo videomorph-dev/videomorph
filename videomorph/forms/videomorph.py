@@ -41,13 +41,7 @@ from videomorph.converter.constants import (
 )
 from videomorph.converter.launchers import launcher_factory
 from videomorph.converter.manager import ConversionManager
-from videomorph.converter.paths import (
-    get_manual_path,
-    get_resource_path,
-)
-from videomorph.converter.paths import (
-    get_settings_file_path as get_settings_file_path,
-)
+from videomorph.converter.paths import path_manager
 from videomorph.converter.profile import Profile
 from videomorph.converter.tasklist import TaskList
 from videomorph.converter.utils import search_directory_recursively, write_time
@@ -482,16 +476,16 @@ class VideoMorphMW(QMainWindow):
 
     def notify(self):
         """Notify when conversion finished."""
-        sound_path = get_resource_path("sounds", "successful.wav")
-        sound = str(sound_path) if sound_path.exists() else None
-        launcher = launcher_factory()
-        launcher.sound_notify(sound)
+        sound_path = path_manager.resource_path("sounds", "successful.wav")
+        if sound_path.exists():
+            launcher = launcher_factory()
+            launcher.sound_notify(str(sound_path))
 
     @staticmethod
     def help_content():
         """Open VideoMorph documentation manual."""
         # Check if manual exists in system paths first
-        manual = get_manual_path(LOCALE)
+        manual = path_manager.manual_path(LOCALE)
         if manual and manual.exists():
             url = manual.as_uri()
         else:

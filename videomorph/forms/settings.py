@@ -3,7 +3,7 @@ from pathlib import Path
 
 from PyQt6.QtCore import QDir, QPoint, QSettings, QSize
 
-from videomorph.converter.paths import get_settings_file_path
+from videomorph.converter.paths import path_manager
 
 
 @dataclass
@@ -23,14 +23,14 @@ class SettingsManager:
 
     def __init__(self) -> None:
         self._settings_file: QSettings = QSettings(
-            str(get_settings_file_path()),
+            str(path_manager.settings_file()),
             QSettings.Format.IniFormat,
         )
         self._create_initial_settings()
 
     def _create_initial_settings(self) -> None:
         """Create initial settings if file doesn't exist."""
-        if not get_settings_file_path().exists():
+        if not path_manager.settings_file().exists():
             defaults = AppSettings()
             self.write(**asdict(defaults))
 

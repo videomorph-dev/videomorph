@@ -6,245 +6,193 @@ import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 from sys import platform, prefix
-from typing import Dict, Iterator, Optional
+from typing import Iterator, Optional
 
 _BASE_DIR = Path(__file__).resolve().parents[2]
-_LIBRARY = "ffmpeg"
-_PROBE = "ffprobe"
-
-_SHARE = Path("share")
-_VM_SHARE = _SHARE / "videomorph"
-_DOC_SHARE = _SHARE / "doc" / "videomorph"
-
-VM_PATHS = dict(
-    apps=_SHARE / "applications",
-    config=Path.home() / ".videomorph",
-    icons=_SHARE / "icons",
-    i18n=_VM_SHARE / "translations",
-    profiles=_VM_SHARE / "profiles",
-    sounds=_VM_SHARE / "sounds",
-    doc=_DOC_SHARE,
-    help=_DOC_SHARE / "manual",
-    man=_SHARE / "man" / "man1",
-    bin=Path("bin"),
-)
 
 
-def _unix_paths(base_paths: Dict[str, Path] = VM_PATHS) -> Dict[str, Path]:
-    """Return the system paths used by VideoMorph for POSIX platforms."""
-    resolved = {}
-    for key, relative in base_paths.items():
-        if key == "config":
-            resolved[key] = relative
-        else:
-            resolved[key] = Path(prefix, relative)
-    return resolved
+@dataclass(frozen=True, slots=True)
+class _PlatformPaths:
+    """Platform-specific path structure."""
 
+    apps: Path
+    config: Path
+    icons: Path
+    i18n: Path
+    profiles: Path
+    sounds: Path
+    doc: Path
+    help: Path
+    man: Path
+    bin: Path
 
-def linux_paths(base_paths: Dict[str, Path] = VM_PATHS) -> Dict[str, Path]:
-    return _unix_paths(base_paths)
+    @classmethod
+    def for_current_platform(cls) -> "_PlatformPaths":
+        """Create platform-specific paths for the current system."""
+        user_config = Path.home() / ".videomorph"
 
+        if platform == "win32":
+            program_files = Path(os.environ.get("ProgramFiles", "C:\\Program Files"))
+            vm_root = program_files / "VideoMorph"
+            return cls(
+                apps=vm_root,
+                config=user_config,
+                icons=vm_root / "icons",
+                i18n=vm_root / "translations",
+                profiles=vm_root / "profiles",
+                sounds=vm_root / "sounds",
+                doc=vm_root / "videomorph",
+                help=vm_root / "videomorph" / "manual",
+                man=vm_root / "man1",
+                bin=vm_root / "bin",
+            )
 
-def darwin_paths(base_paths: Dict[str, Path] = VM_PATHS) -> Dict[str, Path]:
-    return _unix_paths(base_paths)
+        # Unix-like platforms (Linux, macOS)
+        system_prefix = Path(prefix)
+        share = system_prefix / "share"
+        vm_share = share / "videomorph"
+        doc_share = share / "doc" / "videomorph"
 
-
-def win32_paths(base_paths: Dict[str, Path] = VM_PATHS) -> Dict[str, Path]:
-    program_files = Path(os.environ.get("ProgramFiles", "C:\\Program Files"))
-    resolved = {}
-    for key, relative in base_paths.items():
-        if key == "config":
-            resolved[key] = relative
-        elif key == "apps":
-            resolved[key] = Path(program_files, "VideoMorph")
-        elif key == "doc":
-            resolved[key] = Path(program_files, "VideoMorph", relative.parts[-2])
-        else:
-            resolved[key] = Path(program_files, "VideoMorph", relative.parts[-1])
-    return resolved
-
-
-SYS_PATHS = globals()[platform + "_paths"]()
+        return cls(
+            apps=share / "applications",
+            config=user_config,
+            icons=share / "icons",
+            i18n=vm_share / "translations",
+            profiles=vm_share / "profiles",
+            sounds=vm_share / "sounds",
+            doc=doc_share,
+            help=doc_share / "manual",
+            man=share / "man" / "man1",
+            bin=system_prefix / "bin",
+        )
 
 
 @dataclass(slots=True)
-class _PathResolver:
-    """Resolve runtime, data, and user paths with optional overrides."""
+class PathManager:
+    """Manage VideoMorph resource and user paths with override support."""
 
-    sys_paths: Dict[str, Path]
-    base_paths: Dict[str, Path]
+    platform_paths: _PlatformPaths
     base_dir: Path
-    user_root: Path = field(init=False)
-    _paths_ini: Path = field(init=False)
     _config: configparser.ConfigParser = field(init=False)
+    _user_root: Path = field(init=False)
 
     def __post_init__(self) -> None:
-        self.user_root = Path(self.sys_paths["config"])
-        self.user_root.mkdir(parents=True, exist_ok=True)
-        self._paths_ini = self.user_root / "paths.ini"
+        """Initialize user directory and load path overrides."""
+        self._user_root = self.platform_paths.config
+        self._user_root.mkdir(parents=True, exist_ok=True)
+
         self._config = configparser.ConfigParser()
-        if self._paths_ini.exists():
-            self._config.read(self._paths_ini)
+        paths_ini = self._user_root / "paths.ini"
+        if paths_ini.exists():
+            self._config.read(paths_ini)
 
-    @property
-    def overrides(self) -> configparser.ConfigParser:
-        return self._config
-
-    @property
-    def paths_ini(self) -> Path:
-        return self._paths_ini
-
-    @property
-    def settings_file(self) -> Path:
-        return self.user_root / "config.ini"
-
-    @property
-    def profiles_dir(self) -> Path:
-        return self._ensure_user_subdir("profiles")
-
-    def _ensure_user_subdir(self, name: str) -> Path:
-        target = self.user_root / name
-        target.mkdir(parents=True, exist_ok=True)
-        return target
-
-    def _override_path(self, key: str) -> Optional[Path]:
+    def _get_override(self, key: str) -> Optional[Path]:
+        """Return user override path if configured and exists."""
         if self._config.has_option("paths", key):
             candidate = Path(self._config.get("paths", key)).expanduser()
             if candidate.exists():
                 return candidate
         return None
 
-    @staticmethod
-    def _join(base: Path, parts: tuple[str, ...]) -> Path:
-        return base.joinpath(*parts) if parts else base
-
-    def resource_path(self, key: str, *parts: str) -> Path:
-        """Return a resolved path for the given resource key."""
-        suffix = parts
-        candidates = []
-        override = self._override_path(key)
-        if override:
-            candidates.append(override)
-
-        sys_path = self.sys_paths.get(key)
-        if sys_path:
-            candidates.append(sys_path)
-
-        candidates.append(self.base_dir / self.base_paths[key])
-
-        for base in candidates:
-            candidate = self._join(base, suffix)
+    def _resolve_with_fallback(self, key: str, *parts: str) -> Path:
+        """Resolve path with override → system → base fallback chain."""
+        # Check user override
+        if override := self._get_override(key):
+            candidate = override.joinpath(*parts) if parts else override
             if candidate.exists():
                 return candidate
 
-        # Nothing exists yet; return the last candidate so callers can create it.
-        return self._join(candidates[-1], suffix)
-
-    def packaged_resource(self, key: str, *parts: str) -> Path:
-        """Return a path inside the repository checkout."""
-        return self._join(self.base_dir / self.base_paths[key], parts)
-
-    def tool_override(self, tool_name: str) -> Optional[Path]:
-        """Return user-configured tool override if available."""
-        if self._config.has_option("tools", tool_name):
-            candidate = Path(self._config.get("tools", tool_name)).expanduser()
+        # Check system installation
+        system_path = getattr(self.platform_paths, key, None)
+        if system_path:
+            candidate = system_path.joinpath(*parts) if parts else system_path
             if candidate.exists():
                 return candidate
-        return None
 
-    def manual_path(self, locale: str) -> Optional[Path]:
-        """Return the manual PDF path matching locale, if available."""
-        file_name = "manual_es.pdf" if locale == "es_ES" else "manual_en.pdf"
-        manual = self.resource_path("help", file_name)
-        return manual if manual.exists() else None
+        # Fallback to base directory
+        base_mapping = {
+            "i18n": "share/videomorph/translations",
+            "help": "share/doc/videomorph/manual",
+            "sounds": "share/videomorph/sounds",
+            "profiles": "share/videomorph/profiles",
+            "icons": "share/icons",
+            "doc": "share/doc/videomorph",
+        }
+        subdir = base_mapping.get(key, key)
+        return self.base_dir.joinpath(subdir, *parts)
 
-
-_PATHS = _PathResolver(sys_paths=SYS_PATHS, base_paths=VM_PATHS, base_dir=_BASE_DIR)
-
-
-class _FFmpegLocator:
-    """Locate ffmpeg/ffprobe binaries via overrides, bundles, or PATH."""
-
-    def __init__(self, resolver: _PathResolver) -> None:
-        self._resolver = resolver
-
-    @staticmethod
-    def _exe_name(binary: str) -> str:
-        return f"{binary}.exe" if os.name == "nt" else binary
-
-    def _bundle_dirs(self) -> Iterator[Path]:
+    def _find_bundle_dirs(self) -> Iterator[Path]:
+        """Yield potential ffmpeg bundle directories."""
         bundle_names = ("ffmpeg", "ffmpeg-linux64", "ffmpeg-mac", "ffmpeg-win64")
-        for bundle in bundle_names:
-            base = self._resolver.base_dir / bundle
-            if base.is_dir():
-                yield base
-            bin_dir = base / "bin"
+        for name in bundle_names:
+            bundle = self.base_dir / name
+            if bundle.is_dir():
+                yield bundle
+            bin_dir = bundle / "bin"
             if bin_dir.is_dir():
                 yield bin_dir
 
-    def _candidate_binaries(self, binary: str) -> Iterator[Path]:
-        env_key = f"VIDEOMORPH_{binary.upper()}"
-        env_override = os.environ.get(env_key)
-        if env_override:
+    def _locate_tool(self, tool_name: str) -> Optional[str]:
+        """Locate ffmpeg/ffprobe via overrides, bundles, or PATH."""
+        # Environment variable override
+        env_key = f"VIDEOMORPH_{tool_name.upper()}"
+        if env_override := os.environ.get(env_key):
             path = Path(env_override).expanduser()
             if path.exists():
-                yield path
+                return str(path)
 
-        config_override = self._resolver.tool_override(binary)
-        if config_override:
-            yield config_override
+        # Config file override
+        if self._config.has_option("tools", tool_name):
+            config_path = Path(self._config.get("tools", tool_name)).expanduser()
+            if config_path.exists():
+                return str(config_path)
 
-        for directory in self._bundle_dirs():
-            candidate = directory / self._exe_name(binary)
+        # Bundled binaries
+        exe_name = f"{tool_name}.exe" if os.name == "nt" else tool_name
+        for bundle_dir in self._find_bundle_dirs():
+            candidate = bundle_dir / exe_name
             if candidate.exists():
-                yield candidate
+                return str(candidate)
 
-        system_binary = shutil.which(binary)
-        if system_binary:
-            yield Path(system_binary)
+        # System PATH
+        return shutil.which(tool_name)
 
-    def locate(self, binary: str) -> Optional[str]:
-        for candidate in self._candidate_binaries(binary):
-            return str(candidate)
-        return None
+    def resource_path(self, key: str, *parts: str) -> Path:
+        """Return resolved resource path (icons, docs, sounds, etc.)."""
+        return self._resolve_with_fallback(key, *parts)
+
+    def manual_path(self, locale: str) -> Optional[Path]:
+        """Return manual PDF path for locale if available."""
+        filename = "manual_es.pdf" if locale == "es_ES" else "manual_en.pdf"
+        manual = self.resource_path("help", filename)
+        return manual if manual.exists() else None
+
+    def profiles_user_dir(self) -> Path:
+        """Return user profile storage directory, creating if needed."""
+        profiles = self._user_root / "profiles"
+        profiles.mkdir(parents=True, exist_ok=True)
+        return profiles
+
+    def packaged_profile(self, name: str) -> Path:
+        """Return bundled conversion profile path."""
+        return self.base_dir / "profiles" / name
+
+    def settings_file(self) -> Path:
+        """Return path to Qt settings INI file."""
+        return self._user_root / "config.ini"
 
     @property
     def library_path(self) -> Optional[str]:
-        return self.locate(_LIBRARY)
+        """Return ffmpeg binary path."""
+        return self._locate_tool("ffmpeg")
 
     @property
     def probe_path(self) -> Optional[str]:
-        return self.locate(_PROBE)
+        """Return ffprobe binary path."""
+        return self._locate_tool("ffprobe")
 
 
-_FFMPEG = _FFmpegLocator(_PATHS)
-
-
-# Public API
-LIBRARY_PATH = _FFMPEG.library_path
-PROBE_PATH = _FFMPEG.probe_path
-
-
-def get_resource_path(key: str, *parts: str) -> Path:
-    """Return a resolved resource path (icons, docs, etc.)."""
-    return _PATHS.resource_path(key, *parts)
-
-
-def get_manual_path(locale: str) -> Optional[Path]:
-    """Return the manual for the requested locale if present."""
-    return _PATHS.manual_path(locale)
-
-
-def get_profiles_user_dir() -> Path:
-    """Return the user profile storage directory, creating it if needed."""
-    return _PATHS.profiles_dir
-
-
-def get_packaged_profile(name: str) -> Path:
-    """Return the bundled conversion profile path."""
-    return _PATHS.packaged_resource("profiles", name)
-
-
-def get_settings_file_path() -> Path:
-    """Return the path to the Qt settings INI file."""
-    return _PATHS.settings_file
+# Module-level singleton for application-wide use
+path_manager = PathManager(
+    platform_paths=_PlatformPaths.for_current_platform(), base_dir=_BASE_DIR
+)

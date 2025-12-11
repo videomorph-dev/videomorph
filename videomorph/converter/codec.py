@@ -5,7 +5,7 @@ from itertools import islice
 from typing import Dict
 
 from videomorph.converter.launchers import spawn_process
-from videomorph.converter.paths import LIBRARY_PATH
+from videomorph.converter.paths import path_manager
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,7 +78,7 @@ def _read_codec_list(param: str, start_line: int) -> tuple[dict, dict, dict]:
     subtitle = {}
 
     try:
-        with spawn_process([LIBRARY_PATH, param]).stdout as output:
+        with spawn_process([path_manager.library_path, param]).stdout as output:
             for line in islice(output, start_line, None):
                 if not line.strip():
                     continue

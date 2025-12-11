@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 from videomorph.converter.launchers import spawn_process
-from videomorph.converter.paths import PROBE_PATH
+from videomorph.converter.paths import path_manager
 
 
 class Probe:
@@ -13,11 +13,11 @@ class Probe:
     def __init__(
         self,
         video_path: Union[str, Path],
-        probe_path: Optional[str] = PROBE_PATH,
+        probe_path: Optional[str] = None,
         probe_runner: Callable = spawn_process,
     ) -> None:
         """Class initializer."""
-        self._probe_path = probe_path
+        self._probe_path = probe_path or path_manager.probe_path
         self._video_path = video_path
         self._probe_runner = probe_runner
 
@@ -34,9 +34,7 @@ class Probe:
 
         return process.stdout
 
-    def _parse_probe(
-        self, selected_params: Set[str], cmd: List[str]
-    ) -> Dict[str, str]:
+    def _parse_probe(self, selected_params: Set[str], cmd: List[str]) -> Dict[str, str]:
         """Parse the probe output."""
         info = {}
 
@@ -70,9 +68,7 @@ class Probe:
             "bit_rate",
         }
 
-        return self._parse_probe(
-            selected_params=selected_params, cmd=["-show_format"]
-        )
+        return self._parse_probe(selected_params=selected_params, cmd=["-show_format"])
 
     def _parse_probe_video_stream(self) -> Dict[str, str]:
         """Parse the probe output."""
