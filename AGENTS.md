@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-Core runtime code lives in `videomorph/`: `main.py` bootstraps the PyQt6 GUI, `converter.py` coordinates ffmpeg invocations, and helpers such as `profiles.py`, `task.py`, `media.py`, `vmpath.py`, and `utils.py` match the modules exercised under `tests/`. Qt Designer sources and icons stay in `ui/` and `qrc/`; update these and regenerate the compiled resources inside `videomorph/forms/` instead of editing generated files. Packaging scripts (`bin/`, `install.sh`, `videomorph_deb/`) and vendored ffmpeg bundles (`ffmpeg-*`, `dist/`) should only change when cutting releases. Shared assets (docs, i18n bundles, manuals, sounds) all resolve through `videomorph/converter/vmpath.py`, so new code should request files via those helpers instead of manually building paths.
+Core runtime code lives in `videomorph/`: `main.py` bootstraps the PyQt6 GUI, `converter.py` coordinates ffmpeg invocations, and helpers such as `profiles.py`, `task.py`, `media.py`, `vmpath.py`, and `utils.py` match the modules exercised under `tests/`. Qt Designer sources and icons stay in `ui/` and `qrc/`; update these and regenerate the compiled resources inside `videomorph/forms/` instead of editing generated files. Packaging scripts (`bin/`, `videomorph_deb/`) should only change when cutting releases, and remember that VideoMorph now targets the system-provided ffmpeg binaries instead of bundling its own copies. Shared assets (docs, i18n bundles, manuals, sounds) all resolve through `videomorph/converter/vmpath.py`, so new code should request files via those helpers instead of manually building paths.
 
 ## Build, Test, and Development Commands
 
