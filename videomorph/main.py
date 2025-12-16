@@ -59,14 +59,12 @@ def _set_translator(app: QApplication) -> None:
 
 def _set_app_icon(app: QApplication) -> None:
     """Set the application window icon."""
-    from PyQt6.QtGui import QIcon
-
     icon_path = path_manager.resource_path("icons", "videomorph.png")
     if icon_path.exists():
         app.setWindowIcon(QIcon(str(icon_path)))
 
 
-def _validate_ffmpeg(window: VideoMorphMW, app: QApplication) -> None:
+def _check_for_ffmpeg(window: VideoMorphMW, app: QApplication) -> None:
     # Check if ffmpeg binary exists
     if not path_manager.library_path:
         error_msg = window.tr(
@@ -147,13 +145,15 @@ def _load_translation(
 def main() -> None:
     """Main app function."""
     app = QApplication(sys.argv)
-
     _set_translator(app)
     _set_app_icon(app)
 
     window = VideoMorphMW()
-
-    _validate_ffmpeg(window, app)
-
+    _check_for_ffmpeg(window, app)
     window.show()
+
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main()
