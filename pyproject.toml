@@ -7,10 +7,36 @@ name = "videomorph"
 version = "1.6.0"
 description = "Video Converter based on ffmpeg, Python, and Qt6"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Ozkar L. Garcell", email = "ozkar.garcell@gmail.com"},
+]
+maintainers = [
+    {name = "Leodanis Pozo Ramos", email = "lpozor78@gmail.com"},
+]
+keywords = ["multimedia", "video conversion", "common video formats"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Video :: Conversion",
+]
 dependencies = [
     "pyqt6>=6.9.1",
 ]
+
+[project.urls]
+Homepage = "https://github.com/videomorph-dev/videomorph"
+Documentation = "https://videomorph-dev.github.io/videomorph/"
+Repository = "https://github.com/videomorph-dev/videomorph"
+"Bug Tracker" = "https://github.com/videomorph-dev/videomorph/issues"
 
 [project.scripts]
 videomorph = "videomorph.main:main"
@@ -19,4 +45,11 @@ videomorph = "videomorph.main:main"
 dev = [
     "pytest>=8.4.1",
     "pytest-qt>=4.5.0",
+    "pyinstaller>=6.11",
 ]
+
+[tool.setuptools]
+packages = ["videomorph", "videomorph.converter", "videomorph.forms"]
+
+[tool.setuptools.package-data]
+videomorph = []
