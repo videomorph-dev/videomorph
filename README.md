@@ -42,9 +42,9 @@ VideoMorph uses the following libraries and programs:
 
 - [PyQt](https://www.riverbankcomputing.com/static/Docs/PyQt6/introduction.html)
 - [FFmpeg](http://ffmpeg.org)
-- [Python](https://python.org) >= 3.10
+- [Python](https://python.org) >= 3.12
 
-You need to install these programs and libraries for VideoMorph to work properly.
+You need to install these programs and libraries for VideoMorph to work properly. VideoMorph does **not** bundle FFmpeg, so the `ffmpeg` and `ffprobe` executables must be available on your system `PATH`. On macOS and Linux, VideoMorph also probes a few well-known locations (Homebrew’s `/opt/homebrew/bin`, `/usr/local/bin`, etc.), and you can still override the paths via the `VIDEOMORPH_FFMPEG`/`VIDEOMORPH_FFPROBE` environment variables or `~/.videomorph/paths.ini`.
 
 On Windows systems, you also need:
 
@@ -104,12 +104,10 @@ To install the application from the source package on a GNU/Linux system, do the
 ```bash
 $ tar -xvf videomorph-x.x.tar.gz
 $ cd videomorph-x.x
-$ sudo pip3 install -r requirements.txt
-$ python3 setup.py build
-$ sudo python3 setup.py install
+$ python3 -m pip install .
 ```
 
-The preceding commands will install VideoMorph, and part of its dependencies into your system. To complete the installation, you need to manually install Ffmpeg or use the Ffmpeg's packages from your distro's current repository.
+The preceding commands install VideoMorph together with its Python dependencies. VideoMorph now expects the system-provided FFmpeg binaries (`ffmpeg` and `ffprobe`) to be present on your `PATH`, so install them from your distro packages (for example: `sudo apt install ffmpeg`) before launching the app.
 
 **Note:** If you install Ffmpeg from its sources, then you need to make sure that the commands `ffmpeg`, and `ffprobe` are in your system's PATH. To verify this, just run the following commands:
 
@@ -122,16 +120,6 @@ $ which ffprobe
 
 If you don't get a similar output, then you need to check your Ffmpeg installation.
 
-On Debian/Ubuntu derivatives, you can also install VideoMorph by using the `install.sh`  script provided in the source package as **root** or using **sudo**:
-
-```bash
-$ tar -xvf videomorph-x.x.tar.gz
-$ cd videomorph-x.x
-$ sudo ./install.sh
-```
-
-This command will install VideoMorph, and its dependencies, (Ffmpeg, and PyQt6), from your distro's current repository.
-
 #### On Windows
 
 To install VideoMorph from the source package on your Windows system, first, make sure you have Python3 installed, then run the following steps:
@@ -141,14 +129,12 @@ To install VideoMorph from the source package on your Windows system, first, mak
 
 ```powershell
 PS> cd videomorph-x.x
-PS> pip install -r requirements.txt
-PS> python3 setup.py build
-PS> python3 setup.py install
+PS> py -m pip install .
 ```
 
-This will install VideoMorph on your system, but you'll need to install Ffmpeg manually.
+This installs VideoMorph on your system. As on Linux, make sure [`ffmpeg`](https://ffmpeg.org/) and `ffprobe` are already installed and accessible from `PATH` (for example via [Gyan.dev builds](https://www.gyan.dev/ffmpeg/builds/) or your preferred package manager) before launching VideoMorph.
 
-**Note:** It's possible that you have to run the second and the fourth command as an `administrator`.
+**Note:** It's possible that you have to run the final command as an `administrator`.
 
 ### Using Portable Editions (if available)
 
@@ -157,6 +143,17 @@ To use a Portable Edition (PE) of VideoMorph, you need to:
 1. Download the PE package that matches your current system
 2. Decompress the `.tar.gz` or the `.zip` file (Linux and Windows respectively) in any directory
 3. Double-click on VideoMorph's executable (`videomorph` or `videomorph.exe`)
+
+### Building Standalone Packages
+
+VideoMorph uses [PyInstaller](https://pyinstaller.org/) to create its distributable bundles. After preparing the development environment you can reproduce the desktop build with:
+
+```console
+$ uv sync --group dev
+$ python build.py --clean  # add --deb on Linux for distribution packages
+```
+
+The helper script detects your platform, regenerates the corresponding `.spec` file with every resource under `share/`, and invokes `uv run pyinstaller`. On macOS it also creates a `.pkg` installer when the Xcode command-line utilities (`pkgbuild`) are present; both the `.app` bundle and the `.pkg` are moved under `dist/macOS/`, and a Homebrew-friendly `.tar.gz` bundle is saved under `dist/macOS/Homebrew/`. On Linux you can append `--deb` to wrap the PyInstaller output into a Debian package (saved under `dist/Debian/`) as long as `dpkg-deb` is available.
 
 ## How to Contribute to the Source
 
@@ -179,12 +176,12 @@ Any other type of contributions are also welcome, even a report about a typo is 
 To set up the development environment, and contribute code to VideoMorph, just open a command-line, and type in:
 
 ```console
-$ python3 -m venv venv
-$ source venv/bin/activate
-(venv) $ pip install -r requirements.txt
+$ uv venv
+$ source .venv/bin/activate  # or .\.venv\Scripts\activate on Windows
+(.venv) $ uv sync --group dev
 ```
 
-You also need to install the Ffmpeg library on your system.
+The development group installs `pytest`, `pytest-qt`, and `pyinstaller`. At runtime VideoMorph still depends on the system `ffmpeg`/`ffprobe`, so install them via your OS package manager if you have not already done so.
 
 ### Commits
 
