@@ -6,7 +6,7 @@ import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 from sys import platform, prefix
-from typing import Iterator, Optional
+from typing import Optional
 
 _BASE_DIR = Path(__file__).resolve().parents[2]
 
@@ -121,19 +121,38 @@ class PathManager:
         subdir = base_mapping.get(key, key)
         return self.base_dir.joinpath(subdir, *parts)
 
-    def _find_bundle_dirs(self) -> Iterator[Path]:
-        """Yield potential ffmpeg bundle directories."""
-        bundle_names = ("ffmpeg", "ffmpeg-linux64", "ffmpeg-mac", "ffmpeg-win64")
-        for name in bundle_names:
-            bundle = self.base_dir / name
-            if bundle.is_dir():
-                yield bundle
-            bin_dir = bundle / "bin"
-            if bin_dir.is_dir():
-                yield bin_dir
+    def _extra_tool_dirs(self) -> list[Path]:
+        """Return common installation directories for multimedia tools."""
+        dirs: list[Path] = []
+        if platform == "darwin":
+            dirs.extend(
+                [
+                    Path("/opt/homebrew/bin"),
+                    Path("/usr/local/bin"),
+                    Path("/opt/local/bin"),
+                    Path("/usr/bin"),
+                ]
+            )
+        elif platform.startswith("linux"):
+            dirs.extend(
+                [
+                    Path("/usr/local/bin"),
+                    Path("/usr/bin"),
+                    Path("/snap/bin"),
+                ]
+            )
+        elif platform == "win32":
+            dirs.extend(
+                [
+                    Path("C:/Program Files/ffmpeg/bin"),
+                    Path("C:/Program Files (x86)/ffmpeg/bin"),
+                    Path("C:/ffmpeg/bin"),
+                ]
+            )
+        return dirs
 
     def _locate_tool(self, tool_name: str) -> Optional[str]:
-        """Locate ffmpeg/ffprobe via overrides, bundles, or PATH."""
+        """Locate ffmpeg/ffprobe via overrides or PATH."""
         # Environment variable override
         env_key = f"VIDEOMORPH_{tool_name.upper()}"
         if env_override := os.environ.get(env_key):
@@ -147,15 +166,17 @@ class PathManager:
             if config_path.exists():
                 return str(config_path)
 
-        # Bundled binaries
+        # System PATH
+        if path := shutil.which(tool_name):
+            return path
+
         exe_name = f"{tool_name}.exe" if os.name == "nt" else tool_name
-        for bundle_dir in self._find_bundle_dirs():
-            candidate = bundle_dir / exe_name
+        for directory in self._extra_tool_dirs():
+            candidate = directory / exe_name
             if candidate.exists():
                 return str(candidate)
 
-        # System PATH
-        return shutil.which(tool_name)
+        return None
 
     def resource_path(self, key: str, *parts: str) -> Path:
         """Return resolved resource path (icons, docs, sounds, etc.)."""
@@ -175,7 +196,7 @@ class PathManager:
 
     def packaged_profile(self, name: str) -> Path:
         """Return bundled conversion profile path."""
-        return self.base_dir / "profiles" / name
+        return self.resource_path("profiles", name)
 
     def settings_file(self) -> Path:
         """Return path to Qt settings INI file."""
