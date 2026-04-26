@@ -1,48 +1,191 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
-name: Building
+name: Release
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    tags:
+      - 'v*.*'
+
+permissions:
+  contents: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
+  # ------------------------------------------------------------------
+  # Source distribution (platform-independent)
+  # ------------------------------------------------------------------
+  sdist:
+    name: Source tarball
+    runs-on: ubuntu-22.04
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install FFMPEG
-      run: |
-        sudo apt update && sudo apt -y install ffmpeg
-    - name: Install dependencies
-      run: |
-        sudo apt install ffmpeg
-        python -m pip install --upgrade pip
-        pip install nose pytest pytest-cov black flake8 pep8-naming flake8-debugger flake8-docstrings codecov
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Download Sample Video
-      run: |
-        wget -c https://archive.org/download/ltvehny-LTV_Zoom_Tutorials_-_Joining_Zoom_with_Computer_Audio/LTV_Zoom_Tutorials_-_Joining_Zoom_with_Computer_Audio.mp4 -O ./sample-video.mp4
-    - name: Lint with flake8
-      run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Check code style with Black
-      run: |
-        black --check ./
-    - name: Test with pytest
-      run: |
-        python -m pytest tests/ --cov=videomorph/ --cov-report=xml
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      - name: Install system tools
+        run: sudo apt-get install -y python3-pyrcc5
+
+      - name: Install dependencies
+        run: uv sync --all-groups
+
+      - name: Build sdist
+        run: uv build --sdist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+
+  # ------------------------------------------------------------------
+  # Linux .deb package
+  # ------------------------------------------------------------------
+  linux-deb:
+    name: Linux .deb
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y ffmpeg libgl1 python3-stdeb dh-python
+
+      - name: Install dependencies
+        run: uv sync --all-groups
+
+      - name: Build .deb
+        run: uv run python setup.py --command-packages=stdeb.command bdist_deb
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-deb
+          path: deb_dist/*.deb
+
+  # ------------------------------------------------------------------
+  # Windows standalone (PyInstaller)
+  # ------------------------------------------------------------------
+  windows-exe:
+    name: Windows .exe
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      - name: Install ffmpeg
+        run: choco install ffmpeg --no-progress -y
+
+      - name: Install dependencies
+        run: uv sync --all-groups
+
+      - name: Build with PyInstaller
+        run: uv run pyinstaller videomorph.spec --clean
+
+      - name: Package as zip
+        run: Compress-Archive -Path dist\videomorph -DestinationPath dist\videomorph-windows-x64.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe
+          path: dist/videomorph-windows-x64.zip
+
+  # ------------------------------------------------------------------
+  # macOS .app bundle (PyInstaller)
+  # ------------------------------------------------------------------
+  macos-app:
+    name: macOS .app
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      - name: Install ffmpeg
+        run: brew install ffmpeg
+
+      - name: Install dependencies
+        run: uv sync --all-groups
+
+      - name: Build with PyInstaller
+        run: uv run pyinstaller videomorph.spec --clean
+
+      - name: Package as zip
+        run: cd dist && zip -r videomorph-macos.zip VideoMorph.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-app
+          path: dist/videomorph-macos.zip
+
+  # ------------------------------------------------------------------
+  # Publish to AUR (and by extension, Chaotic-AUR)
+  # ------------------------------------------------------------------
+  aur:
+    name: Publish to AUR
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Update PKGBUILD version and pkgrel
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          sed -i "s/^pkgver=.*/pkgver=$VERSION/" aur/PKGBUILD
+          sed -i "s/^pkgrel=.*/pkgrel=1/" aur/PKGBUILD
+          # Update source URL in .SRCINFO (full regeneration done by action)
+          sed -i "s/pkgver = .*/pkgver = $VERSION/" aur/.SRCINFO
+          sed -i "s/pkgrel = .*/pkgrel = 1/" aur/.SRCINFO
+          sed -i "s|videomorph-.*\.tar\.gz::|videomorph-$VERSION.tar.gz::|" aur/.SRCINFO
+          sed -i "s|/tags/v.*\.tar\.gz|/tags/v$VERSION.tar.gz|" aur/.SRCINFO
+
+      - name: Publish to AUR
+        uses: KSXGitHub/github-actions-deploy-aur@v3.0.1
+        with:
+          pkgname: videomorph
+          pkgbuild: aur/PKGBUILD
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: "Update to v${{ steps.version.outputs.version }}"
+          updpkgsums: true
+          test: false
+
+  # ------------------------------------------------------------------
+  # Publish GitHub Release
+  # ------------------------------------------------------------------
+  publish:
+    name: Publish release
+    needs: [sdist, linux-deb, windows-exe, macos-app]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: artifacts/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}

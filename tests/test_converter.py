@@ -90,13 +90,13 @@ class TestConversionLib:
     def test_catch_library_error_true(self):
         """Test _OutputReader.catch_library_error() -> true."""
         self.conv_lib.reader.update_read(
-            "Some random output with " "Unknown encoder error"
+            "Some random output with Unknown encoder error"
         )
         assert self.conv_lib.reader.catch_library_error() == "Unknown encoder"
 
     def test_catch_library_error_false(self):
         """Test _OutputReader.catch_library_error() -> false."""
-        self.conv_lib.reader.update_read("Some random output with " "no error")
+        self.conv_lib.reader.update_read("Some random output with no error")
         assert self.conv_lib.reader.catch_library_error() is None
 
     def test_stop_converter(self):

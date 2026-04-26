@@ -29,9 +29,7 @@ class CodecsReader:
     """Class to get codecs out of ffmpeg -codecs output."""
 
     def __init__(self):
-        self.vcodecs, self.acodecs, self.scodecs = self._read(
-            "-codecs", 12
-        )
+        self.vcodecs, self.acodecs, self.scodecs = self._read("-codecs", 12)
         self.vencoders, self.aencoders, self.sencoders = self._read(
             "-encoders", 11
         )

@@ -48,4 +48,3 @@ class Library:
         """Play a video file with user default player."""
         launcher = launcher_factory()
         launcher.open_with_user_app(url=file_path)
-

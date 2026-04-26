@@ -184,8 +184,13 @@ class InfoDialog(QtWidgets.QDialog):
         self.ok_button.clicked.connect(self.close)
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addSpacerItem(
-            QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding,
-                        QtWidgets.QSizePolicy.Policy.Minimum))
+            QSpacerItem(
+                40,
+                20,
+                QtWidgets.QSizePolicy.Policy.Expanding,
+                QtWidgets.QSizePolicy.Policy.Minimum,
+            )
+        )
         button_layout.addWidget(self.ok_button)
         whole_layout.addLayout(button_layout)
         self._show_video_info(self.position)

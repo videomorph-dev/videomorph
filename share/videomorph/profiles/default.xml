@@ -302,6 +302,38 @@
             <preset_name_es>High Compression</preset_name_es>
         </preset>
     </profile>
+    <profile name="JELLYFIN">
+        <preset>
+            <preset_name_en>Jellyfin H.264 720p HD</preset_name_en>
+            <preset_params>-vcodec libx264 -preset fast -profile:v high -crf 20 -pix_fmt yuv420p -movflags +faststart -s 1280x720 -acodec aac -b:a 192k -ac 2 -ar 48000</preset_params>
+            <preset_extension>.mp4</preset_extension>
+            <preset_name_es>Jellyfin H.264 720p HD</preset_name_es>
+        </preset>
+        <preset>
+            <preset_name_en>Jellyfin H.264 1080p Full HD</preset_name_en>
+            <preset_params>-vcodec libx264 -preset slow -profile:v high -crf 18 -pix_fmt yuv420p -movflags +faststart -s 1920x1080 -acodec aac -b:a 256k -ac 2 -ar 48000</preset_params>
+            <preset_extension>.mp4</preset_extension>
+            <preset_name_es>Jellyfin H.264 1080p Full HD</preset_name_es>
+        </preset>
+        <preset>
+            <preset_name_en>Jellyfin H.264 480p SD</preset_name_en>
+            <preset_params>-vcodec libx264 -preset fast -profile:v main -crf 22 -pix_fmt yuv420p -movflags +faststart -s 854x480 -acodec aac -b:a 128k -ac 2 -ar 48000</preset_params>
+            <preset_extension>.mp4</preset_extension>
+            <preset_name_es>Jellyfin H.264 480p SD</preset_name_es>
+        </preset>
+        <preset>
+            <preset_name_en>Jellyfin H.265 720p HD (HEVC)</preset_name_en>
+            <preset_params>-vcodec libx265 -preset fast -crf 24 -pix_fmt yuv420p -movflags +faststart -s 1280x720 -tag:v hvc1 -acodec aac -b:a 192k -ac 2 -ar 48000</preset_params>
+            <preset_extension>.mp4</preset_extension>
+            <preset_name_es>Jellyfin H.265 720p HD (HEVC)</preset_name_es>
+        </preset>
+        <preset>
+            <preset_name_en>Jellyfin H.265 1080p Full HD (HEVC)</preset_name_en>
+            <preset_params>-vcodec libx265 -preset slow -crf 22 -pix_fmt yuv420p -movflags +faststart -s 1920x1080 -tag:v hvc1 -acodec aac -b:a 256k -ac 2 -ar 48000</preset_params>
+            <preset_extension>.mp4</preset_extension>
+            <preset_name_es>Jellyfin H.265 1080p Full HD (HEVC)</preset_name_es>
+        </preset>
+    </profile>
     <profile name="MP3">
         <preset>
             <preset_name_en>Extract Audio mp3</preset_name_en>

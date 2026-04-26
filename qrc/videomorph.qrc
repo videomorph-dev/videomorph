@@ -34,5 +34,6 @@
     <file>./OGA.png</file>
     <file>./WEBM.png</file>
     <file>./WMV.png</file>
+    <file>./JELLYFIN.png</file>
   </qresource>
 </RCC>

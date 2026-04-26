@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dev dependencies
+        run: uv sync --all-groups
+
+      - name: Check style
+        run: uv run ruff check .
+
+      - name: Check formatting
+        run: uv run ruff format --check .
+
+  test:
+    name: Test / ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-13]
+        python: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python }}
+
+      # --- System dependencies ---
+
+      - name: Install system deps (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y ffmpeg libgl1 libegl1 libglib2.0-0 \
+            libdbus-1-3 libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 \
+            libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 \
+            libxcb-xinerama0 xvfb
+
+      - name: Install system deps (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
+
+      - name: Install system deps (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ffmpeg --no-progress -y
+
+      # --- Python dependencies ---
+
+      - name: Install Python dependencies
+        run: uv sync --all-groups
+
+      # --- Sample video for probe/converter tests ---
+
+      - name: Download sample video
+        run: >
+          uv run python -c "
+          import urllib.request, ssl;
+          ctx = ssl.create_default_context();
+          ctx.check_hostname = False;
+          ctx.verify_mode = ssl.CERT_NONE;
+          urllib.request.urlretrieve(
+              'https://archive.org/download/ltvehny-LTV_Zoom_Tutorials_-_Joining_Zoom_with_Computer_Audio/LTV_Zoom_Tutorials_-_Joining_Zoom_with_Computer_Audio.mp4',
+              'sample-video.mp4'
+          )"
+        continue-on-error: true
+
+      # --- Run tests ---
+
+      - name: Run tests (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          xvfb-run --auto-servernum uv run pytest tests/ \
+            --cov=videomorph --cov-report=xml \
+            --ignore=tests/test_converter.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+
+      - name: Run tests (Windows / macOS)
+        if: runner.os != 'Linux'
+        run: >
+          uv run pytest tests/
+          --cov=videomorph --cov-report=xml
+          --ignore=tests/test_converter.py
+        env:
+          QT_QPA_PLATFORM: offscreen
+
+      # --- Coverage upload (Linux + Python 3.12 only) ---
+
+      - name: Upload coverage
+        if: matrix.os == 'ubuntu-22.04' && matrix.python == '3.12'
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false

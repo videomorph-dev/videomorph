@@ -35,7 +35,7 @@ def main():
     """Main app function."""
     # Create the app
     app = QApplication(sys.argv)
-    qApp= QApplication.instance()
+    qApp = QApplication.instance()
 
     # Setup app translator
     app_translator = QTranslator()
@@ -61,9 +61,11 @@ def main():
     else:
         msg_box = QMessageBox(
             QMessageBox.Icon.Critical,
-            main_win.tr('Error!'),
+            main_win.tr("Error!"),
             main_win.no_library_msg,
-            QMessageBox.StandardButton.NoButton, main_win)
+            QMessageBox.StandardButton.NoButton,
+            main_win,
+        )
         msg_box.addButton("&Ok", QMessageBox.ButtonRole.AcceptRole)
         if msg_box.exec() == QMessageBox.ButtonRole.AcceptRole:
             qApp.closeAllWindows()

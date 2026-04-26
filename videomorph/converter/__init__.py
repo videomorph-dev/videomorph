@@ -22,7 +22,11 @@
 from collections import namedtuple
 
 from .utils import get_locale
-from .vmpath import BASE_DIR, SYS_PATHS, VM_PATHS
+from .vmpath import (
+    BASE_DIR as BASE_DIR,
+    SYS_PATHS as SYS_PATHS,
+    VM_PATHS as VM_PATHS,
+)
 
 try:
     from os import cpu_count

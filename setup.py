@@ -21,15 +21,28 @@
 """This module defines the installation script for VideoMorph."""
 
 from pathlib import Path
-from sys import platform
+from sys import platform, prefix
 
-from videomorph.converter import (
-    APP_NAME,
-    CODENAME,
-    SYS_PATHS,
-    VERSION,
-    VM_PATHS,
+APP_NAME = "VideoMorph"
+CODENAME = "Canelo"
+VERSION = "1.5"
+
+VM_PATHS = dict(
+    apps=Path("share", "applications"),
+    config=Path(Path.home(), ".videomorph"),
+    icons=Path("share", "icons"),
+    i18n=Path("share", "videomorph", "translations"),
+    profiles=Path("share", "videomorph", "profiles"),
+    sounds=Path("share", "videomorph", "sounds"),
+    doc=Path("share", "doc", "videomorph"),
+    help=Path("share", "doc", "videomorph", "manual"),
+    man=Path("share", "man", "man1"),
+    bin=Path("bin"),
 )
+
+SYS_PATHS = {
+    k: Path(prefix, v) if k != "config" else v for k, v in VM_PATHS.items()
+}
 
 try:
     from setuptools import setup
@@ -53,7 +66,7 @@ VideoMorph isn't for you."""
 
 COMMONS = dict(
     name=APP_NAME.lower(),
-    version=VERSION + "-" + CODENAME.lower(),
+    version=VERSION,
     description="Video Converter based on ffmpeg, "
     "Python 3 and Qt6, focused on usability.",
     long_description=LONG_DESCRIPTION,

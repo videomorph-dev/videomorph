@@ -65,8 +65,8 @@ class ChangelogDialog(QtWidgets.QDialog):
         font.setPointSize(12)
         self.text_edit.setFont(font)
         self.text_edit.viewport().setProperty(
-            "cursor",
-            QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+            "cursor", QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor)
+        )
         self.text_edit.setReadOnly(True)
         self.horizontal_layout.addWidget(self.text_edit)
         self.text_edit.setAlignment(QtCore.Qt.AlignmentFlag.AlignJustify)

@@ -47,7 +47,7 @@ def run_on_console(app, main_win):
     parser.add_argument(
         "-d",
         "--input-dir",
-        help="take a directory as input and find video " "files recursively",
+        help="take a directory as input and find video files recursively",
         action="store",
         dest="input_dir",
     )

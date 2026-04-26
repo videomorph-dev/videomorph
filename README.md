@@ -1,11 +1,11 @@
 # VideoMorph
 
-![Building](https://github.com/videomorph-dev/videomorph/workflows/Building/badge.svg)
+![CI](https://github.com/videomorph-dev/videomorph/actions/workflows/ci.yml/badge.svg)
 [![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
 [![Maintainability](https://api.codeclimate.com/v1/badges/5f6cd3f7c20bccee2065/maintainability)](https://codeclimate.com/github/videomorph-dev/videomorph/maintainability)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/videomorph-dev/videomorph/pulls)
 
-**VideoMorph** is a **video converter** based on [ffmpeg](http://ffmpeg.org), and written with [Python](https://python.org) 3, and [PyQt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/introduction.html). With VideoMorph you can convert your favorite videos to the currently more popular video formats, like **MPG**, **MP4**, **AVI**, **WEBM**, **DVD**, **VCD**, **FLV**, **MOV**, **OGV**, **WMV**, **MKV** and also extract the audio to a file with **MP3** or **OGA** formats.
+**VideoMorph** is a **video converter** based on [ffmpeg](http://ffmpeg.org), written with [Python](https://python.org) 3 and [PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/introduction.html). Convert videos to **MPG**, **MP4**, **AVI**, **WEBM**, **DVD**, **VCD**, **FLV**, **MOV**, **OGV**, **WMV**, **MKV**, **Jellyfin-optimized H.264/H.265**, and audio to **MP3** or **OGA**.
 
 VideoMorph is a video converter, just that. Consists on a GUI wrapper for [Ffmpeg](http://ffmpeg.org), based on general ideas from [python-video-converter](https://github.com/senko/python-video-converter), and presets idea from [QWinFF](http://qwinff.github.io). If you're looking for a video editor, we're sorry but VideoMorph isn't for you.
 
@@ -40,15 +40,11 @@ VideoMorph is a video converter, just that. Consists on a GUI wrapper for [Ffmpe
 
 VideoMorph uses the following libraries and programs:
 
-- [PyQt](https://www.riverbankcomputing.com/static/Docs/PyQt6/introduction.html)
+- [PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/introduction.html) >= 6.4
 - [FFmpeg](http://ffmpeg.org)
-- [Python](https://python.org) > 3.4
+- [Python](https://python.org) >= 3.11
 
 You need to install these programs and libraries for VideoMorph to work properly.
-
-On Windows systems, you also need:
-
-- [setuptools](https://pypi.python.org/pypi/setuptools)
 
 ## Installation
 
@@ -172,15 +168,56 @@ Any other type of contributions are also welcome, even a report about a typo is 
 
 ### Setting up the Development Environment
 
-To set up the development environment, and contribute code to VideoMorph, just open a command-line, and type in:
-
-```console
-$ python3 -m venv venv
-$ source venv/bin/activate
-(venv) $ pip install -r requirements.txt
+```bash
+git clone https://github.com/videomorph-dev/videomorph.git
+cd videomorph
+python3 -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
+make dev                    # installs runtime + dev deps
 ```
 
-You also need to install the Ffmpeg library on your system.
+You also need `ffmpeg` and `ffprobe` in your PATH.
+
+### Build Commands
+
+All common tasks are available via `make`:
+
+| Command | Description |
+|---------|-------------|
+| `make dev` | Install runtime + dev dependencies |
+| `make test` | Run tests with coverage report |
+| `make lint` | Check code style with ruff |
+| `make format` | Auto-format code with ruff |
+| `make qrc` | Regenerate Qt resources from `qrc/` |
+| `make build` | Build sdist + wheel |
+| `make deb` | Build Debian `.deb` package (Linux only) |
+| `make exe` | Build standalone executable (PyInstaller) |
+| `make clean` | Remove all build artifacts |
+
+### Regenerating Qt Resources
+
+After adding or modifying icons/images in `qrc/`:
+
+```bash
+make qrc
+```
+
+This runs `pyrcc5` and patches the import from `PyQt5` to `PyQt6`.
+
+### Creating a Release
+
+Push a version tag to trigger the release CI:
+
+```bash
+git tag v1.6
+git push origin v1.6
+```
+
+The release workflow builds and publishes:
+- Source tarball (`.tar.gz`) — all platforms
+- Debian package (`.deb`) — Ubuntu/Debian
+- Windows standalone (`.zip`) — Windows x64
+- macOS app bundle (`.zip`) — macOS 13+
 
 ### Commits
 

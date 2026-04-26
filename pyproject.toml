@@ -1,2 +1,95 @@
+[project]
+name = "videomorph"
+version = "1.5"
+description = "Video Converter based on ffmpeg, Python 3 and Qt6, focused on usability."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Ozkar L. Garcell", email = "ozkar.garcell@gmail.com" },
+    { name = "Leodanis Pozo Ramos", email = "lpozor78@gmail.com" },
+]
+requires-python = ">=3.11"
+dependencies = [
+    "PyQt6>=6.4.0",
+    "setuptools>=65.0",
+]
+keywords = ["multimedia", "video conversion", "common video formats"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Video :: Conversion",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.4.0",
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "pytest-qt>=4.4",
+    "pyinstaller>=6.0",
+    "stdeb>=0.10.0",
+    "build>=1.0",
+]
+
+[project.scripts]
+videomorph = "videomorph.main:main"
+
+[project.urls]
+Homepage = "https://github.com/videomorph-dev/videomorph"
+Repository = "https://github.com/videomorph-dev/videomorph"
+
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.4.0",
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "pytest-qt>=4.4",
+    "pyinstaller>=6.0",
+    "stdeb>=0.10.0",
+    "build>=1.0",
+]
+
 [tool.black]
 line-length = 79
+
+[tool.ruff]
+line-length = 79
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "UP"]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "E402",   # module level import not at top of file
+    "UP006",  # use `type` instead of `Type` for annotations
+    "UP007",  # use `X | Y` for union type annotations
+    "UP008",  # super() with args (project style)
+    "UP009",  # UTF-8 encoding declaration (project style)
+    "UP015",  # unnecessary open() mode param (project style)
+    "UP030",  # implicit format references (project style)
+    "UP032",  # f-string conversion (project style)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["F401", "F811"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["videomorph"]
+omit = ["videomorph/forms/videomorph_qrc.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false

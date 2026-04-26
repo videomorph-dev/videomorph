@@ -1,0 +1,64 @@
+# Maintainer: Maykel Arias Torres <hanibal920915@gmail.com>
+
+pkgname=videomorph
+pkgver=1.5
+pkgrel=1
+pkgdesc='Video converter based on FFmpeg, Python 3 and PyQt6'
+arch=('any')
+url='https://github.com/videomorph-dev/videomorph'
+license=('Apache-2.0')
+depends=(
+    'python'
+    'python-pyqt6'
+    'ffmpeg'
+)
+makedepends=(
+    'python-build'
+    'python-installer'
+    'python-wheel'
+    'python-setuptools'
+)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "$pkgname-$pkgver"
+    python -m build --wheel --no-isolation
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+
+    # Python package (includes /usr/bin/videomorph entry point)
+    python -m installer --destdir="$pkgdir" dist/*.whl
+
+    # Desktop entry
+    install -Dm644 share/applications/videomorph.desktop \
+        "$pkgdir/usr/share/applications/videomorph.desktop"
+
+    # Application icon
+    install -Dm644 share/icons/videomorph.png \
+        "$pkgdir/usr/share/icons/hicolor/256x256/apps/videomorph.png"
+
+    # Conversion profiles
+    install -Dm644 share/videomorph/profiles/default.xml \
+        "$pkgdir/usr/share/videomorph/profiles/default.xml"
+    install -Dm644 share/videomorph/profiles/customized.xml \
+        "$pkgdir/usr/share/videomorph/profiles/customized.xml"
+
+    # Sounds
+    install -Dm644 share/videomorph/sounds/successful.wav \
+        "$pkgdir/usr/share/videomorph/sounds/successful.wav"
+
+    # Translations
+    install -Dm644 share/videomorph/translations/videomorph_es.qm \
+        "$pkgdir/usr/share/videomorph/translations/videomorph_es.qm"
+
+    # Man page
+    install -Dm644 share/man/man1/videomorph.1.gz \
+        "$pkgdir/usr/share/man/man1/videomorph.1.gz"
+
+    # Docs
+    install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+    install -Dm644 LICENSE   "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

@@ -1,0 +1,18 @@
+pkgbase = videomorph
+	pkgdesc = Video converter based on FFmpeg, Python 3 and PyQt6
+	pkgver = 1.5
+	pkgrel = 1
+	url = https://github.com/videomorph-dev/videomorph
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-wheel
+	makedepends = python-setuptools
+	depends = python
+	depends = python-pyqt6
+	depends = ffmpeg
+	source = videomorph-1.5.tar.gz::https://github.com/videomorph-dev/videomorph/archive/refs/tags/v1.5.tar.gz
+	sha256sums = SKIP
+
+pkgname = videomorph

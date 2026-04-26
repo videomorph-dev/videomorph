@@ -62,7 +62,7 @@ class Probe:
                     stream_count += 1
 
                 if "=" in format_line and param[0] in selected_params:
-                    if not param[0] in info:
+                    if param[0] not in info:
                         info[param[0]] = param[1]
                     else:
                         info[param[0] + "_{0}".format(stream_count)] = param[1]
